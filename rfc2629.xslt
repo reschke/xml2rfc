@@ -194,6 +194,9 @@
     more conformance fixes (layout moved into CSS, move lists and figures
     out of para content, do not use tables for list formatting)
     
+    2003-05-13  julian.reschke@greenbytes.de
+  
+    add DC.Creator meta tag, refactoring
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -882,7 +885,7 @@
 </xsl:template>
 
 <xsl:template match="rfc">
-  <html>
+  <html lang="en-US">
     <head>
       <title><xsl:value-of select="front/title" /></title>
        <style type="text/css">
@@ -905,6 +908,7 @@
       <xsl:if test="/rfc/@number">
         <link rel="Alternate" title="Authorative ASCII version" href="http://www.ietf.org/rfc/rfc{/rfc/@number}" />
       </xsl:if>
+      <link rel="schema.DC" href="http://purl.org/dc" />
       
       <!-- keywords -->
       <xsl:if test="front/keyword">
@@ -915,7 +919,13 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.79 2003/05/13 19:23:53 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.80 2003/05/13 20:15:00 jre Exp $" />
+      
+      <!-- DC creator -->
+      <xsl:variable name="creator">
+        <xsl:call-template name="get-author-summary" />
+      </xsl:variable>
+      <meta name="DC.Creator" content="{$creator}" />
     </head>
     <body>
       <!-- insert diagnostics -->
