@@ -410,7 +410,7 @@
     settings in TXT output (compact-PI).  Fix page number in footer (CSS
     print) and add some more experimental support for paged media (tested
     with Prince 4.1 alpha).  Rewrite TOC and Index generation to generate HTML
-    lists.  Cleanup id generation for paragraphs.
+    lists.  Cleanup id generation for paragraphs.  Reduce whitespace in output.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -424,7 +424,9 @@
                 exclude-result-prefixes="msxsl exslt myns ed"
                 >
 
-<xsl:output method="html" encoding="iso-8859-1" version="4.0" doctype-public="-//W3C//DTD HTML 4.01//EN" />
+<xsl:strip-space elements="back front list middle rfc section"/>                
+                
+<xsl:output method="html" encoding="iso-8859-1" version="4.0" doctype-public="-//W3C//DTD HTML 4.01//EN" indent="no"/>
 
 <!-- process some of the processing instructions supported by Marshall T. Rose's
      xml2rfc sofware, see <http://xml.resource.org/> -->
@@ -634,6 +636,11 @@
 
           
 <!-- Templates for the various elements of rfc2629.dtd -->
+              
+<xsl:template match="text()[not(ancestor::artwork)]">
+  <xsl:value-of select="normalize-space(.)"/>
+</xsl:template>
+              
               
 <xsl:template match="abstract">
   <h1 id="{$anchor-prefix}.abstract"><a href="#{$anchor-prefix}.abstract">Abstract</a></h1>
@@ -1234,7 +1241,8 @@
       <xsl:variable name="sectionNumber">
         <xsl:call-template name="get-references-section-number"/>
       </xsl:variable>
-      <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
+      <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>
+      <xsl:text>&#0160;</xsl:text>
       <a href="#{$anchor-prefix}.references">References</a>
     </h1>
   </xsl:if>
@@ -1261,7 +1269,8 @@
     </xsl:variable>
     <a name="{$anchor-prefix}.references{$anchorpref}"/>
     <a name="{$anchor-prefix}.section.{$sectionNumber}"/>
-    <xsl:value-of select="$sectionNumber" />&#0160;
+    <xsl:value-of select="$sectionNumber" />
+    <xsl:text>&#0160;</xsl:text>
     <xsl:choose>
       <xsl:when test="not(@title) or @title=''">References</xsl:when>
       <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
@@ -1271,7 +1280,7 @@
   <table summary="{@title}" border="0" cellpadding="2">
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes'">
-        <xsl:apply-templates>
+        <xsl:apply-templates select="reference">
           <xsl:sort select="@anchor" />
         </xsl:apply-templates>
       </xsl:when>
@@ -1392,25 +1401,34 @@
   <xsl:variable name="p">
     <xsl:call-template name="get-paragraph-number" />
   </xsl:variable>
-  
-  <p>
-    <xsl:if test="string-length($p) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins) and count(preceding-sibling::node())=0">
-      <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
-    </xsl:if>
-    <xsl:call-template name="insertInsDelClass"/>
-    <xsl:call-template name="editingMark" />
-    <xsl:apply-templates mode="t-content2" select="." />
-  </p>
+
+  <!-- do not open a new p element if this is a whitespace-only text node and no siblings follow -->  
+  <xsl:if test="not(self::text() and normalize-space(.)='' and not(following-sibling::node()))">
+    <p>
+      <xsl:if test="string-length($p) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins) and count(preceding-sibling::node())=0">
+        <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
+      </xsl:if>
+      <xsl:call-template name="insertInsDelClass"/>
+      <xsl:call-template name="editingMark" />
+      <xsl:apply-templates mode="t-content2" select="." />
+    </p>
+  </xsl:if>
   <xsl:apply-templates mode="t-content" select="following-sibling::*[self::list or self::figure or self::texttable][1]" />
 </xsl:template>               
                
-<xsl:template mode="t-content2" match="*|node()">
+<xsl:template mode="t-content2" match="*">
   <xsl:apply-templates select="." />
   <xsl:if test="not(following-sibling::node()[1] [self::list or self::figure or self::texttable])">
     <xsl:apply-templates select="following-sibling::node()[1]" mode="t-content2" />
   </xsl:if>
 </xsl:template>               
 
+<xsl:template mode="t-content2" match="text()">
+  <xsl:value-of select="normalize-space(.)" />
+  <xsl:if test="not(following-sibling::node()[1] [self::list or self::figure or self::texttable])">
+    <xsl:apply-templates select="following-sibling::node()[1]" mode="t-content2" />
+  </xsl:if>
+</xsl:template>               
 
 <xsl:template name="insertTitle">
   <xsl:choose>
@@ -1635,7 +1653,8 @@
     </xsl:if>
     <xsl:if test="/rfc/@obsoletes and /rfc/@obsoletes!=''">
       <myns:item>
-        Obsoletes: <xsl:call-template name="rfclist">
+        <xsl:text>Obsoletes: </xsl:text>
+        <xsl:call-template name="rfclist">
           <xsl:with-param name="list" select="normalize-space(/rfc/@obsoletes)" />
         </xsl:call-template>
         <xsl:if test="not(/rfc/@number)"> (if approved)</xsl:if>
@@ -1653,7 +1672,8 @@
     </xsl:if>
     <xsl:if test="/rfc/@updates and /rfc/@updates!=''">
       <myns:item>
-          Updates: <xsl:call-template name="rfclist">
+        <xsl:text>Updates: </xsl:text>
+          <xsl:call-template name="rfclist">
              <xsl:with-param name="list" select="normalize-space(/rfc/@updates)" />
           </xsl:call-template>
           <xsl:if test="not(/rfc/@number)"> (if approved)</xsl:if>
@@ -1661,7 +1681,7 @@
     </xsl:if>
     <xsl:if test="$mode!='nroff'">
       <myns:item>
-         Category:
+        <xsl:text>Category: </xsl:text>
         <xsl:call-template name="get-category-long" />
       </myns:item>
     </xsl:if>
@@ -2308,7 +2328,8 @@ table.closedissue {
         </xsl:choose>
       </xsl:variable>
       <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" /></xsl:variable>
-      &#0160;<a class="iref" href="{$backlink}"><xsl:choose>
+        <xsl:text>&#0160;</xsl:text>
+        <a class="iref" href="{$backlink}"><xsl:choose>
           <xsl:when test="@primary='true'"><b><xsl:value-of select="$n"/></b></xsl:when>
           <xsl:otherwise><xsl:value-of select="$n"/></xsl:otherwise>
         </xsl:choose>
@@ -2794,7 +2815,7 @@ table.closedissue {
   <xsl:apply-templates mode="toc" />
 </xsl:template>
 
-<xsl:template match="*" mode="toc" />
+<xsl:template match="*|text()" mode="toc" />
 
 
 <xsl:template name="insertTocAppendix">
@@ -3250,7 +3271,7 @@ table.closedissue {
                 <xsl:attribute name="style">text-align: <xsl:value-of select="$col/@align" />;</xsl:attribute>
               </xsl:if>
               <xsl:apply-templates select="node()" />
-              &#0160;
+              <xsl:text>&#0160;</xsl:text>
             </td>
           </xsl:for-each>
         </tr>
@@ -3434,11 +3455,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.196 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.196 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.197 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.197 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/30 12:15:22 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 12:15:22 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/30 13:47:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 13:47:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
