@@ -427,11 +427,11 @@
     in section numbers, switch to verdana default font in CSS.  Add
     experimental support for centered artwork.
     
-    2005-02-08  julian.reschke@greenbytes.de
+    2005-02-09  julian.reschke@greenbytes.de
 
     Fixes in spacing and links of references section titles.  Enhance sorting
     in references when change tracking is in place.  Re-add figure centering
-    support.
+    support.  Add missing 2nd part of "Author's Adresses" fix. 
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1921,13 +1921,20 @@
 </xsl:template>
 
 <!-- produce back section with author information -->
+<xsl:template name="get-authors-section-title">
+  <xsl:choose>
+    <xsl:when test="count(/rfc/front/author)=1">Author's Address</xsl:when>
+    <xsl:otherwise>Authors' Addresses</xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="insertAuthors">
 
   <xsl:call-template name="insert-conditional-hrule"/>
     
   <h1 id="{$anchor-prefix}.authors">
     <xsl:call-template name="insert-conditional-pagebreak"/>
-    Author's Address<xsl:if test="count(/rfc/front/author) &gt; 1">es</xsl:if>
+    <xsl:call-template name="get-authors-section-title"/>
   </h1>
 
   <table summary="Authors" width="99%" border="0" cellpadding="0" cellspacing="0">
@@ -2196,7 +2203,7 @@ thead {
 }
 ul.toc {
   list-style: none;
-  margin-left: 1.5em;
+  margin-left: 1.5m;
   margin-right: 0em;
   padding-left: 0em;
 }
@@ -2811,8 +2818,7 @@ table.closedissue {
 <xsl:template match="front" mode="toc">
 
   <xsl:variable name="title">
-    <xsl:if test="count(author)=1">Author's Address</xsl:if>
-    <xsl:if test="count(author)!=1">Authors' Addresses</xsl:if>
+    <xsl:call-template name="get-authors-section-title"/>
   </xsl:variable>
   
   <li>
@@ -3599,11 +3605,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.212 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.212 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.213 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.213 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/02/08 10:53:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/08 10:53:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/02/09 09:01:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/09 09:01:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
