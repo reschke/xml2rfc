@@ -82,7 +82,8 @@
     
     2002-03-23  julian.reschke@greenbytes.de
     
-    Bugfix in detection of matching org names when creating the header.
+    Bugfix in detection of matching org names when creating the header. Fixed
+    sorting in subitems.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1144,8 +1145,7 @@ ins
 
 <xsl:template name="insertSingleIref">
   <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" /></xsl:variable>
-  &#0160;<a href="{$backlink}">
-    <xsl:choose>
+  &#0160;<a href="{$backlink}"><xsl:choose>
       <xsl:when test="@primary='true'"><b><xsl:call-template name="sectionnumber" /></b></xsl:when>
       <xsl:otherwise><xsl:call-template name="sectionnumber" /></xsl:otherwise>
     </xsl:choose>
@@ -1176,9 +1176,10 @@ ins
   	  </tr>
             
       <xsl:for-each select="key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))">
-  		  <xsl:sort select="translate(@item,$lcase,$ucase)" />
     
-   			<xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
+        <xsl:sort select="translate(@item,$lcase,$ucase)" />
+   			
+        <xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
     
       		<tr>
             <td>
@@ -1192,7 +1193,9 @@ ins
           </tr>
                 
           <xsl:for-each select="key('index-item',@item)[@subitem and @subitem!='']">
+      		  <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
 		        
+       			<xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
             <tr>
   				    <td>
       	        &#0160;&#0160;&#0160;&#0160;<xsl:value-of select="@subitem" />&#0160;
@@ -1203,6 +1206,7 @@ ins
                 </xsl:for-each>
               </td>
             </tr>
+            </xsl:if>
           </xsl:for-each>
                 
         </xsl:if>
