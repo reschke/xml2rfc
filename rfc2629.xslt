@@ -260,7 +260,8 @@
     2003-10-03  julian.reschke@greenbytes.de
     
     Add workaround for broken pre/ins handling in Mozilla
-    (see <http://bugzilla.mozilla.org/show_bug.cgi?id=204401>).
+    (see <http://bugzilla.mozilla.org/show_bug.cgi?id=204401>). Make use
+    of cite attribute on ed:replace.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2518,6 +2519,16 @@ table.resolution
 </xsl:template>
 
 <xsl:template match="ed:replace">
+  <xsl:if test="@ed:resolves">
+    <table class="resolution">
+      <tr><td>resolves: <a href="#{$anchor-prefix}.issue.{@ed:resolves}"><xsl:value-of select="@ed:resolves"/></a></td></tr>
+    </table>
+  </xsl:if>
+  <xsl:if test="@cite">
+    <table class="resolution">
+      <tr><td>see: <a href="{@cite}"><xsl:value-of select="@cite"/></a></td></tr>
+    </table>
+  </xsl:if>
   <xsl:if test="ed:del">
     <del>
       <xsl:copy-of select="@*[namespace-uri()='']"/>
@@ -2532,11 +2543,6 @@ table.resolution
       <xsl:copy-of select="@*[namespace-uri()='']"/>
       <xsl:if test="not(@title) and @ed:entered-by and @datetime">
         <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',@ed:entered-by)"/></xsl:attribute>
-      </xsl:if>
-      <xsl:if test="@ed:resolves">
-        <table class="resolution">
-          <tr><td>resolves: <a href="#{$anchor-prefix}.issue.{@ed:resolves}"><xsl:value-of select="@ed:resolves"/></a></td></tr>
-        </table>
       </xsl:if>
       <xsl:apply-templates select="ed:ins/node()" />
     </ins>
@@ -2718,11 +2724,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.125 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.125 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.126 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.126 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/10/04 17:22:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/04 17:22:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/10/04 18:16:27 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/04 18:16:27 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
