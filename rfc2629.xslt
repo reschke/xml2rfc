@@ -242,9 +242,10 @@
     references (reverse surname/initials for last author), add "Ed.".
     Fix internal bookmark generation.
     
-    2003-08-11  julian.reschke@greenbytes.de
+    2003-08-12  julian.reschke@greenbytes.de
     
-    Add DCMI dates and identifiers.
+    Add DCMI dates, identifiers and abstract. Add PI to suppress DCMI
+    generation.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -340,6 +341,14 @@
   select="substring-after(
       translate(/processing-instruction('rfc-ext')[contains(.,'parse-xml-in-artwork=')], '&quot; ', ''),
         'parse-xml-in-artwork=')"
+/>
+
+<!-- extension for exclusing DCMI properties in meta tag (RFC2731) -->
+
+<xsl:param name="support-rfc2731"
+  select="substring-after(
+      translate(/processing-instruction('rfc-ext')[contains(.,'support-rfc2731=')], '&quot; ', ''),
+        'support-rfc2731=')"
 />
 
 <!-- choose whether or not to do mailto links --> 
@@ -971,34 +980,39 @@
         <meta name="keywords" content="{$keyw}" />
       </xsl:if>
 
-      <!-- Dublin Core Metadata -->
-      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
-            
-      <!-- DC creator, see RFC2731 -->
-      <xsl:for-each select="/rfc/front/author">
-        <meta name="DC.Creator" content="{concat(@surname,', ',@initials)}" />
-      </xsl:for-each>
-      
-      <xsl:if test="not($private)">
-        <xsl:choose>
-          <xsl:when test="/rfc/@number">
-            <meta name="DC.Identifier" content="urn:ietf:rfc:{/rfc/@number}" />
-          </xsl:when>
-          <xsl:when test="/rfc/@docName">
-            <meta name="DC.Identifier" content="urn:ietf:id:{/rfc/@docName}" />
-          </xsl:when>
-          <xsl:otherwise/>
-        </xsl:choose>
-        <xsl:variable name="month"><xsl:call-template name="get-month-as-num"/></xsl:variable>
-        <meta name="DC.Date.Issued" scheme="ISO8601" content="{/rfc/front/date/@year}-{$month}" />
-
-        <xsl:if test="/rfc/@obsoletes!=''">
-          <xsl:call-template name="rfclist-for-dcmeta">
-            <xsl:with-param name="list" select="/rfc/@obsoletes"/>
-          </xsl:call-template>
+      <xsl:if test="$support-rfc2731!='no'">
+        <!-- Dublin Core Metadata -->
+        <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+              
+        <!-- DC creator, see RFC2731 -->
+        <xsl:for-each select="/rfc/front/author">
+          <meta name="DC.Creator" content="{concat(@surname,', ',@initials)}" />
+        </xsl:for-each>
+        
+        <xsl:if test="not($private)">
+          <xsl:choose>
+            <xsl:when test="/rfc/@number">
+              <meta name="DC.Identifier" content="urn:ietf:rfc:{/rfc/@number}" />
+            </xsl:when>
+            <xsl:when test="/rfc/@docName">
+              <meta name="DC.Identifier" content="urn:ietf:id:{/rfc/@docName}" />
+            </xsl:when>
+            <xsl:otherwise/>
+          </xsl:choose>
+          <xsl:variable name="month"><xsl:call-template name="get-month-as-num"/></xsl:variable>
+          <meta name="DC.Date.Issued" scheme="ISO8601" content="{/rfc/front/date/@year}-{$month}" />
+  
+          <xsl:if test="/rfc/@obsoletes!=''">
+            <xsl:call-template name="rfclist-for-dcmeta">
+              <xsl:with-param name="list" select="/rfc/@obsoletes"/>
+            </xsl:call-template>
+          </xsl:if>
         </xsl:if>
-      </xsl:if>
-      
+  
+        <xsl:if test="/rfc/front/abstract">
+          <meta name="DC.Description.Abstract" content="{normalize-space(/rfc/front/abstract)}" />
+        </xsl:if>      
+      </xsl:if>      
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -2558,11 +2572,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.105 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.105 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.106 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.106 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/11 14:58:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/11 14:58:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/12 07:24:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/12 07:24:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
