@@ -198,7 +198,7 @@
   
     add DC.Creator meta tag, refactoring
 
-    2003-05-15  julian.reschke@greenbytes.de
+    2003-05-16  julian.reschke@greenbytes.de
   
     put nbsps between "section" and section number (xref).
 -->
@@ -923,7 +923,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.83 2003/05/15 22:29:25 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.84 2003/05/16 06:45:37 jre Exp $" />
       
       <!-- DC creator -->
       <xsl:variable name="creator">
@@ -985,7 +985,7 @@
   <xsl:variable name="sectionNumber">
     <xsl:choose>
       <xsl:when test="@myns:unnumbered"></xsl:when>
-      <xsl:otherwise><xsl:call-template name="sectionnumber" /></xsl:otherwise>
+      <xsl:otherwise><xsl:call-template name="get-section-number" /></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
     
@@ -1069,7 +1069,9 @@
           </xsl:for-each>
         </xsl:variable>
         <xsl:variable name="refnum">
-          <xsl:call-template name="sectionnumber" />
+          <xsl:for-each select="$node">
+            <xsl:call-template name="get-section-number" />
+          </xsl:for-each>
         </xsl:variable>
         <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
       </xsl:when>
@@ -1535,8 +1537,8 @@ table.resolution
 <xsl:template name="insertSingleIref">
   <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" /></xsl:variable>
   &#0160;<a href="{$backlink}"><xsl:choose>
-      <xsl:when test="@primary='true'"><b><xsl:call-template name="sectionnumber" /></b></xsl:when>
-      <xsl:otherwise><xsl:call-template name="sectionnumber" /></xsl:otherwise>
+      <xsl:when test="@primary='true'"><b><xsl:call-template name="get-section-number" /></b></xsl:when>
+      <xsl:otherwise><xsl:call-template name="get-section-number" /></xsl:otherwise>
     </xsl:choose>
   </a><xsl:if test="position()!=last()">, </xsl:if>
 </xsl:template>
@@ -1836,7 +1838,7 @@ table.resolution
 
 <xsl:template match="section" mode="toc">
   <xsl:variable name="sectionNumber">
-    <xsl:call-template name="sectionnumber" />
+    <xsl:call-template name="get-section-number" />
   </xsl:variable>
 
   <xsl:variable name="target">
@@ -2064,23 +2066,6 @@ table.resolution
   </xsl:choose>
 </xsl:template>
 
-<xsl:variable name="hasEdits" select="count(//ed:del|//ed:ins)!=0" />
-
-<xsl:template name="sectionnumber">
-  <xsl:choose>
-    <xsl:when test="$hasEdits">
-      <xsl:call-template name="sectionnumberAndEdits" />
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:choose>
-        <xsl:when test="ancestor::back"><xsl:number count="ed:del|ed:ins|section|appendix" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
-        <xsl:when test="self::appendix"><xsl:number count="ed:del|ed:ins|appendix" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
-        <xsl:otherwise><xsl:number count="ed:del|ed:ins|section" level="multiple"/></xsl:otherwise>
-      </xsl:choose>
-    </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
-
 <xsl:template name="endsWithDot">
   <xsl:param name="str"/>
   <xsl:choose>
@@ -2099,7 +2084,7 @@ table.resolution
 <xsl:template name="sectionnumberPara">
   <!-- get section number of ancestor section element, then add t or figure number -->
   <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered'])">
-    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="sectionnumber" />.p.</xsl:for-each><xsl:number count="t|figure" />
+    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|figure" />
   </xsl:if>
 </xsl:template>
 
@@ -2371,13 +2356,13 @@ table.resolution
 <xsl:template match="node()" mode="links"><xsl:apply-templates mode="links"/></xsl:template>
 
 <xsl:template match="/*/middle//section[not(myns:unnumbered) and not(ancestor::section)]" mode="links">
-  <xsl:variable name="sectionNumber"><xsl:call-template name="sectionnumber" /></xsl:variable>
+  <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
   <link rel="Chapter" title="{$sectionNumber} {@title}" href="#rfc.section.{$sectionNumber}" />
   <xsl:apply-templates mode="links" />
 </xsl:template>
 
 <xsl:template match="/*/back//section[not(myns:unnumbered) and not(ancestor::section)]" mode="links">
-  <xsl:variable name="sectionNumber"><xsl:call-template name="sectionnumber" /></xsl:variable>
+  <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
   <link rel="Appendix" title="{$sectionNumber} {@title}" href="#rfc.section.{$sectionNumber}" />
   <xsl:apply-templates mode="links" />
 </xsl:template>
@@ -2439,6 +2424,22 @@ table.resolution
     </xsl:for-each>
   </xsl:variable>
   <xsl:value-of select="normalize-space($keyw)" />
+</xsl:template>
+
+<xsl:template name="get-section-number">
+  <xsl:variable name="hasEdits" select="count(//ed:del|//ed:ins)!=0" />
+  <xsl:choose>
+    <xsl:when test="$hasEdits">
+      <xsl:call-template name="sectionnumberAndEdits" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:choose>
+        <xsl:when test="ancestor::back"><xsl:number count="ed:del|ed:ins|section|appendix" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
+        <xsl:when test="self::appendix"><xsl:number count="ed:del|ed:ins|appendix" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
+        <xsl:otherwise><xsl:number count="ed:del|ed:ins|section" level="multiple"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="get-section-type">
