@@ -267,6 +267,10 @@
     
     Fix minor issue detecting the same org for the header (caused by IE's
     non-standard whitespace handling). Fix default handling for /rfc/@category.
+    
+    2003-11-01  julian.reschke@greenbytes.de
+    
+    Inherit ed:entered-by from ancestor elements.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2485,8 +2489,8 @@ table.resolution {
 <xsl:template match="ed:del">
   <del>
     <xsl:copy-of select="@*[namespace-uri()='']"/>
-    <xsl:if test="not(@title) and @ed:entered-by and @datetime">
-      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',@ed:entered-by)"/></xsl:attribute>
+    <xsl:if test="not(@title) and ancestor-or-self::*/@ed:entered-by and @datetime">
+      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*/@ed:entered-by)"/></xsl:attribute>
     </xsl:if>
     <xsl:apply-templates />
   </del>
@@ -2495,8 +2499,8 @@ table.resolution {
 <xsl:template match="ed:ins">
   <ins>
     <xsl:copy-of select="@*[namespace-uri()='']"/>
-    <xsl:if test="not(@title) and @ed:entered-by and @datetime">
-      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',@ed:entered-by)"/></xsl:attribute>
+    <xsl:if test="not(@title) and ancestor-or-self::*/@ed:entered-by and @datetime">
+      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*/@ed:entered-by)"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="@ed:resolves">
       <table class="resolution">
@@ -2521,8 +2525,8 @@ table.resolution {
   <xsl:if test="ed:del">
     <del>
       <xsl:copy-of select="@*[namespace-uri()='']"/>
-      <xsl:if test="not(@title) and @ed:entered-by and @datetime">
-        <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',@ed:entered-by)"/></xsl:attribute>
+      <xsl:if test="not(@title) and ancestor-or-self::*/@ed:entered-by and @datetime">
+        <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*/@ed:entered-by)"/></xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="ed:del/node()" />
     </del>
@@ -2530,8 +2534,8 @@ table.resolution {
   <xsl:if test="ed:ins">
     <ins>
       <xsl:copy-of select="@*[namespace-uri()='']"/>
-      <xsl:if test="not(@title) and @ed:entered-by and @datetime">
-        <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',@ed:entered-by)"/></xsl:attribute>
+      <xsl:if test="not(@title) and ancestor-or-self::*/@ed:entered-by and @datetime">
+        <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*/@ed:entered-by)"/></xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="ed:ins/node()" />
     </ins>
@@ -2713,11 +2717,11 @@ table.resolution {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.131 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.131 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.132 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.132 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/10/09 18:09:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/09 18:09:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/11/01 11:28:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/01 11:28:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
