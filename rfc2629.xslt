@@ -32,6 +32,14 @@
     2001-10-09  julian.reschke@greenbytes.de
     
     Experimental support for rfc-issue PI.
+
+    2001-11-11  julian.reschke@greenbytes.de
+    
+    Support rfc private PI. Removed bogus code reporting the WG in the header.
+    
+    2001-12-17  julian.reschke@greenbytes.de
+    
+    Support title attribute on references element
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -45,6 +53,8 @@
                 >
 
 <xsl:output method="html" encoding="iso-8859-1" />
+
+
                
 <!-- process some of the processing instructions supported by Marshall T. Rose's
      xml2rfc sofware, see <http://xml.resource.org/> -->
@@ -76,6 +86,13 @@
         'editing=')"
 />
 
+<!-- make it a private paper -->
+
+<xsl:param name="private"
+	select="substring-after(
+    	translate(/processing-instruction('rfc')[contains(.,'private=')], '&quot; ', ''),
+        'private=')"
+/>
 
 <!-- URL prefix for RFCs. -->
 
@@ -204,72 +221,14 @@
 	<!-- collect information for left column -->
     
 	<xsl:variable name="leftColumn">
-    	<myns:item>
-        	<xsl:choose>
-            	<xsl:when test="workgroup"><xsl:value-of select="workgroup" /></xsl:when>
-            	<xsl:otherwise>Network Working Group</xsl:otherwise>
-            </xsl:choose>
-        </myns:item>
-        <myns:item>
-        	<xsl:choose>
-            	<xsl:when test="/rfc/@ipr">INTERNET DRAFT</xsl:when>
-				<xsl:otherwise>Request for Comments: <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
-            </xsl:choose>
-      	</myns:item>
-        <xsl:if test="/rfc/@docName">
-        	<myns:item>
-            	&lt;<xsl:value-of select="/rfc/@docName" />&gt;
-            </myns:item>
-        </xsl:if>
-        <xsl:if test="/rfc/@obsoletes and /rfc/@obsoletes!=''">
-        	<myns:item>
-            	Obsoletes: <xsl:call-template name="rfclist">
-                	<xsl:with-param name="list" select="normalize-space(/rfc/@obsoletes)" />
-                </xsl:call-template>
-            </myns:item>
-        </xsl:if>
-		<xsl:if test="/rfc/@seriesNo">
-        	<myns:item>
-            	<xsl:choose>
-                	<xsl:when test="/rfc/@category='bcp'">BCP: <xsl:value-of select="/rfc/@seriesNo" /></xsl:when>
-                	<xsl:when test="/rfc/@category='info'">FYI: <xsl:value-of select="/rfc/@seriesNo" /></xsl:when>
-                	<xsl:when test="/rfc/@category='std'">STD: <xsl:value-of select="/rfc/@seriesNo" /></xsl:when>
-	            	<xsl:otherwise><xsl:value-of select="concat(/rfc/@category,': ',/rfc/@seriesNo)" /></xsl:otherwise>
-    			</xsl:choose>
-           	</myns:item>
-        </xsl:if>
-        <xsl:if test="/rfc/@updates and /rfc/@updates!=''">
-        	<myns:item>
-            	Updates: <xsl:call-template name="rfclist">
-                	<xsl:with-param name="list" select="normalize-space(/rfc/@updates)" />
-                </xsl:call-template>
-            </myns:item>
-        </xsl:if>
-        <myns:item>
-           	Category:
-            <xsl:call-template name="insertCategoryLong" />
-        </myns:item>
-		<xsl:if test="/rfc/@ipr">
-        	<myns:item>Expires: <xsl:call-template name="expirydate" /></myns:item>
-        </xsl:if>
-    </xsl:variable>
+    <xsl:call-template name="collectLeftHeaderColumn" />    
+  </xsl:variable>
 
-    <!-- collect information for right column -->
+  <!-- collect information for right column -->
     
-    <xsl:variable name="rightColumn">
-    	<xsl:for-each select="author">
-        	<xsl:if test="@surname">
-            	<myns:item><xsl:value-of select="concat(@initials,' ',@surname)" /></myns:item>
-            </xsl:if>
-			<xsl:variable name="orgOfFollowing" select="string(following-sibling::node()/organization/@abbrev)" />
-            <xsl:if test="string(organization/@abbrev) != $orgOfFollowing">
-				<myns:item><xsl:value-of select="organization/@abbrev" /></myns:item>
-    		</xsl:if>
-        </xsl:for-each>
-        <myns:item>
-        	<xsl:value-of select="concat(date/@month,' ',date/@year)" />
-       	</myns:item>
-    </xsl:variable>
+  <xsl:variable name="rightColumn">
+    <xsl:call-template name="collectRightHeaderColumn" />    
+  </xsl:variable>
     
     <!-- insert the collected information -->
     
@@ -401,103 +360,115 @@
   </p>
 </xsl:template>
 
+
 <xsl:template match="reference">
 
-   	<xsl:variable name="target">
-       	<xsl:choose>
-    		<xsl:when test="@target"><xsl:value-of select="@target" /></xsl:when>
+  <xsl:variable name="target">
+    <xsl:choose>
+      <xsl:when test="@target"><xsl:value-of select="@target" /></xsl:when>
 			<xsl:when test="seriesInfo/@name='RFC'"><xsl:value-of select="concat($rfcUrlPrefix,seriesInfo[@name='RFC']/@value,'.txt')" /></xsl:when>
 			<xsl:when test="seriesInfo[starts-with(.,'RFC')]">
-               	<xsl:variable name="rfcRef" select="seriesInfo[starts-with(.,'RFC')]" />
-	            <xsl:value-of select="
-    	           	concat(
-                   		$rfcUrlPrefix,
-        				substring-after (normalize-space($rfcRef), ' '),
-                      	'.txt')
-               	" />
-          	</xsl:when>
-            <xsl:otherwise />
-    	</xsl:choose>
+        <xsl:variable name="rfcRef" select="seriesInfo[starts-with(.,'RFC')]" />
+	      <xsl:value-of select="concat($rfcUrlPrefix,substring-after (normalize-space($rfcRef), ' '),'.txt')" />
+      </xsl:when>
+      <xsl:otherwise />
+    </xsl:choose>
 	</xsl:variable>
 	
-    <tr>
-       	<td valign="top">
-           	<b>
-            	<a name="{@anchor}">
-                	<xsl:call-template name="referencename">
-                		<xsl:with-param name="node" select="." />
-                	</xsl:call-template>
-             	</a>
-           	</b>
-       	</td>
-		<td valign="top">
-           	<xsl:for-each select="front/author">
+  <tr>
+    <td valign="top">
+      <b>
+        <a name="{@anchor}">
+          <xsl:call-template name="referencename">
+            <xsl:with-param name="node" select="." />
+          </xsl:call-template>
+        </a>
+      </b>
+    </td>
+		
+    <td valign="top">
+      <xsl:for-each select="front/author">
 				<xsl:choose>
-                   	<xsl:when test="@surname">
-        				<xsl:choose>
- 		                   	<xsl:when test="address/email">
-                               	<a href="mailto:{address/email}">
-                                   	<xsl:if test="organization/text()">
-                                       	<xsl:attribute name="title"><xsl:value-of select="organization/text()"/></xsl:attribute>
-        							</xsl:if>
-                                    <xsl:value-of select="concat(@surname,', ',@initials)" />
-                               	</a>
-                         	</xsl:when>
-                    		<xsl:otherwise>
-                            	<xsl:value-of select="concat(@surname,', ',@initials)" />
-                           	</xsl:otherwise>
-                    	</xsl:choose>
+          <xsl:when test="@surname">
+        	  <xsl:choose>
+ 		          <xsl:when test="address/email">
+                <a href="mailto:{address/email}">
+                  <xsl:if test="organization/text()">
+                    <xsl:attribute name="title"><xsl:value-of select="organization/text()"/></xsl:attribute>
+        		      </xsl:if>
+                  <xsl:value-of select="concat(@surname,', ',@initials)" />
+                </a>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="concat(@surname,', ',@initials)" />
+              </xsl:otherwise>
+            </xsl:choose>
 						
-                        <xsl:if test="position()!=last() - 1">,&#0160;</xsl:if>
+            <xsl:if test="position()!=last() - 1">,&#0160;</xsl:if>
 						<xsl:if test="position()=last() - 1"> and </xsl:if>
-               		</xsl:when>
+          </xsl:when>
 					<xsl:when test="organization/text()">
-                       	<xsl:choose>
-                           	<xsl:when test="address/uri">
-		            			<a href="{address/uri}"><xsl:value-of select="organization" /></a>
+            <xsl:choose>
+              <xsl:when test="address/uri">
+		            <a href="{address/uri}"><xsl:value-of select="organization" /></a>
 							</xsl:when>
-                     		<xsl:otherwise>
-                            	<xsl:value-of select="organization" />
-                           	</xsl:otherwise>
-                    	</xsl:choose>
-        				<xsl:if test="position()!=last() - 1">,&#0160;</xsl:if>
+              <xsl:otherwise>
+                <xsl:value-of select="organization" />
+              </xsl:otherwise>
+            </xsl:choose>
+            <xsl:if test="position()!=last() - 1">,&#0160;</xsl:if>
 						<xsl:if test="position()=last() - 1"> and </xsl:if>
-                  	</xsl:when>
-               		<xsl:otherwise />
-               	</xsl:choose>
-        	</xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise />
+        </xsl:choose>
+      </xsl:for-each>
        	
-        	<xsl:choose>
-		        <xsl:when test="string-length($target) &gt; 0">
-			       	"<a href="{$target}"><xsl:value-of select="front/title" /></a>",
-    			</xsl:when>
-        		<xsl:otherwise>
-           			"<xsl:value-of select="front/title" />",
-                </xsl:otherwise>
-         	</xsl:choose>
+      <xsl:choose>
+		    <xsl:when test="string-length($target) &gt; 0">
+			    "<a href="{$target}"><xsl:value-of select="front/title" /></a>",
+    	  </xsl:when>
+        <xsl:otherwise>
+          "<xsl:value-of select="front/title" />",
+        </xsl:otherwise>
+      </xsl:choose>
             
-            <xsl:for-each select="seriesInfo">
-               	<xsl:choose>
-                   	<xsl:when test="not(@name) and not(@value) and ./text()"><xsl:value-of select="." /></xsl:when>
+      <xsl:for-each select="seriesInfo">
+        <xsl:choose>
+          <xsl:when test="not(@name) and not(@value) and ./text()"><xsl:value-of select="." /></xsl:when>
 					<xsl:otherwise><xsl:value-of select="@name" />&#0160;<xsl:value-of select="@value" /></xsl:otherwise>
-                </xsl:choose>,
-          	</xsl:for-each>
+        </xsl:choose>,
+      </xsl:for-each>
             
-            <xsl:value-of select="front/date/@month" />&#0160;<xsl:value-of select="front/date/@year" />.
-       	</td>
-    </tr>
-
+      <xsl:value-of select="front/date/@month" />&#0160;<xsl:value-of select="front/date/@year" />.
+    </td>
+  </tr>
 </xsl:template>
 
 
-<xsl:template match="references">
+<xsl:template match="references[not(@title)]">
+	
+  <xsl:call-template name="insertTocLink">
+    <xsl:with-param name="rule" select="true()" />
+  </xsl:call-template>
+	
+  <a name="rfc.references">
+    <h1>References</h1>
+  </a>
+	
+  <table border="0">
+    <xsl:apply-templates />
+  </table>
+  
+</xsl:template>
+
+<xsl:template match="references[@title]">
 	
     <xsl:call-template name="insertTocLink">
     	<xsl:with-param name="rule" select="true()" />
    	</xsl:call-template>
 	
-    <a name="rfc.references">
-    	<h1>References</h1>
+    <a name="rfc.references.{@title}">
+    	<h1><xsl:value-of select="@title" /></h1>
    	</a>
 	
     <table border="0">
@@ -592,9 +563,10 @@
 <xsl:template match="xref[not(node())]">
 	<xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="//*[@anchor=$target]" />
-	<a href="#{$target}">
+	<!-- should check for undefined targets -->
+  <a href="#{$target}">
     <xsl:choose>
-      <xsl:when test="local-name($node)='section'">
+      <xsl:when test="self::section">
         section
         <xsl:for-each select="$node">
           <xsl:number level="multiple" />
@@ -628,18 +600,88 @@
 
 <!-- utility templates -->
 
+<xsl:template name="collectLeftHeaderColumn">
+  <!-- default case -->
+  <xsl:if test="not($private)">
+  	<myns:item>Network Working Group</myns:item>
+    <myns:item>
+     	<xsl:choose>
+        <xsl:when test="/rfc/@ipr">INTERNET DRAFT</xsl:when>
+        <xsl:otherwise>Request for Comments: <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
+      </xsl:choose>
+    </myns:item>
+    <xsl:if test="/rfc/@docName">
+      <myns:item>
+        &lt;<xsl:value-of select="/rfc/@docName" />&gt;
+      </myns:item>
+    </xsl:if>
+    <xsl:if test="/rfc/@obsoletes and /rfc/@obsoletes!=''">
+      <myns:item>
+        Obsoletes: <xsl:call-template name="rfclist">
+          <xsl:with-param name="list" select="normalize-space(/rfc/@obsoletes)" />
+        </xsl:call-template>
+      </myns:item>
+    </xsl:if>
+		<xsl:if test="/rfc/@seriesNo">
+     	<myns:item>
+        <xsl:choose>
+          <xsl:when test="/rfc/@category='bcp'">BCP: <xsl:value-of select="/rfc/@seriesNo" /></xsl:when>
+          <xsl:when test="/rfc/@category='info'">FYI: <xsl:value-of select="/rfc/@seriesNo" /></xsl:when>
+          <xsl:when test="/rfc/@category='std'">STD: <xsl:value-of select="/rfc/@seriesNo" /></xsl:when>
+          <xsl:otherwise><xsl:value-of select="concat(/rfc/@category,': ',/rfc/@seriesNo)" /></xsl:otherwise>
+  	    </xsl:choose>
+      </myns:item>
+    </xsl:if>
+    <xsl:if test="/rfc/@updates and /rfc/@updates!=''">
+    	<myns:item>
+        	Updates: <xsl:call-template name="rfclist">
+           	<xsl:with-param name="list" select="normalize-space(/rfc/@updates)" />
+          </xsl:call-template>
+      </myns:item>
+    </xsl:if>
+    <myns:item>
+     	Category:
+      <xsl:call-template name="insertCategoryLong" />
+    </myns:item>
+    <xsl:if test="/rfc/@ipr">
+     	<myns:item>Expires: <xsl:call-template name="expirydate" /></myns:item>
+    </xsl:if>
+  </xsl:if>
+    
+  <!-- private case -->
+  <xsl:if test="$private">
+    <myns:item><xsl:value-of select="$private" /></myns:item>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="collectRightHeaderColumn">
+	<xsl:for-each select="author">
+   	<xsl:if test="@surname">
+     	<myns:item><xsl:value-of select="concat(@initials,' ',@surname)" /></myns:item>
+    </xsl:if>
+		<xsl:variable name="orgOfFollowing" select="string(following-sibling::node()/organization/@abbrev)" />
+    <xsl:if test="string(organization/@abbrev) != $orgOfFollowing">
+	   	<myns:item><xsl:value-of select="organization/@abbrev" /></myns:item>
+  	</xsl:if>
+  </xsl:for-each>
+  <myns:item>
+   	<xsl:value-of select="concat(date/@month,' ',date/@year)" />
+ 	</myns:item>
+</xsl:template>
+
+
 <xsl:template name="emitheader">
 	<xsl:param name="lc" />
 	<xsl:param name="rc" />
 
 	<xsl:for-each select="$lc/myns:item | $rc/myns:item">
-	   	<xsl:variable name="pos" select="position()" />
-    		<xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1"> 
-            	<tr>
-                	<td width="33%" bgcolor="#666666" class="header"><xsl:copy-of select="$lc/myns:item[$pos]/node()" />&#0160;</td>
-					<td width="33%" bgcolor="#666666" class="header"><xsl:copy-of select="$rc/myns:item[$pos]/node()" />&#0160;</td>
-           		</tr>
-          	</xsl:if>
+    <xsl:variable name="pos" select="position()" />
+    <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1"> 
+      <tr>
+        <td width="33%" bgcolor="#666666" class="header"><xsl:copy-of select="$lc/myns:item[$pos]/node()" />&#0160;</td>
+			  <td width="33%" bgcolor="#666666" class="header"><xsl:copy-of select="$rc/myns:item[$pos]/node()" />&#0160;</td>
+      </tr>
+    </xsl:if>
 	</xsl:for-each>
 </xsl:template>
 
@@ -1061,11 +1103,12 @@ ins
         		<xsl:call-template name="sectionnumber" />
       		</xsl:variable>
 			
-            <xsl:variable name="target">
+          <xsl:variable name="target">
         		<xsl:choose>
-            		<xsl:when test="name()='references'">rfc.references</xsl:when>
-	        		<xsl:when test="@anchor"><xsl:value-of select="@anchor" /></xsl:when>
-    	        	<xsl:otherwise>rfc.section.<xsl:value-of select="$sectionNumber" /></xsl:otherwise>
+              <xsl:when test="self::references and not(@title)">rfc.references</xsl:when>
+              <xsl:when test="self::references and @title">rfc.references.<xsl:value-of select="@title"/></xsl:when>
+  	        	<xsl:when test="@anchor"><xsl:value-of select="@anchor" /></xsl:when>
+    	        <xsl:otherwise>rfc.section.<xsl:value-of select="$sectionNumber" /></xsl:otherwise>
         		</xsl:choose>
         	</xsl:variable>
 			
@@ -1080,7 +1123,7 @@ ins
 		
         	<xsl:variable name="title">
         		<xsl:choose>
-            		<xsl:when test="name()='references'">References</xsl:when>
+            		<xsl:when test="self::references and not(@title)">References</xsl:when>
     	        	<xsl:otherwise><xsl:value-of select="@title" /></xsl:otherwise>
         		</xsl:choose>
         	</xsl:variable>
