@@ -562,9 +562,11 @@
 </xsl:template>
 
 <xsl:template match="list[@style='numbers']">
-  <ol>
-    <xsl:apply-templates />
-  </ol>
+  <blockquote>
+    <ol>
+      <xsl:apply-templates />
+    </ol>
+  </blockquote>
 </xsl:template>
 
 <!-- numbered list inside numbered list -->
@@ -575,7 +577,7 @@
 </xsl:template>
 
 <xsl:template match="list[@style='symbols']">
-  <ul class="text">
+  <ul>
     <xsl:apply-templates />
   </ul>
 </xsl:template>
