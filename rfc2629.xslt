@@ -638,7 +638,18 @@
 <!-- Templates for the various elements of rfc2629.dtd -->
               
 <xsl:template match="text()[not(ancestor::artwork)]">
+  <xsl:variable name="starts-with-ws" select="translate(substring(.,1,1),'&#9;&#10;&#13;&#32;','')"/>
+  <xsl:variable name="ends-with-ws" select="translate(substring(.,string-length(.),1),'&#9;&#10;&#13;&#32;','')"/>
+  <!--<xsl:message> Orig: "<xsl:value-of select="."/>"</xsl:message>
+  <xsl:message>Start: "<xsl:value-of select="$starts-with-ws"/>"</xsl:message>
+  <xsl:message>  End: "<xsl:value-of select="$ends-with-ws"/>"</xsl:message> -->
+  <xsl:if test="$starts-with-ws='' and preceding-sibling::node()">
+    <xsl:text> </xsl:text>
+  </xsl:if>
   <xsl:value-of select="normalize-space(.)"/>
+  <xsl:if test="$ends-with-ws='' and following-sibling::node()">
+    <xsl:text> </xsl:text>
+  </xsl:if>
 </xsl:template>
               
               
@@ -1424,7 +1435,7 @@
 </xsl:template>               
 
 <xsl:template mode="t-content2" match="text()">
-  <xsl:value-of select="normalize-space(.)" />
+  <xsl:apply-templates select="." />
   <xsl:if test="not(following-sibling::node()[1] [self::list or self::figure or self::texttable])">
     <xsl:apply-templates select="following-sibling::node()[1]" mode="t-content2" />
   </xsl:if>
@@ -3455,11 +3466,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.197 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.197 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.198 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.198 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/30 13:47:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 13:47:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/30 15:40:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 15:40:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
