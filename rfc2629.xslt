@@ -1765,6 +1765,21 @@ table.resolution {
   float: right;
 }
 
+table.openissue {
+  background-color: khaki;
+  border-width: thin;
+  border-style: solid;
+  border-color: black;
+}
+
+table.closedissue {
+  background-color: white;
+  border-width: thin;
+  border-style: solid;
+  border-color: gray;
+  color: gray; 
+}
+
 @media print {
   .noprint {
     display:none
@@ -2344,15 +2359,15 @@ table.resolution {
 <!-- experimental annotation support -->
 
 <xsl:template match="ed:issue">
-  <xsl:variable name="style">
+  <xsl:variable name="class">
     <xsl:choose>
-      <xsl:when test="@status='closed'">background-color: silver; border-width: thin; border-style: solid; border-color: black; text-decoration: line-through </xsl:when>
-      <xsl:otherwise>background-color: khaki; border-width: thin; border-style: solid; border-color: black;</xsl:otherwise>
+      <xsl:when test="@status='closed'">closedissue</xsl:when>
+      <xsl:otherwise>openissue</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   
   <div><a name="{$anchor-prefix}.issue.{@name}" /></div>
-  <table summary="issue {@name}" style="{$style}"> <!-- align="right" width="50%"> -->
+  <table summary="issue {@name}" class="{$class}">
     <tr>
       <td colspan="3">
         <xsl:choose>
@@ -2534,7 +2549,7 @@ table.resolution {
   </xsl:if>
 </xsl:template>
 
-<!-- convenience template for helping Mozilla (pre/ins inheritance problem -->
+<!-- convenience template for helping Mozilla (pre/ins inheritance problem) -->
 <xsl:template name="insertInsDelClass">
   <xsl:if test="ancestor::ed:del">
     <xsl:attribute name="class">del</xsl:attribute>
@@ -2709,11 +2724,11 @@ table.resolution {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.139 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.139 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.140 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.140 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/11/29 15:09:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/29 15:09:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/11/29 15:38:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/29 15:38:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
