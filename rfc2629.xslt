@@ -42,9 +42,9 @@
                 xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
                 exclude-result-prefixes="msxsl xalan saxon myns"
                 xmlns="http://www.w3.org/1999/xhtml"
-               >
+                >
 
-<xsl:output method="xml" encoding="iso-8859-1" />
+<xsl:output method="html" encoding="iso-8859-1" />
                
 <!-- process some of the processing instructions supported by Marshall T. Rose's
      xml2rfc sofware, see <http://xml.resource.org/> -->
@@ -850,6 +850,16 @@ TD.header
   font-family: helvetica, arial, sans-serif;
 }
 
+del
+{
+  color: red;
+}
+
+ins
+{
+  color: blue;
+}
+
 @media print {
          .noprint {display:none}
 }
@@ -1225,8 +1235,8 @@ TD.header
     <xsl:with-param name="text" select="." />
   </xsl:call-template></xsl:variable>
 
-  <a name="#rfc.issue.{$name}">
-  <table style="background-color: yellow; border-width: thin; border-style: solid; border-color: black;" align="right" width="50%">
+  <a name="rfc.issue.{$name}">
+  <table style="background-color: khaki; border-width: thin; border-style: solid; border-color: black;" align="right" width="50%">
     <tr>
       <td>[<xsl:value-of select="$name" />], <a href="mailto:{$who}?subject={/rfc/@docName}, {$name}"><i><xsl:value-of select="$who" /></i></a>, <xsl:value-of select="$date" /></td>
     </tr>
@@ -1275,5 +1285,21 @@ TD.header
   </p>
   
 </xsl:template>
+
+<xsl:template name="formatTitle">
+  <xsl:if test="@who">
+    <xsl:value-of select="@who" />
+  </xsl:if>
+  <xsl:if test="@datetime">
+    <xsl:value-of select="concat(' (',@datetime,')')" />
+  </xsl:if>
+  <xsl:if test="@reason">
+    <xsl:value-of select="concat(': ',@reason)" />
+  </xsl:if>
+  <xsl:if test="@cite">
+    <xsl:value-of select="concat(' &lt;',@cite,'&gt;')" />
+  </xsl:if>
+</xsl:template>
+
 
 </xsl:stylesheet>
