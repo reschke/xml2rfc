@@ -441,6 +441,10 @@
     
     Get rid of table elements in Author's section.  Add experimental hCard
     (<http://developers.technorati.com/wiki/hCard>) support.
+    
+    2005-04-03  fenner@research.att.com
+    
+    Add RFC3978-style IPR statement support.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2650,6 +2654,35 @@ table.closedissue {
             <xref myns:is-rfc2629="true" target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
           </xsl:when>
           
+          <!-- RFC3978 -->
+          <xsl:when test="/rfc/@ipr = 'full3978'">
+            By submitting this Internet-Draft, each
+            author represents that any applicable patent or other IPR claims of
+            which he or she is aware have been or will be disclosed, and any of
+            which he or she becomes aware will be disclosed, in accordance with
+            Section 6 of BCP 79.
+          </xsl:when>
+          <xsl:when test="/rfc/@ipr = 'noModification3978'">
+            By submitting this Internet-Draft, each
+            author represents that any applicable patent or other IPR claims of
+            which he or she is aware have been or will be disclosed, and any of
+            which he or she becomes aware will be disclosed, in accordance with
+            Section 6 of BCP 79.  This document may not be modified, and derivative works of
+            it may not be created, except to publish it as an RFC and to
+            translate it into languages other than English<xsl:if test="/rfc/@iprExtract">,
+            other than to extract <xref myns:is-rfc2629="true" target="{/rfc/@iprExtract}"/> as-is
+            for separate use.</xsl:if>.
+          </xsl:when>
+          <xsl:when test="/rfc/@ipr = 'noDerivatives3978'">
+            By submitting this Internet-Draft, each author represents 
+            that any applicable patent or other IPR claims of which he or she
+            is aware have been or will be disclosed, and any of which he or she
+            becomes aware will be disclosed, in accordance with Section 6 of BCP 79.  This
+            document may not be modified, and derivative works of it may
+            not be created<xsl:if test="/rfc/@iprExtract">, other than to extract
+            <xref myns:is-rfc2629="true" target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
+          </xsl:when>
+
           <xsl:otherwise>CONFORMANCE UNDEFINED.</xsl:otherwise>
         </xsl:choose>
       </t>
@@ -3625,11 +3658,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.217 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.217 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.218 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.218 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/03/28 13:05:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/03/28 13:05:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/04/03 17:15:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/04/03 17:15:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
