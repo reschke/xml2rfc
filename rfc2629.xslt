@@ -340,9 +340,11 @@
     
     Enhance issues rendering (add links to changes).
     
-    2004-05-29  julian.reschke@greenbytes.de
+    2004-05-30  julian.reschke@greenbytes.de
     
-    Allow single quote as delimiter in processing instructions as well.
+    Allow single quote as delimiter in processing instructions as well. Move
+    block-level issue pointers to floats. Disable issue pointers for print
+    media.
 
 -->
 
@@ -1985,7 +1987,7 @@ table.closedissue {
   border: solid;
   border-width: thin;
   background-color: lime;
-  font-size: small;
+  font-size: smaller;
   font-weight: bold;
 }
 
@@ -1993,7 +1995,7 @@ table.closedissue {
   border: solid;
   border-width: thin;
   background-color: red;
-  font-size: small;
+  font-size: smaller;
   font-weight: bold;
 }
 
@@ -2001,7 +2003,7 @@ table.closedissue {
   border: solid;
   border-width: thin;
   background-color: yellow;
-  font-size: small;
+  font-size: smaller;
   font-weight: bold;
 }
 
@@ -2716,7 +2718,7 @@ table.closedissue {
               <xsl:attribute name="class">open-issue</xsl:attribute>
             </xsl:otherwise>
           </xsl:choose>
-          <xsl:text>&#160;i&#160;</xsl:text>
+          <xsl:text>&#160;I&#160;</xsl:text>
         </a>
         <xsl:text>&#160;</xsl:text>
         <xsl:choose>
@@ -2897,35 +2899,38 @@ table.closedissue {
     </a>
     <xsl:choose>
       <xsl:when test="not(ancestor::t)">
-        <div><a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
-          <xsl:choose>
-            <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
-              <xsl:attribute name="class">closed-issue</xsl:attribute>
-            </xsl:when>
-            <xsl:when test="//ed:issue[@name=$resolves and @status='editor']">
-              <xsl:attribute name="class">editor-issue</xsl:attribute>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:attribute name="class">open-issue</xsl:attribute>
-            </xsl:otherwise>
-          </xsl:choose>
-          <xsl:text>&#160;i&#160;</xsl:text>
-        </a></div>
+        <div style="float: left;">
+          <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
+            <xsl:choose>
+              <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
+                <xsl:attribute name="class">closed-issue noprint</xsl:attribute>
+              </xsl:when>
+              <xsl:when test="//ed:issue[@name=$resolves and @status='editor']">
+                <xsl:attribute name="class">editor-issue noprint</xsl:attribute>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:attribute name="class">open-issue noprint</xsl:attribute>
+              </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text>&#160;I&#160;</xsl:text>
+          </a>
+          <xsl:text>&#160;</xsl:text>
+        </div>
       </xsl:when>
       <xsl:otherwise>
         <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
           <xsl:choose>
             <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
-              <xsl:attribute name="class">closed-issue</xsl:attribute>
+              <xsl:attribute name="class">closed-issue noprint</xsl:attribute>
             </xsl:when>
             <xsl:when test="//ed:issue[@name=$resolves and @status='editor']">
-              <xsl:attribute name="class">editor-issue</xsl:attribute>
+              <xsl:attribute name="class">editor-issue noprint</xsl:attribute>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:attribute name="class">open-issue</xsl:attribute>
+              <xsl:attribute name="class">open-issue noprint</xsl:attribute>
             </xsl:otherwise>
           </xsl:choose>
-          <xsl:text>&#160;i&#160;</xsl:text>
+          <xsl:text>&#160;I&#160;</xsl:text>
         </a>
       </xsl:otherwise>
     </xsl:choose>
@@ -3224,11 +3229,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.165 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.165 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.166 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.166 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/05/29 08:15:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/29 08:15:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/05/30 11:52:47 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/30 11:52:47 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
