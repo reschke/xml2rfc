@@ -322,6 +322,9 @@
     
     Fix RFC3667 output, see <http://xml.resource.org/pipermail/xml2rfc/2004-April/001246.html>
 
+    2004-05-08  julian.reschke@greenbytes.de
+    
+    Add custom support for generating compound index documents.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1965,12 +1968,24 @@ table.closedissue {
 <!-- generate the index section -->
 
 <xsl:template name="insertSingleIref">
-  <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" /></xsl:variable>
-  &#0160;<a href="{$backlink}"><xsl:choose>
-      <xsl:when test="@primary='true'"><b><xsl:call-template name="get-section-number" /></b></xsl:when>
-      <xsl:otherwise><xsl:call-template name="get-section-number" /></xsl:otherwise>
-    </xsl:choose>
-  </a><xsl:if test="position()!=last()">, </xsl:if>
+  <xsl:choose>
+      <xsl:when test="@ed:basedoc">
+      <!-- special index generator mode -->
+      <a href="{@ed:anchor}"><xsl:choose>
+          <xsl:when test="@primary='true'"><b><xsl:value-of select="concat(@ed:basedoc,' ',@ed:section-number)" /></b></xsl:when>
+          <xsl:otherwise><xsl:value-of select="concat(@ed:basedoc,' ',@ed:section-number)" /></xsl:otherwise>
+        </xsl:choose>
+      </a><xsl:if test="position()!=last()">, </xsl:if>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" /></xsl:variable>
+      &#0160;<a href="{$backlink}"><xsl:choose>
+          <xsl:when test="@primary='true'"><b><xsl:call-template name="get-section-number" /></b></xsl:when>
+          <xsl:otherwise><xsl:call-template name="get-section-number" /></xsl:otherwise>
+        </xsl:choose>
+      </a><xsl:if test="position()!=last()">, </xsl:if>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 
@@ -3030,11 +3045,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.156 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.156 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.157 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.157 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/04/24 11:10:27 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/24 11:10:27 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/05/08 09:10:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/08 09:10:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
