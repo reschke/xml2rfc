@@ -375,10 +375,12 @@
 
     Fix internal change track pointers.
     
-    2004-10-31  julian.reschke@greenbytes.de
+    2004-11-01  julian.reschke@greenbytes.de
     
     Allow change tracking on references (as a whole).  Rewrite artwork handling
-    so that it allows change tracking inside artwork.
+    so that it allows change tracking inside artwork.  Also allow a subset of
+    text markup inside artwork, such as xrefs (note this requires post-
+    processing the source to make it compliant to RFC2629bis).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -529,12 +531,20 @@
         'parse-xml-in-artwork=')"
 />
 
-<!-- extension for exclusing DCMI properties in meta tag (RFC2731) -->
+<!-- extension for excluding DCMI properties in meta tag (RFC2731) -->
 
 <xsl:param name="xml2rfc-ext-support-rfc2731"
   select="substring-after(
       translate(/processing-instruction('rfc-ext')[contains(.,'support-rfc2731=')], concat($quote-chars,' '), ''),
         'support-rfc2731=')"
+/>
+
+<!-- extension for allowing markup inside artwork -->
+
+<xsl:param name="xml2rfc-ext-allow-markup-in-artwork"
+  select="substring-after(
+      translate(/processing-instruction('rfc-ext')[contains(.,'allow-markup-in-artwork=')], concat($quote-chars,' '), ''),
+        'allow-markup-in-artwork=')"
 />
 
 <!-- extension for adding purpe paragraph anchor signs -->
@@ -640,9 +650,16 @@
       </xsl:if>
     </xsl:if>
   </xsl:if>
-  <pre>
-    <xsl:apply-templates/>
-  </pre>
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-allow-markup-in-artwork='yes'">
+      <pre>
+        <xsl:apply-templates/>
+      </pre>
+    </xsl:when>
+    <xsl:otherwise>
+      <pre><xsl:value-of select="."/></pre>
+    </xsl:otherwise>
+  </xsl:choose>
   <xsl:call-template name="check-artwork-width">
     <xsl:with-param name="content"><xsl:apply-templates/></xsl:with-param>
   </xsl:call-template>
@@ -654,7 +671,6 @@
     <xsl:when test="not(contains($content,'&#10;'))">
       <xsl:if test="string-length($content) > 69">
         <xsl:message>artwork line too long: <xsl:value-of select="$content"/></xsl:message>
-        <p class="error">artwork line too long: <xsl:value-of select="$content"/></p>
       </xsl:if>
     </xsl:when>
     <xsl:otherwise>
@@ -662,7 +678,6 @@
       <xsl:variable name="end" select="substring-after($content,'&#10;')"/> 
       <xsl:if test="string-length($start) > 69">
         <xsl:message>artwork line too long: <xsl:value-of select="$start"/></xsl:message>
-        <p class="error">artwork line too long: <xsl:value-of select="$start"/></p>
       </xsl:if>
       <xsl:call-template name="check-artwork-width">
         <xsl:with-param name="content" select="$end"/>
@@ -3339,11 +3354,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.180 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.180 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.181 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.181 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/10/31 18:59:44 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/10/31 18:59:44 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/11/01 12:03:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/11/01 12:03:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
