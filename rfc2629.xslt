@@ -923,7 +923,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.82 2003/05/15 19:12:52 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.83 2003/05/15 22:29:25 jre Exp $" />
       
       <!-- DC creator -->
       <xsl:variable name="creator">
@@ -2407,6 +2407,28 @@ table.resolution
     <xsl:when test="/rfc/@category='exp'">Experimental</xsl:when>
     <xsl:otherwise>(category missing or unknown)</xsl:otherwise>
   </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-header-center">
+  <xsl:choose>
+    <xsl:when test="string-length(/rfc/front/title/@abbrev) &gt; 0">
+      <xsl:value-of select="/rfc/front/title/@abbrev" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="/rfc/front/title" />
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-header-left">
+  <xsl:choose>
+    <xsl:when test="/rfc/@ipr">INTERNET DRAFT</xsl:when>
+    <xsl:otherwise>RFC <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-header-right">
+  <xsl:value-of select="concat(/rfc/front/date/@month,' ',/rfc/front/date/@year)" />
 </xsl:template>
 
 <xsl:template name="get-keywords">
