@@ -254,7 +254,8 @@
 
     2003-08-18  julian.reschke@greenbytes.de
     
-    Add workaround for MSXML4 node-set cast issue (compile time error).
+    Add workaround for MSXML4 node-set and Mozilla node-set issues (fallback
+    just displays are warning).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -409,6 +410,12 @@
 
 <xsl:param name="rfcUrlPrefix" select="'http://www.ietf.org/rfc/rfc'" />
 
+<!-- warning re: absent node-set ext. function -->
+<xsl:variable name="node-set-warning">
+  This stylesheet requires either an XSLT-1.0 processor with node-set()
+  extension function, or an XSLT-2.0 processor. Therefore, parts of the
+  document couldn't be displayed.
+</xsl:variable>
 
 <!-- build help keys for indices -->
 <xsl:key name="index-first-letter"
@@ -581,9 +588,9 @@
       <xsl:when test="function-available('exslt:node-set')">
         <xsl:apply-templates select="exslt:node-set($copyright)" />
       </xsl:when>
-      <xsl:otherwise> <!--proceed with fingers crossed-->
-        <xsl:variable name="temp" select="$copyright"/>
-        <xsl:apply-templates select="$temp" />
+      <xsl:otherwise>
+        <xsl:message><xsl:value-of select="$node-set-warning"/></xsl:message>
+        <p class="error"><xsl:value-of select="$node-set-warning"/></p>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
@@ -660,12 +667,10 @@
             <xsl:with-param name="rc" select="exslt:node-set($rightColumn)" />    
           </xsl:call-template>
         </xsl:when>    
-        <xsl:otherwise>    
-          <xsl:call-template name="emitheader">
-            <xsl:with-param name="lc" select="$leftColumn" />    
-            <xsl:with-param name="rc" select="$rightColumn" />    
-          </xsl:call-template>
-        </xsl:otherwise>    
+        <xsl:otherwise>
+          <xsl:message><xsl:value-of select="$node-set-warning"/></xsl:message>
+          <p class="error"><xsl:value-of select="$node-set-warning"/></p>
+        </xsl:otherwise>
       </xsl:choose>
     </table>
   </xsl:if>
@@ -692,9 +697,8 @@
         <xsl:apply-templates select="exslt:node-set($preamble)" />
       </xsl:when>
       <xsl:otherwise>
-        <!--proceed with fingers crossed-->
-        <xsl:variable name="temp" select="$preamble"/>
-        <xsl:apply-templates select="$temp/node()" />
+        <xsl:message><xsl:value-of select="$node-set-warning"/></xsl:message>
+        <p class="error"><xsl:value-of select="$node-set-warning"/></p>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
@@ -2682,11 +2686,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.123 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.123 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.124 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.124 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/18 22:04:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/18 22:04:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/19 09:39:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/19 09:39:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
