@@ -166,6 +166,10 @@
     2003-05-02  julian.reschke@greenbytes.de
     
     experimental texttable support
+    
+    2003-05-03  julian.rechke@greenbytes.de
+    
+    experimental support for HTML link elements
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -247,7 +251,6 @@
       translate(/processing-instruction('rfc')[contains(.,'private=')], '&quot;', ''),
         'private=')"
 />
-
 
 <!-- extension for XML parsing in artwork -->
 
@@ -824,6 +827,18 @@
        <style type="text/css">
         <xsl:call-template name="insertCss" />
       </style>
+      <xsl:if test="$includeToc='yes'">
+        <link rel="Contents" href="#rfc.toc" />
+      </xsl:if>
+      <link rel="Author" href="#rfc.authors" />
+      <link rel="Copyright" href="#rfc.copyright" />
+      <xsl:if test="//iref">
+        <link rel="Index" href="#rfc.index" />
+      </xsl:if>
+      <xsl:apply-templates select="/" mode="links" />
+      <xsl:for-each select="/rfc/ed:link">
+        <link><xsl:copy-of select="@*" /></link>
+      </xsl:for-each>
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -2155,6 +2170,22 @@ ins
     </xsl:if>
     <xsl:apply-templates />
   </th>
+</xsl:template>
+
+<!-- Chapter Link Generation -->
+
+<xsl:template match="node()" mode="links"><xsl:apply-templates mode="links"/></xsl:template>
+
+<xsl:template match="/*/middle//section[not(myns:unnumbered) and not(ancestor::section)]" mode="links">
+  <xsl:variable name="sectionNumber"><xsl:call-template name="sectionnumber" /></xsl:variable>
+  <link rel="Chapter" title="{$sectionNumber} {@title}" href="#rfc.section.{$sectionNumber}" />
+  <xsl:apply-templates mode="links" />
+</xsl:template>
+
+<xsl:template match="/*/back//section[not(myns:unnumbered) and not(ancestor::section)]" mode="links">
+  <xsl:variable name="sectionNumber"><xsl:call-template name="sectionnumber" /></xsl:variable>
+  <link rel="Appendix" title="{$sectionNumber} {@title}" href="#rfc.section.{$sectionNumber}" />
+  <xsl:apply-templates mode="links" />
 </xsl:template>
 
 </xsl:stylesheet>
