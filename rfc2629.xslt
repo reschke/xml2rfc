@@ -257,11 +257,11 @@
     Add workaround for MSXML4 node-set and Mozilla node-set issues (fallback
     just displays are warning).
     
-    2003-10-03  julian.reschke@greenbytes.de
+    2003-10-05  julian.reschke@greenbytes.de
     
     Add workaround for broken pre/ins handling in Mozilla
     (see <http://bugzilla.mozilla.org/show_bug.cgi?id=204401>). Make use
-    of cite attribute on ed:replace.
+    of cite attribute on ed:replace. CSS cleanup.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -661,7 +661,7 @@
     </xsl:variable>
       
     <!-- insert the collected information -->
-    <table summary="header information" width="66%" border="0" cellpadding="1" cellspacing="1">
+    <table summary="header information" class="header" border="0" cellpadding="1" cellspacing="1">
       <xsl:choose>
         <xsl:when test="function-available('msxsl:node-set')">
           <xsl:call-template name="emitheader">
@@ -1014,9 +1014,12 @@
   <html lang="{$lang}">
     <head>
       <title><xsl:value-of select="front/title" /></title>
-       <style type="text/css">
+      <style type="text/css" media="screen" title="Xml2Rfc (sans serif)">
         <xsl:call-template name="insertCss" />
       </style>
+      <!-- <style type="text/css" media="tty" title="Plain (typewriter)">
+        <xsl:call-template name="insertCss2" />
+      </style>  -->
       
       <!-- link elements -->
       <xsl:if test="$xml2rfc-toc='yes'">
@@ -1403,8 +1406,8 @@
     <xsl:variable name="pos" select="position()" />
     <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1"> 
       <tr>
-        <td class="header"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
-        <td class="header"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
+        <td class="header-l"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
+        <td class="header-r"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
       </tr>
     </xsl:if>
   </xsl:for-each>
@@ -1562,20 +1565,16 @@
 <!-- insert CSS style info -->
 
 <xsl:template name="insertCss">
-a
-{
+a {
   text-decoration: none
 }
-a:hover
-{
+a:hover {
   text-decoration: underline
 }
-a:active
-{
+a:active {
   text-decoration: underline
 }
-body
-{
+body {
   <xsl:if test="$xml2rfc-background!=''">
   background: url(<xsl:value-of select="$xml2rfc-background" />) #ffffff left top;
   </xsl:if>
@@ -1583,79 +1582,67 @@ body
   font-family: helvetica, arial, sans-serif;
   font-size: 13px;
 }
-dl
-{
+dl {
   margin-left: 2em;
 }
-h1
-{
+h1 {
   color: #333333;
   font-size: 16px;
   line-height: 16px;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
-h1.np
-{
+h1.np {
   page-break-before: always;
 }
-h2
-{
+h2 {
   color: #000000;
   font-size: 14px;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
-h3
-{
+h3 {
   color: #000000;
   font-size: 13px;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
-img
-{
+img {
   margin-left: 3em;
 }
-li
-{
+li {
   margin-left: 2em;
   margin-right: 2em;
 }
-ol
-{
+ol {
   margin-left: 2em;
   margin-right: 2em;
 }
-p
-{
+p {
   margin-left: 2em;
   margin-right: 2em;
 }
-pre
-{
+pre {
   margin-left: 3em;
   background-color: lightyellow;
 }
-table
-{
+table {
   margin-left: 2em;
 }
-td.top
-{
+table.header {
+  width: 66%;
+}
+td.top {
   vertical-align: top;
 }
-td.topnowrap
-{
+td.topnowrap {
   vertical-align: top;
   white-space: nowrap; 
 }
-td.right
-{
+td.right {
   text-align: right;
 }
-td.header
-{
+td.header-l {
   width: 33%;
   color: #ffffff;
   background-color: #666666;
@@ -1663,50 +1650,50 @@ td.header
   font-family: arial, helvetica, sans-serif;
   vertical-align: top
 }
-thead
-{
+td.header-r {
+  width: 33%;
+  color: #ffffff;
+  background-color: #666666;
+  font-size: 10px;
+  font-family: arial, helvetica, sans-serif;
+  vertical-align: top
+}
+thead {
   display:table-header-group
 }
-.editingmark
-{
+.editingmark {
   background-color: khaki;
 }
-.error
-{
+.error {
   font-size: 14pt;
   background-color: red;
 }
-.hotText
-{
+.hotText {
   color:#ffffff;
   font-weight: normal;
   text-decoration: none;
   font-family: chelvetica, arial, sans-serif;
   font-size: 9px
 }
-.link2
-{
+.link2 {
   color:#ffffff;
   font-weight: bold;
   text-decoration: none;
   font-family: helvetica, arial, sans-serif;
   font-size: 9px
 }
-.toowide
-{
+.toowide {
   color: red;
   font-weight: bold;
 }
-.RFC
-{
+.RFC {
   color:#666666;
   font-weight: bold;
   text-decoration: none;
   font-family: helvetica, arial, sans-serif;
   font-size: 9px
 }
-.title
-{
+.title {
   color: #990000;
   font-size: 22px;
   line-height: 22px;
@@ -1714,14 +1701,12 @@ thead
   text-align: right;
   font-family: helvetica, arial, sans-serif
 }
-.figure
-{
+.figure {
   font-weight: bold;
   text-align: center;
   font-size: 12px;
 }
-.filename
-{
+.filename {
   color: #333333;
   font-weight: bold;
   font-size: 16px;
@@ -1729,34 +1714,27 @@ thead
   font-family: helvetica, arial, sans-serif;
   text-align: right;
 }
-.warning
-{
+.warning {
   font-size: 14pt;
   background-color: yellow;
 }
-
-del
-{
+del {
   color: red;
   text-decoration: line-through;
 }
-.del
-{
+.del {
   color: red;
   text-decoration: line-through;
 }
-ins
-{
+ins {
   color: blue;
   text-decoration: underline;
 }
-.ins
-{
+.ins {
   color: blue;
   text-decoration: underline;
 }
-table.resolution
-{
+table.resolution {
   background-color: khaki;
   border-width: thin;
   border-style: solid;
@@ -1767,7 +1745,166 @@ table.resolution
 }
 
 @media print {
-         .noprint {display:none}
+  .noprint {
+    display:none
+  }
+}
+</xsl:template>
+<xsl:template name="insertCss2">
+a {
+  text-decoration: none
+}
+a:hover {
+  text-decoration: underline
+}
+a:active {
+  text-decoration: underline
+}
+body {
+  color: #000000;
+  font-family: courier;
+  font-size: 12px;
+  width: 89ex;
+}
+dl {
+  margin-left: 2em;
+}
+h1 {
+  font-size: inherit;
+  font-weight: inherit;
+  page-break-after: avoid;
+}
+h1.np {
+  font-size: inherit;
+  page-break-before: always;
+}
+h2 {
+  font-size: inherit;
+  font-weight: inherit;
+  page-break-after: avoid;
+}
+h3 {
+  font-size: inherit;
+  font-weight: inherit;
+  page-break-after: avoid;
+}
+img {
+  margin-left: 3em;
+}
+li {
+  margin-left: 2em;
+  margin-right: 2em;
+}
+ol {
+  margin-left: 2em;
+  margin-right: 2em;
+}
+p {
+  margin-left: 2em;
+  margin-right: 2em;
+}
+pre {
+  margin-left: 3em;
+  background-color: lightyellow;
+}
+table {
+  margin-left: 2em;
+}
+table.header {
+  width: 100%;
+}
+td.top {
+  vertical-align: top;
+}
+td.topnowrap {
+  vertical-align: top;
+  white-space: nowrap; 
+}
+td.right {
+  text-align: right;
+}
+td.header-l {
+  width: 50%;
+  vertical-align: top;
+}
+td.header-r {
+  width: 50%;
+  vertical-align: top;
+  text-align: right;
+}
+thead {
+  display: table-header-group;
+}
+.editingmark {
+  display: none;
+}
+.error {
+  font-size: 14pt;
+  background-color: red;
+}
+.hotText {
+  color:#ffffff;
+  font-weight: normal;
+  text-decoration: none;
+  font-family: chelvetica, arial, sans-serif;
+  font-size: 9px
+}
+.link2 {
+  color:#ffffff;
+  font-weight: bold;
+  text-decoration: none;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 9px
+}
+.toowide {
+  color: red;
+  font-weight: bold;
+}
+.RFC {
+  display: none;
+}
+.title {
+  text-align: center;
+}
+.figure {
+  font-weight: bold;
+  text-align: center;
+  font-size: 12px;
+}
+.filename {
+  text-align: center;
+}
+.warning {
+  font-size: 14pt;
+  background-color: yellow;
+}
+del {
+  color: red;
+  text-decoration: line-through;
+}
+.del {
+  color: red;
+  text-decoration: line-through;
+}
+ins {
+  color: blue;
+  text-decoration: underline;
+}
+.ins {
+  color: blue;
+  text-decoration: underline;
+}
+table.resolution {
+  background-color: khaki;
+  border-width: thin;
+  border-style: solid;
+  border-color: black;
+  margin-left: auto;
+  margin-right: 0;
+  float: right;
+}
+.noprint {
+  display: none;
 }
 </xsl:template>
 
@@ -2352,7 +2489,7 @@ table.resolution
 
 <xsl:template name="editingMark">
   <xsl:if test="$xml2rfc-editing='yes' and ancestor::rfc">
-    <sup><span class="editingmark"><xsl:number level="any" count="postamble|preamble|t"/></span></sup>&#0160;
+    <sup class="editingmark"><span><xsl:number level="any" count="postamble|preamble|t"/></span>&#0160;</sup>
   </xsl:if>
 </xsl:template>
 
@@ -2724,11 +2861,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.126 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.126 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.127 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.127 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/10/04 18:16:27 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/04 18:16:27 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/10/05 16:19:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/05 16:19:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
