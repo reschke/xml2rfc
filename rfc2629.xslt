@@ -28,6 +28,10 @@
     2001-10-08  julian.reschke@greenbytes.de
     
     Support for vspace element.
+    
+    2001-10-09  julian.reschke@greenbytes.de
+    
+    Experimental support for rfc-issue PI.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1093,6 +1097,12 @@ TD.header
   		</b>
 		<br />
 	</ul>
+  
+  <!-- experimental -->
+  <xsl:if test="//processing-instruction('rfc-issue')">
+    <xsl:call-template name="insertIssuesList" />
+  </xsl:if>
+
 </xsl:template>
 
 <xsl:template name="insertTocLink">
@@ -1159,5 +1169,111 @@ TD.header
   	</xsl:if>
 </xsl:template>
 
+<!-- experimental annotation support -->
+
+<xsl:template name="getToken">
+  <xsl:param name="text" />
+  <xsl:param name="index" />
+  <xsl:choose>
+    <xsl:when test="$index = 0">
+      <xsl:value-of select="substring-before(normalize-space($text),' ')" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="getToken">
+        <xsl:with-param name="text" select="substring-after(normalize-space($text),' ')" />
+        <xsl:with-param name="index" select="$index - 1" />
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="getTokenFrom">
+  <xsl:param name="text" />
+  <xsl:param name="index" />
+  <xsl:choose>
+    <xsl:when test="$index = 0">
+      <xsl:value-of select="$text" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="getTokenFrom">
+        <xsl:with-param name="text" select="substring-after(normalize-space($text),' ')" />
+        <xsl:with-param name="index" select="$index - 1" />
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="processing-instruction('rfc-issue')">
+  <xsl:variable name="name"><xsl:call-template name="getToken">
+    <xsl:with-param name="index" select="0" />
+    <xsl:with-param name="text" select="." />
+  </xsl:call-template></xsl:variable>
+  <xsl:variable name="type"><xsl:call-template name="getToken">
+    <xsl:with-param name="index" select="1" />
+    <xsl:with-param name="text" select="." />
+  </xsl:call-template></xsl:variable>
+  <xsl:variable name="date"><xsl:call-template name="getToken">
+    <xsl:with-param name="index" select="2" />
+    <xsl:with-param name="text" select="." />
+  </xsl:call-template></xsl:variable>
+  <xsl:variable name="who"><xsl:call-template name="getToken">
+    <xsl:with-param name="index" select="3" />
+    <xsl:with-param name="text" select="." />
+  </xsl:call-template></xsl:variable>
+  <xsl:variable name="text"><xsl:call-template name="getTokenFrom">
+    <xsl:with-param name="index" select="4" />
+    <xsl:with-param name="text" select="." />
+  </xsl:call-template></xsl:variable>
+
+  <a name="#rfc.issue.{$name}">
+  <table style="background-color: yellow; border-width: thin; border-style: solid; border-color: black;" align="right" width="50%">
+    <tr>
+      <td>[<xsl:value-of select="$name" />], <a href="mailto:{$who}?subject={/rfc/@docName}, {$name}"><i><xsl:value-of select="$who" /></i></a>, <xsl:value-of select="$date" /></td>
+    </tr>
+    <tr>
+      <td><xsl:value-of select="$text" /></td>
+    </tr>
+  </table>
+  </a>
+    
+</xsl:template>
+
+<xsl:template name="insertIssuesList">
+
+  <h2>Issues list</h2>
+  <p>
+  <table>
+    <xsl:for-each select="//processing-instruction('rfc-issue')">
+  <xsl:variable name="name"><xsl:call-template name="getToken">
+    <xsl:with-param name="index" select="0" />
+    <xsl:with-param name="text" select="." />
+  </xsl:call-template></xsl:variable>
+  <xsl:variable name="type"><xsl:call-template name="getToken">
+    <xsl:with-param name="index" select="1" />
+    <xsl:with-param name="text" select="." />
+  </xsl:call-template></xsl:variable>
+  <xsl:variable name="date"><xsl:call-template name="getToken">
+    <xsl:with-param name="index" select="2" />
+    <xsl:with-param name="text" select="." />
+  </xsl:call-template></xsl:variable>
+  <xsl:variable name="who"><xsl:call-template name="getToken">
+    <xsl:with-param name="index" select="3" />
+    <xsl:with-param name="text" select="." />
+  </xsl:call-template></xsl:variable>
+  <xsl:variable name="text"><xsl:call-template name="getTokenFrom">
+    <xsl:with-param name="index" select="4" />
+    <xsl:with-param name="text" select="." />
+  </xsl:call-template></xsl:variable>
+      <tr>
+        <td><a href="#rfc.issue.{$name}"><xsl:value-of select="$name" /></a></td>
+        <td><xsl:value-of select="$type" /></td>
+        <td><xsl:value-of select="$date" /></td>
+        <td><a href="mailto:{$who}?subject={/rfc/@docName}, {$name}"><xsl:value-of select="$who" /></a></td>
+      </tr>
+    </xsl:for-each>
+  </table>
+  </p>
+  
+</xsl:template>
 
 </xsl:stylesheet>
