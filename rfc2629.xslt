@@ -403,14 +403,14 @@
     
     Enhance generation of HTML h* elements (for Mozilla Outliner).
 
-    2005-01-29  julian.reschke@greenbytes.de
+    2005-01-30  julian.reschke@greenbytes.de
     
     Put vertical space around top-level TOC entries in TOC.  Switch to
     pt-based CSS. Re-arrange top section. Make hr elements reflect new-page
     settings in TXT output (compact-PI).  Fix page number in footer (CSS
     print) and add some more experimental support for paged media (tested
     with Prince 4.1 alpha).  Rewrite TOC and Index generation to generate HTML
-    lists.
+    lists.  Cleanup id generation for paragraphs.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -575,14 +575,6 @@
   select="substring-after(
       translate(/processing-instruction('rfc-ext')[contains(.,'allow-markup-in-artwork=')], concat($quote-chars,' '), ''),
         'allow-markup-in-artwork=')"
-/>
-
-<!-- extension for adding purpe paragraph anchor signs -->
-
-<xsl:param name="xml2rfc-ext-para-anchors"
-  select="substring-after(
-      translate(/processing-instruction('rfc-ext')[contains(.,'para-anchors=')], concat($quote-chars,' '), ''),
-        'para-anchors=')"
 />
 
 <!-- choose whether or not to do mailto links --> 
@@ -1387,22 +1379,8 @@ match="list//t//list[@style='letters']" priority="9">
 
 
 <xsl:template match="t">
-  <xsl:variable name="paraNumber">
-    <xsl:call-template name="sectionnumberPara" />
-  </xsl:variable>
-     
-  <xsl:if test="string-length($paraNumber) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-    <div class="noprint" title="{$anchor-prefix}.section.{$paraNumber}" id="{$anchor-prefix}.section.{$paraNumber}">
-      <xsl:if test="$xml2rfc-ext-para-anchors='yes'">
-        <a class="pn" href="#{$anchor-prefix}.section.{$paraNumber}">&#xb6;</a>
-      </xsl:if>
-    </div>
-  </xsl:if>
-
   <xsl:apply-templates mode="t-content" select="node()[1]" />
 </xsl:template>
-
-
 
 <!-- for t-content, dispatch to default templates if it's block-level content -->
 <xsl:template mode="t-content" match="list|figure|texttable">
@@ -1413,11 +1391,19 @@ match="list//t//list[@style='letters']" priority="9">
                
 <!-- ... otherwise group into p elements -->
 <xsl:template mode="t-content" match="*|node()">
-  <p>
-    <xsl:call-template name="insertInsDelClass"/>
-    <xsl:call-template name="editingMark" />
-    <xsl:apply-templates mode="t-content2" select="." />
-  </p>
+  <xsl:variable name="p">
+    <xsl:call-template name="get-paragraph-number" />
+  </xsl:variable>
+  <xsl:if test="not(self::text()) or normalize-space(.)!=''">
+    <p>
+      <xsl:if test="string-length($p) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins) and count(preceding-sibling::node())=0">
+        <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
+      </xsl:if>
+      <xsl:call-template name="insertInsDelClass"/>
+      <xsl:call-template name="editingMark" />
+      <xsl:apply-templates mode="t-content2" select="." />
+    </p>
+  </xsl:if>
   <xsl:apply-templates mode="t-content" select="following-sibling::*[self::list or self::figure or self::texttable][1]" />
 </xsl:template>               
                
@@ -2900,7 +2886,7 @@ table.closedissue {
   </xsl:choose>
 </xsl:template>
 
-<xsl:template name="sectionnumberPara">
+<xsl:template name="get-paragraph-number">
   <!-- get section number of ancestor section element, then add t or figure number -->
   <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered'])">
     <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|figure" />
@@ -3448,11 +3434,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.194 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.194 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.195 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.195 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/29 19:51:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/29 19:51:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/30 11:12:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 11:12:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
