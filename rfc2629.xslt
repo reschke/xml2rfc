@@ -322,10 +322,11 @@
     
     Fix RFC3667 output, see <http://xml.resource.org/pipermail/xml2rfc/2004-April/001246.html>
 
-    2004-05-08  julian.reschke@greenbytes.de
+    2004-05-09  julian.reschke@greenbytes.de
     
     Add custom support for generating compound index documents. Add anchors
-    for each Index letter.
+    for each Index letter. Add experimental cref support. Fix conditional page
+    breaks before References section.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -345,6 +346,14 @@
 <!-- process some of the processing instructions supported by Marshall T. Rose's
      xml2rfc sofware, see <http://xml.resource.org/> -->
 
+
+<!-- rfc comments PI -->
+
+<xsl:param name="xml2rfc-comments"
+  select="substring-after(
+      translate(/processing-instruction('rfc')[contains(.,'comments=')], '&quot; ', ''),
+        'comments=')"
+/>
 
 <!-- rfc compact PI -->
 
@@ -368,6 +377,14 @@
   select="substring-after(
       translate(/processing-instruction('rfc')[contains(.,'header=')], '&quot; ', ''),
         'header=')"
+/>
+
+<!-- rfc inline PI -->
+
+<xsl:param name="xml2rfc-inline"
+  select="substring-after(
+      translate(/processing-instruction('rfc')[contains(.,'inline=')], '&quot; ', ''),
+        'inline=')"
 />
 
 <!-- include a table of contents if a processing instruction <?rfc?>
@@ -656,6 +673,11 @@
   <!-- as of April 2004, process from middle section 
   <xsl:apply-templates select="references" />
   -->
+  
+  <!-- add editorial comments -->
+  <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
+    <xsl:call-template name="insertComments" />
+  </xsl:if>
   
   <!-- next, add information about the document's authors -->
   <xsl:call-template name="insertAuthors" />
@@ -1082,7 +1104,10 @@
     </xsl:choose>
   </xsl:variable>
   
-  <xsl:element name="{$elemtype}">
+  <xsl:element name="{$elemtype}"> 
+    <xsl:if test="$name='1'">
+      <xsl:call-template name="insert-conditional-pagebreak"/>
+    </xsl:if>
     <xsl:variable name="sectionNumber">
       <xsl:call-template name="get-section-number"/>
     </xsl:variable>
@@ -1845,6 +1870,9 @@ td.header-r {
 thead {
   display:table-header-group
 }
+.comment {
+  background-color: yellow;
+}
 .editingmark {
   background-color: khaki;
 }
@@ -2260,6 +2288,15 @@ table.closedissue {
 <xsl:template match="back" mode="toc">
 
   <!-- <xsl:apply-templates select="references" mode="toc" /> -->
+
+  <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
+    <xsl:call-template name="insertTocLine">
+      <xsl:with-param name="number" select="'&#167;'"/>
+      <xsl:with-param name="target" select="concat($anchor-prefix,'.comments')"/>
+      <xsl:with-param name="title" select="'Editorial Comments'"/>
+    </xsl:call-template>
+  </xsl:if>
+
   <xsl:apply-templates select="/rfc/front" mode="toc" />
   <xsl:apply-templates select="*[not(self::references)]" mode="toc" />
 
@@ -2921,7 +2958,7 @@ table.closedissue {
   </xsl:choose>
 </xsl:template>
 
-<!-- experimental table formatting -->
+<!-- table formatting -->
 
 <xsl:template match="texttable">
   <xsl:apply-templates select="preamble" />
@@ -2968,6 +3005,86 @@ table.closedissue {
     <xsl:apply-templates />
   </th>
 </xsl:template>
+
+<!-- cref support -->
+
+<xsl:template match="cref">
+  <xsl:if test="$xml2rfc-comments!='no'">
+    <xsl:variable name="cid">
+      <xsl:choose>
+        <xsl:when test="@anchor">
+          <xsl:value-of select="@anchor"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>cmmnt</xsl:text><xsl:number count="cref[not(@anchor)]"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    
+    <span class="comment">
+      <xsl:if test="$xml2rfc-inline!='yes'">
+        <xsl:attribute name="title">
+          <xsl:if test="@source"><xsl:value-of select="@source"/>: </xsl:if>
+          <xsl:value-of select="."/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:text>[</xsl:text>
+      <xsl:choose>
+        <xsl:when test="$xml2rfc-inline='yes'">
+          <xsl:value-of select="$cid"/>
+          <xsl:text>: </xsl:text>
+          <xsl:value-of select="."/>
+          <xsl:if test="@source"> --<xsl:value-of select="@source"/></xsl:if>
+        </xsl:when>
+        <xsl:otherwise>
+          <a href="#{$anchor-prefix}.{$cid}">
+            <xsl:value-of select="$cid"/>
+          </a>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>]</xsl:text>
+    </span>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="insertComments">
+
+  <!-- insert link to TOC including horizontal rule -->
+  <xsl:call-template name="insertTocLink">
+    <xsl:with-param name="rule" select="true()" />
+  </xsl:call-template>
+    
+  <h1>
+    <xsl:call-template name="insert-conditional-pagebreak"/>
+    <a name="{$anchor-prefix}.comments">Editorial Comments</a>
+  </h1>
+
+  <dl>
+    <xsl:for-each select="//cref">
+      <xsl:variable name="cid">
+        <xsl:choose>
+          <xsl:when test="@anchor">
+            <xsl:value-of select="@anchor"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>cmmnt</xsl:text><xsl:number count="cref[not(@anchor)]"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <dt>
+        <xsl:if test="$xml2rfc-inline!='yes'">
+          <a name="{$anchor-prefix}.{$cid}"/>
+        </xsl:if>
+        [<xsl:value-of select="$cid"/>]
+      </dt>
+      <dd>
+        <xsl:value-of select="."/>
+        <xsl:if test="@source"> --<xsl:value-of select="@source"/></xsl:if>
+      </dd>
+    </xsl:for-each>
+  </dl>
+</xsl:template>
+
 
 <!-- Chapter Link Generation -->
 
@@ -3046,11 +3163,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.158 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.158 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.159 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.159 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/05/08 17:57:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/08 17:57:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/05/10 05:52:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/10 05:52:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
