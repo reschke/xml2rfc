@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2001 Julian F. Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2001-2003 Julian F. Reschke (julian.reschke@greenbytes.de)
 
     placed into the public domain
 
@@ -148,6 +148,11 @@
     
     xref code: attempt to uppercase "section" and "appendix" when at the start
     of a sentence.
+    
+    2003-02-02  jualian.reschke@greenbytes.de
+    
+    fixed code for vspace blankLines="0", enhanced display for list with "format" style,
+    got rid of HTML blockquote elements, added support for "hangIndent"
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -539,9 +544,9 @@
 <!-- list templates depend on the list style -->
 
 <xsl:template match="list[@style='empty' or not(@style)]">
-  <blockquote>
+  <dl>
     <xsl:apply-templates />
-  </blockquote>
+  </dl>
 </xsl:template>
 
 <xsl:template match="list[starts-with(@style,'format ')]">
@@ -551,28 +556,22 @@
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']">
-  <blockquote>
-    <dl>
-      <xsl:apply-templates />
-    </dl>
-  </blockquote>
+  <dl>
+    <xsl:apply-templates />
+  </dl>
 </xsl:template>
 
 <xsl:template match="list[@style='numbers']">
-  <blockquote>
-    <ol>
-      <xsl:apply-templates />
-    </ol>
-  </blockquote>
+  <ol>
+    <xsl:apply-templates />
+  </ol>
 </xsl:template>
 
 <!-- numbered list inside numbered list -->
 <xsl:template match="list[@style='numbers']/t/list[@style='numbers']" priority="9">
-  <blockquote>
-    <ol style="list-style-type: lower-alpha">
-      <xsl:apply-templates />
-    </ol>
-  </blockquote>
+  <ol style="list-style-type: lower-alpha">
+    <xsl:apply-templates />
+  </ol>
 </xsl:template>
 
 <xsl:template match="list[@style='symbols']">
@@ -584,9 +583,9 @@
 <!-- same for t(ext) elements -->
 
 <xsl:template match="list[@style='empty' or not(@style)]/t">
-  <p>
+  <dd>
     <xsl:apply-templates />
-  </p>
+  </dd>
 </xsl:template>
 
 <xsl:template match="list[@style='numbers' or @style='symbols']/t">
@@ -596,16 +595,61 @@
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']/t">
-  <dt><xsl:value-of select="@hangText" /></dt>
-  <dd><xsl:apply-templates /></dd>
+  <dt style="margin-top: .5em">
+    <xsl:value-of select="@hangText" />
+  </dt>
+  <dd>
+    <!-- if hangIndent present, use 0.7 of the specified value (1em is the width of the "m" character -->
+    <xsl:if test="../@hangIndent">
+      <xsl:attribute name="style">margin-left: <xsl:value-of select="../@hangIndent * 0.7"/>em</xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates />
+  </dd>
 </xsl:template>
 
-<xsl:template match="list[starts-with(@style,'format ')]/t">
+<xsl:template match="list[starts-with(@style,'format ') and contains(@style,'%d')]/t">
   <xsl:variable name="format" select="substring-after(../@style,'format ')" />
-  <xsl:variable name="label" select="concat(substring-before($format,'%d'),position(),substring-after($format,'%d'),'&#0160;')" />
+  <xsl:variable name="pos">
+    <xsl:choose>
+      <xsl:when test="../@startAt">
+        <xsl:value-of select="../@startAt - 1 + position()" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:number level="any" count="list[starts-with(@style,'format ') and contains(@style,'%d')]/t" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <tr>
-    <td><xsl:value-of select="$label" /></td>
-    <td><xsl:apply-templates /></td>
+    <td class="top">
+      <xsl:value-of select="substring-before($format,'%d')"/><xsl:number value="$pos" format="1" /><xsl:value-of select="substring-after($format,'%d')"/>
+      &#160;
+    </td>
+    <td class="top">
+      <xsl:apply-templates />
+    </td>
+  </tr>
+</xsl:template>
+
+<xsl:template match="list[starts-with(@style,'format ') and contains(@style,'%c')]/t">
+  <xsl:variable name="format" select="substring-after(../@style,'format ')" />
+  <xsl:variable name="pos">
+    <xsl:choose>
+      <xsl:when test="../@startAt">
+        <xsl:value-of select="../@startAt - 1 + position()" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:number level="any" count="list[starts-with(@style,'format ') and contains(@style,'%c')]/t" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <tr>
+    <td class="top">
+      <xsl:value-of select="substring-before($format,'%c')"/><xsl:number value="$pos" format="A" /><xsl:value-of select="substring-after($format,'%c')"/>
+      &#160;
+    </td>
+    <td class="top">
+      <xsl:apply-templates />
+    </td>
   </tr>
 </xsl:template>
 
@@ -850,11 +894,11 @@
   <xsl:apply-templates select="*[not(self::iref)]" />
 </xsl:template>
 
-<xsl:template match="vspace[not(@blankLines)]">
+<xsl:template match="vspace[not(@blankLines) or @blankLines=0]">
   <br />
 </xsl:template>
 
-<xsl:template match="vspace[@blankLines]">
+<xsl:template match="vspace[@blankLines &gt; 0]">
   <br/><xsl:for-each select="//*[position() &lt;= @blankLines]"> <br /></xsl:for-each>
 </xsl:template>
 
@@ -1137,6 +1181,10 @@ body
   font-family: helvetica, arial, sans-serif;
   font-size: 13px;
 }
+dl
+{
+  margin-left: 2em;
+}
 h1
 {
   color: #333333;
@@ -1171,14 +1219,19 @@ pre
 }
 table
 {
-  font-size: 13px
+  margin-left: 2em;
+  font-size: 13px;  
+}
+td.top
+{
+  vertical-align: top;
 }
 td.header
 {
   color: #ffffff;
   font-size: 10px;
   font-family: arial, helvetica, sans-serif;
-  valign: top
+  vertical-align: top
 }
 .editingmark
 {
