@@ -832,7 +832,7 @@
 </xsl:template>
 
 
-<xsl:template match="references[not(@title)]">
+<xsl:template match="references[not(@title) or @title='']">
 
   <xsl:call-template name="insertTocLink">
     <xsl:with-param name="rule" select="true()" />
@@ -909,16 +909,13 @@
       <!-- keywords -->
       <xsl:if test="front/keyword">
         <xsl:variable name="keyw">
-          <xsl:for-each select="front/keyword">
-            <xsl:value-of select="translate(.,',',' ')" />
-            <xsl:if test="position()!=last()">,</xsl:if>
-          </xsl:for-each>
+          <xsl:call-template name="get-keywords" />
         </xsl:variable>
-        <meta name="keywords" content="{normalize-space($keyw)}" />
+        <meta name="keywords" content="{$keyw}" />
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.78 2003/05/13 08:37:28 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.79 2003/05/13 19:23:53 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -1135,7 +1132,7 @@
     <xsl:if test="$mode!='nroff'">
       <myns:item>
          Category:
-        <xsl:call-template name="insertCategoryLong" />
+        <xsl:call-template name="get-category-long" />
       </myns:item>
     </xsl:if>
     <xsl:if test="/rfc/@ipr">
@@ -1250,19 +1247,6 @@
 </xsl:template>
 
 
-<xsl:template name="insertAuthorSummary">
-  <xsl:choose>
-    <xsl:when test="count(/rfc/front/author)=1">
-      <xsl:value-of select="/rfc/front/author[1]/@surname" />
-    </xsl:when>
-    <xsl:when test="count(/rfc/front/author)=2">
-      <xsl:value-of select="concat(/rfc/front/author[1]/@surname,' &amp; ',/rfc/front/author[2]/@surname)" />
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:value-of select="concat(/rfc/front/author[1]/@surname,' et al.')" />
-    </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
 
 <!-- insert copyright statement -->
 
@@ -1600,16 +1584,6 @@ table.resolution
   </table>
 </xsl:template>
 
-<xsl:template name="insertCategoryLong">
-  <xsl:choose>
-    <xsl:when test="/rfc/@category='bcp'">Best Current Practice</xsl:when>
-    <xsl:when test="/rfc/@category='historic'">Historic</xsl:when>
-    <xsl:when test="/rfc/@category='info'">Informational</xsl:when>
-    <xsl:when test="/rfc/@category='std'">Standards Track</xsl:when>
-    <xsl:when test="/rfc/@category='exp'">Experimental</xsl:when>
-    <xsl:otherwise>(category missing or unknown)</xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
 
 
 
@@ -1820,14 +1794,14 @@ table.resolution
 
   <xsl:variable name="target">
     <xsl:choose>
-      <xsl:when test="@title"><xsl:value-of select="$anchor-prefix"/>.<xsl:value-of select="translate(@title,$plain,$touri)"/></xsl:when>
+      <xsl:when test="@title!=''"><xsl:value-of select="$anchor-prefix"/>.<xsl:value-of select="translate(@title,$plain,$touri)"/></xsl:when>
       <xsl:otherwise><xsl:value-of select="$anchor-prefix"/>.references</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 
   <xsl:variable name="title">
     <xsl:choose>
-      <xsl:when test="@title"><xsl:value-of select="@title" /></xsl:when>
+      <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
       <xsl:otherwise>References</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -2401,5 +2375,43 @@ table.resolution
   <link rel="Appendix" title="{$sectionNumber} {@title}" href="#rfc.section.{$sectionNumber}" />
   <xsl:apply-templates mode="links" />
 </xsl:template>
+
+<!-- convenience templates -->
+
+<xsl:template name="get-author-summary">
+  <xsl:choose>
+    <xsl:when test="count(/rfc/front/author)=1">
+      <xsl:value-of select="/rfc/front/author[1]/@surname" />
+    </xsl:when>
+    <xsl:when test="count(/rfc/front/author)=2">
+      <xsl:value-of select="concat(/rfc/front/author[1]/@surname,' &amp; ',/rfc/front/author[2]/@surname)" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="concat(/rfc/front/author[1]/@surname,' et al.')" />
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-category-long">
+  <xsl:choose>
+    <xsl:when test="/rfc/@category='bcp'">Best Current Practice</xsl:when>
+    <xsl:when test="/rfc/@category='historic'">Historic</xsl:when>
+    <xsl:when test="/rfc/@category='info'">Informational</xsl:when>
+    <xsl:when test="/rfc/@category='std'">Standards Track</xsl:when>
+    <xsl:when test="/rfc/@category='exp'">Experimental</xsl:when>
+    <xsl:otherwise>(category missing or unknown)</xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-keywords">
+  <xsl:variable name="keyw">
+    <xsl:for-each select="/rfc/front/keyword">
+      <xsl:value-of select="translate(.,',',' ')" />
+      <xsl:if test="position()!=last()">,</xsl:if>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:value-of select="normalize-space($keyw)" />
+</xsl:template>
+
 
 </xsl:stylesheet>
