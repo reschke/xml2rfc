@@ -358,8 +358,8 @@
 
     2004-09-04  julian.reschke@greenbytes.de
     
-    Fix index links into unnumbered sections. Bring IPR boilerplate in-line
-    with xml2rfc 1.25.
+    Fix index links into unnumbered sections.  Bring IPR boilerplate in-line
+    with xml2rfc 1.25.  Add experimental CSS3 paged media support.
 
 -->
 
@@ -2074,6 +2074,56 @@ table.closedissue {
   .noprint {
     display: none;
   }
+  
+  table.header {
+    width: 90%;
+  }
+
+  td.header-l {
+    width: 50%;
+    color: black;
+    background-color: white;
+    font-family: arial, helvetica, sans-serif;
+    vertical-align: top
+    font-size: 13px;
+  }
+
+  td.header-r {
+    width: 33%;
+    color: black;
+    background-color: white;
+    font-family: arial, helvetica, sans-serif;
+    vertical-align: top;
+    text-align: right;
+    font-size: 13px;
+  }
+}
+
+@page {
+  @top-left {
+       font-family: helvetica, arial, sans-serif; 
+       content: "<xsl:call-template name="get-header-left"/>"; 
+  } 
+  @top-right {
+       font-family: helvetica, arial, sans-serif; 
+       content: "<xsl:call-template name="get-header-right"/>"; 
+  } 
+  @top-center {
+       font-family: helvetica, arial, sans-serif; 
+       content: "<xsl:call-template name="get-header-center"/>"; 
+  } 
+  @bottom-left {
+       font-family: helvetica, arial, sans-serif; 
+       content: "<xsl:call-template name="get-author-summary"/>"; 
+  } 
+  @bottom-center {
+       font-family: helvetica, arial, sans-serif; 
+       content: "<xsl:call-template name="get-category-long"/>"; 
+  } 
+  @bottom-right {
+       font-family: helvetica, arial, sans-serif; 
+       content: "[Page ]" counter(pages) "]"; 
+  } 
 }
 </xsl:template>
 
@@ -3326,11 +3376,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.172 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.172 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.173 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.173 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/09/04 15:07:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/04 15:07:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/09/04 17:21:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/04 17:21:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
