@@ -1509,7 +1509,7 @@ ins
   <xsl:choose>
     <xsl:when test="$mode='html'">
       <xsl:value-of select="substring($line,0,$maxw)" />
-      <xsl:if test="string-length($line) &gt; 72">
+      <xsl:if test="string-length($line) &gt; $maxw">
         <span class="toowide"><xsl:value-of select="substring($line,$maxw)" /></span>
       </xsl:if>
       <xsl:text>&#10;</xsl:text>
