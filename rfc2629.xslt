@@ -1004,7 +1004,9 @@
         <link rel="Contents" href="#{$anchor-prefix}.toc" />
       </xsl:if>
       <link rel="Author" href="#{$anchor-prefix}.authors" />
-      <link rel="Copyright" href="#{$anchor-prefix}.copyright" />
+      <xsl:if test="not($xml2rfc-private)">
+        <link rel="Copyright" href="#{$anchor-prefix}.copyright" />
+      </xsl:if>
       <xsl:if test="//iref">
         <link rel="Index" href="#{$anchor-prefix}.index" />
       </xsl:if>
@@ -2671,11 +2673,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.119 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.119 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.120 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.120 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/17 17:31:42 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/17 17:31:42 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/17 19:35:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/17 19:35:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
