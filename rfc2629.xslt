@@ -18,7 +18,7 @@
     
     2001-10-02  julian.reschke@greenbytes.de
     
-    Fixed default location for RFCs.
+    Fixed default location for RFCs and numbering of section references.
     
 -->
 
@@ -550,20 +550,20 @@
                
 <xsl:template match="xref[not(node())]">
 	<xsl:variable name="target" select="@target" />
-    <xsl:variable name="node" select="//*[@anchor=$target]" />
+  <xsl:variable name="node" select="//*[@anchor=$target]" />
 	<a href="#{$target}">
-    	<xsl:choose>
-        	<xsl:when test="local-name($node)='section'">
-            	Section
-                <xsl:for-each select="$node">
-                	<xsl:number />
-                </xsl:for-each>
-            </xsl:when>
-        	<xsl:otherwise>
-            	<xsl:attribute name="title"><xsl:value-of select="normalize-space($node/front/title)" /></xsl:attribute>
-            	<xsl:call-template name="referencename"><xsl:with-param name="node" select="/rfc/back/references/reference[@anchor=$target]" /></xsl:call-template></xsl:otherwise>
-        </xsl:choose>
-    </a>
+    <xsl:choose>
+      <xsl:when test="local-name($node)='section'">
+        section
+        <xsl:for-each select="$node">
+          <xsl:number level="multiple" />
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:attribute name="title"><xsl:value-of select="normalize-space($node/front/title)" /></xsl:attribute>
+        <xsl:call-template name="referencename"><xsl:with-param name="node" select="/rfc/back/references/reference[@anchor=$target]" /></xsl:call-template></xsl:otherwise>
+    </xsl:choose>
+  </a>
 </xsl:template>
 
 <!-- mark unmatched elements red -->
