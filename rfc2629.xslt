@@ -106,6 +106,10 @@
     
     Lowercase internal CSS selectors for Mozilla compliance. Do not put TOC
     into ul element.
+    
+    2002-04-21  julian.reschke@greenbytes.de
+    
+    Make numbered list inside numbered lists use alphanumeric numbering.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -485,9 +489,20 @@
 </xsl:template>
 
 <xsl:template match="list[@style='numbers']">
-	<blockquote><ol class="text">
+	<blockquote>
+    <ol>
     	<xsl:apply-templates />
-	</ol></blockquote>
+	  </ol>
+  </blockquote>
+</xsl:template>
+
+<!-- numbered list inside numbered list -->
+<xsl:template match="list[@style='numbers']/t/list[@style='numbers']">
+	<blockquote>
+    <ol style="list-style-type: lower-alpha">
+    	<xsl:apply-templates />
+	  </ol>
+  </blockquote>
 </xsl:template>
 
 <xsl:template match="list[@style='symbols']">
@@ -1603,7 +1618,7 @@ ins
   <xsl:choose>
     <xsl:when test="$mode='html'">
       <xsl:value-of select="substring($line,0,$maxw)" />
-      <xsl:if test="string-length($line) &gt; $maxw">
+      <xsl:if test="string-length($line) &gt;= $maxw">
         <span class="toowide"><xsl:value-of select="substring($line,$maxw)" /></span>
       </xsl:if>
       <xsl:text>&#10;</xsl:text>
