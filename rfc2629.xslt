@@ -211,6 +211,10 @@
     fix index generation bug (transposed characters in key generation). Enhance
     sentence start detection (xref starting a section was using lowercase
     "section").
+    
+    2003-06-20  julian.reschke@greenbytes.de
+    
+    exp. support for xref/@plain='true'. Add missing support for eref w/o content.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -517,6 +521,10 @@
   <a href="{@target}"><xsl:apply-templates /></a>
 </xsl:template>
                
+<xsl:template match="eref[not(node())]">
+  <a href="{@target}"><xsl:value-of select="@target" /></a>
+</xsl:template>
+
 <xsl:template match="figure">
   <xsl:if test="@anchor!=''">
     <div><a name="{@anchor}" /></div>
@@ -1086,10 +1094,19 @@
             <xsl:call-template name="get-section-number" />
           </xsl:for-each>
         </xsl:variable>
-        <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
+        <xsl:choose>
+          <xsl:when test="@plain='true'">
+            <xsl:value-of select="$refnum"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:when test="local-name($node)='figure'">
-        <xsl:text>Figure&#160;</xsl:text>
+        <xsl:if test="@plain!='true'">
+          <xsl:text>Figure&#160;</xsl:text>
+        </xsl:if>
         <xsl:for-each select="$node">
           <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
         </xsl:for-each>
@@ -2437,11 +2454,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.90 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.90 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.91 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.91 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/06/06 11:34:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/06/06 11:34:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/06/20 15:25:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/06/20 15:25:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
