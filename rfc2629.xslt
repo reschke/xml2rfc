@@ -256,6 +256,11 @@
     
     Add workaround for MSXML4 node-set and Mozilla node-set issues (fallback
     just displays are warning).
+    
+    2003-10-03  julian.reschke@greenbytes.de
+    
+    Add workaround for broken pre/ins handling in Mozilla
+    (see <http://bugzilla.mozilla.org/show_bug.cgi?id=204401>).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -478,7 +483,9 @@
       </xsl:if>
     </xsl:if>
   </xsl:if>
-  <pre><!--<xsl:value-of select="." />--><xsl:call-template name="showArtwork">
+  <pre>
+    <xsl:call-template name="insertInsDelClass" />
+    <!--<xsl:value-of select="." />--><xsl:call-template name="showArtwork">
     <xsl:with-param name="mode" select="'html'" />
     <xsl:with-param name="text" select="." />
     <xsl:with-param name="initial" select="'yes'" />
@@ -1099,8 +1106,9 @@
   </xsl:if>
 
   <xsl:apply-templates mode="t-content" select="node()[1]" />
-  
 </xsl:template>
+
+
 
 <!-- for t-content, dispatch to default templates if it's block-level content -->
 <xsl:template mode="t-content" match="list|figure|texttable">
@@ -1112,8 +1120,8 @@
 <!-- ... otherwise group into p elements -->
 <xsl:template mode="t-content" match="*|node()">
   <p>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:call-template name="editingMark" />
-    <!-- <xsl:comment>t-content inline-level</xsl:comment>  -->
     <xsl:apply-templates mode="t-content2" select="." />
   </p>
   <xsl:apply-templates mode="t-content" select="following-sibling::*[self::list or self::figure or self::texttable][1]" />
@@ -1153,6 +1161,7 @@
     <xsl:if test="not(ancestor::section) and not(@myns:notoclink)">
       <xsl:attribute name="class">np</xsl:attribute>
     </xsl:if>
+    <xsl:call-template name="insertInsDelClass" />
     
     <!-- generate anchors for irefs that are immediate childs of this section -->
     <xsl:apply-templates select="iref"/>
@@ -1728,10 +1737,22 @@ thead
 del
 {
   color: red;
+  text-decoration: line-through;
+}
+.del
+{
+  color: red;
+  text-decoration: line-through;
 }
 ins
 {
   color: blue;
+  text-decoration: underline;
+}
+.ins
+{
+  color: blue;
+  text-decoration: underline;
 }
 table.resolution
 {
@@ -2522,6 +2543,17 @@ table.resolution
   </xsl:if>
 </xsl:template>
 
+<!-- convenience template for helping Mozilla (pre/ins inheritance problem -->
+<xsl:template name="insertInsDelClass">
+  <xsl:if test="ancestor::ed:del">
+    <xsl:attribute name="class">del</xsl:attribute>
+  </xsl:if>
+  <xsl:if test="ancestor::ed:ins">
+    <xsl:attribute name="class">ins</xsl:attribute>
+  </xsl:if>
+</xsl:template>
+
+
 <xsl:template name="sectionnumberAndEdits">
   <xsl:choose>
     <xsl:when test="ancestor::ed:del">del-<xsl:number count="ed:del//section" level="any"/></xsl:when>
@@ -2686,11 +2718,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.124 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.124 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.125 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.125 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/19 09:39:39 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/19 09:39:39 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/10/04 17:22:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/04 17:22:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
