@@ -583,7 +583,7 @@
 <!-- same for t(ext) elements -->
 
 <xsl:template match="list[@style='empty' or not(@style)]/t">
-  <dd>
+  <dd style="margin-top: .5em">
     <xsl:apply-templates />
   </dd>
 </xsl:template>
