@@ -118,6 +118,10 @@
     2002-05-15  julian.reschke@greenbytes.de
     
     Bugfix for section numbering after introduction of ed:replace
+    
+    2002-06-21  julian.reschke@greenbytes.de
+    
+    When producing private documents, do not include document status, copyright etc.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -333,25 +337,27 @@
 	<!-- add all other top-level sections under <back> -->
 	<xsl:apply-templates select="*[not(self::references)]" />
 
-	<!-- copyright statements -->
-  <xsl:variable name="copyright"><xsl:call-template name="insertCopyright" /></xsl:variable>
-
-  <!-- emit it -->
-  <xsl:choose>
-    <xsl:when test="function-available('msxsl:node-set')">
-      <xsl:apply-templates select="msxsl:node-set($copyright)" />
-    </xsl:when>
-    <xsl:when test="function-available('saxon:node-set')">
-      <xsl:apply-templates select="saxon:node-set($copyright)" />
-    </xsl:when>
-    <xsl:when test="function-available('xalan:nodeset')">
-      <xsl:apply-templates select="xalan:nodeset($copyright)" />
-    </xsl:when>
-    <xsl:otherwise> <!--proceed with fingers crossed-->
-      <xsl:apply-templates select="$copyright" />
-    </xsl:otherwise>
-  </xsl:choose>
-        
+  <xsl:if test="not($private)">
+  	<!-- copyright statements -->
+    <xsl:variable name="copyright"><xsl:call-template name="insertCopyright" /></xsl:variable>
+  
+    <!-- emit it -->
+    <xsl:choose>
+      <xsl:when test="function-available('msxsl:node-set')">
+        <xsl:apply-templates select="msxsl:node-set($copyright)" />
+      </xsl:when>
+      <xsl:when test="function-available('saxon:node-set')">
+        <xsl:apply-templates select="saxon:node-set($copyright)" />
+      </xsl:when>
+      <xsl:when test="function-available('xalan:nodeset')">
+        <xsl:apply-templates select="xalan:nodeset($copyright)" />
+      </xsl:when>
+      <xsl:otherwise> <!--proceed with fingers crossed-->
+        <xsl:apply-templates select="$copyright" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
+  
 	<!-- insert the index if index entries exist -->
   <xsl:if test="//iref">
     <xsl:call-template name="insertIndex" />
@@ -440,28 +446,30 @@
     <div align="right"><span class="filename"><xsl:value-of select="/rfc/@docName"/></span></div>
   </xsl:if>  
   
-  <!-- Get status info formatted as per RFC2629-->
-  <xsl:variable name="preamble"><xsl:call-template name="insertPreamble" /></xsl:variable>
-  
-  <!-- emit it -->
-  <xsl:choose>
-    <xsl:when test="function-available('msxsl:node-set')">
-      <xsl:apply-templates select="msxsl:node-set($preamble)" />
-    </xsl:when>
-    <xsl:when test="function-available('saxon:node-set')">
-      <xsl:apply-templates select="saxon:node-set($preamble)" />
-    </xsl:when>
-    <xsl:when test="function-available('xalan:nodeset')">
-      <xsl:apply-templates select="xalan:nodeset($preamble)" />
-    </xsl:when>
-    <xsl:otherwise> <!--proceed with fingers crossed-->
-      <xsl:apply-templates select="$preamble" />
-    </xsl:otherwise>
-  </xsl:choose>
-          
-	<xsl:apply-templates select="abstract" />
-	<xsl:apply-templates select="note" />
-
+  <xsl:if test="not($private)">
+    <!-- Get status info formatted as per RFC2629-->
+    <xsl:variable name="preamble"><xsl:call-template name="insertPreamble" /></xsl:variable>
+    
+    <!-- emit it -->
+    <xsl:choose>
+      <xsl:when test="function-available('msxsl:node-set')">
+        <xsl:apply-templates select="msxsl:node-set($preamble)" />
+      </xsl:when>
+      <xsl:when test="function-available('saxon:node-set')">
+        <xsl:apply-templates select="saxon:node-set($preamble)" />
+      </xsl:when>
+      <xsl:when test="function-available('xalan:nodeset')">
+        <xsl:apply-templates select="xalan:nodeset($preamble)" />
+      </xsl:when>
+      <xsl:otherwise> <!--proceed with fingers crossed-->
+        <xsl:apply-templates select="$preamble" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
+            
+  <xsl:apply-templates select="abstract" />
+  <xsl:apply-templates select="note" />
+    
 	<xsl:if test="$includeToc='yes'">
 		<xsl:apply-templates select="/" mode="toc" />
 		<xsl:call-template name="insertTocAppendix" />
