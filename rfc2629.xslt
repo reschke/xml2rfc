@@ -257,7 +257,7 @@
     Add workaround for MSXML4 node-set and Mozilla node-set issues (fallback
     just displays are warning).
     
-    2003-10-05  julian.reschke@greenbytes.de
+    2003-10-06  julian.reschke@greenbytes.de
     
     Add workaround for broken pre/ins handling in Mozilla
     (see <http://bugzilla.mozilla.org/show_bug.cgi?id=204401>). Make use
@@ -730,24 +730,28 @@
 
 <xsl:template match="list[@style='empty' or not(@style)]">
   <dl>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </dl>
 </xsl:template>
 
 <xsl:template match="list[starts-with(@style,'format ')]">
   <dl>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </dl>
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']">
   <dl>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </dl>
 </xsl:template>
 
 <xsl:template match="list[@style='numbers']">
   <ol>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </ol>
 </xsl:template>
@@ -755,12 +759,14 @@
 <!-- numbered list inside numbered list -->
 <xsl:template match="list[@style='numbers']/t/list[@style='numbers']" priority="9">
   <ol style="list-style-type: lower-alpha">
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </ol>
 </xsl:template>
 
 <xsl:template match="list[@style='symbols']">
   <ul>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </ul>
 </xsl:template>
@@ -2702,11 +2708,11 @@ table.resolution {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.128 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.128 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.129 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.129 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/10/05 16:35:55 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/05 16:35:55 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/10/06 13:25:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/06 13:25:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
