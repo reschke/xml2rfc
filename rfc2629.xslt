@@ -918,7 +918,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.72 2003/05/11 19:14:00 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.73 2003/05/12 08:43:57 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -945,7 +945,44 @@
     <xsl:call-template name="editingMark" />
     <xsl:apply-templates />
   </p>
+  
+  <!-- TEST TEST TEST
+  <xsl:call-template name="paracontent">
+    <xsl:with-param name="nodes" select="node()" />
+  </xsl:call-template> -->
+  
 </xsl:template>
+               
+<xsl:template name="paracontent">
+  <xsl:param name="nodes" />
+  <xsl:message>called: <xsl:value-of select="$nodes[1]" /></xsl:message>
+  <xsl:choose>
+    <xsl:when test="local-name($nodes[1])='list'">
+      <xsl:apply-templates select="$nodes[1]" />
+      <xsl:call-template name="paracontent">
+        <xsl:with-param name="nodes" select="$nodes[position() &gt; 1]" />
+      </xsl:call-template>      
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="fl" select="$nodes[self::list]" />
+      <xsl:choose>
+        <xsl:when test="$fl">
+          <p>
+            <xsl:apply-templates select="$nodes[position() &lt; 2]" />
+          </p>
+          <xsl:call-template name="paracontent">
+            <xsl:with-param name="nodes" select="$nodes[position() &gt;= 2]"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <p>
+            <xsl:apply-templates />
+          </p>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>               
                
                
 <xsl:template match="section|appendix">
