@@ -245,7 +245,7 @@
         
 </xsl:template>
 
-<xsl:template match="eref">
+<xsl:template match="eref[node()]">
 	<a href="{@target}"><xsl:apply-templates /></a>
 </xsl:template>
                
