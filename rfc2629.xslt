@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2001-2004 Julian F. Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2001-2005 Julian F. Reschke (julian.reschke@greenbytes.de)
 
     placed into the public domain
 
@@ -403,10 +403,11 @@
     
     Enhance generation of HTML h* elements (for Mozilla Outliner).
 
-    2005-01-27  julian.reschke@greenbytes.de
+    2005-01-29  julian.reschke@greenbytes.de
     
     Put vertical space around top-level TOC entries in TOC.  Switch to
-    pt-based CSS. Re-arrange top section.
+    pt-based CSS. Re-arrange top section. Make hr elements reflect new-page
+    settings in TXT output (compact-PI).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1235,12 +1236,9 @@ match="list//t//list[@style='letters']" priority="9">
     <xsl:number/>      
   </xsl:variable>
 
-  <xsl:if test="$name='1'">
-    <hr class="noprint"/>
-  </xsl:if>
-
   <!-- insert pseudo section when needed -->
   <xsl:if test="$name='1' and count(/*/back/references)!=1">
+    <xsl:call-template name="insert-conditional-hrule"/>
     <h1>
       <xsl:call-template name="insert-conditional-pagebreak"/>
       <xsl:variable name="sectionNumber">
@@ -1465,7 +1463,7 @@ match="list//t//list[@style='letters']" priority="9">
   </xsl:variable>
     
   <xsl:if test="not(ancestor::section) and not(@myns:notoclink)">
-    <hr class="noprint"/>
+    <xsl:call-template name="insert-conditional-hrule"/>
   </xsl:if>
   
   <xsl:variable name="elemtype">
@@ -1800,7 +1798,7 @@ match="list//t//list[@style='letters']" priority="9">
 <!-- produce back section with author information -->
 <xsl:template name="insertAuthors">
 
-  <hr class="noprint"/>
+  <xsl:call-template name="insert-conditional-hrule"/>
     
   <h1>
     <xsl:call-template name="insert-conditional-pagebreak"/>
@@ -1980,7 +1978,7 @@ dl {
 h1 {
   color: #333333;
   font-size: 14pt;
-  line-height: 14pt;
+  line-height: 21pt;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
@@ -1993,6 +1991,7 @@ h1 a {
 h2 {
   color: #000000;
   font-size: 12pt;
+  line-height: 15pt;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
@@ -2287,7 +2286,7 @@ table.closedissue {
 
 <xsl:template name="insertIndex">
 
-  <hr class="noprint"/>
+  <xsl:call-template name="insert-conditional-hrule"/>
 
   <h1>
     <xsl:call-template name="insert-conditional-pagebreak"/>
@@ -2576,7 +2575,7 @@ table.closedissue {
         </xsl:when>
         <xsl:when test="$number=''">
           <b>
-            &#0160;&#0160;
+            &#0160;&#0160;&#0160;&#0160;
             <a href="#{$target}"><xsl:value-of select="$title"/></a>
           </b>
         </xsl:when>
@@ -2586,7 +2585,7 @@ table.closedissue {
               <xsl:attribute name="style">line-height: 150%;</xsl:attribute>
             </xsl:if>
             <xsl:value-of select="translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','&#160;')"/>
-            <xsl:value-of select="$number" />&#0160;
+            <xsl:value-of select="$number" />&#0160;&#0160;&#0160;
             <a href="#{$target}"><xsl:value-of select="$title"/></a>
           </b>
         </xsl:otherwise>
@@ -3272,7 +3271,7 @@ table.closedissue {
 
 <xsl:template name="insertComments">
 
-  <hr class="noprint"/>
+  <xsl:call-template name="insert-conditional-hrule"/>
     
   <h1>
     <xsl:call-template name="insert-conditional-pagebreak"/>
@@ -3385,11 +3384,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.188 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.188 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.189 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.189 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/27 21:50:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/27 21:50:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/29 10:02:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/29 10:02:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -3463,5 +3462,10 @@ table.closedissue {
   </xsl:if>
 </xsl:template>
 
+<xsl:template name="insert-conditional-hrule">
+  <xsl:if test="$xml2rfc-compact!='yes'">
+    <hr class="noprint" />
+  </xsl:if>
+</xsl:template>
 
 </xsl:stylesheet>
