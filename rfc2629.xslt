@@ -327,6 +327,10 @@
     Add custom support for generating compound index documents. Add anchors
     for each Index letter. Add experimental cref support. Fix conditional page
     breaks before References section.
+    
+    2004-05-16  julian.reschke@greenbytes.de
+    
+    Refactor external index generation.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1998,13 +2002,23 @@ table.closedissue {
 
 <xsl:template name="insertSingleIref">
   <xsl:choose>
-      <xsl:when test="@ed:basedoc">
+    <xsl:when test="@ed:xref">
       <!-- special index generator mode -->
-      <a href="{@ed:anchor}"><xsl:choose>
-          <xsl:when test="@primary='true'"><b><xsl:value-of select="concat(@ed:basedoc,' ',@ed:section-number)" /></b></xsl:when>
-          <xsl:otherwise><xsl:value-of select="concat(@ed:basedoc,' ',@ed:section-number)" /></xsl:otherwise>
+      <xsl:text>[</xsl:text>
+      <a href="#{@ed:xref}"><xsl:value-of select="@ed:xref"/></a>
+      <xsl:text>, </xsl:text>
+      <a>
+        <xsl:variable name="htmluri" select="//reference[@anchor=current()/@ed:xref]/format[@type='HTML']/@target"/>
+        <xsl:if test="$htmluri">
+          <xsl:attribute name="href"><xsl:value-of select="concat($htmluri,'#',@ed:frag)"/></xsl:attribute>
+        </xsl:if>       
+        <xsl:choose>
+          <xsl:when test="@primary='true'"><b><xsl:value-of select="@ed:label" /></b></xsl:when>
+          <xsl:otherwise><xsl:value-of select="@ed:label" /></xsl:otherwise>
         </xsl:choose>
-      </a><xsl:if test="position()!=last()">, </xsl:if>
+      </a>
+      <xsl:text>]</xsl:text>
+      <xsl:if test="position()!=last()">, </xsl:if>
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" /></xsl:variable>
@@ -3163,11 +3177,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.159 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.159 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.160 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.160 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/05/10 05:52:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/10 05:52:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/05/16 20:16:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/16 20:16:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
