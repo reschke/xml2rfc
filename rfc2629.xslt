@@ -100,7 +100,11 @@
     
     2002-04-16  julian.reschke@greenbytes.de
     
-    Fix default namespace (shouldn't be set for HTML output method)
+    Fix default namespace (shouldn't be set for HTML output method).
+    
+    2002-04-19  julian.reschke@greenbytes.de
+    
+    Lowercase internal CSS selectors for Mozilla compliance.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1029,25 +1033,25 @@
 <!-- insert CSS style info -->
 
 <xsl:template name="insertCss">
-A
+a
 {
 	text-decoration: none
 }
-A:hover
+a:hover
 {
 	text-decoration: underline
 }
-A:active
+a:active
 {
 	text-decoration: underline
 }
-BODY
+body
 {
 	color: #000000;
   font-family: helvetica, arial, sans-serif;
   font-size: 13px;
 }
-H1
+h1
 {
 	color: #333333;
   font-size: 16px;
@@ -1055,35 +1059,35 @@ H1
   font-family: helvetica, arial, sans-serif;
 	page-break-after: avoid;
 }
-H2
+h2
 {
 	color: #000000;
   font-size: 14px;
   font-family: helvetica, arial, sans-serif;
 	page-break-after: avoid;
 }
-H3
+h3
 {
 	color: #000000;
   font-size: 13px;
   font-family: helvetica, arial, sans-serif;
 	page-break-after: avoid;
 }
-P
+p
 {
 	margin-left: 2em;
   margin-right: 2em;
 }
-PRE
+pre
 {
 	margin-left: 3em;
   background-color: lightgrey;
 }
-TABLE
+table
 {
 	font-size: 13px
 }
-TD.header
+td.header
 {
 	color: #ffffff;
   font-size: 10px;
