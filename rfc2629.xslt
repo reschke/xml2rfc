@@ -281,6 +281,10 @@
     Fix color values for table backgrounds for issue rendering. Change
     rendering of issue links to use inline-styles. Add colored issue markers to
     issues. 
+
+    2003-12-08  julian.reschke@greenbytes.de
+    
+    Fix inheritance of ed:entered-by attribute.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2528,8 +2532,8 @@ table.closedissue {
   <xsl:call-template name="insert-issue-pointer"/>
   <del>
     <xsl:copy-of select="@*[namespace-uri()='']"/>
-    <xsl:if test="not(@title) and ancestor-or-self::*/@ed:entered-by and @datetime">
-      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*/@ed:entered-by)"/></xsl:attribute>
+    <xsl:if test="not(@title) and ancestor-or-self::*[@ed:entered-by] and @datetime">
+      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*[@ed:entered-by][1]/@ed:entered-by)"/></xsl:attribute>
     </xsl:if>
     <xsl:apply-templates />
   </del>
@@ -2539,8 +2543,8 @@ table.closedissue {
   <xsl:call-template name="insert-issue-pointer"/>
   <ins>
     <xsl:copy-of select="@*[namespace-uri()='']"/>
-    <xsl:if test="not(@title) and ancestor-or-self::*/@ed:entered-by and @datetime">
-      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*/@ed:entered-by)"/></xsl:attribute>
+    <xsl:if test="not(@title) and ancestor-or-self::*[@ed:entered-by] and @datetime">
+      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*[@ed:entered-by][1]/@ed:entered-by)"/></xsl:attribute>
     </xsl:if>
     <xsl:apply-templates />
   </ins>
@@ -2596,8 +2600,8 @@ table.closedissue {
   <xsl:if test="ed:del">
     <del>
       <xsl:copy-of select="@*[namespace-uri()='']"/>
-      <xsl:if test="not(@title) and ancestor-or-self::*/@ed:entered-by and @datetime">
-        <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*/@ed:entered-by)"/></xsl:attribute>
+      <xsl:if test="not(@title) and ancestor-or-self::*[@ed:entered-by] and @datetime">
+        <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*[@ed:entered-by][1]/@ed:entered-by)"/></xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="ed:del/node()" />
     </del>
@@ -2605,8 +2609,8 @@ table.closedissue {
   <xsl:if test="ed:ins">
     <ins>
       <xsl:copy-of select="@*[namespace-uri()='']"/>
-      <xsl:if test="not(@title) and ancestor-or-self::*/@ed:entered-by and @datetime">
-        <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*/@ed:entered-by)"/></xsl:attribute>
+      <xsl:if test="not(@title) and ancestor-or-self::*[@ed:entered-by] and @datetime">
+        <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*[@ed:entered-by][1]/@ed:entered-by)"/></xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="ed:ins/node()" />
     </ins>
@@ -2788,11 +2792,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.142 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.142 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.143 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.143 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/11/29 21:52:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/29 21:52:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/12/08 21:34:45 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/12/08 21:34:45 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
