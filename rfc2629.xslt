@@ -410,7 +410,7 @@
     settings in TXT output (compact-PI).  Fix page number in footer (CSS
     print) and add some more experimental support for paged media (tested
     with Prince 4.1 alpha).  Rewrite TOC and Index generation to generate HTML
-    lists.  Cleanup id generation for paragraphs.  Reduce whitespace in output.
+    lists.  Cleanup id generation for paragraphs.  Reduce whitespace in output. Fix vspace implementation.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1537,13 +1537,30 @@
   <strong><xsl:apply-templates /></strong>
 </xsl:template>
 
+<xsl:template name="insert-blank-lines">
+  <xsl:param name="no"/>
+  <xsl:choose>
+    <xsl:when test="$no=0">
+      <br/>
+      <!-- done -->
+    </xsl:when>
+    <xsl:otherwise>
+      <br/>
+      <xsl:call-template name="insert-blank-lines">
+        <xsl:with-param name="no" select="$no - 1"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 <xsl:template match="vspace[not(@blankLines) or @blankLines=0]">
   <br />
 </xsl:template>
 
 <xsl:template match="vspace[@blankLines &gt; 0]">
-  <br/><xsl:for-each select="//*[position() &lt;= @blankLines]"> <br /></xsl:for-each>
+  <xsl:call-template name="insert-blank-lines">
+    <xsl:with-param name="no" select="@blankLines"/>
+  </xsl:call-template>
 </xsl:template>
 
 <!-- keep the root for the case when we process XSLT-inline markup -->
@@ -3466,11 +3483,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.198 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.198 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.199 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.199 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/30 15:40:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 15:40:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/30 20:40:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 20:40:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
