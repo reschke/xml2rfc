@@ -356,11 +356,11 @@
     Add support for list style=letters (thanks Roy F.). Make PNs optional;
     add new PI.
 
-    2004-09-04  julian.reschke@greenbytes.de
+    2004-09-05  julian.reschke@greenbytes.de
     
     Fix index links into unnumbered sections.  Bring IPR boilerplate in-line
-    with xml2rfc 1.25.  Add experimental CSS3 paged media support.
-
+    with xml2rfc 1.25.  Add experimental CSS3 paged media support.  Various
+    HTML fixes.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1152,10 +1152,8 @@
       <xsl:variable name="sectionNumber">
         <xsl:call-template name="get-references-section-number"/>
       </xsl:variable>
-      <a name="{$anchor-prefix}.references">
-        <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
-        References
-      </a>
+      <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
+      <a name="{$anchor-prefix}.references">References</a>
     </h1>
   </xsl:if>
   
@@ -1179,13 +1177,13 @@
         <xsl:otherwise>.<xsl:value-of select="$name"/></xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <a name="{$anchor-prefix}.references{$anchorpref}">
-      <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
-      <xsl:choose>
-        <xsl:when test="not(@title) or @title=''">References</xsl:when>
-        <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
-      </xsl:choose>
-    </a>
+    <a name="{$anchor-prefix}.references{$anchorpref}"/>
+    <a name="{$anchor-prefix}.section.{$sectionNumber}"/>
+    <xsl:value-of select="$sectionNumber" />&#0160;
+    <xsl:choose>
+      <xsl:when test="not(@title) or @title=''">References</xsl:when>
+      <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
+    </xsl:choose>
   </xsl:element>
  
   <table summary="{@title}" border="0" cellpadding="2">
@@ -1934,7 +1932,7 @@ td.header-l {
   background-color: #666666;
   font-size: 10px;
   font-family: arial, helvetica, sans-serif;
-  vertical-align: top
+  vertical-align: top;
 }
 td.header-r {
   width: 33%;
@@ -2084,7 +2082,7 @@ table.closedissue {
     color: black;
     background-color: white;
     font-family: arial, helvetica, sans-serif;
-    vertical-align: top
+    vertical-align: top;
     font-size: 13px;
   }
 
@@ -3376,11 +3374,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.173 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.173 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.174 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.174 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/09/04 17:21:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/04 17:21:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/09/05 08:32:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/05 08:32:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
