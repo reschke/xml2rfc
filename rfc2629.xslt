@@ -275,11 +275,6 @@
 	<!-- add all other top-level sections under <back> -->
 	<xsl:apply-templates select="*[not(self::references)]" />
 
-	<!-- insert the index if index entries exist -->
-  <xsl:if test="//iref">
-    <xsl:call-template name="insertIndex" />
-  </xsl:if>
-
 	<!-- copyright statements -->
   <xsl:variable name="copyright"><xsl:call-template name="insertCopyright" /></xsl:variable>
 
@@ -299,6 +294,11 @@
     </xsl:otherwise>
   </xsl:choose>
         
+	<!-- insert the index if index entries exist -->
+  <xsl:if test="//iref">
+    <xsl:call-template name="insertIndex" />
+  </xsl:if>
+
 </xsl:template>
 
 <xsl:template match="eref[node()]">
@@ -406,9 +406,6 @@
 
 	<xsl:if test="$includeToc='yes'">
 		<xsl:apply-templates select="/" mode="toc" />
-	</xsl:if>
-
-	<xsl:if test="$includeToc='yes'">
 		<xsl:call-template name="insertTocAppendix" />
 	</xsl:if>
 
@@ -694,10 +691,9 @@
     </xsl:choose>
   </xsl:variable>
   
-  <!-- test -->
-  <!--<xsl:apply-templates select="t[1]/iref[1]"/>-->
-  
   <xsl:element name="{$elemtype}">
+    <!-- generate anchors for irefs that are immediate childs of this section -->
+    <xsl:apply-templates select="iref"/>
     <xsl:if test="$sectionNumber!=''">
       <a name="rfc.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
     </xsl:if>
@@ -710,7 +706,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:element>
-  <xsl:apply-templates />
+  <xsl:apply-templates select="*[not(self::iref)]" />
 </xsl:template>
 
 <xsl:template match="vspace[not(@blankLines)]">
@@ -1356,6 +1352,13 @@ ins
   <xsl:apply-templates select="/rfc/front" mode="toc" />
   <xsl:apply-templates select="*[not(self::references)]" mode="toc" />
 
+	<!-- copyright statements -->
+  <xsl:call-template name="insertTocLine">
+    <xsl:with-param name="number" select="'&#167;'"/>
+    <xsl:with-param name="target" select="'rfc.copyright'"/>
+    <xsl:with-param name="title" select="'Full Copyright Statement'"/>
+  </xsl:call-template>
+
 	<!-- insert the index if index entries exist -->
   <xsl:if test="//iref">
     <xsl:call-template name="insertTocLine">
@@ -1364,13 +1367,6 @@ ins
       <xsl:with-param name="title" select="'Index'"/>
     </xsl:call-template>
   </xsl:if>
-
-	<!-- copyright statements -->
-  <xsl:call-template name="insertTocLine">
-    <xsl:with-param name="number" select="'&#167;'"/>
-    <xsl:with-param name="target" select="'rfc.copyright'"/>
-    <xsl:with-param name="title" select="'Full Copyright Statement'"/>
-  </xsl:call-template>
 
 </xsl:template>
 
@@ -1504,7 +1500,7 @@ ins
   <xsl:param name="line" />
   <xsl:param name="mode" />
   
-  <xsl:variable name="maxw" select="72" />
+  <xsl:variable name="maxw" select="69" />
   
   <xsl:if test="string-length($line) &gt; $maxw">
     <xsl:message>Artwork exceeds maximum width: <xsl:value-of select="$line" /></xsl:message>
