@@ -745,7 +745,7 @@
       <xsl:when test="local-name($node)='section'">
         section
         <xsl:for-each select="$node">
-          <xsl:number level="multiple" />
+          <xsl:call-template name="sectionnumber" />
         </xsl:for-each>
       </xsl:when>
       <xsl:when test="local-name($node)='figure'">
