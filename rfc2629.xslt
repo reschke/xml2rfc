@@ -225,15 +225,19 @@
     2003-07-24  julian.reschke@greenbytes.de
     
     Fix namespace name for DC.Creator.
+    
+    2003-08-06  julian.reschke@greenbytes.de
+    
+    Cleanup node-set support (only use exslt (saxon, xalan, libxslt) extension
+    functions; remove Transformix workarounds that stopped to work in Moz 1.4)
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
-                xmlns:xalan="http://xml.apache.org/xalan"
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
-                xmlns:saxon="http://icl.com/saxon"
+                xmlns:exslt="http://exslt.org/common"
                 xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
-                exclude-result-prefixes="msxsl xalan saxon myns ed"
+                exclude-result-prefixes="msxsl exslt myns ed"
                 xmlns:ed="http://greenbytes.de/2002/rfcedit"
                 >
 
@@ -508,11 +512,8 @@
       <xsl:when test="function-available('msxsl:node-set')">
         <xsl:apply-templates select="msxsl:node-set($copyright)" />
       </xsl:when>
-      <xsl:when test="function-available('saxon:node-set')">
-        <xsl:apply-templates select="saxon:node-set($copyright)" />
-      </xsl:when>
-      <xsl:when test="function-available('xalan:nodeset')">
-        <xsl:apply-templates select="xalan:nodeset($copyright)" />
+      <xsl:when test="function-available('exslt:node-set')">
+        <xsl:apply-templates select="exslt:node-set($copyright)" />
       </xsl:when>
       <xsl:otherwise> <!--proceed with fingers crossed-->
         <xsl:apply-templates select="$copyright" />
@@ -583,16 +584,10 @@
           <xsl:with-param name="rc" select="msxsl:node-set($rightColumn)" />    
         </xsl:call-template>
       </xsl:when>    
-      <xsl:when test="function-available('saxon:node-set')">
+      <xsl:when test="function-available('exslt:node-set')">
         <xsl:call-template name="emitheader">
-          <xsl:with-param name="lc" select="saxon:node-set($leftColumn)" />    
-          <xsl:with-param name="rc" select="saxon:node-set($rightColumn)" />    
-        </xsl:call-template>
-      </xsl:when>    
-      <xsl:when test="function-available('xalan:nodeset')">
-        <xsl:call-template name="emitheader">
-          <xsl:with-param name="lc" select="xalan:nodeset($leftColumn)" />    
-          <xsl:with-param name="rc" select="xalan:nodeset($rightColumn)" />    
+          <xsl:with-param name="lc" select="exslt:node-set($leftColumn)" />    
+          <xsl:with-param name="rc" select="exslt:node-set($rightColumn)" />    
         </xsl:call-template>
       </xsl:when>    
       <xsl:otherwise>    
@@ -622,16 +617,8 @@
       <xsl:when test="function-available('msxsl:node-set')">
         <xsl:apply-templates select="msxsl:node-set($preamble)" />
       </xsl:when>
-      <xsl:when test="function-available('saxon:node-set')">
-        <xsl:apply-templates select="saxon:node-set($preamble)" />
-      </xsl:when>
-      <xsl:when test="function-available('xalan:nodeset')">
-        <xsl:apply-templates select="xalan:nodeset($preamble)" />
-      </xsl:when>
-      <xsl:when test="system-property('xsl:vendor')='Transformiix' and system-property('xsl:vendor-url')='http://www.mozilla.org/projects/xslt/'">
-        <!--special case for Transformiix as of Mozilla release 1.2b -->
-        <!--see http://bugzilla.mozilla.org/show_bug.cgi?id=143668 -->
-        <xsl:apply-templates select="$preamble/node()" />
+      <xsl:when test="function-available('exslt:node-set')">
+        <xsl:apply-templates select="exslt:node-set($preamble)" />
       </xsl:when>
       <xsl:otherwise>
         <!--proceed with fingers crossed-->
@@ -2406,7 +2393,8 @@ table.resolution
 
 <!-- Chapter Link Generation -->
 
-<xsl:template match="node()" mode="links"><xsl:apply-templates mode="links"/></xsl:template>
+<xsl:template match="*" mode="links"><xsl:apply-templates mode="links"/></xsl:template>
+<xsl:template match="text()" mode="links" />
 
 <xsl:template match="/*/middle//section[not(myns:unnumbered) and not(ancestor::section)]" mode="links">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
@@ -2476,11 +2464,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.97 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.97 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.98 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.98 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/07/24 12:14:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/07/24 12:14:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/06 12:11:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/06 12:11:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
