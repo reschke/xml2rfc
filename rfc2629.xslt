@@ -921,7 +921,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.74 2003/05/12 16:12:55 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.75 2003/05/12 17:56:40 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -1901,10 +1901,10 @@ ins
   <xsl:param name="rule" />
   <xsl:if test="$rule"><hr class="noprint"/></xsl:if>
   <xsl:if test="$includeTitle or $includeToc='yes'">
-    <table summary="link to TOC" class="noprint" border="0" align="right" cellpadding="0" cellspacing="2" width="30">
+    <table summary="link to TOC" class="noprint" style="margin-left: auto; margin-right: 0; float: right; width: 2.5em;">
       <xsl:if test="$includeTitle">
         <tr>
-          <td style="background-color: #000000; text-align: center; vertical-align: middle; height: 30;">
+          <td style="background-color: #000000; text-align: center; vertical-align: middle; height: 2.5em;">
             <b><span class="RFC">&#0160;RFC&#0160;</span></b>
             <xsl:if test="/rfc/@number">
               <br />
@@ -1915,7 +1915,7 @@ ins
       </xsl:if>
       <xsl:if test="$includeToc='yes'">
         <tr>
-          <td style="background-color: #990000; text-align: center; height: 15;">
+          <td style="background-color: #990000; text-align: center; height: 1.5em;">
             <a href="#{$anchor-prefix}.toc"><b class="link2">&#0160;TOC&#0160;</b></a>
           </td>
         </tr>
