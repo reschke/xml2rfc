@@ -16,6 +16,10 @@
     
     Moved HTML output into XHTML namespace.
     
+    2001-10-02  julian.reschke@greenbytes.de
+    
+    Fixed default location for RFCs.
+    
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -53,7 +57,7 @@
 
 <!-- URL prefix for RFCs. -->
 
-<xsl:param name="rfcUrlPrefix" select="'http://info.internet.isi.edu/in-notes/rfc/files/rfc'" />
+<xsl:param name="rfcUrlPrefix" select="'http://www.ietf.org/rfc/rfc'" />
 
 
 <!-- build help keys for indices -->
