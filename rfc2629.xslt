@@ -241,6 +241,10 @@
     Map spanx/verb to HTML "samp" element. Fix author name display in
     references (reverse surname/initials for last author), add "Ed.".
     Fix internal bookmark generation.
+    
+    2003-08-11  julian.reschke@greenbytes.de
+    
+    Add DCMI dates and identifiers.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -952,7 +956,12 @@
       <xsl:if test="/rfc/@number">
         <link rel="Alternate" title="Authorative ASCII version" href="http://www.ietf.org/rfc/rfc{/rfc/@number}" />
       </xsl:if>
-      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+
+      <!-- generator -->
+      <xsl:variable name="gen">
+        <xsl:call-template name="get-generator" />
+      </xsl:variable>
+      <meta name="generator" content="{$gen}" />
       
       <!-- keywords -->
       <xsl:if test="front/keyword">
@@ -961,17 +970,29 @@
         </xsl:variable>
         <meta name="keywords" content="{$keyw}" />
       </xsl:if>
-      
-      <!-- generator -->
-      <xsl:variable name="gen">
-        <xsl:call-template name="get-generator" />
-      </xsl:variable>
-      <meta name="generator" content="{$gen}" />
-      
+
+      <!-- Dublin Core Metadata -->
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+            
       <!-- DC creator, see RFC2731 -->
       <xsl:for-each select="/rfc/front/author">
         <meta name="DC.Creator" content="{concat(@surname,', ',@initials)}" />
       </xsl:for-each>
+      
+      <xsl:if test="not($private)">
+        <xsl:choose>
+          <xsl:when test="/rfc/@number">
+            <meta name="DC.Identifier" content="urn:ietf:rfc:{/rfc/@number}" />
+          </xsl:when>
+          <xsl:when test="/rfc/@docName">
+            <meta name="DC.Identifier" content="urn:ietf:id:{/rfc/@docName}" />
+          </xsl:when>
+          <xsl:otherwise/>
+        </xsl:choose>
+        <xsl:variable name="month"><xsl:call-template name="get-month-as-num"/></xsl:variable>
+        <meta name="DC.Date.Issued" scheme="ISO8601" content="{/rfc/front/date/@year}-{$month}" />
+      </xsl:if>
+      
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -1319,6 +1340,25 @@
       <xsl:when test="$date/@month='October'">April <xsl:value-of select="$date/@year + 1" /></xsl:when>
       <xsl:when test="$date/@month='November'">May <xsl:value-of select="$date/@year + 1" /></xsl:when>
       <xsl:when test="$date/@month='December'">June <xsl:value-of select="$date/@year + 1" /></xsl:when>
+        <xsl:otherwise>WRONG SYNTAX FOR MONTH</xsl:otherwise>
+     </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-month-as-num">
+  <xsl:variable name="date" select="/rfc/front/date" />
+  <xsl:choose>
+      <xsl:when test="$date/@month='January'">01</xsl:when>
+      <xsl:when test="$date/@month='February'">02</xsl:when>
+      <xsl:when test="$date/@month='March'">03</xsl:when>
+      <xsl:when test="$date/@month='April'">04</xsl:when>
+      <xsl:when test="$date/@month='May'">05</xsl:when>
+      <xsl:when test="$date/@month='June'">06</xsl:when>
+      <xsl:when test="$date/@month='July'">07</xsl:when>
+      <xsl:when test="$date/@month='August'">08</xsl:when>
+      <xsl:when test="$date/@month='September'">09</xsl:when>
+      <xsl:when test="$date/@month='October'">10</xsl:when>
+      <xsl:when test="$date/@month='November'">11</xsl:when>
+      <xsl:when test="$date/@month='December'">12</xsl:when>
         <xsl:otherwise>WRONG SYNTAX FOR MONTH</xsl:otherwise>
      </xsl:choose>
 </xsl:template>
@@ -2495,11 +2535,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.102 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.102 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.103 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.103 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/11 08:06:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/11 08:06:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/11 10:29:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/11 10:29:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
