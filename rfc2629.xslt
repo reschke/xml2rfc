@@ -268,13 +268,13 @@
     Fix minor issue detecting the same org for the header (caused by IE's
     non-standard whitespace handling). Fix default handling for /rfc/@category.
     
-    2003-11-07  julian.reschke@greenbytes.de
+    2003-11-09  julian.reschke@greenbytes.de
     
     Inherit ed:entered-by from ancestor elements. Change CSS color for inserted
     text to green. Generate issues-list anchor. Do not complain about missing
     targets when the xref element is below ed:del. Remove code that attempted
     to distinguish section/Section when producing links - always use
-    uppercase.
+    uppercase. Fix date rendering for issue resolutions.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2386,7 +2386,7 @@ table.resolution {
           </xsl:if>
         </td>
         <td class="topnowrap">
-          <xsl:value-of select="@date"/>
+          <xsl:value-of select="@datetime"/>
         </td>
         <td class="top">
           <em>Resolution:</em>&#0160;<xsl:copy-of select="node()" />
@@ -2705,11 +2705,11 @@ table.resolution {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.137 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.137 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.138 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.138 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/11/07 16:00:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/07 16:00:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/11/09 18:23:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/09 18:23:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
