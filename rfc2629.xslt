@@ -497,7 +497,7 @@
 </xsl:template>
 
 <!-- numbered list inside numbered list -->
-<xsl:template match="list[@style='numbers']/t/list[@style='numbers']">
+<xsl:template match="list[@style='numbers']/t/list[@style='numbers']" priority="9">
 	<blockquote>
     <ol style="list-style-type: lower-alpha">
     	<xsl:apply-templates />
