@@ -381,6 +381,11 @@
     so that it allows change tracking inside artwork.  Also allow a subset of
     text markup inside artwork, such as xrefs (note this requires post-
     processing the source to make it compliant to RFC2629bis).
+    
+    2004-11-03  julian.reschke@greenbytes.de
+    
+    Enhanced placement of iref anchors.
+
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1446,8 +1451,9 @@ match="list//t//list[@style='letters']" priority="9">
     </xsl:choose>
     <xsl:call-template name="insertInsDelClass" />
     
-    <!-- generate anchors for irefs that are immediate childs of this section -->
-    <xsl:apply-templates select="iref"/>
+    <!-- process irefs immediadetely following the section so that their anchor
+    actually is the section heading -->
+    <xsl:apply-templates select="iref[count(preceding-sibling::*[not(self::iref)])=0]"/>
     
     <xsl:if test="$sectionNumber!=''">
       <a name="{$anchor-prefix}.section.{$sectionNumber}" href="#{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>
@@ -1462,7 +1468,8 @@ match="list//t//list[@style='letters']" priority="9">
       </xsl:otherwise>
     </xsl:choose>
   </xsl:element>
-  <xsl:apply-templates select="*[not(self::iref)]" />
+  <!-- continue with all child elements but the irefs processed above -->
+  <xsl:apply-templates select="*[not(self::iref)]|iref[count(preceding-sibling::*[not(self::iref)])!=0]" />
 </xsl:template>
 
 <xsl:template match="spanx[@style='emph' or not(@style)]">
@@ -3354,11 +3361,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.181 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.181 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.182 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.182 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/11/01 12:03:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/11/01 12:03:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/11/03 13:42:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/11/03 13:42:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
