@@ -1017,9 +1017,7 @@
       <style type="text/css" media="screen" title="Xml2Rfc (sans serif)">
         <xsl:call-template name="insertCss" />
       </style>
-      <!-- <style type="text/css" media="tty" title="Plain (typewriter)">
-        <xsl:call-template name="insertCss2" />
-      </style>  -->
+      <!--<link rel="alternate stylesheet" type="text/css" media="screen" title="Plain (typewriter)" href="rfc2629tty.css" />-->
       
       <!-- link elements -->
       <xsl:if test="$xml2rfc-toc='yes'">
@@ -1748,163 +1746,6 @@ table.resolution {
   .noprint {
     display:none
   }
-}
-</xsl:template>
-<xsl:template name="insertCss2">
-a {
-  text-decoration: none
-}
-a:hover {
-  text-decoration: underline
-}
-a:active {
-  text-decoration: underline
-}
-body {
-  color: #000000;
-  font-family: courier;
-  font-size: 12px;
-  width: 89ex;
-}
-dl {
-  margin-left: 2em;
-}
-h1 {
-  font-size: inherit;
-  font-weight: inherit;
-  page-break-after: avoid;
-}
-h1.np {
-  font-size: inherit;
-  page-break-before: always;
-}
-h2 {
-  font-size: inherit;
-  font-weight: inherit;
-  page-break-after: avoid;
-}
-h3 {
-  font-size: inherit;
-  font-weight: inherit;
-  page-break-after: avoid;
-}
-img {
-  margin-left: 3em;
-}
-li {
-  margin-left: 2em;
-  margin-right: 2em;
-}
-ol {
-  margin-left: 2em;
-  margin-right: 2em;
-}
-p {
-  margin-left: 2em;
-  margin-right: 2em;
-}
-pre {
-  margin-left: 3em;
-  background-color: lightyellow;
-}
-table {
-  margin-left: 2em;
-}
-table.header {
-  width: 100%;
-}
-td.top {
-  vertical-align: top;
-}
-td.topnowrap {
-  vertical-align: top;
-  white-space: nowrap; 
-}
-td.right {
-  text-align: right;
-}
-td.header-l {
-  width: 50%;
-  vertical-align: top;
-}
-td.header-r {
-  width: 50%;
-  vertical-align: top;
-  text-align: right;
-}
-thead {
-  display: table-header-group;
-}
-.editingmark {
-  display: none;
-}
-.error {
-  font-size: 14pt;
-  background-color: red;
-}
-.hotText {
-  color:#ffffff;
-  font-weight: normal;
-  text-decoration: none;
-  font-family: chelvetica, arial, sans-serif;
-  font-size: 9px
-}
-.link2 {
-  color:#ffffff;
-  font-weight: bold;
-  text-decoration: none;
-  font-family: helvetica, arial, sans-serif;
-  font-size: 9px
-}
-.toowide {
-  color: red;
-  font-weight: bold;
-}
-.RFC {
-  display: none;
-}
-.title {
-  text-align: center;
-}
-.figure {
-  font-weight: bold;
-  text-align: center;
-  font-size: 12px;
-}
-.filename {
-  text-align: center;
-}
-.warning {
-  font-size: 14pt;
-  background-color: yellow;
-}
-del {
-  color: red;
-  text-decoration: line-through;
-}
-.del {
-  color: red;
-  text-decoration: line-through;
-}
-ins {
-  color: blue;
-  text-decoration: underline;
-}
-.ins {
-  color: blue;
-  text-decoration: underline;
-}
-table.resolution {
-  background-color: khaki;
-  border-width: thin;
-  border-style: solid;
-  border-color: black;
-  margin-left: auto;
-  margin-right: 0;
-  float: right;
-}
-.noprint {
-  display: none;
 }
 </xsl:template>
 
@@ -2861,11 +2702,11 @@ table.resolution {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.127 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.127 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.128 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.128 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/10/05 16:19:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/05 16:19:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/10/05 16:35:55 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/05 16:35:55 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
