@@ -722,7 +722,7 @@
 </xsl:template>
 
 <xsl:template match="vspace[@blankLines]">
-  <br/><br/><xsl:for-each select="//*[position() &lt; @blankLines]"> <br /></xsl:for-each>
+  <br/><xsl:for-each select="//*[position() &lt;= @blankLines]"> <br /></xsl:for-each>
 </xsl:template>
 
 <xsl:template match="xref[node()]">
@@ -1455,6 +1455,10 @@ ins
   <xsl:apply-templates select="middle|back" mode="toc" />
 </xsl:template>
 
+<xsl:template match="ed:del|ed:ins" mode="toc">
+  <xsl:apply-templates mode="toc" />
+</xsl:template>
+
 <xsl:template match="*" mode="toc" />
 
 
@@ -1631,7 +1635,9 @@ ins
 </xsl:template>
 
 <xsl:template name="editingMark">
-  <xsl:if test="$insertEditingMarks='yes'"><sup><span class="editingmark"><xsl:number level="any" count="postamble|preamble|t"/></span></sup>&#0160;</xsl:if>
+  <xsl:if test="$insertEditingMarks='yes' and ancestor::rfc">
+    <sup><span class="editingmark"><xsl:number level="any" count="postamble|preamble|t"/></span></sup>&#0160;
+  </xsl:if>
 </xsl:template>
 
 <!-- experimental annotation support -->
