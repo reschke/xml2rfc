@@ -355,6 +355,11 @@
     
     Add support for list style=letters (thanks Roy F.). Make PNs optional;
     add new PI.
+
+    2004-09-04  julian.reschke@greenbytes.de
+    
+    Fix index links into unnumbered sections.
+
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2095,10 +2100,21 @@ table.closedissue {
       <xsl:if test="position()!=last()">, </xsl:if>
     </xsl:when>
     <xsl:otherwise>
+      <xsl:variable name="_n">
+        <xsl:call-template name="get-section-number" />
+      </xsl:variable>
+      <xsl:variable name="n">
+        <xsl:choose>
+          <xsl:when test="$_n!=''">
+            <xsl:value-of select="$_n"/>
+          </xsl:when>
+          <xsl:otherwise>&#167;</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" /></xsl:variable>
       &#0160;<a href="{$backlink}"><xsl:choose>
-          <xsl:when test="@primary='true'"><b><xsl:call-template name="get-section-number" /></b></xsl:when>
-          <xsl:otherwise><xsl:call-template name="get-section-number" /></xsl:otherwise>
+          <xsl:when test="@primary='true'"><b><xsl:value-of select="$n"/></b></xsl:when>
+          <xsl:otherwise><xsl:value-of select="$n"/></xsl:otherwise>
         </xsl:choose>
       </a><xsl:if test="position()!=last()">, </xsl:if>
     </xsl:otherwise>
@@ -3301,11 +3317,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.170 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.170 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.171 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.171 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/07/18 16:09:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/07/18 16:09:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/09/04 09:43:45 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/04 09:43:45 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
