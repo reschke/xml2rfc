@@ -183,7 +183,7 @@
     2003-05-11  julian.reschke@greenbytes.de
     
     change %c format to lowercase alphabetic. add support for keyword
-    elements (generate META tag).
+    elements (generate META tag). fix various HTML conformance problems.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -196,7 +196,7 @@
                 xmlns:ed="http://greenbytes.de/2002/rfcedit"
                 >
 
-<xsl:output method="html" encoding="iso-8859-1" />
+<xsl:output method="html" encoding="iso-8859-1" version="4.0" />
 
 
 <!-- process some of the processing instructions supported by Marshall T. Rose's
@@ -898,7 +898,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.67 2003/05/11 11:33:42 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.68 2003/05/11 12:48:38 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -1139,10 +1139,21 @@
     <xsl:variable name="pos" select="position()" />
     <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1"> 
       <tr>
-        <td width="33%" bgcolor="#666666" class="header"><xsl:copy-of select="$lc/myns:item[$pos]/node()" />&#0160;</td>
-        <td width="33%" bgcolor="#666666" class="header"><xsl:copy-of select="$rc/myns:item[$pos]/node()" />&#0160;</td>
+        <td width="33%" bgcolor="#666666" class="header"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
+        <td width="33%" bgcolor="#666666" class="header"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
       </tr>
     </xsl:if>
+  </xsl:for-each>
+</xsl:template>
+
+<!-- convenience template that avoids copying namespace nodes we don't want -->
+<xsl:template name="copynodes">
+  <xsl:param name="nodes" />
+  <xsl:for-each select="$nodes">
+    <xsl:choose>
+      <xsl:when test="self::*"><xsl:element name="{name()}"><xsl:copy-of select="@*|node()" /></xsl:element></xsl:when>
+      <xsl:otherwise><xsl:copy-of select="." /></xsl:otherwise>
+    </xsl:choose>
   </xsl:for-each>
 </xsl:template>
 
@@ -1174,9 +1185,7 @@
     <xsl:with-param name="rule" select="true()" />
   </xsl:call-template>
     
-  <a name="{$anchor-prefix}.authors">
-    <h1>Author's Address<xsl:if test="count(/rfc/front/author) &gt; 1">es</xsl:if></h1>
-   </a>
+  <h1><a name="{$anchor-prefix}.authors" />Author's Address<xsl:if test="count(/rfc/front/author) &gt; 1">es</xsl:if></h1>
 
   <table width="99%" border="0" cellpadding="0" cellspacing="0">
     <xsl:apply-templates select="/rfc/front/author" />
@@ -1416,9 +1425,7 @@ ins
     <xsl:with-param name="rule" select="true()" />
   </xsl:call-template> 
 
-  <a name="{$anchor-prefix}.index">
-    <h1>Index</h1>
-  </a>
+  <h1><a name="{$anchor-prefix}.index" />Index</h1>
 
   <table>
         
@@ -1774,10 +1781,10 @@ ins
   <xsl:param name="rule" />
   <xsl:if test="$rule"><hr class="noprint"/></xsl:if>
   <xsl:if test="$includeTitle or $includeToc='yes'">
-    <table class="noprint" border="0" cellpadding="0" cellspacing="2" width="30" height="15" align="right">
+    <table class="noprint" border="0" cellpadding="0" cellspacing="2" width="30" align="right">
       <xsl:if test="$includeTitle">
         <tr>
-          <td bgcolor="#000000" align="center" valign="center" width="30" height="30">
+          <td bgcolor="#000000" align="center" valign="middle" width="30" height="30">
             <b><span class="RFC">&#0160;RFC&#0160;</span></b><br />
             <span class="hotText"><xsl:value-of select="/rfc/@number"/></span>
           </td>
@@ -1915,18 +1922,18 @@ ins
 <xsl:template name="rfclist">
   <xsl:param name="list" />
   <xsl:choose>
-      <xsl:when test="contains($list,',')">
-          <xsl:variable name="rfcNo" select="substring-before($list,',')" />
-          <a href="{concat($rfcUrlPrefix,$rfcNo,'.txt')}"><xsl:value-of select="$rfcNo" /></a>,
-          <xsl:call-template name="rfclist">
-              <xsl:with-param name="list" select="normalize-space(substring-after($list,','))" />
-            </xsl:call-template>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:variable name="rfcNo" select="$list" />
-          <a href="{concat($rfcUrlPrefix,$rfcNo,'.txt')}"><xsl:value-of select="$rfcNo" /></a>
-         </xsl:otherwise>
-    </xsl:choose>
+    <xsl:when test="contains($list,',')">
+      <xsl:variable name="rfcNo" select="substring-before($list,',')" />
+      <a href="{concat($rfcUrlPrefix,$rfcNo,'.txt')}"><xsl:value-of select="$rfcNo" /></a>,
+      <xsl:call-template name="rfclist">
+        <xsl:with-param name="list" select="normalize-space(substring-after($list,','))" />
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="rfcNo" select="$list" />
+      <a href="{concat($rfcUrlPrefix,$rfcNo,'.txt')}"><xsl:value-of select="$rfcNo" /></a>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:variable name="hasEdits" select="count(//ed:del|//ed:ins)!=0" />
