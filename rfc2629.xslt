@@ -179,6 +179,11 @@
     2003-05-06  julian.rechke@greenbytes.de
     
     support for "background" PI.
+    
+    2003-05-11  julian.reschke@greenbytes.de
+    
+    change %c format to lowercase alphabetic. add support for keyword
+    elements (generate META tag).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -675,7 +680,7 @@
     <td class="top">
       <xsl:choose>
         <xsl:when test="contains($format,'%c')">
-          <xsl:value-of select="substring-before($format,'%c')"/><xsl:number value="$pos" format="A" /><xsl:value-of select="substring-after($format,'%c')"/>
+          <xsl:value-of select="substring-before($format,'%c')"/><xsl:number value="$pos" format="a" /><xsl:value-of select="substring-after($format,'%c')"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="substring-before($format,'%d')"/><xsl:number value="$pos" format="1" /><xsl:value-of select="substring-after($format,'%d')"/>
@@ -863,6 +868,8 @@
        <style type="text/css">
         <xsl:call-template name="insertCss" />
       </style>
+      
+      <!-- link elements -->
       <xsl:if test="$includeToc='yes'">
         <link rel="Contents" href="#rfc.toc" />
       </xsl:if>
@@ -878,6 +885,20 @@
       <xsl:if test="/rfc/@number">
         <link rel="Alternate" title="Authorative ASCII version" href="http://www.ietf.org/rfc/rfc{/rfc/@number}" />
       </xsl:if>
+      
+      <!-- keywords -->
+      <xsl:if test="front/keyword">
+        <xsl:variable name="keyw">
+          <xsl:for-each select="front/keyword">
+            <xsl:value-of select="translate(.,',',' ')" />
+            <xsl:if test="position()!=last()">,</xsl:if>
+          </xsl:for-each>
+        </xsl:variable>
+        <meta name="keywords" content="{normalize-space($keyw)}" />
+      </xsl:if>
+      
+      <!-- generator -->
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.67 2003/05/11 11:33:42 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
