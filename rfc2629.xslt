@@ -437,9 +437,10 @@
 
     Align section number format with xml2rfc1.29.
     
-    2005-03-14  julian.reschke@greenbytes.de
+    2005-03-28  julian.reschke@greenbytes.de
     
-    Get rid of table elements in Author's section.
+    Get rid of table elements in Author's section.  Add experimental hCard
+    (<http://developers.technorati.com/wiki/hCard>) support.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -798,58 +799,81 @@
 </xsl:template>
 
 <xsl:template match="author">
-  <p>
-    <address>
-      <xsl:value-of select="@fullname" />
-      <xsl:if test="@role">
-        (<xsl:value-of select="@role" />)
-      </xsl:if>
-      <br/>
-      <xsl:value-of select="organization" />
-      <br/>
-      <xsl:if test="address/postal/street!=''">
-        <xsl:for-each select="address/postal/street">
-          <xsl:value-of select="." />
-          <br />
-        </xsl:for-each>
-      </xsl:if>
-      <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
-        <xsl:if test="address/postal/city"><xsl:value-of select="address/postal/city" />, </xsl:if>
-        <xsl:if test="address/postal/region"><xsl:value-of select="address/postal/region" />&#160;</xsl:if>
-        <xsl:if test="address/postal/code"><xsl:value-of select="address/postal/code" /></xsl:if>
-        <br/>
-      </xsl:if>
-      <xsl:if test="address/postal/country">
-        <xsl:value-of select="address/postal/country" />
-        <br/>
-      </xsl:if>
+
+    <address class="vcard">
+      <span class="vcardline">
+        <span class="fn">
+          <xsl:value-of select="@fullname" />
+        </span>
+        <xsl:if test="@role">
+          (<xsl:value-of select="@role" />)
+        </xsl:if>
+        <!-- components of name (hidden from display -->
+        <span class="n" style="display: none">
+          <span class="Family-Name"><xsl:value-of select="@surname"/></span>
+          <!-- given-name family-name -->
+          <xsl:if test="@surname=substring(@fullname,1 + string-length(@fullname) - string-length(@surname))">
+            <span class="Given-Name"><xsl:value-of select="normalize-space(substring(@fullname,1,string-length(@fullname) - string-length(@surname)))"/></span>
+          </xsl:if>
+          <!-- family-name given-name -->
+          <xsl:if test="starts-with(@fullname,@surname)">
+            <span class="Given-Name"><xsl:value-of select="normalize-space(substring-after(@fullname,@surname))"/></span>
+          </xsl:if>
+        </span>
+      </span>
+      <span class="org vcardline">
+        <xsl:value-of select="organization" />
+      </span>
+      <span class="adr vcardline">
+        <xsl:if test="address/postal/street!=''">
+          <span class="street vcardline">
+            <xsl:for-each select="address/postal/street">
+              <xsl:value-of select="." />
+            </xsl:for-each>
+          </span>
+        </xsl:if>
+        <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
+          <span class="vcardline">
+            <xsl:if test="address/postal/city"><span class="locality"><xsl:value-of select="address/postal/city" /></span>, </xsl:if>
+            <xsl:if test="address/postal/region"><span class="region"><xsl:value-of select="address/postal/region" /></span>&#160;</xsl:if>
+            <xsl:if test="address/postal/code"><span class="pcode"><xsl:value-of select="address/postal/code" /></span></xsl:if>
+          </span>
+        </xsl:if>
+        <xsl:if test="address/postal/country">
+          <span class="country vcardline"><xsl:value-of select="address/postal/country" /></span>
+        </xsl:if>
+      </span>
       <xsl:if test="address/phone">
-        <b>Phone:&#0160;</b>
-        <a href="tel:{translate(address/phone,' ','')}"><xsl:value-of select="address/phone" /></a>
-        <br/>
+        <span class="vcardline">
+          <b>Phone:&#0160;</b>
+          <a href="tel:{translate(address/phone,' ','')}"><span class="tel"><span class="voice"><xsl:value-of select="address/phone" /></span></span></a>
+        </span>
       </xsl:if>
       <xsl:if test="address/facsimile">
-        <b>Fax:&#0160;</b>
-        <a href="fax:{translate(address/facsimile,' ','')}"><xsl:value-of select="address/facsimile" /></a>
-        <br/>
+        <span class="vcardline">
+          <b>Fax:&#0160;</b>
+          <a href="fax:{translate(address/facsimile,' ','')}"><span class="tel"><span class="fax"><xsl:value-of select="address/facsimile" /></span></span></a>
+        </span>
       </xsl:if>
       <xsl:if test="address/email">
+        <span class="vcardline">
         <b>EMail:&#0160;</b>
         <a>
           <xsl:if test="$xml2rfc-linkmailto!='no'">
             <xsl:attribute name="href">mailto:<xsl:value-of select="address/email" /></xsl:attribute>
           </xsl:if>
-          <xsl:value-of select="address/email" />
+          <span class="email"><xsl:value-of select="address/email" /></span>
         </a>
-        <br/>
+        </span>
       </xsl:if>
       <xsl:if test="address/uri">
-        <b>URI:&#0160;</b>
-        <a href="{address/uri}"><xsl:value-of select="address/uri" /></a>
-        <br/>
+        <span class="vcardline">
+          <b>URI:&#0160;</b>
+          <a href="{address/uri}" class="url"><xsl:value-of select="address/uri" /></a>
+        </span>
       </xsl:if>
     </address>
-  </p>
+
 </xsl:template>
 
 <xsl:template match="back">
@@ -2085,6 +2109,7 @@ a:active {
   text-decoration: underline;
 }
 address {
+  margin-top: 1em;
   margin-left: 2em;
   font-style: normal;
 }
@@ -2293,6 +2318,9 @@ ins {
 }
 .pn:hover {
   color: #C8A8FF;
+}
+.vcardline {
+  display: block;
 }
 
 table.openissue {
@@ -3597,11 +3625,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.216 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.216 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.217 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.217 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/03/14 13:22:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/03/14 13:22:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/03/28 13:05:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/03/28 13:05:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
