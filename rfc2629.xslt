@@ -929,14 +929,7 @@
       <!-- generator -->
       <xsl:variable name="gen">
         <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
-        <!-- when RCS keyword substitution in place, add version info -->
-        <xsl:if test="contains('$Revision: 1.86 $',':')">
-          <xsl:value-of select="concat(normalize-space(translate(substring-after('$Revision: 1.86 $', '$Revision: 1.86 $','')),', ')" />
-        </xsl:if>
-        <xsl:if test="contains('$Date: 2003/05/17 08:58:03 $',':')">
-          <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/05/17 08:58:03 $', '$Date: 2003/05/17 08:58:03 $','')),', ')" />
-        </xsl:if>
-        <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
+        <xsl:call-template name="get-generator" />
       </xsl:variable>
       <meta name="generator" content="{$gen}" />
       
@@ -2432,6 +2425,21 @@ table.resolution
     <xsl:when test="/rfc/@ipr">INTERNET DRAFT</xsl:when>
     <xsl:otherwise>RFC <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
   </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-generator">
+  <xsl:variable name="gen">
+    <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
+    <!-- when RCS keyword substitution in place, add version info -->
+    <xsl:if test="contains('$Revision: 1.87 $',':')">
+      <xsl:value-of select="concat('Version ',normalize-space(translate(substring-after('$Revision: 1.87 $', '$Revision: 1.87 $','')),', ')" />
+    </xsl:if>
+    <xsl:if test="contains('$Date: 2003/05/17 09:06:55 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/05/17 09:06:55 $', '$Date: 2003/05/17 09:06:55 $','')),', ')" />
+    </xsl:if>
+    <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
+  </xsl:variable>
+  <xsl:value-of select="$gen" />
 </xsl:template>
 
 <xsl:template name="get-header-right">
