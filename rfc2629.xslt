@@ -335,6 +335,11 @@
     2004-05-20  julian.reschke@greenbytes.de
     
     Rewrite anchor generation for comments.
+
+    2004-05-22  julian.reschke@greenbytes.de
+    
+    Enhance issues rendering (add links to changes).
+
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2749,7 +2754,28 @@ table.closedissue {
           <em>Resolution:</em>&#0160;<xsl:copy-of select="node()" />
         </td>
       </tr>
-    </xsl:for-each>      
+    </xsl:for-each>
+    <xsl:variable name="changes" select="//*[@ed:resolves=current()/@name]" />
+    <xsl:if test="$changes">
+      <tr>
+        <td class="top" colspan="3">
+          Associated changes in this document:
+          <xsl:for-each select="$changes">
+            <a href="#{$anchor-prefix}.change.{@ed:resolves}.{position()}">
+              <xsl:variable name="label">
+                <xsl:call-template name="get-section-number"/>
+              </xsl:variable>
+              <xsl:choose>
+                <xsl:when test="$label!=''"><xsl:value-of select="$label"/></xsl:when>
+                <xsl:otherwise>&lt;<xsl:value-of select="concat('#',$anchor-prefix,'.change.',@ed:resolves,'.',position())"/>&gt;</xsl:otherwise>
+              </xsl:choose>
+            </a>
+            <xsl:if test="position()!=last()">, </xsl:if>
+          </xsl:for-each>
+          <xsl:text>.</xsl:text>
+        </td>
+      </tr>
+    </xsl:if>
   </table>
     
 </xsl:template>
@@ -2856,6 +2882,11 @@ table.closedissue {
 <xsl:template name="insert-issue-pointer">
   <xsl:if test="@ed:resolves">
     <xsl:variable name="resolves" select="@ed:resolves"/>
+    <a>
+      <xsl:attribute name="name">
+        <xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:number level="any" count="*[@ed:resolves=$resolves]" />
+      </xsl:attribute>
+    </a>
     <xsl:choose>
       <xsl:when test="not(ancestor::t)">
         <div><a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
@@ -3185,11 +3216,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.162 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.162 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.163 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.163 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/05/21 11:30:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/21 11:30:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/05/22 09:56:15 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/22 09:56:15 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
