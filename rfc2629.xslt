@@ -84,6 +84,15 @@
     
     Bugfix in detection of matching org names when creating the header. Fixed
     sorting in subitems.
+    
+    2002-04-02  julian.reschke@greenbytes.de
+    
+    Fix TOC link HTML generation when no TOC is generated (created broken
+    HTML table code).
+
+    2002-04-03  julian.reschke@greenbytes.de
+    
+    Made rendering of references more tolerant re: missing parts.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -557,7 +566,7 @@
     <td valign="top">
       <xsl:for-each select="front/author">
 				<xsl:choose>
-          <xsl:when test="@surname">
+          <xsl:when test="@surname and @surname!=''">
         	  <xsl:choose>
  		          <xsl:when test="address/email">
                 <a href="mailto:{address/email}">
@@ -593,22 +602,28 @@
        	
       <xsl:choose>
 		    <xsl:when test="string-length($target) &gt; 0">
-			    "<a href="{$target}"><xsl:value-of select="front/title" /></a>",
+			    <xsl:text>"</xsl:text><a href="{$target}"><xsl:value-of select="front/title" /></a><xsl:text>"</xsl:text>
     	  </xsl:when>
         <xsl:otherwise>
-          "<xsl:value-of select="front/title" />",
+          <xsl:text>"</xsl:text><xsl:value-of select="front/title" /><xsl:text>"</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
             
       <xsl:for-each select="seriesInfo">
+        <xsl:text>, </xsl:text>
         <xsl:choose>
           <xsl:when test="not(@name) and not(@value) and ./text()"><xsl:value-of select="." /></xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" />&#0160;<xsl:value-of select="@value" /></xsl:otherwise>
-        </xsl:choose>,
+					<xsl:otherwise><xsl:value-of select="@name" /><xsl:if test="@value!=''">&#0160;<xsl:value-of select="@value" /></xsl:if></xsl:otherwise>
+        </xsl:choose>
       </xsl:for-each>
       
-      <xsl:if test="front/date/@month and front/date/@month!='???'"><xsl:value-of select="front/date/@month" />&#0160;</xsl:if>
-      <xsl:value-of select="front/date/@year" />.
+      <xsl:if test="front/date/@year != '' and front/date/@year != '???'">
+        <xsl:text>, </xsl:text>
+        <xsl:if test="front/date/@month and front/date/@month!='???'"><xsl:value-of select="front/date/@month" />&#0160;</xsl:if>
+        <xsl:value-of select="front/date/@year" />
+      </xsl:if>
+      
+      <xsl:text>.</xsl:text>
     </td>
   </tr>
 </xsl:template>
@@ -767,13 +782,13 @@
   <a href="#{$target}">
     <xsl:choose>
       <xsl:when test="local-name($node)='section'">
-        Section
+        <xsl:text>Section </xsl:text>
         <xsl:for-each select="$node">
           <xsl:call-template name="sectionnumber" />
         </xsl:for-each>
       </xsl:when>
       <xsl:when test="local-name($node)='figure'">
-        Figure
+        <xsl:text>Figure </xsl:text>
         <xsl:for-each select="$node">
           <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
         </xsl:for-each>
@@ -1511,21 +1526,25 @@ ins
 	<xsl:param name="includeTitle" select="false()" />
 	<xsl:param name="rule" />
 	<xsl:if test="$rule"><hr class="noprint" size="1" shade="0" /></xsl:if>
-	<table class="noprint" border="0" cellpadding="0" cellspacing="2" width="30" height="15" align="right">
-    	<xsl:if test="$includeTitle"><tr>
-        	<td bgcolor="#000000" align="center" valign="center" width="30" height="30">
-       			<b><span class="RFC">&#0160;RFC&#0160;</span></b><br />
-           		<span class="hotText"><xsl:value-of select="/rfc/@number"/></span>
-        	</td>
-    	</tr></xsl:if>
-		<xsl:if test="$includeToc='yes'">
-    	<tr>
-        	<td bgcolor="#990000" align="center" width="30" height="15">
-           		<a href="#{$anchor-prefix}.toc" CLASS="link2"><b class="link2">&#0160;TOC&#0160;</b></a>
-			</td>
+  <xsl:if test="$includeTitle or $includeToc='yes'">
+  	<table class="noprint" border="0" cellpadding="0" cellspacing="2" width="30" height="15" align="right">
+      <xsl:if test="$includeTitle">
+        <tr>
+          <td bgcolor="#000000" align="center" valign="center" width="30" height="30">
+            <b><span class="RFC">&#0160;RFC&#0160;</span></b><br />
+            <span class="hotText"><xsl:value-of select="/rfc/@number"/></span>
+          </td>
         </tr>
-        </xsl:if>
-	</table>	
+      </xsl:if>
+  		<xsl:if test="$includeToc='yes'">
+      	<tr>
+          <td bgcolor="#990000" align="center" width="30" height="15">
+             		<a href="#{$anchor-prefix}.toc" CLASS="link2"><b class="link2">&#0160;TOC&#0160;</b></a>
+  			  </td>
+        </tr>
+      </xsl:if>
+  	</table>
+  </xsl:if>
 </xsl:template>
 
 
