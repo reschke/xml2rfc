@@ -241,11 +241,11 @@
     references (reverse surname/initials for last author), add "Ed.".
     Fix internal bookmark generation.
     
-    2003-08-12  julian.reschke@greenbytes.de
+    2003-08-13  julian.reschke@greenbytes.de
     
     Add DCMI dates, identifiers and abstract. Add PI to suppress DCMI
     generation.  Do not add TOC entry to Copyright Statement when there is
-    none.
+    none. Align RFC2629 PI names and parameter names.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -266,7 +266,7 @@
 <!-- include a table of contents if a processing instruction <?rfc?>
      exists with contents toc="yes". Can be overriden by an XSLT parameter -->
 
-<xsl:param name="includeToc"
+<xsl:param name="xml2rfc-toc"
   select="substring-after(
       translate(/processing-instruction('rfc')[contains(.,'toc=')], '&quot; ', ''),
         'toc=')"
@@ -274,7 +274,7 @@
 
 <!-- optional tocdepth-->
 
-<xsl:param name="tocDepth"
+<xsl:param name="xml2rfc-tocdepth"
   select="substring-after(
       translate(/processing-instruction('rfc')[contains(.,'tocdepth=')], '&quot; ', ''),
         'tocdepth=')"
@@ -282,11 +282,11 @@
 
 <xsl:variable name="parsedTocDepth">
   <xsl:choose>
-    <xsl:when test="$tocDepth='1'">1</xsl:when>
-    <xsl:when test="$tocDepth='2'">2</xsl:when>
-    <xsl:when test="$tocDepth='3'">3</xsl:when>
-    <xsl:when test="$tocDepth='4'">4</xsl:when>
-    <xsl:when test="$tocDepth='5'">5</xsl:when>
+    <xsl:when test="$xml2rfc-tocdepth='1'">1</xsl:when>
+    <xsl:when test="$xml2rfc-tocdepth='2'">2</xsl:when>
+    <xsl:when test="$xml2rfc-tocdepth='3'">3</xsl:when>
+    <xsl:when test="$xml2rfc-tocdepth='4'">4</xsl:when>
+    <xsl:when test="$xml2rfc-tocdepth='5'">5</xsl:when>
     <xsl:otherwise>99</xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
@@ -295,7 +295,7 @@
 <!-- use symbolic reference names instead of numeric ones if a processing instruction <?rfc?>
      exists with contents symrefs="yes". Can be overriden by an XSLT parameter -->
 
-<xsl:param name="useSymrefs"
+<xsl:param name="xml2rfc-symrefs"
   select="substring-after(
       translate(/processing-instruction('rfc')[contains(.,'symrefs=')], '&quot; ', ''),
         'symrefs=')"
@@ -304,7 +304,7 @@
 <!-- sort references if a processing instruction <?rfc?>
      exists with contents sortrefs="yes". Can be overriden by an XSLT parameter -->
 
-<xsl:param name="sortRefs"
+<xsl:param name="xml2rfc-sortrefs"
   select="substring-after(
       translate(/processing-instruction('rfc')[contains(.,'sortrefs=')], '&quot; ', ''),
         'sortrefs=')"
@@ -313,7 +313,7 @@
 <!-- insert editing marks if a processing instruction <?rfc?>
      exists with contents editing="yes". Can be overriden by an XSLT parameter -->
 
-<xsl:param name="insertEditingMarks"
+<xsl:param name="xml2rfc-editing"
   select="substring-after(
       translate(/processing-instruction('rfc')[contains(.,'editing=')], '&quot; ', ''),
         'editing=')"
@@ -321,7 +321,7 @@
 
 <!-- make it a private paper -->
 
-<xsl:param name="private"
+<xsl:param name="xml2rfc-private"
   select="substring-after(
       translate(/processing-instruction('rfc')[contains(.,'private=')], '&quot;', ''),
         'private=')"
@@ -329,7 +329,7 @@
 
 <!-- background image? -->
 
-<xsl:param name="background"
+<xsl:param name="xml2rfc-background"
   select="substring-after(
       translate(/processing-instruction('rfc')[contains(.,'background=')], '&quot;', ''),
         'background=')"
@@ -353,7 +353,7 @@
 
 <!-- choose whether or not to do mailto links --> 
   
- <xsl:param name="link-mailto" 
+ <xsl:param name="xml2rfc-linkmailto" 
    select="substring-after( 
        translate(/processing-instruction('rfc')[contains(.,'linkmailto=')], '&quot;', ''), 
          'linkmailto=')" 
@@ -362,7 +362,7 @@
 
 <!-- iprnotified switch --> 
   
- <xsl:param name="iprnotified" 
+ <xsl:param name="xml2rfc-iprnotified" 
    select="substring-after( 
        translate(/processing-instruction('rfc')[contains(.,'iprnotified=')], '&quot;', ''), 
          'iprnotified=')" 
@@ -495,7 +495,7 @@
       <td class="right"><b>EMail:&#0160;</b></td>
       <td>
         <a>
-          <xsl:if test="$link-mailto!='no'">
+          <xsl:if test="$xml2rfc-linkmailto!='no'">
             <xsl:attribute name="href">mailto:<xsl:value-of select="address/email" /></xsl:attribute>
           </xsl:if>
           <xsl:value-of select="address/email" />
@@ -527,7 +527,7 @@
   <!-- add all other top-level sections under <back> -->
   <xsl:apply-templates select="*[not(self::references)]" />
 
-  <xsl:if test="not($private)">
+  <xsl:if test="not($xml2rfc-private)">
     <!-- copyright statements -->
     <xsl:variable name="copyright"><xsl:call-template name="insertCopyright" /></xsl:variable>
   
@@ -632,7 +632,7 @@
     </xsl:if>  
   </p>
   
-  <xsl:if test="not($private)">
+  <xsl:if test="not($xml2rfc-private)">
     <!-- Get status info formatted as per RFC2629-->
     <xsl:variable name="preamble"><xsl:call-template name="insertPreamble" /></xsl:variable>
     
@@ -654,7 +654,7 @@
   <xsl:apply-templates select="abstract" />
   <xsl:apply-templates select="note" />
     
-  <xsl:if test="$includeToc='yes'">
+  <xsl:if test="$xml2rfc-toc='yes'">
     <xsl:apply-templates select="/" mode="toc" />
     <xsl:call-template name="insertTocAppendix" />
   </xsl:if>
@@ -831,7 +831,7 @@
             <xsl:choose>
                <xsl:when test="address/email">
                 <a>
-                  <xsl:if test="$link-mailto!='no'">
+                  <xsl:if test="$xml2rfc-linkmailto!='no'">
                     <xsl:attribute name="href">mailto:<xsl:value-of select="address/email" /></xsl:attribute>
                   </xsl:if>
                   <xsl:if test="organization/text()">
@@ -923,7 +923,7 @@
 
   <table summary="{@title}" border="0" cellpadding="2">
     <xsl:choose>
-      <xsl:when test="$sortRefs='yes'">
+      <xsl:when test="$xml2rfc-sortrefs='yes'">
         <xsl:apply-templates>
           <xsl:sort select="@anchor" />
         </xsl:apply-templates>
@@ -950,7 +950,7 @@
       </style>
       
       <!-- link elements -->
-      <xsl:if test="$includeToc='yes'">
+      <xsl:if test="$xml2rfc-toc='yes'">
         <link rel="Contents" href="#{$anchor-prefix}.toc" />
       </xsl:if>
       <link rel="Author" href="#{$anchor-prefix}.authors" />
@@ -989,7 +989,7 @@
           <meta name="DC.Creator" content="{concat(@surname,', ',@initials)}" />
         </xsl:for-each>
         
-        <xsl:if test="not($private)">
+        <xsl:if test="not($xml2rfc-private)">
           <xsl:choose>
             <xsl:when test="/rfc/@number">
               <meta name="DC.Identifier" content="urn:ietf:rfc:{/rfc/@number}" />
@@ -1224,7 +1224,7 @@
 <xsl:template name="collectLeftHeaderColumn">
   <xsl:param name="mode" />
   <!-- default case -->
-  <xsl:if test="not($private)">
+  <xsl:if test="not($xml2rfc-private)">
     <myns:item>Network Working Group</myns:item>
     <myns:item>
        <xsl:choose>
@@ -1274,8 +1274,8 @@
   </xsl:if>
     
   <!-- private case -->
-  <xsl:if test="$private">
-    <myns:item><xsl:value-of select="$private" /></myns:item>
+  <xsl:if test="$xml2rfc-private">
+    <myns:item><xsl:value-of select="$xml2rfc-private" /></myns:item>
   </xsl:if>
 </xsl:template>
 
@@ -1428,7 +1428,7 @@
     required to practice this standard. Please address the
     information to the IETF Executive Director.
   </t>
-  <xsl:if test="$iprnotified='yes'">
+  <xsl:if test="$xml2rfc-iprnotified='yes'">
     <t>
       The IETF has been notified of intellectual property rights
       claimed in regard to some or all of the specification contained
@@ -1498,8 +1498,8 @@ a:active
 }
 body
 {
-  <xsl:if test="$background!=''">
-  background: url(<xsl:value-of select="$background" />) #ffffff left top;
+  <xsl:if test="$xml2rfc-background!=''">
+  background: url(<xsl:value-of select="$xml2rfc-background" />) #ffffff left top;
   </xsl:if>
   color: #000000;
   font-family: helvetica, arial, sans-serif;
@@ -1910,7 +1910,7 @@ table.resolution
   <xsl:apply-templates select="*[not(self::references)]" mode="toc" />
 
   <!-- copyright statements -->
-  <xsl:if test="not($private)">
+  <xsl:if test="not($xml2rfc-private)">
     <xsl:call-template name="insertTocLine">
       <xsl:with-param name="number" select="'&#167;'"/>
       <xsl:with-param name="target" select="concat($anchor-prefix,'.ipr')"/>
@@ -2030,7 +2030,7 @@ table.resolution
   <xsl:param name="includeTitle" select="false()" />
   <xsl:param name="rule" />
   <xsl:if test="$rule"><hr class="noprint"/></xsl:if>
-  <xsl:if test="$includeTitle or $includeToc='yes'">
+  <xsl:if test="$includeTitle or $xml2rfc-toc='yes'">
     <table summary="link to TOC" class="noprint" style="margin-left: auto; margin-right: 0; float: right; width: 2.5em;">
       <xsl:if test="$includeTitle">
         <tr>
@@ -2043,7 +2043,7 @@ table.resolution
           </td>
         </tr>
       </xsl:if>
-      <xsl:if test="$includeToc='yes'">
+      <xsl:if test="$xml2rfc-toc='yes'">
         <tr>
           <td style="background-color: #990000; text-align: center; height: 1.5em;">
             <a href="#{$anchor-prefix}.toc"><b class="link2">&#0160;TOC&#0160;</b></a>
@@ -2058,7 +2058,7 @@ table.resolution
 <xsl:template name="referencename">
   <xsl:param name="node" />
   <xsl:choose>
-    <xsl:when test="$useSymrefs='yes'">[<xsl:value-of select="$node/@anchor" />]</xsl:when>
+    <xsl:when test="$xml2rfc-symrefs='yes'">[<xsl:value-of select="$node/@anchor" />]</xsl:when>
     <xsl:otherwise><xsl:for-each select="$node">[<xsl:number level="any" />]</xsl:for-each></xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -2239,7 +2239,7 @@ table.resolution
 </xsl:template>
 
 <xsl:template name="editingMark">
-  <xsl:if test="$insertEditingMarks='yes' and ancestor::rfc">
+  <xsl:if test="$xml2rfc-editing='yes' and ancestor::rfc">
     <sup><span class="editingmark"><xsl:number level="any" count="postamble|preamble|t"/></span></sup>&#0160;
   </xsl:if>
 </xsl:template>
@@ -2574,11 +2574,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.107 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.107 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.108 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.108 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/12 23:52:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/12 23:52:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/13 07:39:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/13 07:39:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
