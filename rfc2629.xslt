@@ -1554,9 +1554,9 @@
   </xsl:choose>
 </xsl:template>
 
-<!--<xsl:template match="vspace[not(@blankLines)]">
+<xsl:template match="vspace[not(@blankLines)]">
   <br />
-</xsl:template> -->
+</xsl:template>
 
 <xsl:template match="vspace">
   <xsl:call-template name="insert-blank-lines">
@@ -3492,11 +3492,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.201 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.201 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.202 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.202 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/31 18:00:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/31 18:00:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/31 19:13:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/31 19:13:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
