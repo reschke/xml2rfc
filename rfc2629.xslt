@@ -268,10 +268,11 @@
     Fix minor issue detecting the same org for the header (caused by IE's
     non-standard whitespace handling). Fix default handling for /rfc/@category.
     
-    2003-11-06  julian.reschke@greenbytes.de
+    2003-11-07  julian.reschke@greenbytes.de
     
     Inherit ed:entered-by from ancestor elements. Change CSS color for inserted
-    text to green. Generate issues-list anchor.
+    text to green. Generate issues-list anchor. Do not complain about missing
+    targets when the xref element is below ed:del.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1234,7 +1235,7 @@
   <xsl:variable name="context" select="." />
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="//*[@anchor=$target]" />
-  <xsl:if test="count($node)=0">
+  <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
     <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
     <span class="error">Undefined target: <xsl:value-of select="@target" /></span>
   </xsl:if>
@@ -2464,7 +2465,7 @@ table.resolution {
   </xsl:if>
   
   <!-- check IDs -->
-  <xsl:variable name="badTargets" select="//xref[not(@target=//@anchor)]" />
+  <xsl:variable name="badTargets" select="//xref[not(@target=//@anchor) and not(ancestor::ed:del)]" />
   <xsl:if test="$badTargets">
     <p class="error">
       The following target names do not exist:
@@ -2718,11 +2719,11 @@ table.resolution {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.135 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.135 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.136 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.136 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/11/06 13:18:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/06 13:18:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/11/07 13:19:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/07 13:19:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
