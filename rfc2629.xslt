@@ -184,6 +184,7 @@
     
     change %c format to lowercase alphabetic. add support for keyword
     elements (generate META tag). fix various HTML conformance problems.
+    added experimental support for role attribute.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -367,7 +368,12 @@
 <xsl:template match="author">
   <tr>
     <td>&#0160;</td>
-    <td><xsl:value-of select="@fullname" /></td>
+    <td>
+      <xsl:value-of select="@fullname" />
+      <xsl:if test="@role">
+        (<xsl:value-of select="@role" />)
+      </xsl:if>
+    </td>
   </tr>
   <tr>
     <td>&#0160;</td>
@@ -898,7 +904,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.68 2003/05/11 12:48:38 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.69 2003/05/11 13:28:40 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -1110,24 +1116,40 @@
 
 <xsl:template name="collectRightHeaderColumn">
   <xsl:for-each select="author">
-     <xsl:if test="@surname">
-       <myns:item><xsl:value-of select="concat(@initials,' ',@surname)" /></myns:item>
+    <xsl:if test="@surname">
+      <myns:item>
+        <xsl:value-of select="concat(@initials,' ',@surname)" />
+        <xsl:if test="@role">
+          <xsl:choose>
+            <xsl:when test="@role='editor'">
+              <xsl:text>, Editor</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>, </xsl:text><xsl:value-of select="@role" />
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:if>
+      </myns:item>
     </xsl:if>
-    <xsl:variable name="org"><xsl:choose>
-      <xsl:when test="organization/@abbrev"><xsl:value-of select="organization/@abbrev" /></xsl:when>
-      <xsl:otherwise><xsl:value-of select="organization" /></xsl:otherwise>
-    </xsl:choose></xsl:variable>
-    <xsl:variable name="orgOfFollowing"><xsl:choose>
-      <xsl:when test="following-sibling::node()[1]/organization/@abbrev"><xsl:value-of select="following-sibling::node()[1]/organization/@abbrev" /></xsl:when>
-      <xsl:otherwise><xsl:value-of select="following-sibling::node()/organization" /></xsl:otherwise>
-    </xsl:choose></xsl:variable>
+    <xsl:variable name="org">
+      <xsl:choose>
+        <xsl:when test="organization/@abbrev"><xsl:value-of select="organization/@abbrev" /></xsl:when>
+        <xsl:otherwise><xsl:value-of select="organization" /></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="orgOfFollowing">
+      <xsl:choose>
+        <xsl:when test="following-sibling::node()[1]/organization/@abbrev"><xsl:value-of select="following-sibling::node()[1]/organization/@abbrev" /></xsl:when>
+        <xsl:otherwise><xsl:value-of select="following-sibling::node()/organization" /></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:if test="$org != $orgOfFollowing">
-       <myns:item><xsl:value-of select="$org" /></myns:item>
+      <myns:item><xsl:value-of select="$org" /></myns:item>
     </xsl:if>
   </xsl:for-each>
   <myns:item>
-     <xsl:value-of select="concat(date/@month,' ',date/@year)" />
-   </myns:item>
+    <xsl:value-of select="concat(date/@month,' ',date/@year)" />
+  </myns:item>
 </xsl:template>
 
 
