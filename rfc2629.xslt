@@ -79,6 +79,10 @@
     
     Moved anchor prefix into a constant. Added sanity checks on user anchor
     names.
+    
+    2002-03-23  julian.reschke@greenbytes.de
+    
+    Bugfix in detection of matching org names when creating the header.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -237,10 +241,14 @@
       <td><xsl:for-each select="address/postal/street"><xsl:value-of select="." /><br /></xsl:for-each></td>
     </tr>
   </xsl:if>
-	<xsl:if test="address/postal/city">
+	<xsl:if test="address/postal/city|address/postal/region|address/postal/code">
     <tr>
       <td>&#0160;</td>
-	    <td><xsl:value-of select="concat(address/postal/city,', ',address/postal/region,' ',address/postal/code)" /></td>
+	    <td>
+        <xsl:if test="address/postal/city"><xsl:value-of select="address/postal/city" />, </xsl:if>
+        <xsl:if test="address/postal/region"><xsl:value-of select="address/postal/region" />&#160;</xsl:if>
+        <xsl:if test="address/postal/code"><xsl:value-of select="address/postal/code" /></xsl:if>
+      </td>
 		</tr>
 	</xsl:if>
 	<xsl:if test="address/postal/country">
@@ -597,8 +605,9 @@
 					<xsl:otherwise><xsl:value-of select="@name" />&#0160;<xsl:value-of select="@value" /></xsl:otherwise>
         </xsl:choose>,
       </xsl:for-each>
-            
-      <xsl:value-of select="front/date/@month" />&#0160;<xsl:value-of select="front/date/@year" />.
+      
+      <xsl:if test="front/date/@month and front/date/@month!='???'"><xsl:value-of select="front/date/@month" />&#0160;</xsl:if>
+      <xsl:value-of select="front/date/@year" />.
     </td>
   </tr>
 </xsl:template>
@@ -864,7 +873,7 @@
       <xsl:otherwise><xsl:value-of select="organization" /></xsl:otherwise>
     </xsl:choose></xsl:variable>
 		<xsl:variable name="orgOfFollowing"><xsl:choose>
-      <xsl:when test="following-sibling::node()/organization/@abbrev"><xsl:value-of select="following-sibling::node()/organization/@abbrev" /></xsl:when>
+      <xsl:when test="following-sibling::node()[1]/organization/@abbrev"><xsl:value-of select="following-sibling::node()[1]/organization/@abbrev" /></xsl:when>
       <xsl:otherwise><xsl:value-of select="following-sibling::node()/organization" /></xsl:otherwise>
     </xsl:choose></xsl:variable>
     <xsl:if test="$org != $orgOfFollowing">
