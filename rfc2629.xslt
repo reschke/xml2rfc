@@ -350,6 +350,11 @@
     2004-06-01  julian.reschke@greenbytes.de
     
     Use &#xb6; instead of # for PNs.
+    
+    2004-07-18  julian.reschke@greenbytes.de
+    
+    Add support for list style=letters (thanks Roy F.). Make PNs optional;
+    add new PI.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -506,6 +511,14 @@
   select="substring-after(
       translate(/processing-instruction('rfc-ext')[contains(.,'support-rfc2731=')], concat($quote-chars,' '), ''),
         'support-rfc2731=')"
+/>
+
+<!-- extension for adding purpe paragraph anchor signs -->
+
+<xsl:param name="xml2rfc-ext-para-anchors"
+  select="substring-after(
+      translate(/processing-instruction('rfc-ext')[contains(.,'para-anchors=')], concat($quote-chars,' '), ''),
+        'para-anchors=')"
 />
 
 <!-- choose whether or not to do mailto links --> 
@@ -766,7 +779,9 @@
   <xsl:if test="string-length($paraNumber) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins)">
     <div class="noprint" title="{$anchor-prefix}.section.{$paraNumber}">
       <a name="{$anchor-prefix}.section.{$paraNumber}" />
-      <a class="pn" href="#{$anchor-prefix}.section.{$paraNumber}">&#xb6;</a>
+      <xsl:if test="$xml2rfc-ext-para-anchors='yes'">
+        <a class="pn" href="#{$anchor-prefix}.section.{$paraNumber}">&#xb6;</a>
+      </xsl:if>
     </div>
   </xsl:if>
   <xsl:apply-templates />
@@ -901,6 +916,13 @@
   </ol>
 </xsl:template>
 
+<xsl:template match="list[@style='letters']">
+  <ol style="list-style-type: lower-alpha">
+    <xsl:call-template name="insertInsDelClass"/>
+    <xsl:apply-templates />
+  </ol>
+</xsl:template>
+
 <xsl:template match="list[@style='symbols']">
   <ul>
     <xsl:call-template name="insertInsDelClass"/>
@@ -916,7 +938,7 @@
   </dd>
 </xsl:template>
 
-<xsl:template match="list[@style='numbers' or @style='symbols']/t">
+<xsl:template match="list[@style='numbers' or @style='symbols' or @style='letters']/t">
   <li>
     <xsl:apply-templates />
   </li>
@@ -1276,7 +1298,9 @@
   <xsl:if test="string-length($paraNumber) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins)">
     <div class="noprint" title="{$anchor-prefix}.section.{$paraNumber}">
       <a name="{$anchor-prefix}.section.{$paraNumber}" />
-      <a class="pn" href="#{$anchor-prefix}.section.{$paraNumber}">&#xb6;</a>
+      <xsl:if test="$xml2rfc-ext-para-anchors='yes'">
+        <a class="pn" href="#{$anchor-prefix}.section.{$paraNumber}">&#xb6;</a>
+      </xsl:if>
     </div>
   </xsl:if>
 
@@ -3277,11 +3301,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.169 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.169 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.170 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.170 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/06/01 16:33:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/06/01 16:33:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/07/18 16:09:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/07/18 16:09:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
