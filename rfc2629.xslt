@@ -201,6 +201,10 @@
     2003-05-16  julian.reschke@greenbytes.de
   
     put nbsps between "section" and section number (xref).
+
+    2003-05-18  julian.reschke@greenbytes.de
+  
+    author summary: add missing comma.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -923,11 +927,22 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.84 2003/05/16 06:45:37 jre Exp $" />
+      <xsl:variable name="gen">
+        <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
+        <!-- when RCS keyword substitution in place, add version info -->
+        <xsl:if test="contains('$Version$',':')">
+          <xsl:value-of select="concat(substring-after('$Version$', '$Version: '),', ')" />
+        </xsl:if>
+        <xsl:if test="contains('$Date: 2003/05/17 08:53:55 $',':')">
+          <xsl:value-of select="concat(substring-after('$Date: 2003/05/17 08:53:55 $', '$Date: '),', ')" />  
+        </xsl:if>
+        <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
+      </xsl:variable>
+      <meta name="generator" content="{$gen}" />
       
       <!-- DC creator -->
       <xsl:variable name="creator">
-        <xsl:call-template name="get-author-summary" />
+        <xsl:call-template name="get-authors" />
       </xsl:variable>
       <meta name="DC.Creator" content="{$creator}" />
     </head>
@@ -2378,9 +2393,16 @@ table.resolution
       <xsl:value-of select="concat(/rfc/front/author[1]/@surname,' &amp; ',/rfc/front/author[2]/@surname)" />
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="concat(/rfc/front/author[1]/@surname,' et al.')" />
+      <xsl:value-of select="concat(/rfc/front/author[1]/@surname,', et al.')" />
     </xsl:otherwise>
   </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-authors">
+  <xsl:for-each select="/rfc/front/author">
+    <xsl:value-of select="@fullname" />
+    <xsl:if test="position()!=last()">, </xsl:if>
+  </xsl:for-each>
 </xsl:template>
 
 <xsl:template name="get-category-long">
