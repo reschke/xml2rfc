@@ -43,7 +43,11 @@
     
     2002-01-05  julian.reschke@greenbytes.de
     
-    Support for list/@style="@format" 
+    Support for list/@style="@format"
+    
+    2002-01-09  julian.reschke@greenbytes.de
+    
+    Display "closed" RFC issues as deleted
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -528,36 +532,36 @@
                
 <xsl:template match="section">
 
-    <xsl:variable name="sectionNumber">
+  <xsl:variable name="sectionNumber">
 		<xsl:call-template name="sectionnumber" />
-    </xsl:variable>
+  </xsl:variable>
     
-    <xsl:if test="not(ancestor::section)">
+  <xsl:if test="not(ancestor::section)">
 		<xsl:call-template name="insertTocLink">
-    		<xsl:with-param name="rule" select="true()" />
-    	</xsl:call-template>
-   	</xsl:if>
+    	<xsl:with-param name="rule" select="true()" />
+    </xsl:call-template>
+  </xsl:if>
 	
-    <xsl:variable name="elemtype">
-    	<xsl:choose>
-        	<xsl:when test="count(ancestor::section) = 0">h1</xsl:when>
-        	<xsl:when test="count(ancestor::section) = 1">h2</xsl:when>
-        	<xsl:otherwise>h3</xsl:otherwise>
-        </xsl:choose>
-    </xsl:variable>
+  <xsl:variable name="elemtype">
+    <xsl:choose>
+      <xsl:when test="count(ancestor::section) = 0">h1</xsl:when>
+      <xsl:when test="count(ancestor::section) = 1">h2</xsl:when>
+      <xsl:otherwise>h3</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
     
-    <xsl:element name="{$elemtype}">
-    	<a name="rfc.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>.&#0160;
-        <xsl:choose>
-	        <xsl:when test="@anchor">
-    	    	<a name="{@anchor}"><xsl:value-of select="@title" /></a>
-       		</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="@title" />
-           	</xsl:otherwise>
-     	</xsl:choose>
-    </xsl:element>
-    <xsl:apply-templates />
+  <xsl:element name="{$elemtype}">
+    <a name="rfc.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>.&#0160;
+    <xsl:choose>
+	    <xsl:when test="@anchor">
+        <a name="{@anchor}"><xsl:value-of select="@title" /></a>
+      </xsl:when>
+		  <xsl:otherwise>
+			  <xsl:value-of select="@title" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:element>
+  <xsl:apply-templates />
 </xsl:template>
 
 <xsl:template match="vspace[not(@blankLines)]">
@@ -1227,11 +1231,11 @@ ins
 </xsl:template>
 
 
-<xsl:template name="sectionnumber">
+<xsl:template name="sectionnumber" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 	<xsl:choose>
-       	<xsl:when test="ancestor::back"><xsl:number count="section" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
-       	<xsl:otherwise><xsl:number count="section" level="multiple"/></xsl:otherwise>
-    </xsl:choose>
+    <xsl:when test="ancestor::back"><xsl:number count="xhtml:del|xhtml:ins|section" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
+    <xsl:otherwise><xsl:number count="xhtml:del|xhtml:ins|section" level="multiple"/></xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="sectionnumberPara">
@@ -1297,15 +1301,22 @@ ins
     <xsl:with-param name="text" select="." />
   </xsl:call-template></xsl:variable>
 
+  <xsl:variable name="style">
+    <xsl:choose>
+      <xsl:when test="$type='closed'">background-color: grey; border-width: thin; border-style: solid; border-color: black; text-decoration: line-through </xsl:when>
+      <xsl:otherwise>background-color: khaki; border-width: thin; border-style: solid; border-color: black;</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  
   <a name="rfc.issue.{$name}">
-  <table style="background-color: khaki; border-width: thin; border-style: solid; border-color: black;" align="right" width="50%">
-    <tr>
-      <td>[<xsl:value-of select="$name" />], <a href="mailto:{$who}?subject={/rfc/@docName}, {$name}"><i><xsl:value-of select="$who" /></i></a>, <xsl:value-of select="$date" /></td>
-    </tr>
-    <tr>
-      <td><xsl:value-of select="$text" /></td>
-    </tr>
-  </table>
+   <table style="{$style}" align="right" width="50%">
+      <tr>
+        <td>[<xsl:value-of select="$name" />], <a href="mailto:{$who}?subject={/rfc/@docName}, {$name}"><i><xsl:value-of select="$who" /></i></a>, <xsl:value-of select="$date" /></td>
+      </tr>
+      <tr>
+        <td><xsl:value-of select="$text" /></td>
+      </tr>
+    </table>
   </a>
     
 </xsl:template>
