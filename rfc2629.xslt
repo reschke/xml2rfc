@@ -344,7 +344,8 @@
     
     Allow single quote as delimiter in processing instructions as well. Move
     block-level issue pointers to floats. Disable issue pointers for print
-    media.
+    media. Add "purple numbers". Add hrefs to section headings. Add non-printing
+    index key letter list to start of index.
 
 -->
 
@@ -564,7 +565,7 @@
 <!-- Templates for the various elements of rfc2629.dtd -->
               
 <xsl:template match="abstract">
-  <h1><a name="{$anchor-prefix}.abstract"/>Abstract</h1>
+  <h1><a name="{$anchor-prefix}.abstract" href="#{$anchor-prefix}.abstract">Abstract</a></h1>
   <xsl:apply-templates />
 </xsl:template>
 
@@ -756,6 +757,15 @@
       <div><a name="{$anchor-prefix}.figure.u.{$n}" /></div>
     </xsl:otherwise>
   </xsl:choose>
+  <xsl:variable name="paraNumber">
+    <xsl:call-template name="sectionnumberPara" />
+  </xsl:variable>
+  <xsl:if test="string-length($paraNumber) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins)">
+    <div class="noprint" title="{$anchor-prefix}.section.{$paraNumber}">
+      <a name="{$anchor-prefix}.section.{$paraNumber}" />
+      <a class="pn" href="#{$anchor-prefix}.section.{$paraNumber}">#</a>
+    </div>
+  </xsl:if>
   <xsl:apply-templates />
   <xsl:if test="@title!='' or @anchor!=''">
     <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
@@ -1261,7 +1271,10 @@
   </xsl:variable>
      
   <xsl:if test="string-length($paraNumber) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-    <div><a name="{$anchor-prefix}.section.{$paraNumber}" /></div>
+    <div class="noprint" title="{$anchor-prefix}.section.{$paraNumber}">
+      <a name="{$anchor-prefix}.section.{$paraNumber}" />
+      <a class="pn" href="#{$anchor-prefix}.section.{$paraNumber}">#</a>
+    </div>
   </xsl:if>
 
   <xsl:apply-templates mode="t-content" select="node()[1]" />
@@ -1331,13 +1344,14 @@
     
     <!-- generate anchors for irefs that are immediate childs of this section -->
     <xsl:apply-templates select="iref"/>
+    
     <xsl:if test="$sectionNumber!=''">
-      <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>
+      <a name="{$anchor-prefix}.section.{$sectionNumber}" href="#{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>
       <xsl:text>&#0160;</xsl:text>
     </xsl:if>
     <xsl:choose>
       <xsl:when test="@anchor">
-        <a name="{@anchor}"><xsl:value-of select="@title" /></a>
+        <a name="{@anchor}" href="#{@anchor}"><xsl:value-of select="@title" /></a>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="@title" />
@@ -1796,13 +1810,13 @@
 
 <xsl:template name="insertCss">
 a {
-  text-decoration: none
+  text-decoration: none;
 }
 a:hover {
-  text-decoration: underline
+  text-decoration: underline;
 }
 a:active {
-  text-decoration: underline
+  text-decoration: underline;
 }
 body {
   <xsl:if test="$xml2rfc-background!=''">
@@ -1825,17 +1839,26 @@ h1 {
 h1.np {
   page-break-before: always;
 }
+h1 a {
+  color: #333333;
+}
 h2 {
   color: #000000;
   font-size: 14px;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
+h2 a {
+  color: #000000;
+}
 h3 {
   color: #000000;
   font-size: 13px;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
+}
+h3 a {
+  color: #000000;
 }
 img {
   margin-left: 3em;
@@ -1967,6 +1990,11 @@ ins {
   color: green;
   text-decoration: underline;
 }
+.pn {
+  position: absolute;
+  font-size: small;
+  color: #C8A8FF;
+}
 
 table.openissue {
   background-color: khaki;
@@ -2058,8 +2086,20 @@ table.closedissue {
 
   <h1>
     <xsl:call-template name="insert-conditional-pagebreak"/>
-    <a name="{$anchor-prefix}.index" />Index
+    <a name="{$anchor-prefix}.index" href="#{$anchor-prefix}.index">Index</a>
   </h1>
+  
+  <p class="noprint">
+    <xsl:for-each select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]">
+      <xsl:sort select="translate(@item,$lcase,$ucase)" />
+      
+      <xsl:variable name="letter" select="translate(substring(@item,1,1),$lcase,$ucase)"/>
+      <a href="#{$anchor-prefix}.index.{$letter}">
+        <xsl:value-of select="$letter" />
+        <xsl:text> </xsl:text>
+      </a>
+    </xsl:for-each>
+  </p>
 
   <table summary="Index">
 
@@ -2068,7 +2108,10 @@ table.closedissue {
             
       <tr>
         <td>
-          <a name="{$anchor-prefix}.index.{translate(substring(@item,1,1),$lcase,$ucase)}"><b><xsl:value-of select="translate(substring(@item,1,1),$lcase,$ucase)" /></b></a>
+          <xsl:variable name="letter" select="translate(substring(@item,1,1),$lcase,$ucase)"/>
+          <a name="{$anchor-prefix}.index.{$letter}" href="#{$anchor-prefix}.index.{$letter}">
+            <b><xsl:value-of select="$letter" /></b>
+          </a>
         </td>
       </tr>
             
@@ -2265,7 +2308,7 @@ table.closedissue {
   </xsl:call-template>
 
   <h1 class="np"> <!-- this pagebreak occurs always -->
-    <a name="{$anchor-prefix}.toc">Table of Contents</a>
+    <a name="{$anchor-prefix}.toc" href="#{$anchor-prefix}.toc">Table of Contents</a>
   </h1>
 
   <p>
@@ -2791,7 +2834,7 @@ table.closedissue {
 
 <xsl:template name="insertIssuesList">
 
-  <h2><a name="{$anchor-prefix}.issues-list">Issues list</a></h2>
+  <h2><a name="{$anchor-prefix}.issues-list" href="#{$anchor-prefix}.issues-list">Issues list</a></h2>
   <table summary="Issues list">
     <xsl:for-each select="//ed:issue">
       <xsl:sort select="@status" />
@@ -3229,11 +3272,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.166 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.166 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.167 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.167 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/05/30 11:52:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/30 11:52:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/05/30 14:49:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/30 14:49:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
