@@ -104,7 +104,8 @@
     
     2002-04-19  julian.reschke@greenbytes.de
     
-    Lowercase internal CSS selectors for Mozilla compliance.
+    Lowercase internal CSS selectors for Mozilla compliance. Do not put TOC
+    into ul element.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1370,13 +1371,13 @@ ins
    	 <xsl:with-param name="rule" select="true()" />
 	</xsl:call-template>
 
-	<a name="{$anchor-prefix}.toc">
-    <h1>Table of Contents</h1>
-  </a>
+	<h1>
+    <a name="{$anchor-prefix}.toc">Table of Contents</a>
+  </h1>
 
- 	<ul compact="compact" class="toc">
+  <p>
     <xsl:apply-templates mode="toc" />
-  </ul>
+  </p>
 </xsl:template>
 
 <xsl:template name="insertTocLine">
