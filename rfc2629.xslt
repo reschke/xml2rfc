@@ -339,6 +339,10 @@
     2004-05-22  julian.reschke@greenbytes.de
     
     Enhance issues rendering (add links to changes).
+    
+    2004-05-29  julian.reschke@greenbytes.de
+    
+    Allow single quote as delimiter in processing instructions as well.
 
 -->
 
@@ -359,12 +363,14 @@
 <!-- process some of the processing instructions supported by Marshall T. Rose's
      xml2rfc sofware, see <http://xml.resource.org/> -->
 
-
+<!-- delimiters in PIs -->
+<xsl:variable name="quote-chars">"'</xsl:variable>     
+     
 <!-- rfc comments PI -->
 
 <xsl:param name="xml2rfc-comments"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'comments=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc')[contains(.,'comments=')], concat($quote-chars,' '), ''),
         'comments=')"
 />
 
@@ -372,7 +378,7 @@
 
 <xsl:param name="xml2rfc-compact"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'compact=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc')[contains(.,'compact=')], concat($quote-chars,' '), ''),
         'compact=')"
 />
 
@@ -380,7 +386,7 @@
 
 <xsl:param name="xml2rfc-footer"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'footer=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc')[contains(.,'footer=')], concat($quote-chars,' '), ''),
         'footer=')"
 />
 
@@ -388,7 +394,7 @@
 
 <xsl:param name="xml2rfc-header"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'header=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc')[contains(.,'header=')], concat($quote-chars,' '), ''),
         'header=')"
 />
 
@@ -396,7 +402,7 @@
 
 <xsl:param name="xml2rfc-inline"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'inline=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc')[contains(.,'inline=')], concat($quote-chars,' '), ''),
         'inline=')"
 />
 
@@ -405,7 +411,7 @@
 
 <xsl:param name="xml2rfc-toc"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'toc=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc')[contains(.,'toc=')], concat($quote-chars,' '), ''),
         'toc=')"
 />
 
@@ -413,7 +419,7 @@
 
 <xsl:param name="xml2rfc-tocdepth"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'tocdepth=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc')[contains(.,'tocdepth=')], concat($quote-chars,' '), ''),
         'tocdepth=')"
 />
 
@@ -433,7 +439,7 @@
 
 <xsl:param name="xml2rfc-topblock"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'topblock=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc')[contains(.,'topblock=')], concat($quote-chars,' '), ''),
         'topblock=')"
 />
 
@@ -442,7 +448,7 @@
 
 <xsl:param name="xml2rfc-symrefs"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'symrefs=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc')[contains(.,'symrefs=')], concat($quote-chars,' '), ''),
         'symrefs=')"
 />
 
@@ -451,7 +457,7 @@
 
 <xsl:param name="xml2rfc-sortrefs"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'sortrefs=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc')[contains(.,'sortrefs=')], concat($quote-chars,' '), ''),
         'sortrefs=')"
 />
 
@@ -460,7 +466,7 @@
 
 <xsl:param name="xml2rfc-editing"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'editing=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc')[contains(.,'editing=')], concat($quote-chars,' '), ''),
         'editing=')"
 />
 
@@ -468,7 +474,7 @@
 
 <xsl:param name="xml2rfc-private"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'private=')], '&quot;', ''),
+      translate(/processing-instruction('rfc')[contains(.,'private=')], concat($quote-chars,' '), ''),
         'private=')"
 />
 
@@ -476,7 +482,7 @@
 
 <xsl:param name="xml2rfc-background"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'background=')], '&quot;', ''),
+      translate(/processing-instruction('rfc')[contains(.,'background=')], $quote-chars, ''),
         'background=')"
 />
 
@@ -484,7 +490,7 @@
 
 <xsl:param name="parse-xml-in-artwork"
   select="substring-after(
-      translate(/processing-instruction('rfc-ext')[contains(.,'parse-xml-in-artwork=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc-ext')[contains(.,'parse-xml-in-artwork=')], concat($quote-chars,' '), ''),
         'parse-xml-in-artwork=')"
 />
 
@@ -492,7 +498,7 @@
 
 <xsl:param name="xml2rfc-ext-support-rfc2731"
   select="substring-after(
-      translate(/processing-instruction('rfc-ext')[contains(.,'support-rfc2731=')], '&quot; ', ''),
+      translate(/processing-instruction('rfc-ext')[contains(.,'support-rfc2731=')], concat($quote-chars,' '), ''),
         'support-rfc2731=')"
 />
 
@@ -500,7 +506,7 @@
   
  <xsl:param name="xml2rfc-linkmailto" 
    select="substring-after( 
-       translate(/processing-instruction('rfc')[contains(.,'linkmailto=')], '&quot;', ''), 
+       translate(/processing-instruction('rfc')[contains(.,'linkmailto=')], concat($quote-chars,' '), ''), 
          'linkmailto=')" 
  /> 
 
@@ -509,7 +515,7 @@
   
  <xsl:param name="xml2rfc-iprnotified" 
    select="substring-after( 
-       translate(/processing-instruction('rfc')[contains(.,'iprnotified=')], '&quot;', ''), 
+       translate(/processing-instruction('rfc')[contains(.,'iprnotified=')], concat($quote-chars,' '), ''), 
          'iprnotified=')" 
  /> 
 
@@ -3218,11 +3224,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.164 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.164 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.165 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.165 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/05/22 15:10:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/22 15:10:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/05/29 08:15:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/29 08:15:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
