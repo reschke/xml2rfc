@@ -1231,40 +1231,43 @@ ins
 	<ul compact="compact" class="toc">
 		<xsl:for-each select="//section|//references">
 			
-            <xsl:variable name="sectionNumber">
-        		<xsl:call-template name="sectionnumber" />
-      		</xsl:variable>
+      <xsl:variable name="sectionNumber">
+        <xsl:call-template name="sectionnumber" />
+      </xsl:variable>
 			
-          <xsl:variable name="target">
-        		<xsl:choose>
-              <xsl:when test="self::references and not(@title)">rfc.references</xsl:when>
-              <xsl:when test="self::references and @title">rfc.references.<xsl:value-of select="@title"/></xsl:when>
-  	        	<xsl:when test="@anchor"><xsl:value-of select="@anchor" /></xsl:when>
-    	        <xsl:otherwise>rfc.section.<xsl:value-of select="$sectionNumber" /></xsl:otherwise>
-        		</xsl:choose>
-        	</xsl:variable>
+      <xsl:variable name="target">
+        <xsl:choose>
+          <xsl:when test="self::references and not(@title)">rfc.references</xsl:when>
+          <xsl:when test="self::references and @title">rfc.references.<xsl:value-of select="@title"/></xsl:when>
+  	      <xsl:when test="@anchor"><xsl:value-of select="@anchor" /></xsl:when>
+    	    <xsl:otherwise>rfc.section.<xsl:value-of select="$sectionNumber" /></xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
 			
-            <xsl:variable name="number">
-        		<xsl:choose>
-            		<xsl:when test="name()='references'">&#167;</xsl:when>
+      <xsl:variable name="number">
+        <xsl:choose>
+          <xsl:when test="name()='references'">&#167;</xsl:when>
 					<xsl:otherwise>
-                		<xsl:call-template name="sectionnumber" />
-                	</xsl:otherwise>
-        		</xsl:choose>
-        	</xsl:variable>
+            <xsl:call-template name="sectionnumber" />
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
 		
-        	<xsl:variable name="title">
-        		<xsl:choose>
-            		<xsl:when test="self::references and not(@title)">References</xsl:when>
-    	        	<xsl:otherwise><xsl:value-of select="@title" /></xsl:otherwise>
-        		</xsl:choose>
-        	</xsl:variable>
+      <xsl:variable name="title">
+        <xsl:choose>
+          <xsl:when test="self::references and not(@title)">References</xsl:when>
+    	    <xsl:otherwise><xsl:value-of select="@title" /></xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
 		
-        	<b>
-        		<a href="#{$target}"><xsl:value-of select="$number" /></a>&#0160;
-        		<xsl:value-of select="$title"/>
-       		</b>
-        	<br />
+      <b>
+        <!-- indent -->
+        <xsl:value-of select="translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','&#160;')"/>
+        <a href="#{$target}"><xsl:value-of select="$number" /></a>&#0160;
+        <xsl:value-of select="$title"/>
+      </b>
+      
+      <br />
 		</xsl:for-each>
 	
     	<b>
