@@ -919,7 +919,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.80 2003/05/13 20:15:00 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.81 2003/05/15 19:09:53 jre Exp $" />
       
       <!-- DC creator -->
       <xsl:variable name="creator">
@@ -1057,15 +1057,20 @@
   <a href="#{$target}">
     <xsl:choose>
       <xsl:when test="local-name($node)='section'">
-        <xsl:for-each select="$node">
-          <xsl:call-template name="sectiontype">
-            <xsl:with-param name="prec" select="$context/preceding-sibling::node()[1]" />
-          </xsl:call-template>
+        <xsl:variable name="refname">
+          <xsl:for-each select="$node">
+            <xsl:call-template name="get-section-type">
+              <xsl:with-param name="prec" select="$context/preceding-sibling::node()[1]" />
+            </xsl:call-template>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:variable name="refnum">
           <xsl:call-template name="sectionnumber" />
-        </xsl:for-each>
+        </xsl:variable>
+        <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
       </xsl:when>
       <xsl:when test="local-name($node)='figure'">
-        <xsl:text>Figure </xsl:text>
+        <xsl:text>Figure&#160;</xsl:text>
         <xsl:for-each select="$node">
           <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
         </xsl:for-each>
@@ -1076,6 +1081,7 @@
     </xsl:choose>
   </a>
 </xsl:template>
+
 
 <!-- mark unmatched elements red -->
 
@@ -2085,20 +2091,6 @@ table.resolution
 </xsl:template>
 
 
-<xsl:template name="sectiontype">
-  <xsl:param name="prec" />
-  <xsl:variable name="startOfSentence">
-    <xsl:call-template name="endsWithDot">
-      <xsl:with-param name="str" select="normalize-space($prec)"/>
-    </xsl:call-template>
-  </xsl:variable>
-  <xsl:choose>
-    <xsl:when test="ancestor::back and $startOfSentence='true'">Appendix </xsl:when>
-    <xsl:when test="ancestor::back">appendix </xsl:when>
-    <xsl:when test="$startOfSentence='true'">Section </xsl:when>
-    <xsl:otherwise>section </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
 
 <xsl:template name="sectionnumberPara">
   <!-- get section number of ancestor section element, then add t or figure number -->
@@ -2423,5 +2415,19 @@ table.resolution
   <xsl:value-of select="normalize-space($keyw)" />
 </xsl:template>
 
+<xsl:template name="get-section-type">
+  <xsl:param name="prec" />
+  <xsl:variable name="startOfSentence">
+    <xsl:call-template name="endsWithDot">
+      <xsl:with-param name="str" select="normalize-space($prec)"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="ancestor::back and $startOfSentence='true'">Appendix</xsl:when>
+    <xsl:when test="ancestor::back">appendix</xsl:when>
+    <xsl:when test="$startOfSentence='true'">Section</xsl:when>
+    <xsl:otherwise>section</xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 </xsl:stylesheet>
