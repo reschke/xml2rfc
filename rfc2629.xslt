@@ -402,6 +402,10 @@
     2005-01-22  julian.reschke@greenbytes.de
     
     Enhance generation of HTML h* elements (for Mozilla Outliner).
+
+    2005-01-27  julian.reschke@greenbytes.de
+    
+    Put vertical space around top-level TOC entries in TOC.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2614,6 +2618,9 @@ table.closedissue {
         </xsl:when>
         <xsl:otherwise>
           <b>
+            <xsl:if test="not(contains($number,'.'))">
+              <xsl:attribute name="style">line-height: 150%;</xsl:attribute>
+            </xsl:if>
             <xsl:value-of select="translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','&#160;')"/>
             <xsl:value-of select="$number" />&#0160;
             <a href="#{$target}"><xsl:value-of select="$title"/></a>
@@ -3446,11 +3453,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.186 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.186 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.187 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.187 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/22 10:37:56 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/22 10:37:56 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/27 13:06:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/27 13:06:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
