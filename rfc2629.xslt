@@ -2755,19 +2755,20 @@ table.closedissue {
         </td>
       </tr>
     </xsl:for-each>
-    <xsl:variable name="changes" select="//*[@ed:resolves=current()/@name]" />
+    <xsl:variable name="changes" select="//*[@ed:resolves=current()/@name or ed:resolves=current()/@name]" />
     <xsl:if test="$changes">
       <tr>
         <td class="top" colspan="3">
           Associated changes in this document:
+          <xsl:variable name="issue" select="@name"/>
           <xsl:for-each select="$changes">
-            <a href="#{$anchor-prefix}.change.{@ed:resolves}.{position()}">
+            <a href="#{$anchor-prefix}.change.{$issue}.{position()}">
               <xsl:variable name="label">
                 <xsl:call-template name="get-section-number"/>
               </xsl:variable>
               <xsl:choose>
                 <xsl:when test="$label!=''"><xsl:value-of select="$label"/></xsl:when>
-                <xsl:otherwise>&lt;<xsl:value-of select="concat('#',$anchor-prefix,'.change.',@ed:resolves,'.',position())"/>&gt;</xsl:otherwise>
+                <xsl:otherwise>&lt;<xsl:value-of select="concat('#',$anchor-prefix,'.change.',$issue,'.',position())"/>&gt;</xsl:otherwise>
               </xsl:choose>
             </a>
             <xsl:if test="position()!=last()">, </xsl:if>
@@ -2880,11 +2881,12 @@ table.closedissue {
 </xsl:template>
 
 <xsl:template name="insert-issue-pointer">
-  <xsl:if test="@ed:resolves">
-    <xsl:variable name="resolves" select="@ed:resolves"/>
+  <xsl:variable name="change" select="."/>
+  <xsl:for-each select="@ed:resolves|ed:resolves">
+    <xsl:variable name="resolves" select="."/>
     <a>
       <xsl:attribute name="name">
-        <xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:number level="any" count="*[@ed:resolves=$resolves]" />
+        <xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:number level="any" count="*[@ed:resolves=$resolves or ed:resolves=$resolves]" />
       </xsl:attribute>
     </a>
     <xsl:choose>
@@ -2921,7 +2923,7 @@ table.closedissue {
         </a>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:if>
+  </xsl:for-each>
 </xsl:template>
 
 <xsl:template match="ed:replace">
@@ -3216,11 +3218,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.163 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.163 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.164 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.164 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/05/22 09:56:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/22 09:56:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/05/22 15:10:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/22 15:10:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
