@@ -103,12 +103,12 @@
 
 <xsl:param name="private"
 	select="substring-after(
-    	translate(/processing-instruction('rfc')[contains(.,'private=')], '&quot; ', ''),
+    	translate(/processing-instruction('rfc')[contains(.,'private=')], '&quot;', ''),
         'private=')"
 />
 
 
-<!-- make it a private paper -->
+<!-- extension for XML parsing in artwork -->
 
 <xsl:param name="parse-xml-in-artwork"
 	select="substring-after(
