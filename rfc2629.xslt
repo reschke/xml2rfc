@@ -251,6 +251,10 @@
     proper XHTML generation through separate XSLT. Enhance warning and
     error messages. Add support for artwork image display. Table formatting
     fixes (borders, thead continuation).
+
+    2003-08-18  julian.reschke@greenbytes.de
+    
+    Add workaround for MSXML4 node-set cast issue (compile time error).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -578,7 +582,8 @@
         <xsl:apply-templates select="exslt:node-set($copyright)" />
       </xsl:when>
       <xsl:otherwise> <!--proceed with fingers crossed-->
-        <xsl:apply-templates select="$copyright" />
+        <xsl:variable name="temp" select="$copyright"/>
+        <xsl:apply-templates select="$temp" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
@@ -688,7 +693,8 @@
       </xsl:when>
       <xsl:otherwise>
         <!--proceed with fingers crossed-->
-        <xsl:apply-templates select="$preamble/node()" />
+        <xsl:variable name="temp" select="$preamble"/>
+        <xsl:apply-templates select="$temp/node()" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
@@ -2676,11 +2682,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.121 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.121 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.122 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.122 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/18 07:22:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/18 07:22:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/18 21:41:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/18 21:41:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
