@@ -486,7 +486,7 @@
 	</xsl:variable>
 	
   <tr>
-    <td valign="top">
+    <td valign="top" nowrap="nowrap">
       <b>
         <a name="{@anchor}">
           <xsl:call-template name="referencename">
@@ -674,7 +674,7 @@
 </xsl:template>
 
 <xsl:template match="vspace[@blankLines]">
-  <br/><xsl:for-each select="//*[position() &lt; @blankLines]"><br /></xsl:for-each>
+  <br/><br/><xsl:for-each select="//*[position() &lt; @blankLines]"> <br /></xsl:for-each>
 </xsl:template>
 
 <xsl:template match="xref[node()]">
