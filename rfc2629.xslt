@@ -414,9 +414,10 @@
     Fix vspace implementation. Use right/left dqoutes and copyright sign
     where appropriate.
     
-    2005-02-03  julian.reschke@greenbytes.de
+    2005-02-04  julian.reschke@greenbytes.de
     
-    Add <link> element to references section.
+    Add <link> element to references section.  Fix newly introduced bug
+    in references processing.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1297,7 +1298,7 @@
   <table summary="{@title}" border="0" cellpadding="2">
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes'">
-        <xsl:apply-templates select="reference">
+        <xsl:apply-templates>
           <xsl:sort select="@anchor" />
         </xsl:apply-templates>
       </xsl:when>
@@ -3521,11 +3522,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.205 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.205 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.206 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.206 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/02/03 22:49:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/03 22:49:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/02/04 20:07:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/04 20:07:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
