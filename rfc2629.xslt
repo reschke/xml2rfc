@@ -1,5 +1,5 @@
 <!--
-	XSLT transformation from RFC2629 XML format to HTML
+	  XSLT transformation from RFC2629 XML format to HTML
     
     Copyright (c) 2001 Julian F. Reschke (julian.reschke@greenbytes.de)
     
@@ -458,13 +458,14 @@
 
 <xsl:template match="postamble">
 	<p>
-    	<xsl:apply-templates />
-    </p>
+    <xsl:call-template name="editingMark" />
+    <xsl:apply-templates />
+  </p>
 </xsl:template>
 
 <xsl:template match="preamble">
 	<p>
-    <xsl:if test="$insertEditingMarks='yes'"><sup><xsl:number level="any" count="preamble|t"/></sup></xsl:if>
+    <xsl:call-template name="editingMark" />
     <xsl:apply-templates />
   </p>
 </xsl:template>
@@ -627,7 +628,7 @@
    </xsl:variable>
     
   <p>
-    <xsl:if test="$insertEditingMarks='yes'"><sup><xsl:number level="any" count="preamble|t"/></sup></xsl:if>
+    <xsl:call-template name="editingMark" />
     <xsl:if test="string-length($paraNumber) &gt; 0"><a name="rfc.section.{$paraNumber}" /></xsl:if>
     <xsl:apply-templates />
   </p>
@@ -655,7 +656,7 @@
   </xsl:variable>
     
   <xsl:element name="{$elemtype}">
-    <a name="rfc.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>.&#0160;
+    <a name="rfc.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
     <xsl:choose>
 	    <xsl:when test="@anchor">
         <a name="{@anchor}"><xsl:value-of select="@title" /></a>
@@ -985,6 +986,10 @@ TD.header
 {
 	font-size: 10px
 }
+.editingmark
+{
+	background-color: khaki;
+}
 .hotText
 {
 	color:#ffffff;
@@ -1262,9 +1267,7 @@ ins
       <xsl:variable name="number">
         <xsl:choose>
           <xsl:when test="name()='references'">&#167;</xsl:when>
-					<xsl:otherwise>
-            <xsl:call-template name="sectionnumber" />
-          </xsl:otherwise>
+					<xsl:otherwise><xsl:value-of select="$sectionNumber" /></xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
 		
@@ -1275,12 +1278,23 @@ ins
         </xsl:choose>
       </xsl:variable>
 		
-      <b>
-        <!-- indent -->
-        <xsl:value-of select="translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','&#160;')"/>
-        <a href="#{$target}"><xsl:value-of select="$number" /></a>&#0160;
-        <xsl:value-of select="$title"/>
-      </b>
+      <!-- indent -->
+      <xsl:choose>
+        <xsl:when test="starts-with($number,'del-')">
+          <xsl:value-of select="'&#160;&#160;&#160;&#160;&#160;&#160;'"/>
+          <del>
+            <a href="#{$target}"><xsl:value-of select="$number" /></a>&#0160;
+            <xsl:value-of select="$title"/>
+          </del>
+        </xsl:when>
+        <xsl:otherwise>
+          <b>
+            <xsl:value-of select="translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','&#160;')"/>
+            <a href="#{$target}"><xsl:value-of select="$number" /></a>&#0160;
+            <xsl:value-of select="$title"/>
+          </b>
+        </xsl:otherwise>
+      </xsl:choose>
       
       <br />
 		</xsl:for-each>
@@ -1446,10 +1460,19 @@ ins
     </xsl:choose>
 </xsl:template>
 
+<xsl:variable name="hasEdits" select="count(//ed:del|//ed:ins)!=1" />
+
 <xsl:template name="sectionnumber">
-	<xsl:choose>
-    <xsl:when test="ancestor::back"><xsl:number count="ed:del|ed:ins|section" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
-    <xsl:otherwise><xsl:number count="ed:del|ed:ins|section" level="multiple"/></xsl:otherwise>
+  <xsl:choose>
+    <xsl:when test="$hasEdits">
+      <xsl:call-template name="sectionnumber-and-edits" />
+    </xsl:when>
+    <xsl:otherwise>
+    	<xsl:choose>
+        <xsl:when test="ancestor::back"><xsl:number count="ed:del|ed:ins|section" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
+        <xsl:otherwise><xsl:number count="ed:del|ed:ins|section" level="multiple"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
@@ -1483,6 +1506,10 @@ ins
 	<xsl:if test="ancestor::section">
     	<xsl:for-each select="ancestor::section[1]"><xsl:call-template name="sectionnumber" />.p.</xsl:for-each><xsl:number count="t|figure" />
   	</xsl:if>
+</xsl:template>
+
+<xsl:template name="editingMark">
+  <xsl:if test="$insertEditingMarks='yes'"><sup><span class="editingmark"><xsl:number level="any" count="postamble|preamble|t"/></span></sup>&#0160;</xsl:if>
 </xsl:template>
 
 <!-- experimental annotation support -->
@@ -1578,5 +1605,27 @@ ins
   </ins>
 </xsl:template>
 
+<xsl:template name="sectionnumber-and-edits">
+  <xsl:choose>
+    <xsl:when test="ancestor::ed:del">del-<xsl:number count="ed:del//section" level="any"/></xsl:when>
+    <xsl:when test="self::section[parent::ed:ins]">
+      <xsl:for-each select="../.."><xsl:call-template name="sectionnumber-and-edits" /></xsl:for-each>
+      <xsl:for-each select=".."><xsl:if test="parent::section">.</xsl:if><xsl:value-of select="1+count(preceding-sibling::section|preceding-sibling::ed:ins/section)" /></xsl:for-each>
+    </xsl:when>
+    <xsl:when test="self::section">
+      <xsl:for-each select=".."><xsl:call-template name="sectionnumber-and-edits" /></xsl:for-each>
+      <xsl:if test="parent::section">.</xsl:if>
+      <xsl:choose>
+        <xsl:when test="parent::back">
+          <xsl:number format="A" value="1+count(preceding-sibling::section|preceding-sibling::ed:ins/section)" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:number value="1+count(preceding-sibling::section|preceding-sibling::ed:ins/section)" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 </xsl:stylesheet>
