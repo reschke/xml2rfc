@@ -436,6 +436,10 @@
     2005-02-25  julian.reschke@greenbytes.de
 
     Align section number format with xml2rfc1.29.
+    
+    2005-03-14  julian.reschke@greenbytes.de
+    
+    Get rid of table elements in Author's section.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -794,76 +798,58 @@
 </xsl:template>
 
 <xsl:template match="author">
-  <tr>
-    <td>&#0160;</td>
-    <td>
+  <p>
+    <address>
       <xsl:value-of select="@fullname" />
       <xsl:if test="@role">
         (<xsl:value-of select="@role" />)
       </xsl:if>
-    </td>
-  </tr>
-  <tr>
-    <td>&#0160;</td>
-    <td><xsl:value-of select="organization" /></td>
-  </tr>
-  <xsl:if test="address/postal/street!=''">
-    <tr>
-      <td>&#0160;</td>
-      <td><xsl:for-each select="address/postal/street"><xsl:value-of select="." /><br /></xsl:for-each></td>
-    </tr>
-  </xsl:if>
-  <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
-    <tr>
-      <td>&#0160;</td>
-      <td>
+      <br/>
+      <xsl:value-of select="organization" />
+      <br/>
+      <xsl:if test="address/postal/street!=''">
+        <xsl:for-each select="address/postal/street">
+          <xsl:value-of select="." />
+          <br />
+        </xsl:for-each>
+      </xsl:if>
+      <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
         <xsl:if test="address/postal/city"><xsl:value-of select="address/postal/city" />, </xsl:if>
         <xsl:if test="address/postal/region"><xsl:value-of select="address/postal/region" />&#160;</xsl:if>
         <xsl:if test="address/postal/code"><xsl:value-of select="address/postal/code" /></xsl:if>
-      </td>
-    </tr>
-  </xsl:if>
-  <xsl:if test="address/postal/country">
-    <tr>
-      <td>&#0160;</td>
-      <td><xsl:value-of select="address/postal/country" /></td>
-    </tr>
-  </xsl:if>
-  <xsl:if test="address/phone">
-    <tr>
-      <td class="right"><b>Phone:&#0160;</b></td>
-      <td><a href="tel:{translate(address/phone,' ','')}"><xsl:value-of select="address/phone" /></a></td>
-    </tr>
-  </xsl:if>
-  <xsl:if test="address/facsimile">
-    <tr>
-      <td class="right"><b>Fax:&#0160;</b></td>
-      <td><a href="fax:{translate(address/facsimile,' ','')}"><xsl:value-of select="address/facsimile" /></a></td>
-    </tr>
-  </xsl:if>
-  <xsl:if test="address/email">
-    <tr>
-      <td class="right"><b>EMail:&#0160;</b></td>
-      <td>
+        <br/>
+      </xsl:if>
+      <xsl:if test="address/postal/country">
+        <xsl:value-of select="address/postal/country" />
+        <br/>
+      </xsl:if>
+      <xsl:if test="address/phone">
+        <b>Phone:&#0160;</b>
+        <a href="tel:{translate(address/phone,' ','')}"><xsl:value-of select="address/phone" /></a>
+        <br/>
+      </xsl:if>
+      <xsl:if test="address/facsimile">
+        <b>Fax:&#0160;</b>
+        <a href="fax:{translate(address/facsimile,' ','')}"><xsl:value-of select="address/facsimile" /></a>
+        <br/>
+      </xsl:if>
+      <xsl:if test="address/email">
+        <b>EMail:&#0160;</b>
         <a>
           <xsl:if test="$xml2rfc-linkmailto!='no'">
             <xsl:attribute name="href">mailto:<xsl:value-of select="address/email" /></xsl:attribute>
           </xsl:if>
           <xsl:value-of select="address/email" />
         </a>
-      </td>
-    </tr>
-  </xsl:if>
-  <xsl:if test="address/uri">
-    <tr>
-      <td class="right"><b>URI:&#0160;</b></td>
-      <td><a href="{address/uri}"><xsl:value-of select="address/uri" /></a></td>
-    </tr>
-  </xsl:if>
-  <tr>
-    <td>&#0160;</td>
-    <td />
-  </tr>
+        <br/>
+      </xsl:if>
+      <xsl:if test="address/uri">
+        <b>URI:&#0160;</b>
+        <a href="{address/uri}"><xsl:value-of select="address/uri" /></a>
+        <br/>
+      </xsl:if>
+    </address>
+  </p>
 </xsl:template>
 
 <xsl:template match="back">
@@ -1941,9 +1927,7 @@
     <xsl:call-template name="get-authors-section-title"/>
   </h1>
 
-  <table summary="Authors" width="99%" border="0" cellpadding="0" cellspacing="0">
-    <xsl:apply-templates select="/rfc/front/author" />
-  </table>
+  <xsl:apply-templates select="/rfc/front/author" />
 </xsl:template>
 
 
@@ -2099,6 +2083,10 @@ a:hover {
 }
 a:active {
   text-decoration: underline;
+}
+address {
+  margin-left: 2em;
+  font-style: normal;
 }
 body {
   <xsl:if test="$xml2rfc-background!=''">
@@ -3609,11 +3597,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.215 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.215 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.216 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.216 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/02/25 22:21:56 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/25 22:21:56 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/03/14 13:22:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/03/14 13:22:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
