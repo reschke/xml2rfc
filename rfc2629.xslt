@@ -70,6 +70,10 @@
     
     Code rearrangement for static texts. Fixes for section numbering.
     TOC generation rewritten.
+    
+    2002-02-15  julian.reschke@greenbytes.de
+    
+    Support for irefs in sections; support iref @primary=true
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -160,6 +164,10 @@
 <xsl:key name="index-item-subitem"
 	match="iref"
     use="concat(@item,'..',@subitem)" />
+
+<!-- character translation tables -->
+<xsl:variable name="lcase" select="'abcdefghijklmnopqrstuvwxyz'" />
+<xsl:variable name="ucase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />       
 
 <!-- Templates for the various elements of rfc2629.dtd -->
               
@@ -1111,6 +1119,22 @@ ins
 
 <!-- generate the index section -->
 
+<xsl:template name="insertSingleIref">
+  <xsl:variable name="backlink">#rfc.iref.<xsl:number level="any" /></xsl:variable>
+  &#0160;<a href="{$backlink}">
+    <xsl:choose>
+      <xsl:when test="@primary='true'">
+        <b><xsl:call-template name="sectionnumber" /></b>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="sectionnumber" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </a>
+  <xsl:if test="position()!=last()">,</xsl:if>
+</xsl:template>
+
+
 <xsl:template name="insertIndex">
 
 	<!-- insert link to TOC including horizontal rule -->
@@ -1119,62 +1143,55 @@ ins
 	</xsl:call-template> 
 
 	<a name="rfc.index">
-    	<h1>Index</h1>
-   	</a>
+    <h1>Index</h1>
+  </a>
 
-	<table>
-    	<xsl:variable name="lcase" select="'abcdefghijklmnopqrstuvwxyz'" />
-    	<xsl:variable name="ucase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />       
+  <table>
         
 		<xsl:for-each select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]">
 			<xsl:sort select="translate(@item,$lcase,$ucase)" />
             
-       		<tr>
-            	<td>
-                   	<b><xsl:value-of select="translate(substring(@item,1,1),$lcase,$ucase)" /></b>
-               	</td>
-			</tr>
+      <tr>
+        <td>
+          <b><xsl:value-of select="translate(substring(@item,1,1),$lcase,$ucase)" /></b>
+        </td>
+  	  </tr>
             
-            <xsl:for-each select="key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))">
-				<xsl:sort select="translate(@item,$lcase,$ucase)" />
+      <xsl:for-each select="key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))">
+  		  <xsl:sort select="translate(@item,$lcase,$ucase)" />
     
-    			<xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
+   			<xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
     
-        		<tr>
-            		<td>
-                    	&#0160;&#0160;
-                       	<xsl:value-of select="@item" />&#0160;
-                        <xsl:for-each select="key('index-item',@item)[not(@subitem) or @subitem='']">
-							<xsl:sort select="translate(@item,$lcase,$ucase)" />
-                			
-                            <xsl:variable name="backlink">#rfc.iref.<xsl:number level="any" /></xsl:variable>
-                			&#0160;<a href="{$backlink}"><xsl:call-template name="sectionnumber" /></a>
-                            <xsl:if test="position()!=last()">,</xsl:if>
-                        </xsl:for-each>
-                    </td>
-            	</tr>
+      		<tr>
+            <td>
+              &#0160;&#0160;<xsl:value-of select="@item" />&#0160;
                 
-                <xsl:for-each select="key('index-item',@item)[@subitem and @subitem!='']">
-		        	<tr>
-						<td>
-        	            	&#0160;&#0160;&#0160;&#0160;
-            	           	<xsl:value-of select="@subitem" />&#0160;
-                	        <xsl:for-each select="key('index-item-subitem',concat(@item,'..',@subitem))">
-								<xsl:sort select="translate(@item,$lcase,$ucase)" />
-                			
-                           	 <xsl:variable name="backlink">#rfc.iref.<xsl:number level="any" /></xsl:variable>
-                				&#0160;<a href="{$backlink}"><xsl:call-template name="sectionnumber" /></a>
-                            	<xsl:if test="position()!=last()">,</xsl:if>
-                        	</xsl:for-each>
-                		</td>
-        			</tr>
+              <xsl:for-each select="key('index-item',@item)[not(@subitem) or @subitem='']">
+  					    <xsl:sort select="translate(@item,$lcase,$ucase)" />
+                <xsl:call-template name="insertSingleIref" />
+              </xsl:for-each>
+            </td>
+          </tr>
+                
+          <xsl:for-each select="key('index-item',@item)[@subitem and @subitem!='']">
+		        
+            <tr>
+  				    <td>
+      	        &#0160;&#0160;&#0160;&#0160;<xsl:value-of select="@subitem" />&#0160;
+                  
+                <xsl:for-each select="key('index-item-subitem',concat(@item,'..',@subitem))">
+  						    <xsl:sort select="translate(@item,$lcase,$ucase)" />              			
+                  <xsl:call-template name="insertSingleIref" />
                 </xsl:for-each>
+              </td>
+            </tr>
+          </xsl:for-each>
                 
-                </xsl:if>
+        </xsl:if>
                 
-            </xsl:for-each>            
+      </xsl:for-each>            
 
-       	</xsl:for-each>
+    </xsl:for-each>
 	</table>
 </xsl:template>
 
