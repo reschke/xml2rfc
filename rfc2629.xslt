@@ -272,7 +272,9 @@
     
     Inherit ed:entered-by from ancestor elements. Change CSS color for inserted
     text to green. Generate issues-list anchor. Do not complain about missing
-    targets when the xref element is below ed:del.
+    targets when the xref element is below ed:del. Remove code that attempted
+    to distinguish section/Section when producing links - always use
+    uppercase.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2322,22 +2324,6 @@ table.resolution {
   </xsl:choose>
 </xsl:template>
 
-<xsl:template name="endsWithDot">
-  <xsl:param name="str"/>
-  <xsl:choose>
-    <xsl:when test="$str=''"><xsl:value-of select="true()"/></xsl:when>
-    <xsl:when test="contains($str,'.') and substring-after($str,'.')=''" ><xsl:value-of select="true()"/></xsl:when>
-    <xsl:when test="not(contains($str,'.'))" ><xsl:value-of select="false()"/></xsl:when>
-    <xsl:otherwise>
-      <xsl:call-template name="endsWithDot">
-        <xsl:with-param name="str" select="substring-after($str,'.')" /> 
-      </xsl:call-template>
-    </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
-
-
-
 <xsl:template name="sectionnumberPara">
   <!-- get section number of ancestor section element, then add t or figure number -->
   <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered'])">
@@ -2719,11 +2705,11 @@ table.resolution {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.136 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.136 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.137 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.137 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/11/07 13:19:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/07 13:19:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/11/07 16:00:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/07 16:00:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -2770,16 +2756,9 @@ table.resolution {
 
 <xsl:template name="get-section-type">
   <xsl:param name="prec" />
-  <xsl:variable name="startOfSentence">
-    <xsl:call-template name="endsWithDot">
-      <xsl:with-param name="str" select="normalize-space($prec)"/>
-    </xsl:call-template>
-  </xsl:variable>
   <xsl:choose>
-    <xsl:when test="ancestor::back and $startOfSentence='true'">Appendix</xsl:when>
-    <xsl:when test="ancestor::back">appendix</xsl:when>
-    <xsl:when test="$startOfSentence='true'">Section</xsl:when>
-    <xsl:otherwise>section</xsl:otherwise>
+    <xsl:when test="ancestor::back">Appendix</xsl:when>
+    <xsl:otherwise>Section</xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
