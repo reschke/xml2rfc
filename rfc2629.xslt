@@ -420,13 +420,16 @@
     in references processing.
     
     2005-02-05  julian.reschke@greenbytes.de
-    
+   
     Integrate various fixes/enhancements by Roy Fielding: spelling of
     "Authors' Addresses", comma setting in references, position of "Authors"
     section, optionally place authors addresses at end (PI), trailing dots
     in section numbers, switch to verdana default font in CSS.  Add
     experimental support for centered artwork.
     
+    2005-02-06  julian.reschke@greenbytes.de
+
+    Fixes in spacing and links of references section titles.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1305,12 +1308,12 @@
       <xsl:variable name="sectionNumber">
         <xsl:call-template name="get-references-section-number"/>
       </xsl:variable>
-      <a name="{$anchor-prefix}.section.{$sectionNumber}">
+      <a name="{$anchor-prefix}.section.{$sectionNumber}" href="#{$anchor-prefix}.section.{$sectionNumber}">
         <xsl:call-template name="emit-section-number">
           <xsl:with-param name="no" select="$sectionNumber"/>
         </xsl:call-template>
       </a>
-      <xsl:text>&#0160;</xsl:text>
+      <xsl:text> </xsl:text>
       <a href="#{$anchor-prefix}.references">References</a>
     </h1>
   </xsl:if>
@@ -1335,11 +1338,14 @@
         <xsl:otherwise>.<xsl:value-of select="$name"/></xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+    <xsl:attribute name="id"><xsl:value-of select="concat($anchor-prefix,'.references',$anchorpref)"/></xsl:attribute>
     <a name="{$anchor-prefix}.references{$anchorpref}"/>
-    <a name="{$anchor-prefix}.section.{$sectionNumber}"/>
-    <xsl:call-template name="emit-section-number">
-      <xsl:with-param name="no" select="$sectionNumber"/>
-    </xsl:call-template>
+    <a href="#{$anchor-prefix}.section.{$sectionNumber}">
+      <xsl:call-template name="emit-section-number">
+        <xsl:with-param name="no" select="$sectionNumber"/>
+      </xsl:call-template>
+    </a>
+    <xsl:text> </xsl:text>
     <xsl:choose>
       <xsl:when test="not(@title) or @title=''">References</xsl:when>
       <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
@@ -3570,11 +3576,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.208 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.208 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.209 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.209 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/02/05 20:39:55 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/05 20:39:55 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/02/06 12:27:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/06 12:27:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
