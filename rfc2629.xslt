@@ -365,6 +365,10 @@
     2004-09-21  julian.reschke@greenbytes.de
     
     Enhance checking of artwork width.
+    
+    2004-09-24  julian.reschke@greenbytes.de
+
+    Add check for unused references.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1022,6 +1026,12 @@
 
 
 <xsl:template match="reference">
+
+  <!-- check for reference to reference -->
+  <xsl:variable name="anchor" select="@anchor"/>
+  <xsl:if test="not(//xref[@target=$anchor])">
+    <xsl:message>WARNING: unused reference '<xsl:value-of select="@anchor"/>'</xsl:message>
+  </xsl:if>
 
   <xsl:variable name="target">
     <xsl:choose>
@@ -3379,11 +3389,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.175 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.175 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.176 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.176 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/09/21 08:11:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/21 08:11:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/09/24 11:00:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/24 11:00:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
