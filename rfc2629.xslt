@@ -347,6 +347,9 @@
     media. Add "purple numbers". Add hrefs to section headings. Add non-printing
     index key letter list to start of index.
 
+    2004-06-01  julian.reschke@greenbytes.de
+    
+    Use &#xb6; instead of # for PNs.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -763,7 +766,7 @@
   <xsl:if test="string-length($paraNumber) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins)">
     <div class="noprint" title="{$anchor-prefix}.section.{$paraNumber}">
       <a name="{$anchor-prefix}.section.{$paraNumber}" />
-      <a class="pn" href="#{$anchor-prefix}.section.{$paraNumber}">#</a>
+      <a class="pn" href="#{$anchor-prefix}.section.{$paraNumber}">&#xb6;</a>
     </div>
   </xsl:if>
   <xsl:apply-templates />
@@ -1273,7 +1276,7 @@
   <xsl:if test="string-length($paraNumber) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins)">
     <div class="noprint" title="{$anchor-prefix}.section.{$paraNumber}">
       <a name="{$anchor-prefix}.section.{$paraNumber}" />
-      <a class="pn" href="#{$anchor-prefix}.section.{$paraNumber}">#</a>
+      <a class="pn" href="#{$anchor-prefix}.section.{$paraNumber}">&#xb6;</a>
     </div>
   </xsl:if>
 
@@ -3274,11 +3277,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.168 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.168 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.169 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.169 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/05/30 20:00:50 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/30 20:00:50 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/06/01 16:33:15 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/06/01 16:33:15 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
