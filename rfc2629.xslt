@@ -234,6 +234,12 @@
     2003-08-09  julian.reschke@greenbytes.de
     
     Generate HTML lang tag.
+    
+    
+    2003-08-10  julian.reschke@greenbytes.de
+    
+    Map spanx/verb to HTML "samp" element.
+
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1046,7 +1052,7 @@
 </xsl:template>
 
 <xsl:template match="spanx[@style='verb']">
-  <tt><xsl:apply-templates /></tt>
+  <samp><xsl:apply-templates /></samp>
 </xsl:template>
 
 <xsl:template match="spanx[@style='strong']">
@@ -2473,11 +2479,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.100 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.100 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.101 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.101 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/09 10:03:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/09 10:03:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/10 08:09:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/10 08:09:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
