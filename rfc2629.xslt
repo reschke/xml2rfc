@@ -212,7 +212,7 @@
     sentence start detection (xref starting a section was using lowercase
     "section").
     
-    2003-06-21  julian.reschke@greenbytes.de
+    2003-06-22  julian.reschke@greenbytes.de
     
     exp. support for xref/@format. Add missing support for eref w/o content.
     exp. support for annotations in reference elements. Code cleanup
@@ -855,10 +855,10 @@
       
       <xsl:text>.</xsl:text>
 
-      <xsl:if test="annotation">
+      <xsl:for-each select="annotation">
         <br /> 
-        <xsl:apply-templates select="annotation/node()" />
-      </xsl:if>
+        <xsl:apply-templates />
+      </xsl:for-each>
 
     </td>
   </tr>
@@ -1094,7 +1094,7 @@
           <xsl:value-of select="$node/@title" />
         </xsl:attribute>
         <xsl:choose>
-          <xsl:when test="@format='numeric'">
+          <xsl:when test="@format='counter'">
             <xsl:value-of select="$refnum"/>
           </xsl:when>
           <xsl:when test="@format='title'">
@@ -1112,7 +1112,7 @@
           </xsl:for-each>
         </xsl:variable>
         <xsl:choose>
-          <xsl:when test="@format='numeric'">
+          <xsl:when test="@format='counter'">
             <xsl:value-of select="$figcnt" />
           </xsl:when>
           <xsl:when test="@format='title'">
@@ -2466,11 +2466,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.93 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.93 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.94 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.94 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/06/21 18:48:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/06/21 18:48:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/06/22 09:19:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/06/22 09:19:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
