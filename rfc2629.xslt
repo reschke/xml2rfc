@@ -93,6 +93,10 @@
     2002-04-03  julian.reschke@greenbytes.de
     
     Made rendering of references more tolerant re: missing parts.
+    
+    2002-04-08  julian.reschke@greenbytes.de
+    
+    Fixed reference numbering when references are split into separate sections.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1552,7 +1556,7 @@ ins
 	<xsl:param name="node" />
 	<xsl:choose>
     <xsl:when test="$useSymrefs='yes'">[<xsl:value-of select="$node/@anchor" />]</xsl:when>
-    <xsl:otherwise><xsl:for-each select="$node">[<xsl:number />]</xsl:for-each></xsl:otherwise>
+    <xsl:otherwise><xsl:for-each select="$node">[<xsl:number level="any" />]</xsl:for-each></xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
