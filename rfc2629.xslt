@@ -143,6 +143,11 @@
     
     Added temporariry workaround for Mozilla/Transformiix result tree fragment problem.
     (search for 'http://bugzilla.mozilla.org/show_bug.cgi?id=143668')
+    
+    2002-12-25  julian.reschke@greenbytes.de
+    
+    xref code: attempt to uppercase "section" and "appendix" when at the start
+    of a sentence.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -865,6 +870,7 @@
 </xsl:template>
                
 <xsl:template match="xref[not(node())]">
+  <xsl:variable name="context" select="." />
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="//*[@anchor=$target]" />
   <!-- should check for undefined targets -->
@@ -872,7 +878,9 @@
     <xsl:choose>
       <xsl:when test="local-name($node)='section'">
         <xsl:for-each select="$node">
-          <xsl:call-template name="sectiontype" />
+          <xsl:call-template name="sectiontype">
+            <xsl:with-param name="prec" select="$context/preceding-sibling::node()[1]" />
+          </xsl:call-template>
           <xsl:call-template name="sectionnumber" />
         </xsl:for-each>
       </xsl:when>
@@ -1793,9 +1801,31 @@ ins
   </xsl:choose>
 </xsl:template>
 
-<xsl:template name="sectiontype">
+<xsl:template name="endsWithDot">
+  <xsl:param name="str"/>
   <xsl:choose>
+    <xsl:when test="contains($str,'.') and substring-after($str,'.')=''" ><xsl:value-of select="true()"/></xsl:when>
+    <xsl:when test="not(contains($str,'.'))" ><xsl:value-of select="false()"/></xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="endsWithDot">
+        <xsl:with-param name="str" select="substring-after($str,'.')" /> 
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+
+<xsl:template name="sectiontype">
+  <xsl:param name="prec" />
+  <xsl:variable name="startOfSentence">
+    <xsl:call-template name="endsWithDot">
+      <xsl:with-param name="str" select="normalize-space($prec)"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="ancestor::back and $startOfSentence='true'">Appendix </xsl:when>
     <xsl:when test="ancestor::back">appendix </xsl:when>
+    <xsl:when test="$startOfSentence='true'">Section </xsl:when>
     <xsl:otherwise>section </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
