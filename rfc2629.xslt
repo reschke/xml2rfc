@@ -432,6 +432,10 @@
     Fixes in spacing and links of references section titles.  Enhance sorting
     in references when change tracking is in place.  Re-add figure centering
     support.  Add missing 2nd part of "Author's Adresses" fix. 
+
+    2005-02-25  julian.reschke@greenbytes.de
+
+    Align section number format with xml2rfc1.29.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2441,7 +2445,7 @@ table.closedissue {
       <xsl:variable name="n">
         <xsl:choose>
           <xsl:when test="$_n!=''">
-            <xsl:value-of select="$_n"/><xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
+            <xsl:value-of select="$_n"/>
           </xsl:when>
           <xsl:otherwise>&#167;</xsl:otherwise>
         </xsl:choose>
@@ -3605,11 +3609,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.214 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.214 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.215 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.215 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/02/09 17:11:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/09 17:11:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/02/25 22:21:56 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/25 22:21:56 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -3671,7 +3675,7 @@ table.closedissue {
 
 <xsl:template name="emit-section-number">
   <xsl:param name="no"/>
-  <xsl:value-of select="$no"/><xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
+  <xsl:value-of select="$no"/><xsl:if test="not(contains($no,'.')) or $xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
 </xsl:template>
 
 <xsl:template name="get-section-type">
