@@ -238,8 +238,9 @@
     
     2003-08-10  julian.reschke@greenbytes.de
     
-    Map spanx/verb to HTML "samp" element.
-
+    Map spanx/verb to HTML "samp" element. Fix author name display in
+    references (reverse surname/initials for last author), add "Ed.".
+    Fix internal bookmark generation.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -386,7 +387,7 @@
 <!-- Templates for the various elements of rfc2629.dtd -->
               
 <xsl:template match="abstract">
-    <h1>Abstract</h1>
+    <h1><a name="{$anchor-prefix}.abstract"/>Abstract</h1>
   <xsl:apply-templates />
 </xsl:template>
 
@@ -751,7 +752,8 @@
 </xsl:template>
 
 <xsl:template match="note">
-  <h1><xsl:value-of select="@title" /></h1>
+  <xsl:variable name="num"><xsl:number/></xsl:variable>
+  <h1><a name="{$anchor-prefix}.note.{$num}"/><xsl:value-of select="@title" /></h1>
     <xsl:apply-templates />
 </xsl:template>
 
@@ -799,6 +801,20 @@
       <xsl:for-each select="front/author">
         <xsl:choose>
           <xsl:when test="@surname and @surname!=''">
+            <xsl:variable name="displayname">
+              <!-- surname/initials is reversed for last author except when it's the only one -->
+              <xsl:choose>
+                <xsl:when test="position()=last() and position()!=1">
+                  <xsl:value-of select="concat(@initials,' ',@surname)" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="concat(@surname,', ',@initials)" />
+                </xsl:otherwise>
+              </xsl:choose>
+              <xsl:if test="@role='editor'">
+                <xsl:text>, Ed.</xsl:text>
+              </xsl:if>
+            </xsl:variable>
             <xsl:choose>
                <xsl:when test="address/email">
                 <a>
@@ -808,11 +824,11 @@
                   <xsl:if test="organization/text()">
                     <xsl:attribute name="title"><xsl:value-of select="organization/text()"/></xsl:attribute>
                   </xsl:if>
-                  <xsl:value-of select="concat(@surname,', ',@initials)" />
+                  <xsl:value-of select="$displayname" />
                 </a>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:value-of select="concat(@surname,', ',@initials)" />
+                <xsl:value-of select="$displayname" />
               </xsl:otherwise>
             </xsl:choose>
             
@@ -861,7 +877,7 @@
       <xsl:text>.</xsl:text>
 
       <xsl:for-each select="annotation">
-        <br /> 
+        <br />
         <xsl:apply-templates />
       </xsl:for-each>
 
@@ -922,12 +938,12 @@
       
       <!-- link elements -->
       <xsl:if test="$includeToc='yes'">
-        <link rel="Contents" href="#rfc.toc" />
+        <link rel="Contents" href="#{$anchor-prefix}.toc" />
       </xsl:if>
-      <link rel="Author" href="#rfc.authors" />
-      <link rel="Copyright" href="#rfc.copyright" />
+      <link rel="Author" href="#{$anchor-prefix}.authors" />
+      <link rel="Copyright" href="#{$anchor-prefix}.copyright" />
       <xsl:if test="//iref">
-        <link rel="Index" href="#rfc.index" />
+        <link rel="Index" href="#{$anchor-prefix}.index" />
       </xsl:if>
       <xsl:apply-templates select="/" mode="links" />
       <xsl:for-each select="/rfc/ed:link">
@@ -1395,7 +1411,7 @@
   </t>
   </section>
   
-  <section title="Acknowledgement" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+  <section title="Acknowledgement" myns:unnumbered="unnumbered" myns:notoclink="notoclink" >
   <t>
       Funding for the RFC editor function is currently provided by the
       Internet Society.
@@ -1665,7 +1681,7 @@ table.resolution
 
 <xsl:template name="insertPreamble">
 
-  <section title="Status of this Memo" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+  <section title="Status of this Memo" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.status">
 
   <xsl:choose>
     <xsl:when test="/rfc/@ipr">
@@ -1763,7 +1779,7 @@ table.resolution
   
   </section>
 
-  <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+  <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice">
   <t>
     Copyright (C) The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
   </t>
@@ -2026,7 +2042,7 @@ table.resolution
       <xsl:text>&#10;</xsl:text>
     </xsl:when>
     <xsl:when test="$mode='wordml'">
-      <r xmlns="http://schemas.microsoft.com/office/word/2003/2/wordml">
+      <r xmlns="http://schemas.microsoft.com/office/word/2003/wordml">
         <t><xsl:value-of select="translate($line,' ','&#160;')"/></t>
       </r>
     </xsl:when>
@@ -2068,7 +2084,7 @@ table.resolution
           <xsl:with-param name="mode" select="$mode" />
         </xsl:call-template>
         <xsl:if test="$mode='wordml' and $remainder!=''">
-          <r xmlns="http://schemas.microsoft.com/office/word/2003/2/wordml">
+          <r xmlns="http://schemas.microsoft.com/office/word/2003/wordml">
             <br />
           </r>
         </xsl:if>
@@ -2413,13 +2429,13 @@ table.resolution
 
 <xsl:template match="/*/middle//section[not(myns:unnumbered) and not(ancestor::section)]" mode="links">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
-  <link rel="Chapter" title="{$sectionNumber} {@title}" href="#rfc.section.{$sectionNumber}" />
+  <link rel="Chapter" title="{$sectionNumber} {@title}" href="#{$anchor-prefix}.section.{$sectionNumber}" />
   <xsl:apply-templates mode="links" />
 </xsl:template>
 
 <xsl:template match="/*/back//section[not(myns:unnumbered) and not(ancestor::section)]" mode="links">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
-  <link rel="Appendix" title="{$sectionNumber} {@title}" href="#rfc.section.{$sectionNumber}" />
+  <link rel="Appendix" title="{$sectionNumber} {@title}" href="#{$anchor-prefix}.section.{$sectionNumber}" />
   <xsl:apply-templates mode="links" />
 </xsl:template>
 
@@ -2479,11 +2495,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.101 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.101 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.102 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.102 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/10 08:09:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/10 08:09:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/11 08:06:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/11 08:06:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
