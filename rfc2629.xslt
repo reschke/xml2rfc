@@ -1670,7 +1670,7 @@ td.header-r {
   background-color: #666666;
   font-size: 10px;
   font-family: arial, helvetica, sans-serif;
-  vertical-align: top
+  vertical-align: top;
 }
 thead {
   display:table-header-group
@@ -2718,11 +2718,11 @@ table.resolution {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.133 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.133 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.134 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.134 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/11/03 08:53:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/03 08:53:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/11/03 23:49:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/03 23:49:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
