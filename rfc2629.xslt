@@ -295,6 +295,11 @@
     
     Support for RFC3667 IPR changes (xml2rfc 1.22); see
     <http://lists.xml.resource.org/pipermail/xml2rfc/2004-February/001088.html>.
+    
+    2004-03-11  julian.reschke@greenbytes.de
+    
+    Add "(if approved)" to "updates" and "obsoletes" unless the document has
+    an RFC number.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1385,6 +1390,7 @@
         Obsoletes: <xsl:call-template name="rfclist">
           <xsl:with-param name="list" select="normalize-space(/rfc/@obsoletes)" />
         </xsl:call-template>
+        <xsl:if test="not(/rfc/@number)"> (if approved)</xsl:if>
       </myns:item>
     </xsl:if>
     <xsl:if test="/rfc/@seriesNo">
@@ -1402,6 +1408,7 @@
           Updates: <xsl:call-template name="rfclist">
              <xsl:with-param name="list" select="normalize-space(/rfc/@updates)" />
           </xsl:call-template>
+          <xsl:if test="not(/rfc/@number)"> (if approved)</xsl:if>
       </myns:item>
     </xsl:if>
     <xsl:if test="$mode!='nroff'">
@@ -2923,11 +2930,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.147 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.147 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.148 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.148 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/02/20 10:03:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/02/20 10:03:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/03/11 11:28:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/03/11 11:28:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
