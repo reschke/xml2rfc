@@ -162,6 +162,10 @@
     
     fixed counting of list numbers in "format %" styles (one counter
     per unique format string). Added more spanx styles.
+
+    2003-05-02  julian.reschke@greenbytes.de
+    
+    experimental texttable support
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2112,24 +2116,45 @@ ins
 
 <!-- experimental table formatting -->
 
-<xsl:template match="ed:table">
-  <table><xsl:apply-templates/></table>
+<xsl:template match="texttable">
+  <xsl:apply-templates select="preamble" />
+  <table>
+    <thead>
+      <tr>
+        <xsl:apply-templates select="ttcol" />
+      </tr>
+    </thead>
+    <tbody>
+      <xsl:variable name="columns" select="count(ttcol)" />
+      <xsl:for-each select="c[(position() mod $columns) = 1]">
+        <tr>
+          <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
+            <td>
+              <xsl:variable name="pos" select="position()" />
+              <xsl:variable name="col" select="../ttcol[position() = $pos]" />
+              <xsl:if test="$col/@align">
+                <xsl:attribute name="align"><xsl:value-of select="$col/@align" /></xsl:attribute>
+              </xsl:if>
+              <xsl:apply-templates select="node()" />
+            </td>
+          </xsl:for-each>
+        </tr>
+      </xsl:for-each>
+    </tbody>
+  </table>
+  <xsl:apply-templates select="postamble" />
 </xsl:template>
 
-<xsl:template match="ed:tr">
-  <tr><xsl:apply-templates/></tr>
-</xsl:template>
-
-<xsl:template match="ed:th">
-  <th><xsl:apply-templates/></th>
-</xsl:template>
-
-<xsl:template match="ed:td">
-  <td><xsl:apply-templates/></td>
-</xsl:template>
-
-<xsl:template match="ed:td[@align='right']">
-  <td align='right'><xsl:apply-templates/></td>
+<xsl:template match="ttcol">
+  <th>
+    <xsl:if test="@width">
+      <xsl:attribute name="width"><xsl:value-of select="@width" /></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@align">
+      <xsl:attribute name="align"><xsl:value-of select="@align" /></xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates />
+  </th>
 </xsl:template>
 
 </xsl:stylesheet>
