@@ -186,7 +186,7 @@
     elements (generate META tag). fix various HTML conformance problems.
     added experimental support for role attribute. do not number paragraphs
     in unnumbered sections. update boilerplate texts. support for
-    "iprnotified" PI.
+    "iprnotified" PI. bugfix list numbering.
     
     
 -->
@@ -688,10 +688,10 @@
   <xsl:variable name="pos">
     <xsl:choose>
       <xsl:when test="$list/@counter">
-        <xsl:number level="any" count="list[@counter=$list/@counter or (not(@counter) and @style=$list/@counter)]/t" />
+        <xsl:number level="any" count="list[@counter=$list/@counter or (not(@counter) and @style=concat('format ',$list/@counter))]/t" />
       </xsl:when>
       <xsl:otherwise>
-        <xsl:number level="any" count="list[@counter=$list/@style or (not(@counter) and @style=$list/@style)]/t" />
+        <xsl:number level="any" count="list[concat('format ',@counter)=$list/@style or (not(@counter) and @style=$list/@style)]/t" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -917,7 +917,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.70 2003/05/11 15:35:40 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.71 2003/05/11 16:28:04 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
