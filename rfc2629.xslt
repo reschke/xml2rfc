@@ -2110,18 +2110,21 @@ thead {
 }
 ul.toc {
   list-style: none;
-  font-weight: bold;
   margin-left: 1.5em;
   margin-right: 0em;
   padding-left: 0em;
 }
 li.tocline0 {
   line-height: 150%;
+  font-weight: bold;
+  font-size: 10pt;
   margin-left: 0em;
   margin-right: 0em;
 }
 li.tocline1 {
   line-height: normal;
+  font-weight: normal;
+  font-size: 9pt;
   margin-left: 0em;
   margin-right: 0em;
 }
@@ -3483,11 +3486,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.199 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.199 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.200 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.200 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/30 20:40:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 20:40:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/30 21:28:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 21:28:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
