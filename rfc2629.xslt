@@ -138,6 +138,11 @@
     2002-10-13  julian.reschke@greenbytes.de
     
     Support for tocdepth PI.
+
+    2002-11-03  julian.reschke@greenbytes.de
+    
+    Added temporariry workaround for Mozilla/Transformiix result tree fragment problem.
+    (search for 'http://bugzilla.mozilla.org/show_bug.cgi?id=143668')
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -499,8 +504,14 @@
       <xsl:when test="function-available('xalan:nodeset')">
         <xsl:apply-templates select="xalan:nodeset($preamble)" />
       </xsl:when>
-      <xsl:otherwise> <!--proceed with fingers crossed-->
-        <xsl:apply-templates select="$preamble" />
+      <xsl:when test="system-property('xsl:vendor')='Transformiix' and system-property('xsl:vendor-url')='http://www.mozilla.org/projects/xslt/'">
+        <!--special case for Transformiix as of Mozilla release 1.2b -->
+        <!--see http://bugzilla.mozilla.org/show_bug.cgi?id=143668 -->
+        <xsl:apply-templates select="$preamble/node()" />
+      </xsl:when>
+      <xsl:otherwise>
+        <!--proceed with fingers crossed-->
+        <xsl:apply-templates select="$preamble/node()" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
