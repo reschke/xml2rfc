@@ -584,7 +584,9 @@
 </xsl:template>
                
 <xsl:template match="eref[not(node())]">
-  &lt;<a href="{@target}"><xsl:value-of select="@target" /></a>&gt;
+  <xsl:text>&lt;</xsl:text>
+  <a href="{@target}"><xsl:value-of select="@target" /></a>
+  <xsl:text>&gt;</xsl:text>
 </xsl:template>
 
 <xsl:template match="figure">
@@ -609,12 +611,12 @@
 </xsl:template>
 
 <xsl:template match="front">
-
-  <xsl:call-template name="insertTocLink">
-    <xsl:with-param name="includeTitle" select="true()" />
-  </xsl:call-template>
   
   <xsl:if test="$xml2rfc-topblock!='no'">
+    <xsl:call-template name="insertTocLink">
+      <xsl:with-param name="includeTitle" select="true()" />
+    </xsl:call-template>
+
     <!-- collect information for left column -->
       
     <xsl:variable name="leftColumn">
@@ -936,21 +938,29 @@
     <xsl:with-param name="rule" select="true()" />
   </xsl:call-template>
 
-  <!-- TODO: fix link generation -->
-  <xsl:choose>
-    <xsl:when test="not(@title) or @title='' or @title='References'">
-      <h1 class="np">
-        <a name="{$anchor-prefix}.references">References</a>
-      </h1>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:variable name="safeanchor" select="translate(@title,$plain,$touri)" />
-      <h1 class="np">
-        <a name="{$anchor-prefix}.{$safeanchor}"><xsl:value-of select="@title" /></a>
-      </h1>
-    </xsl:otherwise>
-  </xsl:choose>
-
+  <xsl:variable name="name">
+    <xsl:choose>
+      <xsl:when test="not(preceding::references)" />
+      <xsl:otherwise>
+        <xsl:text>.</xsl:text><xsl:number/>      
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  
+  <h1>
+    <!-- force page break before first reference section -->
+    <xsl:if test="$name=''">
+      <xsl:attribute name="class">np</xsl:attribute>
+    </xsl:if>
+    
+    <a name="{$anchor-prefix}.references{$name}">
+      <xsl:choose>
+        <xsl:when test="not(@title) or @title=''">References</xsl:when>
+        <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
+      </xsl:choose>
+    </a>
+  </h1>
+ 
   <table summary="{@title}" border="0" cellpadding="2">
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes'">
@@ -1984,10 +1994,12 @@ table.resolution
 
 <xsl:template match="references" mode="toc">
 
-  <xsl:variable name="target">
+  <xsl:variable name="num">
     <xsl:choose>
-      <xsl:when test="@title!=''"><xsl:value-of select="$anchor-prefix"/>.<xsl:value-of select="translate(@title,$plain,$touri)"/></xsl:when>
-      <xsl:otherwise><xsl:value-of select="$anchor-prefix"/>.references</xsl:otherwise>
+      <xsl:when test="not(preceding::references)" />
+      <xsl:otherwise>
+        <xsl:text>.</xsl:text><xsl:number/>      
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 
@@ -2000,7 +2012,7 @@ table.resolution
 
   <xsl:call-template name="insertTocLine">
     <xsl:with-param name="number" select="'&#167;'"/>
-    <xsl:with-param name="target" select="$target"/>
+    <xsl:with-param name="target" select="concat($anchor-prefix,'.references',$num)"/>
     <xsl:with-param name="title" select="$title"/>
   </xsl:call-template>
 
@@ -2616,11 +2628,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.114 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.114 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.115 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.115 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/16 07:44:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/16 07:44:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/16 08:49:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/16 08:49:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
