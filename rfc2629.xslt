@@ -307,7 +307,8 @@
 
     2004-04-04  julian.reschke@greenbytes.de
     
-    Add support for section/top attribute.
+    Add support for section/top attribute. Move references into plain
+    section container.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -635,8 +636,10 @@
 
   <!-- add references section first, no matter where it appears in the
     source document -->
+  <!-- as of April 2004, process from middle section 
   <xsl:apply-templates select="references" />
-   
+  -->
+  
   <!-- next, add information about the document's authors -->
   <xsl:call-template name="insertAuthors" />
     
@@ -889,6 +892,7 @@
 
 <xsl:template match="middle">
   <xsl:apply-templates />
+  <xsl:apply-templates select="../back/references"/>
 </xsl:template>
 
 <xsl:template match="note">
@@ -1030,32 +1034,55 @@
 
 <xsl:template match="references">
 
-  <xsl:call-template name="insertTocLink">
-    <xsl:with-param name="rule" select="true()" />
-  </xsl:call-template>
-
   <xsl:variable name="name">
+    <xsl:number/>      
+  </xsl:variable>
+
+  <xsl:if test="$name='1'">
+    <xsl:call-template name="insertTocLink">
+      <xsl:with-param name="rule" select="true()" />
+    </xsl:call-template>
+  </xsl:if>
+
+  <!-- insert pseudo section when needed -->
+  <xsl:if test="$name='1' and count(/*/back/references)!=1">
+    <h1>
+      <xsl:call-template name="insert-conditional-pagebreak"/>
+      <xsl:variable name="sectionNumber">
+        <xsl:call-template name="get-references-section-number"/>
+      </xsl:variable>
+      <a name="{$anchor-prefix}.references">
+        <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
+        References
+      </a>
+    </h1>
+  </xsl:if>
+  
+  <xsl:variable name="elemtype">
     <xsl:choose>
-      <xsl:when test="not(preceding::references)" />
-      <xsl:otherwise>
-        <xsl:text>.</xsl:text><xsl:number/>      
-      </xsl:otherwise>
+      <xsl:when test="count(/*/back/references)!=1">h2</xsl:when>
+      <xsl:otherwise>h1</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   
-  <h1>
-    <!-- force page break before first reference section -->
-    <xsl:if test="$name=''">
-      <xsl:call-template name="insert-conditional-pagebreak"/>
-    </xsl:if>
-    
-    <a name="{$anchor-prefix}.references{$name}">
+  <xsl:element name="{$elemtype}">
+    <xsl:variable name="sectionNumber">
+      <xsl:call-template name="get-section-number"/>
+    </xsl:variable>
+    <xsl:variable name="anchorpref">
+      <xsl:choose>
+        <xsl:when test="$elemtype='h1'"></xsl:when>
+        <xsl:otherwise>.<xsl:value-of select="$name"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <a name="{$anchor-prefix}.references{$anchorpref}">
+      <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
       <xsl:choose>
         <xsl:when test="not(@title) or @title=''">References</xsl:when>
         <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
       </xsl:choose>
     </a>
-  </h1>
+  </xsl:element>
  
   <table summary="{@title}" border="0" cellpadding="2">
     <xsl:choose>
@@ -2202,7 +2229,7 @@ table.closedissue {
 
 <xsl:template match="back" mode="toc">
 
-  <xsl:apply-templates select="references" mode="toc" />
+  <!-- <xsl:apply-templates select="references" mode="toc" /> -->
   <xsl:apply-templates select="/rfc/front" mode="toc" />
   <xsl:apply-templates select="*[not(self::references)]" mode="toc" />
 
@@ -2241,30 +2268,66 @@ table.closedissue {
 
 </xsl:template>
 
-<xsl:template match="references" mode="toc">
+<xsl:template name="references-toc">
 
-  <xsl:variable name="num">
-    <xsl:choose>
-      <xsl:when test="not(preceding::references)" />
-      <xsl:otherwise>
-        <xsl:text>.</xsl:text><xsl:number/>      
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
+  <!-- distinguish two cases: (a) single references element (process
+  as toplevel section; (b) multiple references sections (add one toplevel
+  container with subsection) -->
 
-  <xsl:variable name="title">
-    <xsl:choose>
-      <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
-      <xsl:otherwise>References</xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="count(/*/back/references) = 1">
+      <xsl:for-each select="/*/back/references">
+        <xsl:variable name="title">
+          <xsl:choose>
+            <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
+            <xsl:otherwise>References</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+      
+        <xsl:call-template name="insertTocLine">
+          <xsl:with-param name="number">
+            <xsl:call-template name="get-references-section-number"/>
+          </xsl:with-param>
+          <xsl:with-param name="target" select="concat($anchor-prefix,'.references')"/>
+          <xsl:with-param name="title" select="$title"/>
+        </xsl:call-template>
+      </xsl:for-each>
+    </xsl:when>
+    <xsl:otherwise>
+      <!-- insert pseudo container -->    
+      <xsl:call-template name="insertTocLine">
+        <xsl:with-param name="number">
+          <xsl:call-template name="get-references-section-number"/>
+        </xsl:with-param>
+        <xsl:with-param name="target" select="concat($anchor-prefix,'.references')"/>
+        <xsl:with-param name="title" select="'References'"/>
+      </xsl:call-template>
 
-  <xsl:call-template name="insertTocLine">
-    <xsl:with-param name="number" select="'&#167;'"/>
-    <xsl:with-param name="target" select="concat($anchor-prefix,'.references',$num)"/>
-    <xsl:with-param name="title" select="$title"/>
-  </xsl:call-template>
+      <!-- ...with subsections... -->    
+      <xsl:for-each select="/*/back/references">
+        <xsl:variable name="title">
+          <xsl:choose>
+            <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
+            <xsl:otherwise>References</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+      
+        <xsl:variable name="sectionNumber">
+          <xsl:call-template name="get-section-number" />
+        </xsl:variable>
 
+        <xsl:variable name="num">
+          <xsl:number/>
+        </xsl:variable>
+
+        <xsl:call-template name="insertTocLine">
+          <xsl:with-param name="number" select="$sectionNumber"/>
+          <xsl:with-param name="target" select="concat($anchor-prefix,'.references','.',$num)"/>
+          <xsl:with-param name="title" select="$title"/>
+        </xsl:call-template>
+      </xsl:for-each>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="section" mode="toc">
@@ -2291,6 +2354,7 @@ table.closedissue {
 
 <xsl:template match="middle" mode="toc">
   <xsl:apply-templates mode="toc" />
+  <xsl:call-template name="references-toc" />
 </xsl:template>
 
 <xsl:template match="rfc" mode="toc">
@@ -2810,6 +2874,12 @@ table.closedissue {
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
+    <xsl:when test="self::references">
+      <xsl:choose>
+        <xsl:when test="count(/*/back/references)=1"><xsl:call-template name="get-references-section-number"/></xsl:when>
+        <xsl:otherwise><xsl:call-template name="get-references-section-number"/>.<xsl:number/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
     <xsl:when test="self::middle or self::back"><!-- done --></xsl:when>
     <xsl:otherwise>
       <!-- go up one level -->
@@ -2943,11 +3013,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.150 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.150 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.151 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.151 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/04/04 11:17:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/04 11:17:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/04/04 15:36:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/04 15:36:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -2984,12 +3054,27 @@ table.closedissue {
     </xsl:when>
     <xsl:otherwise>
       <xsl:choose>
-        <xsl:when test="ancestor::back"><xsl:number count="ed:del|ed:ins|section|appendix" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
-        <xsl:when test="self::appendix"><xsl:number count="ed:del|ed:ins|appendix" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
-        <xsl:otherwise><xsl:number count="ed:del|ed:ins|section" level="multiple"/></xsl:otherwise>
+        <xsl:when test="self::references">
+          <xsl:choose>
+            <xsl:when test="count(/*/back/references)=1">
+              <xsl:call-template name="get-references-section-number"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:call-template name="get-references-section-number"/>.<xsl:number count="references"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:when test="ancestor::back"><xsl:number count="section|appendix" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
+        <xsl:when test="self::appendix"><xsl:number count="appendix" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
+        <xsl:otherwise><xsl:number count="section" level="multiple"/></xsl:otherwise>
       </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>
+</xsl:template>
+
+<!-- get the section number for the references section -->
+<xsl:template name="get-references-section-number">
+  <xsl:value-of select="count(/rfc/middle/section) + 1"/>
 </xsl:template>
 
 <xsl:template name="get-section-type">
