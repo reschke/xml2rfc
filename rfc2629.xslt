@@ -184,7 +184,11 @@
     
     change %c format to lowercase alphabetic. add support for keyword
     elements (generate META tag). fix various HTML conformance problems.
-    added experimental support for role attribute.
+    added experimental support for role attribute. do not number paragraphs
+    in unnumbered sections. update boilerplate texts. support for
+    "iprnotified" PI.
+    
+    
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -289,6 +293,15 @@
    select="substring-after( 
        translate(/processing-instruction('rfc')[contains(.,'linkmailto=')], '&quot;', ''), 
          'linkmailto=')" 
+ /> 
+
+
+<!-- iprnotified switch --> 
+  
+ <xsl:param name="iprnotified" 
+   select="substring-after( 
+       translate(/processing-instruction('rfc')[contains(.,'iprnotified=')], '&quot;', ''), 
+         'iprnotified=')" 
  /> 
 
 
@@ -739,7 +752,7 @@
   </xsl:variable>
   
   <tr>
-    <td valign="top" nowrap="nowrap">
+    <td class="top" nowrap="nowrap">
       <b>
         <a name="{@anchor}">
           <xsl:call-template name="referencename">
@@ -749,7 +762,7 @@
       </b>
     </td>
     
-    <td valign="top">
+    <td class="top">
       <xsl:for-each select="front/author">
         <xsl:choose>
           <xsl:when test="@surname and @surname!=''">
@@ -904,7 +917,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.69 2003/05/11 13:28:40 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.70 2003/05/11 15:35:40 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -1233,39 +1246,70 @@
 
 <xsl:template name="insertCopyright">
 
-  <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered">
+  <section title="Intellectual Property Statement" anchor="{$anchor-prefix}.ipr" myns:unnumbered="unnumbered">
+  <t>
+    The IETF takes no position regarding the validity or scope of
+    any intellectual property or other rights that might be claimed
+    to  pertain to the implementation or use of the technology
+    described in this document or the extent to which any license
+    under such rights might or might not be available; neither does
+    it represent that it has made any effort to identify any such
+    rights. Information on the IETF's procedures with respect to
+    rights in standards-track and standards-related documentation
+    can be found in BCP-11. Copies of claims of rights made
+    available for publication and any assurances of licenses to
+    be made available, or the result of an attempt made
+    to obtain a general license or permission for the use of such
+    proprietary rights by implementors or users of this
+    specification can be obtained from the IETF Secretariat.
+  </t>
+  <t>
+    The IETF invites any interested party to bring to its
+    attention any copyrights, patents or patent applications, or
+    other proprietary rights which may cover technology that may be
+    required to practice this standard. Please address the
+    information to the IETF Executive Director.
+  </t>
+  <xsl:if test="$iprnotified='yes'">
+    <t>
+      The IETF has been notified of intellectual property rights
+      claimed in regard to some or all of the specification contained
+      in this document. For more information consult the online list
+      of claimed rights.
+    </t>
+  </xsl:if>
+  </section>
 
+  <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
   <t>    
     Copyright (C) The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
   </t>
-
   <t>
     This document and translations of it may be copied and furnished to
-    others, and derivative works that comment on or otherwise explain it or
-    assist in its implementation may be prepared, copied, published and
+    others, and derivative works that comment on or otherwise explain it
+    or assist in its implementation may be prepared, copied, published and
     distributed, in whole or in part, without restriction of any kind,
-    provided that the above copyright notice and this paragraph are included
-    on all such copies and derivative works. However, this document itself
-    may not be modified in any way, such as by removing the copyright notice
-    or references to the Internet Society or other Internet organizations,
-    except as needed for the purpose of developing Internet standards in
-    which case the procedures for copyrights defined in the Internet
-    Standards process must be followed, or as required to translate it into
-    languages other than English.
+    provided that the above copyright notice and this paragraph are
+    included on all such copies and derivative works. However, this
+    document itself may not be modified in any way, such as by removing
+    the copyright notice or references to the Internet Society or other
+    Internet organizations, except as needed for the purpose of
+    developing Internet standards in which case the procedures for
+    copyrights defined in the Internet Standards process must be
+    followed, or as required to translate it into languages other than
+    English.
   </t>
-
   <t>
     The limited permissions granted above are perpetual and will not be
-    revoked by the Internet Society or its successors or assigns.
+    revoked by the Internet Society or its successors or assignees.
   </t>
-
   <t>
     This document and the information contained herein is provided on an
-    "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
-    TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT
-    NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL
-    NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR
-    FITNESS FOR A PARTICULAR PURPOSE.
+    &quot;AS IS&quot; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+    TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
+    BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
+    HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
+    MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
   </t>
   </section>
   
@@ -1543,7 +1587,8 @@ ins
             </xsl:when>
           <xsl:otherwise>CONFORMANCE UNDEFINED.</xsl:otherwise>
         </xsl:choose>
-
+      </t>
+      <t>
         Internet-Drafts are working documents of the Internet Engineering
         Task Force (IETF), its areas, and its working groups.
         Note that other groups may also distribute working documents as
@@ -1570,7 +1615,7 @@ ins
 
     <xsl:when test="/rfc/@category='bcp'">
       <t>
-        This document specifies an Internet Best Current Practice for the Internet
+        This document specifies an Internet Best Current Practices for the Internet
         Community, and requests discussion and suggestions for improvements.
         Distribution of this memo is unlimited.
       </t>
@@ -1593,7 +1638,7 @@ ins
     <xsl:when test="/rfc/@category='info'">
       <t>
         This memo provides information for the Internet community.
-        It does not specify an Internet standard of any kind.  
+        It does not specify an Internet standard of any kind.
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
@@ -1602,7 +1647,7 @@ ins
         This document specifies an Internet standards track protocol for the Internet
         community, and requests discussion and suggestions for improvements.
         Please refer to the current edition of the &quot;Internet Official Protocol
-        Standards&quot; (STD 1) for the standardization state and status of this  
+        Standards&quot; (STD 1) for the standardization state and status of this
         protocol. Distribution of this memo is unlimited.
       </t>
     </xsl:when>
@@ -1686,8 +1731,8 @@ ins
   <!-- copyright statements -->
   <xsl:call-template name="insertTocLine">
     <xsl:with-param name="number" select="'&#167;'"/>
-    <xsl:with-param name="target" select="concat($anchor-prefix,'.copyright')"/>
-    <xsl:with-param name="title" select="'Full Copyright Statement'"/>
+    <xsl:with-param name="target" select="concat($anchor-prefix,'.ipr')"/>
+    <xsl:with-param name="title" select="'Intellectual Property and Copyright Statements'"/>
   </xsl:call-template>
 
   <!-- insert the index if index entries exist -->
@@ -2006,7 +2051,7 @@ ins
 
 <xsl:template name="sectionnumberPara">
   <!-- get section number of ancestor section element, then add t or figure number -->
-  <xsl:if test="ancestor::section">
+  <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered'])">
     <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="sectionnumber" />.p.</xsl:for-each><xsl:number count="t|figure" />
   </xsl:if>
 </xsl:template>
@@ -2045,28 +2090,28 @@ ins
       </tr>
       <xsl:for-each select="ed:item">
         <tr>
-          <td valign="top">
+          <td class="top">
             <a href="mailto:{@entered-by}?subject={/rfc/@docName}, {../@name}"><i><xsl:value-of select="@entered-by"/></i></a>
           </td>
-          <td nowrap="nowrap" valign="top">
+          <td nowrap="nowrap" class="top">
             <xsl:value-of select="@date"/>
           </td>
-          <td valign="top">
+          <td class="top">
             <xsl:copy-of select="node()" />
           </td>
         </tr>
       </xsl:for-each>
       <xsl:for-each select="ed:resolution">
         <tr>
-          <td valign="top">
+          <td class="top">
             <xsl:if test="@entered-by">
               <a href="mailto:{@entered-by}?subject={/rfc/@docName}, {../@name}"><i><xsl:value-of select="@entered-by"/></i></a>
             </xsl:if>
           </td>
-          <td nowrap="nowrap" valign="top">
+          <td nowrap="nowrap" class="top">
             <xsl:value-of select="@date"/>
           </td>
-          <td valign="top">
+          <td class="top">
             <em>Resolution:</em>&#0160;<xsl:copy-of select="node()" />
           </td>
         </tr>
@@ -2236,7 +2281,7 @@ ins
       <xsl:for-each select="c[(position() mod $columns) = 1]">
         <tr>
           <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
-            <td>
+            <td class="top">
               <xsl:variable name="pos" select="position()" />
               <xsl:variable name="col" select="../ttcol[position() = $pos]" />
               <xsl:if test="$col/@align">
@@ -2254,7 +2299,7 @@ ins
 </xsl:template>
 
 <xsl:template match="ttcol">
-  <th>
+  <th valign="top">
     <xsl:if test="@width">
       <xsl:attribute name="width"><xsl:value-of select="@width" /></xsl:attribute>
     </xsl:if>
