@@ -358,7 +358,8 @@
 
     2004-09-04  julian.reschke@greenbytes.de
     
-    Fix index links into unnumbered sections.
+    Fix index links into unnumbered sections. Bring IPR boilerplate in-line
+    with xml2rfc 1.25.
 
 -->
 
@@ -2240,27 +2241,35 @@ table.closedissue {
           
           <!-- RFC3667 -->
           <xsl:when test="/rfc/@ipr = 'full3667'">
-            By submitting this Internet-Draft, I certify that any applicable
-            patent or other IPR claims of which I am aware have been disclosed,
-            and any of which I become aware will be disclosed, in accordance
-            with RFC 3668.
+            This document is an Internet-Draft and is subject to all provisions
+            of section 3 of RFC 3667.  By submitting this Internet-Draft, each
+            author represents that any applicable patent or other IPR claims of
+            which he or she is aware have been or will be disclosed, and any of
+            which he or she become aware will be disclosed, in accordance with
+            RFC 3668.
           </xsl:when>
           <xsl:when test="/rfc/@ipr = 'noModification3667'">
-            By submitting this Internet-Draft, I certify that any applicable
-            patent or other IPR claims of which I am aware have been disclosed,
-            and any of which I become aware will be disclosed, in accordance
-            with RFC 3668. This document may not be modified, and derivative
-            works of it may not be created, except to publish it as an RFC and
-            to translate it into languages other than English<xsl:if test="/rfc/@iprExtract">,
-            other than to extract <xref target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
+            This document is an Internet-Draft and is subject to all provisions
+            of section 3 of RFC 3667.  By submitting this Internet-Draft, each
+            author represents that any applicable patent or other IPR claims of
+            which he or she is aware have been or will be disclosed, and any of
+            which he or she become aware will be disclosed, in accordance with
+            RFC 3668.  This document may not be modified, and derivative works of
+            it may not be created, except to publish it as an RFC and to
+            translate it into languages other than English<xsl:if test="/rfc/@iprExtract">,
+            other than to extract <xref target="{/rfc/@iprExtract}"/> as-is
+            for separate use.</xsl:if>.
           </xsl:when>
           <xsl:when test="/rfc/@ipr = 'noDerivatives3667'">
-            By submitting this Internet-Draft, I certify that any applicable
-            patent or other IPR claims of which I am aware have been disclosed,
-            and any of which I become aware will be disclosed, in accordance
-            with RFC 3668. This document may not be modified, and derivative
-            works of it may not be created<xsl:if test="/rfc/@iprExtract">,
-            other than to extract <xref target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>..
+            This document is an Internet-Draft and is subject to all provisions
+            of section 3 of RFC 3667 except for the right to produce derivative
+            works.  By submitting this Internet-Draft, each author represents 
+            that any applicable patent or other IPR claims of which he or she
+            is aware have been or will be disclosed, and any of which he or she
+            become aware will be disclosed, in accordance with RFC 3668.  This
+            document may not be modified, and derivative works of it may
+            not be created<xsl:if test="/rfc/@iprExtract">, other than to extract
+            <xref target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
           </xsl:when>
           
           <xsl:otherwise>CONFORMANCE UNDEFINED.</xsl:otherwise>
@@ -3317,11 +3326,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.171 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.171 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.172 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.172 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/09/04 09:43:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/04 09:43:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/09/04 15:07:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/04 15:07:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
