@@ -186,7 +186,8 @@
     elements (generate META tag). fix various HTML conformance problems.
     added experimental support for role attribute. do not number paragraphs
     in unnumbered sections. update boilerplate texts. support for
-    "iprnotified" PI. bugfix list numbering.
+    "iprnotified" PI. bugfix list numbering. strip whitespace when
+    building tel: URIs.
     
     
 -->
@@ -417,13 +418,13 @@
   <xsl:if test="address/phone">
     <tr>
       <td align="right"><b>Phone:&#0160;</b></td>
-      <td><a href="tel:{address/phone}"><xsl:value-of select="address/phone" /></a></td>
+      <td><a href="tel:{translate(address/phone,' ','')}"><xsl:value-of select="address/phone" /></a></td>
     </tr>
   </xsl:if>
   <xsl:if test="address/facsimile">
     <tr>
       <td align="right"><b>Fax:&#0160;</b></td>
-      <td><a href="fax:{address/facsimile}"><xsl:value-of select="address/facsimile" /></a></td>
+      <td><a href="fax:{translate(address/facsimile,' ','')}"><xsl:value-of select="address/facsimile" /></a></td>
     </tr>
   </xsl:if>
   <xsl:if test="address/email">
@@ -536,7 +537,7 @@
     
     <!-- insert the collected information -->
     
-  <table width="66%" border="0" cellpadding="1" cellspacing="1">
+  <table summary="header information" width="66%" border="0" cellpadding="1" cellspacing="1">
     <xsl:choose>
       <xsl:when test="function-available('msxsl:node-set')">
         <xsl:call-template name="emitheader">
@@ -623,7 +624,7 @@
 </xsl:template>
 
 <xsl:template match="list[starts-with(@style,'format ')]">
-  <table>
+  <table summary="formatted list">
     <xsl:apply-templates />
   </table>
 </xsl:template>
@@ -839,7 +840,7 @@
 
   <h1><a name="{$anchor-prefix}.references">References</a></h1>
 
-  <table border="0">
+  <table summary="References" border="0">
     <xsl:choose>
       <xsl:when test="$sortRefs='yes'">
         <xsl:apply-templates>
@@ -865,7 +866,7 @@
     <xsl:value-of select="@title" />
   </a></h1>
 
-  <table border="0">
+  <table summary="{@title}" border="0">
     <xsl:choose>
       <xsl:when test="$sortRefs='yes'">
         <xsl:apply-templates>
@@ -917,7 +918,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.71 2003/05/11 16:28:04 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.72 2003/05/11 19:14:00 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -1222,7 +1223,7 @@
     
   <h1><a name="{$anchor-prefix}.authors" />Author's Address<xsl:if test="count(/rfc/front/author) &gt; 1">es</xsl:if></h1>
 
-  <table width="99%" border="0" cellpadding="0" cellspacing="0">
+  <table summary="Authors" width="99%" border="0" cellpadding="0" cellspacing="0">
     <xsl:apply-templates select="/rfc/front/author" />
   </table>
 </xsl:template>
@@ -1493,8 +1494,8 @@ ins
 
   <h1><a name="{$anchor-prefix}.index" />Index</h1>
 
-  <table>
-        
+  <table summary="Index">
+
     <xsl:for-each select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]">
       <xsl:sort select="translate(@item,$lcase,$ucase)" />
             
@@ -1658,7 +1659,7 @@ ins
   
   </section>
 
-  <section title="Copyright Notice" myns:unnumbered="yes" myns:notoclink="notoclink">
+  <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
   <t>
     Copyright (C) The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
   </t>
@@ -1848,12 +1849,15 @@ ins
   <xsl:param name="rule" />
   <xsl:if test="$rule"><hr class="noprint"/></xsl:if>
   <xsl:if test="$includeTitle or $includeToc='yes'">
-    <table class="noprint" border="0" cellpadding="0" cellspacing="2" width="30" align="right">
+    <table summary="link to TOC" class="noprint" border="0" cellpadding="0" cellspacing="2" width="30" align="right">
       <xsl:if test="$includeTitle">
         <tr>
           <td bgcolor="#000000" align="center" valign="middle" width="30" height="30">
-            <b><span class="RFC">&#0160;RFC&#0160;</span></b><br />
-            <span class="hotText"><xsl:value-of select="/rfc/@number"/></span>
+            <b><span class="RFC">&#0160;RFC&#0160;</span></b>
+            <xsl:if test="/rfc/@number">
+              <br />
+              <span class="hotText"><xsl:value-of select="/rfc/@number"/></span>
+            </xsl:if>
           </td>
         </tr>
       </xsl:if>
@@ -2073,7 +2077,7 @@ ins
   </xsl:variable>
   
   <a name="{$anchor-prefix}.issue.{@name}">
-   <table style="{$style}"> <!-- align="right" width="50%"> -->
+   <table summary="issue {@name}" style="{$style}"> <!-- align="right" width="50%"> -->
       <tr>
         <td colspan="3">
           <xsl:choose>
@@ -2125,7 +2129,7 @@ ins
 
   <h2>Issues list</h2>
   <p>
-  <table>
+  <table summary="Issues list">
     <xsl:for-each select="//ed:issue">
       <xsl:sort select="@status" />
       <xsl:sort select="@name" />
@@ -2270,7 +2274,7 @@ ins
 
 <xsl:template match="texttable">
   <xsl:apply-templates select="preamble" />
-  <table>
+  <table summary="preamble">
     <thead>
       <tr>
         <xsl:apply-templates select="ttcol" />
