@@ -281,7 +281,7 @@
   
  <xsl:param name="link-mailto" 
    select="substring-after( 
-       translate(/processing-instruction('rfc-ext')[contains(.,'linkmailto=')], '&quot;', ''), 
+       translate(/processing-instruction('rfc')[contains(.,'linkmailto=')], '&quot;', ''), 
          'linkmailto=')" 
  /> 
 
