@@ -992,7 +992,7 @@
         <xsl:variable name="month"><xsl:call-template name="get-month-as-num"/></xsl:variable>
         <meta name="DC.Date.Issued" scheme="ISO8601" content="{/rfc/front/date/@year}-{$month}" />
 
-        <xsl:if test="/rfc/@obsoletes">
+        <xsl:if test="/rfc/@obsoletes!=''">
           <xsl:call-template name="rfclist-for-dcmeta">
             <xsl:with-param name="list" select="/rfc/@obsoletes"/>
           </xsl:call-template>
@@ -2558,11 +2558,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.104 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.104 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.105 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.105 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/11 12:48:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/11 12:48:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/11 14:58:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/11 14:58:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
