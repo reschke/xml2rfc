@@ -278,7 +278,25 @@
   </xsl:if>
 
 	<!-- copyright statements -->
-  <xsl:call-template name="insertCopyright" />      
+  <xsl:variable name="copyright"><xsl:call-template name="insertCopyright" /></xsl:variable>
+
+  <!-- emit it -->
+  <xsl:choose>
+    <xsl:when test="function-available('msxsl:node-set')">
+      <xsl:apply-templates select="msxsl:node-set($copyright)" />
+    </xsl:when>
+    <xsl:when test="function-available('saxon:node-set')">
+      <xsl:apply-templates select="saxon:node-set($copyright)" />
+    </xsl:when>
+    <xsl:when test="function-available('xalan:nodeset')">
+      <xsl:apply-templates select="xalan:nodeset($copyright)" />
+    </xsl:when>
+    <xsl:otherwise> <!--proceed with fingers crossed-->
+      <xsl:apply-templates select="$copyright" />
+    </xsl:otherwise>
+  </xsl:choose>
+
+        
 </xsl:template>
 
 <xsl:template match="eref[node()]">
@@ -362,14 +380,25 @@
     <div align="right"><span class="filename"><xsl:value-of select="/rfc/@docName"/></span></div>
   </xsl:if>  
   
-  <xsl:call-template name="insertStatus" />
-        
-
-	<h1>Copyright Notice</h1>
-	<p>
-		Copyright (C) The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
-    </p>
-
+  <!-- Get status info formatted as per RFC2629-->
+  <xsl:variable name="preamble"><xsl:call-template name="insertPreamble" /></xsl:variable>
+  
+  <!-- emit it -->
+  <xsl:choose>
+    <xsl:when test="function-available('msxsl:node-set')">
+      <xsl:apply-templates select="msxsl:node-set($preamble)" />
+    </xsl:when>
+    <xsl:when test="function-available('saxon:node-set')">
+      <xsl:apply-templates select="saxon:node-set($preamble)" />
+    </xsl:when>
+    <xsl:when test="function-available('xalan:nodeset')">
+      <xsl:apply-templates select="xalan:nodeset($preamble)" />
+    </xsl:when>
+    <xsl:otherwise> <!--proceed with fingers crossed-->
+      <xsl:apply-templates select="$preamble" />
+    </xsl:otherwise>
+  </xsl:choose>
+          
 	<xsl:apply-templates select="abstract" />
 	<xsl:apply-templates select="note" />
 
@@ -638,10 +667,13 @@
 <xsl:template match="section">
 
   <xsl:variable name="sectionNumber">
-		<xsl:call-template name="sectionnumber" />
+    <xsl:choose>
+      <xsl:when test="@myns:unnumbered"></xsl:when>
+		  <xsl:otherwise><xsl:call-template name="sectionnumber" /></xsl:otherwise>
+    </xsl:choose>
   </xsl:variable>
     
-  <xsl:if test="not(ancestor::section)">
+  <xsl:if test="not(ancestor::section) and not(@myns:notoclink)">
 		<xsl:call-template name="insertTocLink">
     	<xsl:with-param name="rule" select="true()" />
     </xsl:call-template>
@@ -656,7 +688,9 @@
   </xsl:variable>
     
   <xsl:element name="{$elemtype}">
-    <a name="rfc.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
+    <xsl:if test="$sectionNumber!=''">
+      <a name="rfc.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
+    </xsl:if>
     <xsl:choose>
 	    <xsl:when test="@anchor">
         <a name="{@anchor}"><xsl:value-of select="@title" /></a>
@@ -866,54 +900,48 @@
 
 <xsl:template name="insertCopyright">
 
-	<!-- insert link to TOC including horizontal rule -->
-	<xsl:call-template name="insertTocLink">
-		<xsl:with-param name="rule" select="true()" />
-	</xsl:call-template> 
+  <section title="Full Copyright Statement" anchor="rfc.copyright" myns:unnumbered="unnumbered" xmlns="">
 
-	<a name="rfc.copyright">
-    	<h1>Full Copyright Statement</h1>
-   	</a>
-
-	<p class="copyright">    
+	<t>    
 		Copyright (C) The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
-	</p>
+	</t>
 
-	<p class="copyright">
+	<t>
 		This document and translations of it may be copied and furnished to
-        others, and derivative works that comment on or otherwise explain it or
-        assist in its implementation may be prepared, copied, published and
-        distributed, in whole or in part, without restriction of any kind,
-        provided that the above copyright notice and this paragraph are included
-        on all such copies and derivative works. However, this document itself
-        may not be modified in any way, such as by removing the copyright notice
-        or references to the Internet Society or other Internet organizations,
-        except as needed for the purpose of developing Internet standards in
-        which case the procedures for copyrights defined in the Internet
-        Standards process must be followed, or as required to translate it into
-        languages other than English.
-	</p>
+    others, and derivative works that comment on or otherwise explain it or
+    assist in its implementation may be prepared, copied, published and
+    distributed, in whole or in part, without restriction of any kind,
+    provided that the above copyright notice and this paragraph are included
+    on all such copies and derivative works. However, this document itself
+    may not be modified in any way, such as by removing the copyright notice
+    or references to the Internet Society or other Internet organizations,
+    except as needed for the purpose of developing Internet standards in
+    which case the procedures for copyrights defined in the Internet
+    Standards process must be followed, or as required to translate it into
+    languages other than English.
+	</t>
 
-	<p class="copyright">
+	<t>
 		The limited permissions granted above are perpetual and will not be
-        revoked by the Internet Society or its successors or assigns.
-	</p>
+    revoked by the Internet Society or its successors or assigns.
+	</t>
 
-	<p class="copyright">
+	<t>
 		This document and the information contained herein is provided on an
-        "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
-        TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT
-        NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL
-        NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR
-        FITNESS FOR A PARTICULAR PURPOSE.
-	</p>
-
-	<h1>Acknowledgement</h1>
-
-	<p class="copyright">
+    "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+    TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT
+    NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL
+    NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR
+    FITNESS FOR A PARTICULAR PURPOSE.
+	</t>
+  </section>
+  
+	<section title="Acknowledgement" myns:unnumbered="unnumbered" xmlns="" myns:notoclink="notoclink">
+	<t>
     	Funding for the RFC editor function is currently provided by the
-        Internet Society.
-   	</p>
+      Internet Society.
+  </t>
+  </section>
 
 </xsl:template>
 
@@ -981,10 +1009,6 @@ TD.header
   font-size: 10px;
   font-family: arial, helvetica, sans-serif;
   valign: top
-}
-.copyright
-{
-	font-size: 10px
 }
 .editingmark
 {
@@ -1139,13 +1163,13 @@ ins
 
 
 
-<xsl:template name="insertStatus">
+<xsl:template name="insertPreamble">
 
-    <h1>Status of this Memo</h1>
+  <section title="Status of this Memo" xmlns="" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
 
 	<xsl:choose>
-    	<xsl:when test="/rfc/@ipr">
-			<p>
+    <xsl:when test="/rfc/@ipr">
+			<t>
 				This document is an Internet-Draft and is 
 				<xsl:choose>
 					<xsl:when test="/rfc/@ipr = 'full2026'">
@@ -1166,75 +1190,84 @@ ins
 						and the author does not provide the IETF with any rights other
 						than to publish as an Internet-Draft.
     				</xsl:when>
-					<xsl:otherwise>CONFORMANCE UNDEFINED</xsl:otherwise>
+					<xsl:otherwise>CONFORMANCE UNDEFINED.</xsl:otherwise>
 				</xsl:choose>
 
 				Internet-Drafts are working documents of the Internet Engineering
 				Task Force (IETF), its areas, and its working groups.
 				Note that other groups may also distribute working documents as
-				Internet-Drafts.</p>
-      <p>
+				Internet-Drafts.
+      </t>
+      <t>
 				Internet-Drafts are draft documents valid for a maximum of six months
 				and may be updated, replaced, or obsoleted by other documents at any time.
 				It is inappropriate to use Internet-Drafts as reference material or to cite
 				them other than as "work in progress".
-			</p>
-			<p>
+			</t>
+			<t>
 				The list of current Internet-Drafts can be accessed at
-				<a href='http://www.ietf.org/ietf/1id-abstracts.txt'>http://www.ietf.org/ietf/1id-abstracts.txt</a>.
-			</p>
-			<p>
+				<eref target='http://www.ietf.org/ietf/1id-abstracts.txt'>http://www.ietf.org/ietf/1id-abstracts.txt</eref>.
+			</t>
+			<t>
 				The list of Internet-Draft Shadow Directories can be accessed at
-				<a href='http://www.ietf.org/shadow.html'>http://www.ietf.org/shadow.html</a>.
-			</p>
-			<p>
+				<eref target='http://www.ietf.org/shadow.html'>http://www.ietf.org/shadow.html</eref>.
+			</t>
+			<t>
 				This Internet-Draft will expire in <xsl:call-template name="expirydate" />.
-			</p>
-      	</xsl:when>
+			</t>
+    </xsl:when>
 
 		<xsl:when test="/rfc/@category='bcp'">
-			<p>
-            	This document specifies an Internet Best Current Practice for the Internet
+			<t>
+        This document specifies an Internet Best Current Practice for the Internet
 				Community, and requests discussion and suggestions for improvements.
 				Distribution of this memo is unlimited.
-           	</p>
-      	</xsl:when>
+      </t>
+    </xsl:when>
 		<xsl:when test="/rfc/@category='exp'">
-			<p>
-            	This memo defines an Experimental Protocol for the Internet community.
+			<t>
+        This memo defines an Experimental Protocol for the Internet community.
 				It does not specify an Internet standard of any kind.
 				Discussion and suggestions for improvement are requested.
 				Distribution of this memo is unlimited.
-           	</p>
-    	</xsl:when>
+      </t>
+    </xsl:when>
 		<xsl:when test="/rfc/@category='historic'">
-			<p>
-            	This memo describes a historic protocol for the Internet community.
+			<t>
+        This memo describes a historic protocol for the Internet community.
 				It does not specify an Internet standard of any kind.
 				Distribution of this memo is unlimited.
-         	</p>
-      	</xsl:when>
+      </t>
+    </xsl:when>
 		<xsl:when test="/rfc/@category='info'">
-			<p>
-            	This memo provides information for the Internet community.
+			<t>
+        This memo provides information for the Internet community.
 				It does not specify an Internet standard of any kind.	
 				Distribution of this memo is unlimited.
-            </p>
-      	</xsl:when>
+      </t>
+    </xsl:when>
 		<xsl:when test="/rfc/@category='std'">
-			<p>
-            	This document specifies an Internet standards track protocol for the Internet
+		  <t>
+        This document specifies an Internet standards track protocol for the Internet
 				community, and requests discussion and suggestions for improvements.
 				Please refer to the current edition of the &quot;Internet Official Protocol
 				Standards&quot; (STD 1) for the standardization state and status of this	
 				protocol. Distribution of this memo is unlimited.
-          	</p>
-      	</xsl:when>
+      </t>
+    </xsl:when>
 		<xsl:otherwise>
-			<p>UNSUPPORTED CATEGORY.</p>
+			<t>UNSUPPORTED CATEGORY.</t>
 		</xsl:otherwise>
-    </xsl:choose>
+  </xsl:choose>
+  
+  </section>
 
+  <section title="Copyright Notice" myns:unnumbered="yes" xmlns="" myns:notoclink="notoclink">
+	<t>
+		Copyright (C) The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
+  </t>
+  </section>
+  
 </xsl:template>
 
 <xsl:template name="insertToc">
@@ -1358,9 +1391,9 @@ ins
 <xsl:template name="referencename">
 	<xsl:param name="node" />
 	<xsl:choose>
-    	<xsl:when test="$useSymrefs='yes'">[<xsl:value-of select="$node/@anchor" />]</xsl:when>
-    	<xsl:otherwise><xsl:for-each select="$node">[<xsl:number />]</xsl:for-each></xsl:otherwise>
-  	</xsl:choose>
+    <xsl:when test="$useSymrefs='yes'">[<xsl:value-of select="$node/@anchor" />]</xsl:when>
+    <xsl:otherwise><xsl:for-each select="$node">[<xsl:number />]</xsl:for-each></xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 
