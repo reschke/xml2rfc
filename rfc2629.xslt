@@ -122,6 +122,10 @@
     2002-06-21  julian.reschke@greenbytes.de
     
     When producing private documents, do not include document status, copyright etc.
+    
+    2002-07-08  julian.reschke@greenbytes.de
+    
+    Fix xrefs to Appendices.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -825,8 +829,8 @@
   <a href="#{$target}">
     <xsl:choose>
       <xsl:when test="local-name($node)='section'">
-        <xsl:text>Section </xsl:text>
-        <xsl:for-each select="$node">
+        <xsl:for-each select="$node"> <!-- make it the current context -->
+          <xsl:call-template name="sectiontype" />
           <xsl:call-template name="sectionnumber" />
         </xsl:for-each>
       </xsl:when>
@@ -1738,6 +1742,13 @@ ins
         <xsl:otherwise><xsl:number count="ed:del|ed:ins|section" level="multiple"/></xsl:otherwise>
       </xsl:choose>
     </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="sectiontype">
+  <xsl:choose>
+    <xsl:when test="ancestor::back">appendix </xsl:when>
+    <xsl:otherwise>section </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
