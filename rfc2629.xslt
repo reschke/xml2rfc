@@ -286,6 +286,10 @@
     
     Fix inheritance of ed:entered-by attribute. Display note elements inside
     change tracking as well.
+    
+    2004-01-18  julian.reschke@greenbytes.de
+    
+    When PI compact = 'yes', make most CSS print page breaks conditional.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -305,6 +309,14 @@
 <!-- process some of the processing instructions supported by Marshall T. Rose's
      xml2rfc sofware, see <http://xml.resource.org/> -->
 
+
+<!-- rfc compact PI -->
+
+<xsl:param name="xml2rfc-compact"
+  select="substring-after(
+      translate(/processing-instruction('rfc')[contains(.,'compact=')], '&quot; ', ''),
+        'compact=')"
+/>
 
 <!-- rfc footer PI -->
 
@@ -1011,7 +1023,7 @@
   <h1>
     <!-- force page break before first reference section -->
     <xsl:if test="$name=''">
-      <xsl:attribute name="class">np</xsl:attribute>
+      <xsl:call-template name="insert-conditional-pagebreak"/>
     </xsl:if>
     
     <a name="{$anchor-prefix}.references{$name}">
@@ -1046,11 +1058,11 @@
   <html lang="{$lang}">
     <head>
       <title><xsl:value-of select="front/title" /></title>
-      <style type="text/css" media="screen" title="Xml2Rfc (sans serif)">
+      <style type="text/css" title="Xml2Rfc (sans serif)">
         <xsl:call-template name="insertCss" />
       </style>
-      <!--<link rel="alternate stylesheet" type="text/css" media="screen" title="Plain (typewriter)" href="rfc2629tty.css" />-->
-      
+      <!-- <link rel="alternate stylesheet" type="text/css" media="screen" title="Plain (typewriter)" href="rfc2629tty.css" /> -->
+            
       <!-- link elements -->
       <xsl:if test="$xml2rfc-toc='yes'">
         <link rel="Contents" href="#{$anchor-prefix}.toc" />
@@ -1192,9 +1204,16 @@
   </xsl:variable>
   
   <xsl:element name="{$elemtype}">
-    <xsl:if test="not(ancestor::section) and not(@myns:notoclink)">
-      <xsl:attribute name="class">np</xsl:attribute>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="$sectionNumber='1'">
+        <!-- pagebreak, this the first section -->
+        <xsl:attribute name="class">np</xsl:attribute>
+      </xsl:when>
+      <xsl:when test="not(ancestor::section) and not(@myns:notoclink)">
+        <xsl:call-template name="insert-conditional-pagebreak"/>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
     <xsl:call-template name="insertInsDelClass" />
     
     <!-- generate anchors for irefs that are immediate childs of this section -->
@@ -1502,7 +1521,10 @@
     <xsl:with-param name="rule" select="true()" />
   </xsl:call-template>
     
-  <h1 class="np"><a name="{$anchor-prefix}.authors" />Author's Address<xsl:if test="count(/rfc/front/author) &gt; 1">es</xsl:if></h1>
+  <h1>
+    <xsl:call-template name="insert-conditional-pagebreak"/>
+    <a name="{$anchor-prefix}.authors" />Author's Address<xsl:if test="count(/rfc/front/author) &gt; 1">es</xsl:if>
+  </h1>
 
   <table summary="Authors" width="99%" border="0" cellpadding="0" cellspacing="0">
     <xsl:apply-templates select="/rfc/front/author" />
@@ -1806,7 +1828,7 @@ table.closedissue {
 
 @media print {
   .noprint {
-    display:none
+    display: none;
   }
 }
 </xsl:template>
@@ -1831,7 +1853,10 @@ table.closedissue {
     <xsl:with-param name="rule" select="true()" />
   </xsl:call-template> 
 
-  <h1 class="np"><a name="{$anchor-prefix}.index" />Index</h1>
+  <h1>
+    <xsl:call-template name="insert-conditional-pagebreak"/>
+    <a name="{$anchor-prefix}.index" />Index
+  </h1>
 
   <table summary="Index">
 
@@ -2005,7 +2030,7 @@ table.closedissue {
       <xsl:with-param name="rule" select="true()" />
   </xsl:call-template>
 
-  <h1 class="np">
+  <h1 class="np"> <!-- this pagebreak occurs always -->
     <a name="{$anchor-prefix}.toc">Table of Contents</a>
   </h1>
 
@@ -2795,11 +2820,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.144 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.144 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.145 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.145 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/12/13 14:28:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/12/13 14:28:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/01/18 17:26:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/01/18 17:26:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -2852,6 +2877,11 @@ table.closedissue {
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="insert-conditional-pagebreak">
+  <xsl:if test="$xml2rfc-compact!='yes'">
+    <xsl:attribute name="class">np</xsl:attribute>
+  </xsl:if>
+</xsl:template>
 
 
 </xsl:stylesheet>
