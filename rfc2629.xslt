@@ -345,7 +345,7 @@
 
 <!-- extension for exclusing DCMI properties in meta tag (RFC2731) -->
 
-<xsl:param name="support-rfc2731"
+<xsl:param name="xml2rfc-ext-support-rfc2731"
   select="substring-after(
       translate(/processing-instruction('rfc-ext')[contains(.,'support-rfc2731=')], '&quot; ', ''),
         'support-rfc2731=')"
@@ -980,7 +980,7 @@
         <meta name="keywords" content="{$keyw}" />
       </xsl:if>
 
-      <xsl:if test="$support-rfc2731!='no'">
+      <xsl:if test="$xml2rfc-ext-support-rfc2731!='no'">
         <!-- Dublin Core Metadata -->
         <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
               
@@ -2574,11 +2574,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.108 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.108 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.109 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.109 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/13 07:39:22 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/13 07:39:22 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/13 13:56:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/13 13:56:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
