@@ -24,6 +24,10 @@
     2001-10-07  julian.reschke@greenbytes.de
     
     Made telephone number links active.
+
+    2001-10-08  julian.reschke@greenbytes.de
+    
+    Support for vspace element.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -560,6 +564,14 @@
      	</xsl:choose>
     </xsl:element>
     <xsl:apply-templates />
+</xsl:template>
+
+<xsl:template match="vspace[not(@blankLines)]">
+  <br />
+</xsl:template>
+
+<xsl:template match="vspace[@blankLines]">
+  <br/><xsl:for-each select="//*[position() &lt; @blankLines]"><br /></xsl:for-each>
 </xsl:template>
 
 <xsl:template match="xref[node()]">
