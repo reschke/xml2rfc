@@ -268,9 +268,10 @@
     Fix minor issue detecting the same org for the header (caused by IE's
     non-standard whitespace handling). Fix default handling for /rfc/@category.
     
-    2003-11-01  julian.reschke@greenbytes.de
+    2003-11-03  julian.reschke@greenbytes.de
     
-    Inherit ed:entered-by from ancestor elements.
+    Inherit ed:entered-by from ancestor elements. Change CSS color for inserted
+    text to green.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1740,11 +1741,11 @@ del {
   text-decoration: line-through;
 }
 ins {
-  color: blue;
+  color: green;
   text-decoration: underline;
 }
 .ins {
-  color: blue;
+  color: green;
   text-decoration: underline;
 }
 table.resolution {
@@ -2717,11 +2718,11 @@ table.resolution {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.132 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.132 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.133 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.133 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/11/01 11:28:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/01 11:28:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/11/03 08:53:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/03 08:53:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
