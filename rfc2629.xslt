@@ -309,6 +309,11 @@
     
     Add support for section/top attribute. Move references into plain
     section container.
+    
+    2004-04-05  julian.reschke@greenbytes.de
+    
+    Do not emit identical section/para anchors for deleted content.
+
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1197,7 +1202,7 @@
     <xsl:call-template name="sectionnumberPara" />
   </xsl:variable>
      
-  <xsl:if test="string-length($paraNumber) &gt; 0">
+  <xsl:if test="string-length($paraNumber) &gt; 0 and not(ancestor::ed:del)">
     <div><a name="{$anchor-prefix}.section.{$paraNumber}" /></div>
   </xsl:if>
 
@@ -1269,7 +1274,10 @@
     <!-- generate anchors for irefs that are immediate childs of this section -->
     <xsl:apply-templates select="iref"/>
     <xsl:if test="$sectionNumber!=''">
-      <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
+      <xsl:if test="not(ancestor::ed:del)">
+        <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>
+      </xsl:if>
+      <xsl:text>&#0160;</xsl:text>
     </xsl:if>
     <xsl:choose>
       <xsl:when test="@anchor">
@@ -3013,11 +3021,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.151 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.151 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.152 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.152 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/04/04 15:36:35 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/04 15:36:35 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/04/05 22:17:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/05 22:17:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
