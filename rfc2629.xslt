@@ -114,6 +114,10 @@
     2002-05-05  julian.reschke@greenbytes.de
     
     Updated issue/editing support.
+    
+    2002-05-15  julian.reschke@greenbytes.de
+    
+    Bugfix for section numbering after introduction of ed:replace
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1524,7 +1528,7 @@ ins
   <xsl:apply-templates select="middle|back" mode="toc" />
 </xsl:template>
 
-<xsl:template match="ed:del|ed:ins" mode="toc">
+<xsl:template match="ed:del|ed:ins|ed:replace" mode="toc">
   <xsl:apply-templates mode="toc" />
 </xsl:template>
 
@@ -1910,19 +1914,31 @@ ins
 <xsl:template name="sectionnumberAndEdits">
   <xsl:choose>
     <xsl:when test="ancestor::ed:del">del-<xsl:number count="ed:del//section" level="any"/></xsl:when>
+    <xsl:when test="self::section and parent::ed:ins and local-name(../..)='replace'">
+      <xsl:for-each select="../.."><xsl:call-template name="sectionnumberAndEdits" /></xsl:for-each>
+      <xsl:for-each select="..">
+        <xsl:if test="parent::ed:replace">
+          <xsl:for-each select="..">
+            <xsl:if test="parent::section">.</xsl:if><xsl:value-of select="1+count(preceding-sibling::section|preceding-sibling::ed:ins/section|preceding-sibling::ed:replace/ed:ins/section)" />
+          </xsl:for-each>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:when>
     <xsl:when test="self::section[parent::ed:ins]">
       <xsl:for-each select="../.."><xsl:call-template name="sectionnumberAndEdits" /></xsl:for-each>
-      <xsl:for-each select=".."><xsl:if test="parent::section">.</xsl:if><xsl:value-of select="1+count(preceding-sibling::section|preceding-sibling::ed:ins/section)" /></xsl:for-each>
+      <xsl:for-each select="..">
+        <xsl:if test="parent::section">.</xsl:if><xsl:value-of select="1+count(preceding-sibling::section|preceding-sibling::ed:ins/section|preceding-sibling::ed:replace/ed:ins/section)" />
+      </xsl:for-each>
     </xsl:when>
     <xsl:when test="self::section">
       <xsl:for-each select=".."><xsl:call-template name="sectionnumberAndEdits" /></xsl:for-each>
       <xsl:if test="parent::section">.</xsl:if>
       <xsl:choose>
         <xsl:when test="parent::back">
-          <xsl:number format="A" value="1+count(preceding-sibling::section|preceding-sibling::ed:ins/section)" />
+          <xsl:number format="A" value="1+count(preceding-sibling::section|preceding-sibling::ed:ins/section|preceding-sibling::ed:replace/ed:ins/section)" />
         </xsl:when>
         <xsl:otherwise>
-          <xsl:number value="1+count(preceding-sibling::section|preceding-sibling::ed:ins/section)" />
+          <xsl:number value="1+count(preceding-sibling::section|preceding-sibling::ed:ins/section|preceding-sibling::ed:replace/ed:ins/section)" />
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
