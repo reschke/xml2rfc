@@ -743,11 +743,11 @@
 	<xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="//*[@anchor=$target]" />
 	<a href="#{$target}"><xsl:apply-templates /></a>
-  <xsl:if test="/rfc/back/references/reference[@anchor=$target]">
-  	<sup><small><xsl:call-template name="referencename">
+  <xsl:for-each select="/rfc/back/references/reference[@anchor=$target]">
+  	<xsl:text> </xsl:text><xsl:call-template name="referencename">
 	   	<xsl:with-param name="node" select="." />
-    </xsl:call-template></small></sup>
-  </xsl:if>
+    </xsl:call-template>
+  </xsl:for-each>
 </xsl:template>
                
 <xsl:template match="xref[not(node())]">
