@@ -424,7 +424,8 @@
     Integrate various fixes/enhancements by Roy Fielding: spelling of
     "Authors' Addresses", comma setting in references, position of "Authors"
     section, optionally place authors addresses at end (PI), trailing dots
-    in section numbers.
+    in section numbers, switch to verdana default font in CSS.  Add
+    experimental support for centered artwork.
     
 -->
 
@@ -2064,7 +2065,7 @@ body {
   background: url(<xsl:value-of select="$xml2rfc-background" />) #ffffff left top;
   </xsl:if>
   color: #000000;
-  font-family: helvetica, arial, sans-serif;
+  font-family: verdana, helvetica, arial, sans-serif;
   font-size: 10pt;
 }
 dl {
@@ -2074,7 +2075,6 @@ h1 {
   color: #333333;
   font-size: 14pt;
   line-height: 21pt;
-  font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
 h1.np {
@@ -2087,7 +2087,6 @@ h2 {
   color: #000000;
   font-size: 12pt;
   line-height: 15pt;
-  font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
 h2 a {
@@ -2096,7 +2095,6 @@ h2 a {
 h3 {
   color: #000000;
   font-size: 10pt;
-  font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
 h3 a {
@@ -2105,7 +2103,6 @@ h3 a {
 h4 {
   color: #000000;
   font-size: 10pt;
-  font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
 h4 a {
@@ -2114,7 +2111,6 @@ h4 a {
 h5 {
   color: #000000;
   font-size: 10pt;
-  font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
 h5 a {
@@ -2323,7 +2319,6 @@ table.closedissue {
     width: 50%;
     color: black;
     background-color: white;
-    font-family: arial, helvetica, sans-serif;
     vertical-align: top;
     font-size: 10pt;
   }
@@ -2332,7 +2327,6 @@ table.closedissue {
     width: 33%;
     color: black;
     background-color: white;
-    font-family: arial, helvetica, sans-serif;
     vertical-align: top;
     text-align: right;
     font-size: 10pt;
@@ -2349,27 +2343,21 @@ table.closedissue {
 
 @page {
   @top-left {
-       font-family: helvetica, arial, sans-serif; 
        content: "<xsl:call-template name="get-header-left"/>"; 
   } 
   @top-right {
-       font-family: helvetica, arial, sans-serif; 
        content: "<xsl:call-template name="get-header-right"/>"; 
   } 
   @top-center {
-       font-family: helvetica, arial, sans-serif; 
        content: "<xsl:call-template name="get-header-center"/>"; 
   } 
   @bottom-left {
-       font-family: helvetica, arial, sans-serif; 
        content: "<xsl:call-template name="get-author-summary"/>"; 
   } 
   @bottom-center {
-       font-family: helvetica, arial, sans-serif; 
        content: "<xsl:call-template name="get-category-long"/>"; 
   } 
   @bottom-right {
-       font-family: helvetica, arial, sans-serif; 
        content: "[Page " counter(page) "]"; 
   } 
 }
@@ -3582,11 +3570,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.207 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.207 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.208 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.208 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/02/05 18:30:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/05 18:30:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/02/05 20:39:55 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/05 20:39:55 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
