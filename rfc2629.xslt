@@ -374,6 +374,10 @@
     2004-10-10  julian.reschke@greenbytes.de
 
     Fix internal change track pointers.
+    
+    2004-10-23  julian.reschke@greenbytes.de
+    
+    Allow change tracking on references (as a whole).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1062,6 +1066,7 @@ match="list//t//list[@style='letters']" priority="9">
   
   <tr>
     <td class="topnowrap">
+      <xsl:call-template name="insertInsDelClass"/>
       <b>
         <a name="{@anchor}">
           <xsl:call-template name="referencename">
@@ -1072,6 +1077,7 @@ match="list//t//list[@style='letters']" priority="9">
     </td>
     
     <td class="top">
+      <xsl:call-template name="insertInsDelClass"/>
       <xsl:for-each select="front/author">
         <xsl:choose>
           <xsl:when test="@surname and @surname!=''">
@@ -3406,11 +3412,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.178 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.178 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.179 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.179 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/10/10 18:34:24 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/10/10 18:34:24 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/10/23 11:43:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/10/23 11:43:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
