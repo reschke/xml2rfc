@@ -48,6 +48,11 @@
     2002-01-09  julian.reschke@greenbytes.de
     
     Display "closed" RFC issues as deleted
+    
+    2002-01-14  julian.reschke@greenbytes.de
+    
+    Experimentally and optionally parse XML encountered in artwork elements
+    (requires MSXSL).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -102,6 +107,15 @@
         'private=')"
 />
 
+
+<!-- make it a private paper -->
+
+<xsl:param name="parse-xml-in-artwork"
+	select="substring-after(
+    	translate(/processing-instruction('rfc-ext')[contains(.,'parse-xml-in-artwork=')], '&quot; ', ''),
+        'parse-xml-in-artwork=')"
+/>
+
 <!-- URL prefix for RFCs. -->
 
 <xsl:param name="rfcUrlPrefix" select="'http://www.ietf.org/rfc/rfc'" />
@@ -129,7 +143,26 @@
 	<xsl:apply-templates />
 </xsl:template>
 
+<msxsl:script language="JScript" implements-prefix="myns">
+  function parseXml(str) {
+    var doc = new ActiveXObject ("MSXML2.DOMDocument");
+    doc.async = false;
+    if (doc.loadXML (str)) return "";
+    return doc.parseError.reason + "\n" + doc.parseError.srcText + " (" + doc.parseError.line + "/" + doc.parseError.linepos + ")";
+  }
+</msxsl:script>
+
 <xsl:template match="artwork">
+  <xsl:if test="$parse-xml-in-artwork='yes' and contains(.,'&lt;?xml') and function-available('myns:parseXml')">
+    <xsl:variable name="body" select="substring-after(substring-after(.,'&lt;?xml'),'?>')" /> 
+    <xsl:if test="$body!='' and myns:parseXml($body)!=''">
+      <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
+      <tr><td>
+      XML PARSE ERROR:
+      <pre><xsl:value-of select="myns:parseXml($body)" /></pre>
+      </td></tr></table>
+    </xsl:if>
+  </xsl:if>
 	<pre><xsl:apply-templates /></pre>
 </xsl:template>
 
