@@ -411,7 +411,8 @@
     print) and add some more experimental support for paged media (tested
     with Prince 4.1 alpha).  Rewrite TOC and Index generation to generate HTML
     lists.  Cleanup id generation for paragraphs.  Reduce whitespace in output.
-    Fix vspace implementation.
+    Fix vspace implementation. Use right/left dqoutes and copyright sign
+    where appropriate.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1204,10 +1205,10 @@
          
       <xsl:choose>
         <xsl:when test="string-length($target) &gt; 0">
-          <xsl:text>"</xsl:text><a href="{$target}"><xsl:value-of select="front/title" /></a><xsl:text>"</xsl:text>
+          <xsl:text>&#8220;</xsl:text><a href="{$target}"><xsl:value-of select="front/title" /></a><xsl:text>&#8221;</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text>"</xsl:text><xsl:value-of select="front/title" /><xsl:text>"</xsl:text>
+          <xsl:text>&#8220;</xsl:text><xsl:value-of select="front/title" /><xsl:text>&#8221;</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
             
@@ -1920,7 +1921,7 @@
     <section title="Disclaimer of Validity" anchor="{$anchor-prefix}.disclaimer" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
       <t myns:is-rfc2629="true">
         This document and the information contained herein are provided on an
-        "AS IS" basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS
+        &#8220;AS IS&#8221; basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS
         OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET
         ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED,
         INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE 
@@ -1934,7 +1935,7 @@
     <xsl:when test="$ipr-rfc3667">
       <section title="Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
         <t myns:is-rfc2629="true">
-          Copyright (C) The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).
+          Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).
           This document is subject to the rights, licenses and restrictions
           contained in BCP 78, and except as set forth therein, the authors
           retain all their rights.
@@ -1944,7 +1945,7 @@
     <xsl:otherwise>
       <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
         <t myns:is-rfc2629="true">
-          Copyright (C) The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
+          Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
         </t>
         <t myns:is-rfc2629="true">
           This document and translations of it may be copied and furnished to
@@ -1967,7 +1968,7 @@
         </t>
         <t myns:is-rfc2629="true">
           This document and the information contained herein is provided on an
-          &quot;AS IS&quot; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+          &#8220;;AS IS&#8221; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
           TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
           BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
           HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
@@ -2556,7 +2557,7 @@ table.closedissue {
         Internet-Drafts are draft documents valid for a maximum of six months
         and may be updated, replaced, or obsoleted by other documents at any time.
         It is inappropriate to use Internet-Drafts as reference material or to cite
-        them other than as "work in progress".
+        them other than as &#8220;work in progress&#8221;.
       </t>
       <t myns:is-rfc2629="true">
         The list of current Internet-Drafts can be accessed at
@@ -2604,8 +2605,8 @@ table.closedissue {
       <t myns:is-rfc2629="true">
         This document specifies an Internet standards track protocol for the Internet
         community, and requests discussion and suggestions for improvements.
-        Please refer to the current edition of the &quot;Internet Official Protocol
-        Standards&quot; (STD 1) for the standardization state and status of this
+        Please refer to the current edition of the &#8220;Internet Official Protocol
+        Standards&#8221; (STD 1) for the standardization state and status of this
         protocol. Distribution of this memo is unlimited.
       </t>
     </xsl:when>
@@ -2618,7 +2619,7 @@ table.closedissue {
 
   <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice" myns:is-rfc2629="true">
   <t myns:is-rfc2629="true">
-    Copyright (C) The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
+    Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
   </t>
   </section>
   
@@ -3492,11 +3493,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.202 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.202 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.203 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.203 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/31 19:13:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/31 19:13:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/31 21:35:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/31 21:35:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
