@@ -189,6 +189,9 @@
     "iprnotified" PI. bugfix list numbering. strip whitespace when
     building tel: URIs.
     
+    2003-05-12  julian.reschke@greenbytes.de
+  
+    more conformance fixes (layout moved into CSS)
     
 -->
 
@@ -202,7 +205,7 @@
                 xmlns:ed="http://greenbytes.de/2002/rfcedit"
                 >
 
-<xsl:output method="html" encoding="iso-8859-1" version="4.0" />
+<xsl:output method="html" encoding="iso-8859-1" version="4.0" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN" />
 
 
 <!-- process some of the processing instructions supported by Marshall T. Rose's
@@ -417,19 +420,19 @@
   </xsl:if>
   <xsl:if test="address/phone">
     <tr>
-      <td align="right"><b>Phone:&#0160;</b></td>
+      <td class="right"><b>Phone:&#0160;</b></td>
       <td><a href="tel:{translate(address/phone,' ','')}"><xsl:value-of select="address/phone" /></a></td>
     </tr>
   </xsl:if>
   <xsl:if test="address/facsimile">
     <tr>
-      <td align="right"><b>Fax:&#0160;</b></td>
+      <td class="right"><b>Fax:&#0160;</b></td>
       <td><a href="fax:{translate(address/facsimile,' ','')}"><xsl:value-of select="address/facsimile" /></a></td>
     </tr>
   </xsl:if>
   <xsl:if test="address/email">
     <tr>
-      <td align="right"><b>EMail:&#0160;</b></td>
+      <td class="right"><b>EMail:&#0160;</b></td>
       <td>
         <a>
           <xsl:if test="$link-mailto!='no'">
@@ -442,7 +445,7 @@
   </xsl:if>
   <xsl:if test="address/uri">
     <tr>
-      <td align="right"><b>URI:&#0160;</b></td>
+      <td class="right"><b>URI:&#0160;</b></td>
       <td><a href="{address/uri}"><xsl:value-of select="address/uri" /></a></td>
     </tr>
   </xsl:if>
@@ -498,16 +501,16 @@
                
 <xsl:template match="figure">
   <xsl:if test="@anchor!=''">
-    <a name="{@anchor}" />
+    <div><a name="{@anchor}" /></div>
   </xsl:if>
   <xsl:choose>
     <xsl:when test="@title!='' or @anchor!=''">
       <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
-      <a name="{$anchor-prefix}.figure.{$n}" />
+      <div><a name="{$anchor-prefix}.figure.{$n}" /></div>
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="n"><xsl:number level="any" count="figure[not(@title!='' or @anchor!='')]" /></xsl:variable>
-      <a name="{$anchor-prefix}.figure.u.{$n}" />
+      <div><a name="{$anchor-prefix}.figure.u.{$n}" /></div>
     </xsl:otherwise>
   </xsl:choose>
   <xsl:apply-templates />
@@ -535,8 +538,7 @@
     <xsl:call-template name="collectRightHeaderColumn" />    
   </xsl:variable>
     
-    <!-- insert the collected information -->
-    
+  <!-- insert the collected information -->
   <table summary="header information" width="66%" border="0" cellpadding="1" cellspacing="1">
     <xsl:choose>
       <xsl:when test="function-available('msxsl:node-set')">
@@ -565,13 +567,14 @@
       </xsl:otherwise>    
     </xsl:choose>
   </table>
-  <br />
 
-  <!-- main title -->
-  <div align="right"><span class="title"><xsl:value-of select="title"/></span></div>
-  <xsl:if test="/rfc/@docName">
-    <div align="right"><span class="filename"><xsl:value-of select="/rfc/@docName"/></span></div>
-  </xsl:if>  
+  <p>
+    <!-- main title -->
+    <div class="title"><xsl:value-of select="title"/></div>
+    <xsl:if test="/rfc/@docName">
+      <div class="filename"><xsl:value-of select="/rfc/@docName"/></div>
+    </xsl:if>  
+  </p>
   
   <xsl:if test="not($private)">
     <!-- Get status info formatted as per RFC2629-->
@@ -753,7 +756,7 @@
   </xsl:variable>
   
   <tr>
-    <td class="top" nowrap="nowrap">
+    <td class="topnowrap">
       <b>
         <a name="{@anchor}">
           <xsl:call-template name="referencename">
@@ -918,7 +921,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.73 2003/05/12 08:43:57 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.74 2003/05/12 16:12:55 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -1212,8 +1215,8 @@
     <xsl:variable name="pos" select="position()" />
     <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1"> 
       <tr>
-        <td width="33%" bgcolor="#666666" class="header"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
-        <td width="33%" bgcolor="#666666" class="header"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
+        <td class="header"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
+        <td class="header"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
       </tr>
     </xsl:if>
   </xsl:for-each>
@@ -1430,9 +1433,20 @@ td.top
 {
   vertical-align: top;
 }
+td.topnowrap
+{
+  vertical-align: top;
+  white-space: nowrap; 
+}
+td.right
+{
+  text-align: right;
+}
 td.header
 {
+  width: 33%;
   color: #ffffff;
+  background-color: #666666;
   font-size: 10px;
   font-family: arial, helvetica, sans-serif;
   vertical-align: top
@@ -1492,6 +1506,7 @@ td.header
   font-size: 16px;
   line-height: 24px;
   font-family: helvetica, arial, sans-serif;
+  text-align: right;
 }
 
 del
@@ -1886,10 +1901,10 @@ ins
   <xsl:param name="rule" />
   <xsl:if test="$rule"><hr class="noprint"/></xsl:if>
   <xsl:if test="$includeTitle or $includeToc='yes'">
-    <table summary="link to TOC" class="noprint" border="0" cellpadding="0" cellspacing="2" width="30" align="right">
+    <table summary="link to TOC" class="noprint" border="0" align="right" cellpadding="0" cellspacing="2" width="30">
       <xsl:if test="$includeTitle">
         <tr>
-          <td bgcolor="#000000" align="center" valign="middle" width="30" height="30">
+          <td style="background-color: #000000; text-align: center; vertical-align: middle; height: 30;">
             <b><span class="RFC">&#0160;RFC&#0160;</span></b>
             <xsl:if test="/rfc/@number">
               <br />
@@ -1900,8 +1915,8 @@ ins
       </xsl:if>
       <xsl:if test="$includeToc='yes'">
         <tr>
-          <td bgcolor="#990000" align="center" width="30" height="15">
-                 <a href="#{$anchor-prefix}.toc" CLASS="link2"><b class="link2">&#0160;TOC&#0160;</b></a>
+          <td style="background-color: #990000; text-align: center; height: 15;">
+            <a href="#{$anchor-prefix}.toc"><b class="link2">&#0160;TOC&#0160;</b></a>
           </td>
         </tr>
       </xsl:if>
@@ -1958,6 +1973,11 @@ ins
       </xsl:if>
       <xsl:text>&#10;</xsl:text>
     </xsl:when>
+    <xsl:when test="$mode='wordml'">
+      <r xmlns="http://schemas.microsoft.com/office/word/2003/2/wordml">
+        <t><xsl:value-of select="translate($line,' ','&#160;')"/></t>
+      </r>
+    </xsl:when>
     <xsl:when test="$mode='nroff'">
       <xsl:variable name="cline">
         <xsl:call-template name="replace-substring">
@@ -1995,12 +2015,16 @@ ins
           <xsl:with-param name="line" select="$first" />
           <xsl:with-param name="mode" select="$mode" />
         </xsl:call-template>
+        <xsl:if test="$mode='wordml' and $remainder!=''">
+          <r xmlns="http://schemas.microsoft.com/office/word/2003/2/wordml">
+            <br />
+          </r>
+        </xsl:if>
       </xsl:if>
       <xsl:if test="$remainder!=''">
         <xsl:call-template name="showArtwork">
           <xsl:with-param name="text" select="$remainder" />
           <xsl:with-param name="mode" select="$mode" />
-          <xsl:with-param name="initial" select="'no'" />
         </xsl:call-template>
       </xsl:if>
     </xsl:otherwise>
@@ -2134,7 +2158,7 @@ ins
           <td class="top">
             <a href="mailto:{@entered-by}?subject={/rfc/@docName}, {../@name}"><i><xsl:value-of select="@entered-by"/></i></a>
           </td>
-          <td nowrap="nowrap" class="top">
+          <td class="topnowrap">
             <xsl:value-of select="@date"/>
           </td>
           <td class="top">
@@ -2149,7 +2173,7 @@ ins
               <a href="mailto:{@entered-by}?subject={/rfc/@docName}, {../@name}"><i><xsl:value-of select="@entered-by"/></i></a>
             </xsl:if>
           </td>
-          <td nowrap="nowrap" class="top">
+          <td class="topnowrap">
             <xsl:value-of select="@date"/>
           </td>
           <td class="top">
