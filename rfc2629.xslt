@@ -217,6 +217,10 @@
     exp. support for xref/@format. Add missing support for eref w/o content.
     exp. support for annotations in reference elements. Code cleanup
     reference table formatting.
+    
+    2003-07-09  julian.reschke@greenbytes.de
+    
+    Another fix for DC.Creator meta tag creation based on RFC2731
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -942,11 +946,10 @@
       </xsl:variable>
       <meta name="generator" content="{$gen}" />
       
-      <!-- DC creator -->
-      <xsl:variable name="creator">
-        <xsl:call-template name="get-authors" />
-      </xsl:variable>
-      <meta name="DC.Creator" content="{$creator}" />
+      <!-- DC creator, see RFC2731 -->
+      <xsl:for-each select="/rfc/front/author">
+        <meta name="DC.Creator" content="{concat(@surname,', ',@initials)}" />
+      </xsl:for-each>
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -2469,11 +2472,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.95 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.95 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.96 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.96 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/06/24 18:32:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/06/24 18:32:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/07/09 21:18:27 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/07/09 21:18:27 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -2488,7 +2491,7 @@ table.resolution
   <xsl:variable name="keyw">
     <xsl:for-each select="/rfc/front/keyword">
       <xsl:value-of select="translate(.,',',' ')" />
-      <xsl:if test="position()!=last()">,</xsl:if>
+      <xsl:if test="position()!=last()">, </xsl:if>
     </xsl:for-each>
   </xsl:variable>
   <xsl:value-of select="normalize-space($keyw)" />
