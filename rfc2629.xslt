@@ -390,6 +390,11 @@
     
     Index: display irefs that appeared (with primary=true) inside artwork elements
     in a monospaced font.
+    
+    2004-11-14  julian.reschke@greenbytes.de
+    
+    Add special code so that changes in section titles can be change-tracked.
+
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1419,6 +1424,30 @@ match="list//t//list[@style='letters']" priority="9">
   </xsl:if>
 </xsl:template>               
 
+
+<xsl:template name="insertTitle">
+  <xsl:choose>
+    <xsl:when test="@ed:old-title">
+      <xsl:call-template name="insert-issue-pointer"/>
+      <del>
+        <xsl:if test="ancestor-or-self::*[@ed:entered-by] and @ed:datetime">
+          <xsl:attribute name="title"><xsl:value-of select="concat(@ed:datetime,', ',ancestor-or-self::*[@ed:entered-by][1]/@ed:entered-by)"/></xsl:attribute>
+        </xsl:if>
+        <xsl:value-of select="@ed:old-title"/>
+      </del>
+      <ins>
+        <xsl:if test="ancestor-or-self::*[@ed:entered-by] and @ed:datetime">
+          <xsl:attribute name="title"><xsl:value-of select="concat(@ed:datetime,', ',ancestor-or-self::*[@ed:entered-by][1]/@ed:entered-by)"/></xsl:attribute>
+        </xsl:if>
+        <xsl:value-of select="@title"/>
+      </ins>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="@title"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="section|appendix">
 
   <xsl:variable name="sectionNumber">
@@ -1465,10 +1494,10 @@ match="list//t//list[@style='letters']" priority="9">
     </xsl:if>
     <xsl:choose>
       <xsl:when test="@anchor">
-        <a name="{@anchor}" href="#{@anchor}"><xsl:value-of select="@title" /></a>
+        <a name="{@anchor}" href="#{@anchor}"><xsl:call-template name="insertTitle"/></a>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="@title" />
+        <xsl:call-template name="insertTitle"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:element>
@@ -3390,11 +3419,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.183 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.183 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.184 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.184 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/11/06 18:58:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/11/06 18:58:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/11/14 18:11:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/11/14 18:11:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
