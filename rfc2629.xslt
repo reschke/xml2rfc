@@ -310,9 +310,9 @@
     Add support for section/top attribute. Move references into plain
     section container.
     
-    2004-04-05  julian.reschke@greenbytes.de
+    2004-04-06  julian.reschke@greenbytes.de
     
-    Do not emit identical section/para anchors for deleted content.
+    Do not emit identical para anchors for deleted content.
 
 -->
 
@@ -1274,9 +1274,7 @@
     <!-- generate anchors for irefs that are immediate childs of this section -->
     <xsl:apply-templates select="iref"/>
     <xsl:if test="$sectionNumber!=''">
-      <xsl:if test="not(ancestor::ed:del)">
-        <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>
-      </xsl:if>
+      <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>
       <xsl:text>&#0160;</xsl:text>
     </xsl:if>
     <xsl:choose>
@@ -3021,11 +3019,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.152 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.152 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.153 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.153 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/04/05 22:17:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/05 22:17:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/04/06 07:58:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/06 07:58:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
