@@ -898,7 +898,12 @@
 </xsl:template>
 
 <xsl:template match="rfc">
-  <html lang="en-US">
+  
+  <xsl:variable name="lang">
+    <xsl:call-template name="get-lang" />
+  </xsl:variable>
+
+  <html lang="{$lang}">
     <head>
       <title><xsl:value-of select="front/title" /></title>
        <style type="text/css">
@@ -2464,11 +2469,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.98 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.98 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.99 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.99 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/06 12:11:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/06 12:11:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/09 09:34:31 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/09 09:34:31 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -2487,6 +2492,14 @@ table.resolution
     </xsl:for-each>
   </xsl:variable>
   <xsl:value-of select="normalize-space($keyw)" />
+</xsl:template>
+
+<!-- get language from context node. nearest ancestor or return the default of "en" -->
+<xsl:template name="get-lang">
+  <xsl:choose>
+    <xsl:when test="ancestor-or-self::*[@xml:lang]"><xsl:value-of select="ancestor-or-self::*/@xml:lang" /></xsl:when>
+    <xsl:otherwise>en</xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="get-section-number">
