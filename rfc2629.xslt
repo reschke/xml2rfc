@@ -212,9 +212,11 @@
     sentence start detection (xref starting a section was using lowercase
     "section").
     
-    2003-06-20  julian.reschke@greenbytes.de
+    2003-06-21  julian.reschke@greenbytes.de
     
-    exp. support for xref/@plain='true'. Add missing support for eref w/o content.
+    exp. support for xref/@format. Add missing support for eref w/o content.
+    exp. support for annotations in reference elements. Code cleanup
+    reference table formatting.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -852,46 +854,40 @@
       </xsl:if>
       
       <xsl:text>.</xsl:text>
+
+      <xsl:if test="annotation">
+        <br /> 
+        <xsl:apply-templates select="annotation/node()" />
+      </xsl:if>
+
     </td>
   </tr>
-</xsl:template>
-
-
-<xsl:template match="references[not(@title) or @title='']">
-
-  <xsl:call-template name="insertTocLink">
-    <xsl:with-param name="rule" select="true()" />
-  </xsl:call-template>
-
-  <h1><a name="{$anchor-prefix}.references">References</a></h1>
-
-  <table summary="References" border="0">
-    <xsl:choose>
-      <xsl:when test="$sortRefs='yes'">
-        <xsl:apply-templates>
-          <xsl:sort select="@anchor" />
-        </xsl:apply-templates>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates />
-      </xsl:otherwise>
-    </xsl:choose>
-  </table>
+  
   
 </xsl:template>
 
-<xsl:template match="references[@title]">
+
+<xsl:template match="references">
 
   <xsl:call-template name="insertTocLink">
     <xsl:with-param name="rule" select="true()" />
   </xsl:call-template>
 
-  <xsl:variable name="safeanchor" select="translate(@title,$plain,$touri)" />
-  <h1><a name="{$anchor-prefix}.{$safeanchor}">
-    <xsl:value-of select="@title" />
-  </a></h1>
+  <xsl:choose>
+    <xsl:when test="not(@title) or @title='' or @title='References'">
+      <h1>
+        <a name="{$anchor-prefix}.references">References</a>
+      </h1>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="safeanchor" select="translate(@title,$plain,$touri)" />
+      <h1>
+        <a name="{$anchor-prefix}.{$safeanchor}"><xsl:value-of select="@title" /></a>
+      </h1>
+    </xsl:otherwise>
+  </xsl:choose>
 
-  <table summary="{@title}" border="0">
+  <table summary="{@title}" border="0" cellpadding="2">
     <xsl:choose>
       <xsl:when test="$sortRefs='yes'">
         <xsl:apply-templates>
@@ -1098,8 +1094,11 @@
           <xsl:value-of select="$node/@title" />
         </xsl:attribute>
         <xsl:choose>
-          <xsl:when test="@plain='true'">
+          <xsl:when test="@format='numeric'">
             <xsl:value-of select="$refnum"/>
+          </xsl:when>
+          <xsl:when test="@format='title'">
+            <xsl:value-of select="$node/@title"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
@@ -1107,12 +1106,22 @@
         </xsl:choose>
       </xsl:when>
       <xsl:when test="local-name($node)='figure'">
-        <xsl:if test="@plain!='true'">
-          <xsl:text>Figure&#160;</xsl:text>
-        </xsl:if>
-        <xsl:for-each select="$node">
-          <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
-        </xsl:for-each>
+        <xsl:variable name="figcnt">
+          <xsl:for-each select="$node">
+            <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="@format='numeric'">
+            <xsl:value-of select="$figcnt" />
+          </xsl:when>
+          <xsl:when test="@format='title'">
+            <xsl:value-of select="$node/@title" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:attribute name="title"><xsl:value-of select="normalize-space($node/front/title)" /></xsl:attribute>
@@ -2457,11 +2466,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.92 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.92 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.93 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.93 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/06/20 15:37:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/06/20 15:37:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/06/21 18:48:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/06/21 18:48:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
