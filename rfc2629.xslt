@@ -205,6 +205,12 @@
     2003-05-18  julian.reschke@greenbytes.de
   
     author summary: add missing comma.
+    
+    2003-06-06  julian.reschke@greenbytes.de
+    
+    fix index generation bug (transposed characters in key generation). Enhance
+    sentence start detection (xref starting a section was using lowercase
+    "section").
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -329,7 +335,7 @@
 <!-- build help keys for indices -->
 <xsl:key name="index-first-letter"
   match="iref"
-    use="translate(substring(@item,1,1),'abcdefghijklmnoprrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')" />
+    use="translate(substring(@item,1,1),'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')" />
 
 <xsl:key name="index-item"
   match="iref"
@@ -2076,6 +2082,7 @@ table.resolution
 <xsl:template name="endsWithDot">
   <xsl:param name="str"/>
   <xsl:choose>
+    <xsl:when test="$str=''"><xsl:value-of select="true()"/></xsl:when>
     <xsl:when test="contains($str,'.') and substring-after($str,'.')=''" ><xsl:value-of select="true()"/></xsl:when>
     <xsl:when test="not(contains($str,'.'))" ><xsl:value-of select="false()"/></xsl:when>
     <xsl:otherwise>
@@ -2430,11 +2437,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.89 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.89 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.90 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.90 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/05/17 09:15:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/05/17 09:15:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/06/06 11:34:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/06/06 11:34:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
