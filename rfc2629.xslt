@@ -19,17 +19,18 @@
     2001-10-02  julian.reschke@greenbytes.de
     
     Fixed default location for RFCs and numbering of section references.
+    Support ?rfc editing processing instruction.
     
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
-		        xmlns:xalan="http://xml.apache.org/xalan"
-        	    xmlns:msxsl="urn:schemas-microsoft-com:xslt"
-				xmlns:saxon="http://icl.com/saxon"
+                xmlns:xalan="http://xml.apache.org/xalan"
+                xmlns:msxsl="urn:schemas-microsoft-com:xslt"
+                xmlns:saxon="http://icl.com/saxon"
                 xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
-               	exclude-result-prefixes="msxsl xalan saxon myns"
-				xmlns="http://www.w3.org/1999/xhtml"
+                exclude-result-prefixes="msxsl xalan saxon myns"
+                xmlns="http://www.w3.org/1999/xhtml"
                >
 
 <xsl:output method="xml" encoding="iso-8859-1" />
@@ -37,7 +38,7 @@
 <!-- process some of the processing instructions supported by Marshall T. Rose's
      xml2rfc sofware, see <http://xml.resource.org/> -->
       
-<!-- include a table of contens if a processing instruction <?rfc?>
+<!-- include a table of contents if a processing instruction <?rfc?>
      exists with contents toc="yes". Can be overriden by an XSLT parameter -->
      
 <xsl:param name="includeToc"
@@ -54,6 +55,16 @@
     	translate(/processing-instruction('rfc')[contains(.,'symrefs=')], '&quot; ', ''),
         'symrefs=')"
 />
+
+<!-- insert editing marks if a processing instruction <?rfc?>
+     exists with contents editing="yes". Can be overriden by an XSLT parameter -->
+
+<xsl:param name="insertEditingMarks"
+	select="substring-after(
+    	translate(/processing-instruction('rfc')[contains(.,'editing=')], '&quot; ', ''),
+        'editing=')"
+/>
+
 
 <!-- URL prefix for RFCs. -->
 
@@ -88,53 +99,53 @@
 
 <xsl:template match="author">
 	<tr>
-       	<td>&#0160;</td>
-		<td><xsl:value-of select="@fullname" /></td>
-   	</tr>
-	<tr>
-       	<td>&#0160;</td>
+    <td>&#0160;</td>
+    <td><xsl:value-of select="@fullname" /></td>
+  </tr>
+  <tr>
+    <td>&#0160;</td>
 		<td><xsl:value-of select="organization" /></td>
-   	</tr>
+  </tr>
 	<xsl:if test="address/postal/street">
-    	<tr>
-       		<td>&#0160;</td>
-			<td><xsl:for-each select="address/postal/street"><xsl:value-of select="." /><br /></xsl:for-each></td>
-    	</tr>
-  	</xsl:if>
+    <tr>
+      <td>&#0160;</td>
+      <td><xsl:for-each select="address/postal/street"><xsl:value-of select="." /><br /></xsl:for-each></td>
+    </tr>
+  </xsl:if>
 	<xsl:if test="address/postal/city">
-    	<tr>
-       		<td>&#0160;</td>
-			<td><xsl:value-of select="concat(address/postal/city,', ',address/postal/region,' ',address/postal/code)" /></td>
+    <tr>
+      <td>&#0160;</td>
+	    <td><xsl:value-of select="concat(address/postal/city,', ',address/postal/region,' ',address/postal/code)" /></td>
 		</tr>
 	</xsl:if>
 	<xsl:if test="address/postal/country">
-    	<tr>
-           	<td>&#0160;</td>
-			<td><xsl:value-of select="address/postal/country" /></td>
-       	</tr>
-  	</xsl:if>
-	<xsl:if test="address/phone">
-    	<tr>
-           	<td align="right"><b>Phone:&#0160;</b></td>
-			<td><xsl:value-of select="address/phone" /></td>
-       	</tr>
-   	</xsl:if>
-	<xsl:if test="address/email">
-    	<tr>
-           	<td align="right"><b>EMail:&#0160;</b></td>
-			<td><a href="mailto:{address/email}"><xsl:value-of select="address/email" /></a></td>
-       	</tr>
-  	</xsl:if>
-	<xsl:if test="address/uri">
-    	<tr>
-           	<td align="right"><b>URI:&#0160;</b></td>
-			<td><a href="{address/uri}"><xsl:value-of select="address/uri" /></a></td>
-       	</tr>
-  	</xsl:if>
     <tr>
-    	<td>&#0160;</td>
-        <td />
-   	</tr>
+      <td>&#0160;</td>
+			<td><xsl:value-of select="address/postal/country" /></td>
+    </tr>
+  </xsl:if>
+	<xsl:if test="address/phone">
+    <tr>
+      <td align="right"><b>Phone:&#0160;</b></td>
+			<td><xsl:value-of select="address/phone" /></td>
+    </tr>
+  </xsl:if>
+	<xsl:if test="address/email">
+    <tr>
+      <td align="right"><b>EMail:&#0160;</b></td>
+			<td><a href="mailto:{address/email}"><xsl:value-of select="address/email" /></a></td>
+    </tr>
+  </xsl:if>
+	<xsl:if test="address/uri">
+    <tr>
+      <td align="right"><b>URI:&#0160;</b></td>
+			<td><a href="{address/uri}"><xsl:value-of select="address/uri" /></a></td>
+    </tr>
+  </xsl:if>
+  <tr>
+    <td>&#0160;</td>
+    <td />
+  </tr>
 </xsl:template>
 
 <xsl:template match="back">
@@ -276,9 +287,12 @@
     <br />
 
 	<!-- main title -->
-    <div align="right"><span class="title"><xsl:value-of select="title"/></span></div>
-    
-    <xsl:call-template name="insertStatus" />
+  <div align="right"><span class="title"><xsl:value-of select="title"/></span></div>
+  <xsl:if test="/rfc/@docName">
+    <div align="right"><span class="filename"><xsl:value-of select="/rfc/@docName"/></span></div>
+  </xsl:if>  
+  
+  <xsl:call-template name="insertStatus" />
         
 
 	<h1>Copyright Notice</h1>
@@ -365,8 +379,9 @@
 
 <xsl:template match="preamble">
 	<p>
-    	<xsl:apply-templates />
-    </p>
+    <xsl:if test="$insertEditingMarks='yes'"><sup><xsl:number level="any" count="preamble|t"/></sup></xsl:if>
+    <xsl:apply-templates />
+  </p>
 </xsl:template>
 
 <xsl:template match="reference">
@@ -476,30 +491,31 @@
 
 <xsl:template match="rfc">
 	<html>
-    	<head>
-            <title><xsl:value-of select="front/title" /></title>
+    <head>
+      <title><xsl:value-of select="front/title" /></title>
  			<style type="text/css">
-            	<xsl:call-template name="insertCss" />
-            </style>
-         </head>
+        <xsl:call-template name="insertCss" />
+      </style>
+    </head>
 		<body>
-        	<xsl:apply-templates select="front" />
-        	<xsl:apply-templates select="middle" />
-        	<xsl:apply-templates select="back" />
-        </body>
-    </html>
+      <xsl:apply-templates select="front" />
+      <xsl:apply-templates select="middle" />
+      <xsl:apply-templates select="back" />
+    </body>
+  </html>
 </xsl:template>               
 
 
 <xsl:template match="t">
 	<xsl:variable name="paraNumber">
-    	<xsl:call-template name="sectionnumberPara" />
-    </xsl:variable>
+    <xsl:call-template name="sectionnumberPara" />
+   </xsl:variable>
     
-    <p>
-    	<xsl:if test="string-length($paraNumber) &gt; 0"><a name="rfc.section.{$paraNumber}" /></xsl:if>
-    	<xsl:apply-templates />
-   	</p>
+  <p>
+    <xsl:if test="$insertEditingMarks='yes'"><sup><xsl:number level="any" count="preamble|t"/></sup></xsl:if>
+    <xsl:if test="string-length($paraNumber) &gt; 0"><a name="rfc.section.{$paraNumber}" /></xsl:if>
+    <xsl:apply-templates />
+  </p>
 </xsl:template>
                
                
@@ -717,40 +733,40 @@ A:active
 BODY
 {
 	color: #000000;
-    font-family: helvetica, arial, sans-serif;
-    font-size: 13px;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 13px;
 }
 H1
 {
 	color: #333333;
-    font-size: 16px;
-    line-height: 16px;
-    font-family: helvetica, arial, sans-serif;
+  font-size: 16px;
+  line-height: 16px;
+  font-family: helvetica, arial, sans-serif;
 	page-break-after: avoid;
 }
 H2
 {
 	color: #000000;
-    font-size: 14px;
-    font-family: helvetica, arial, sans-serif;
+  font-size: 14px;
+  font-family: helvetica, arial, sans-serif;
 	page-break-after: avoid;
 }
 H3
 {
 	color: #000000;
-    font-size: 13px;
-    font-family: helvetica, arial, sans-serif;
+  font-size: 13px;
+  font-family: helvetica, arial, sans-serif;
 	page-break-after: avoid;
 }
 P
 {
 	margin-left: 2em;
-    margin-right: 2em;
+  margin-right: 2em;
 }
 PRE
 {
 	margin-left: 3em;
-    color: #333333
+  color: #333333
 }
 TABLE
 {
@@ -759,9 +775,9 @@ TABLE
 TD.header
 {
 	color: #ffffff;
-    font-size: 10px;
-    font-family: arial, helvetica, sans-serif;
-    valign: top
+  font-size: 10px;
+  font-family: arial, helvetica, sans-serif;
+  valign: top
 }
 .copyright
 {
@@ -770,35 +786,43 @@ TD.header
 .hotText
 {
 	color:#ffffff;
-    font-weight: normal;
-    text-decoration: none;
-    font-family: chelvetica, arial, sans-serif;
+  font-weight: normal;
+  text-decoration: none;
+  font-family: chelvetica, arial, sans-serif;
 	font-size: 9px
 }
 .link2
 {
 	color:#ffffff;
-    font-weight: bold;
-    text-decoration: none;
-    font-family: helvetica, arial, sans-serif;
-    font-size: 9px
+  font-weight: bold;
+  text-decoration: none;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 9px
 }
 .RFC
 {
 	color:#666666;
-    font-weight: bold;
-    text-decoration: none;
-    font-family: helvetica, arial, sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  font-family: helvetica, arial, sans-serif;
 	font-size: 9px
 }
 .title
 {
 	color: #990000;
-    font-size: 22px;
-    line-height: 22px;
-    font-weight: bold;
-    text-align: right;
-   	font-family: helvetica, arial, sans-serif
+  font-size: 22px;
+  line-height: 22px;
+  font-weight: bold;
+  text-align: right;
+  font-family: helvetica, arial, sans-serif
+}
+.filename
+{
+	color: #333333;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+  font-family: helvetica, arial, sans-serif;
 }
 
 @media print {
