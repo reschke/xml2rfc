@@ -167,9 +167,18 @@
     
     experimental texttable support
     
-    2003-05-03  julian.rechke@greenbytes.de
+    2003-05-02  fielding 
     
-    experimental support for HTML link elements
+    Make mailto links optional (default = none) (jre: default and PI name changed)
+
+    2003-05-04  julian.rechke@greenbytes.de
+    
+    experimental support for HTML link elements; fix default for table header
+    alignment default
+
+    2003-05-06  julian.rechke@greenbytes.de
+    
+    support for "background" PI.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -252,6 +261,14 @@
         'private=')"
 />
 
+<!-- background image? -->
+
+<xsl:param name="background"
+  select="substring-after(
+      translate(/processing-instruction('rfc')[contains(.,'background=')], '&quot;', ''),
+        'background=')"
+/>
+
 <!-- extension for XML parsing in artwork -->
 
 <xsl:param name="parse-xml-in-artwork"
@@ -259,6 +276,15 @@
       translate(/processing-instruction('rfc-ext')[contains(.,'parse-xml-in-artwork=')], '&quot; ', ''),
         'parse-xml-in-artwork=')"
 />
+
+<!-- choose whether or not to do mailto links --> 
+  
+ <xsl:param name="link-mailto" 
+   select="substring-after( 
+       translate(/processing-instruction('rfc-ext')[contains(.,'linkmailto=')], '&quot;', ''), 
+         'linkmailto=')" 
+ /> 
+
 
 <!-- URL prefix for RFCs. -->
 
@@ -379,7 +405,14 @@
   <xsl:if test="address/email">
     <tr>
       <td align="right"><b>EMail:&#0160;</b></td>
-      <td><a href="mailto:{address/email}"><xsl:value-of select="address/email" /></a></td>
+      <td>
+        <a>
+          <xsl:if test="$link-mailto!='no'">
+            <xsl:attribute name="href">mailto:<xsl:value-of select="address/email" /></xsl:attribute>
+          </xsl:if>
+          <xsl:value-of select="address/email" />
+        </a>
+      </td>
     </tr>
   </xsl:if>
   <xsl:if test="address/uri">
@@ -711,7 +744,10 @@
           <xsl:when test="@surname and @surname!=''">
             <xsl:choose>
                <xsl:when test="address/email">
-                <a href="mailto:{address/email}">
+                <a>
+                  <xsl:if test="$link-mailto!='no'">
+                    <xsl:attribute name="href">mailto:<xsl:value-of select="address/email" /></xsl:attribute>
+                  </xsl:if>
                   <xsl:if test="organization/text()">
                     <xsl:attribute name="title"><xsl:value-of select="organization/text()"/></xsl:attribute>
                   </xsl:if>
@@ -839,6 +875,9 @@
       <xsl:for-each select="/rfc/ed:link">
         <link><xsl:copy-of select="@*" /></link>
       </xsl:for-each>
+      <xsl:if test="/rfc/@number">
+        <link rel="Alternate" title="Authorative ASCII version" href="http://www.ietf.org/rfc/rfc{/rfc/@number}" />
+      </xsl:if>
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -1205,6 +1244,9 @@ a:active
 }
 body
 {
+  <xsl:if test="$background!=''">
+  background: url(<xsl:value-of select="$background" />) #ffffff left top;
+  </xsl:if>
   color: #000000;
   font-family: helvetica, arial, sans-serif;
   font-size: 13px;
@@ -2165,9 +2207,14 @@ ins
     <xsl:if test="@width">
       <xsl:attribute name="width"><xsl:value-of select="@width" /></xsl:attribute>
     </xsl:if>
-    <xsl:if test="@align">
-      <xsl:attribute name="align"><xsl:value-of select="@align" /></xsl:attribute>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="@align">
+        <xsl:attribute name="align"><xsl:value-of select="@align" /></xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:attribute name="align">left</xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates />
   </th>
 </xsl:template>
