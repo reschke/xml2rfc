@@ -97,6 +97,10 @@
     2002-04-08  julian.reschke@greenbytes.de
     
     Fixed reference numbering when references are split into separate sections.
+    
+    2002-04-16  julian.reschke@greenbytes.de
+    
+    Fix default namespace (shouldn't be set for HTML output method)
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -106,7 +110,6 @@
                 xmlns:saxon="http://icl.com/saxon"
                 xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
                 exclude-result-prefixes="msxsl xalan saxon myns ed"
-                xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ed="http://greenbytes.de/2002/rfcedit"
                 >
 
@@ -1529,7 +1532,7 @@ ins
 <xsl:template name="insertTocLink">
 	<xsl:param name="includeTitle" select="false()" />
 	<xsl:param name="rule" />
-	<xsl:if test="$rule"><hr class="noprint" size="1" shade="0" /></xsl:if>
+	<xsl:if test="$rule"><hr class="noprint"/></xsl:if>
   <xsl:if test="$includeTitle or $includeToc='yes'">
   	<table class="noprint" border="0" cellpadding="0" cellspacing="2" width="30" height="15" align="right">
       <xsl:if test="$includeTitle">
@@ -1815,14 +1818,14 @@ ins
 
 <!-- special change mark support, not supported by RFC2629 yet -->
 
-<xsl:template match="xhtml:del|ed:del" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<xsl:template match="ed:del">
   <del>
     <xsl:copy-of select="@*"/>
     <xsl:apply-templates />
   </del>
 </xsl:template>
 
-<xsl:template match="xhtml:ins|ed:ins" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<xsl:template match="ed:ins">
   <ins>
     <xsl:copy-of select="@*"/>
     <xsl:apply-templates />
