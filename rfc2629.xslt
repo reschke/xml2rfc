@@ -403,14 +403,15 @@
     
     Enhance generation of HTML h* elements (for Mozilla Outliner).
 
-    2005-01-30  julian.reschke@greenbytes.de
+    2005-01-31  julian.reschke@greenbytes.de
     
     Put vertical space around top-level TOC entries in TOC.  Switch to
     pt-based CSS. Re-arrange top section. Make hr elements reflect new-page
     settings in TXT output (compact-PI).  Fix page number in footer (CSS
     print) and add some more experimental support for paged media (tested
     with Prince 4.1 alpha).  Rewrite TOC and Index generation to generate HTML
-    lists.  Cleanup id generation for paragraphs.  Reduce whitespace in output. Fix vspace implementation.
+    lists.  Cleanup id generation for paragraphs.  Reduce whitespace in output.
+    Fix vspace implementation.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1540,7 +1541,7 @@
 <xsl:template name="insert-blank-lines">
   <xsl:param name="no"/>
   <xsl:choose>
-    <xsl:when test="$no=0">
+    <xsl:when test="$no &lt;= 0">
       <br/>
       <!-- done -->
     </xsl:when>
@@ -1553,11 +1554,11 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="vspace[not(@blankLines) or @blankLines=0]">
+<!--<xsl:template match="vspace[not(@blankLines)]">
   <br />
-</xsl:template>
+</xsl:template> -->
 
-<xsl:template match="vspace[@blankLines &gt; 0]">
+<xsl:template match="vspace">
   <xsl:call-template name="insert-blank-lines">
     <xsl:with-param name="no" select="@blankLines"/>
   </xsl:call-template>
@@ -2128,6 +2129,9 @@ li.tocline1 {
   margin-left: 0em;
   margin-right: 0em;
 }
+li.tocline2 {
+  font-size: 0pt;
+}
 ul.ind {
   list-style: none;
   margin-left: 1.5em;
@@ -2643,10 +2647,12 @@ table.closedissue {
   <!-- handle tocdepth parameter -->
   <xsl:choose>
     <xsl:when test="($tocparam='' or $tocparam='default') and string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.')) &gt;= $parsedTocDepth">
-      <!-- dropped entry because of depth-->
+      <!-- dropped entry because excluded -->
+      <xsl:attribute name="class">tocline2</xsl:attribute>
     </xsl:when>
     <xsl:when test="$tocparam='exclude'">
       <!-- dropped entry because excluded -->
+      <xsl:attribute name="class">tocline2</xsl:attribute>
     </xsl:when>
     <xsl:otherwise>
       <xsl:choose>
@@ -3486,11 +3492,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.200 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.200 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.201 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.201 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/30 21:28:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 21:28:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/31 18:00:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/31 18:00:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
