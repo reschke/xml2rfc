@@ -54,13 +54,17 @@
     Experimentally and optionally parse XML encountered in artwork elements
     (requires MSXSL).
     
-    2001-01-27  julian.reschke@greenbytes.de
+    2002-01-27  julian.reschke@greenbytes.de
     
     Some cleanup. Moved RFC issues from PIs into namespaced elements.
 
-    2001-01-29  julian.reschke@greenbytes.de
+    2002-01-29  julian.reschke@greenbytes.de
     
     Added support for sortrefs PI. Added support for figure names.
+    
+    2002-02-07  julian.reschke@greenbytes.de
+    
+    Highlight parts of artwork which are too wide (72 characters).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -171,26 +175,32 @@
 </msxsl:script>
 
 <xsl:template match="artwork">
-  <xsl:if test="$parse-xml-in-artwork='yes' and contains(.,'&lt;?xml') and function-available('myns:parseXml')">
-    <xsl:variable name="body" select="substring-after(substring-after(.,'&lt;?xml'),'?>')" /> 
-    <xsl:if test="$body!='' and myns:parseXml($body)!=''">
-      <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
-      <tr><td>
-      XML PARSE ERROR:
-      <pre><xsl:value-of select="myns:parseXml($body)" /></pre>
-      </td></tr></table>
+  <xsl:if test="$parse-xml-in-artwork='yes' and function-available('myns:parseXml')">
+    <xsl:if test="contains(.,'&lt;?xml')">
+      <xsl:variable name="body" select="substring-after(substring-after(.,'&lt;?xml'),'?>')" /> 
+      <xsl:if test="$body!='' and myns:parseXml($body)!=''">
+        <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
+        <tr><td>
+        XML PARSE ERROR:
+        <pre><xsl:value-of select="myns:parseXml($body)" /></pre>
+        </td></tr></table>
+      </xsl:if>
+    </xsl:if>
+    <xsl:if test="@ed:parse-xml-after">
+      <xsl:if test="myns:parseXml(string(.))!=''">
+        <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
+        <tr><td>
+        XML PARSE ERROR:
+        <pre><xsl:value-of select="myns:parseXml(string(.))" /></pre>
+        </td></tr></table>
+      </xsl:if>
     </xsl:if>
   </xsl:if>
-  <xsl:if test="@ed:parse-xml-after and function-available('myns:parseXml')">
-    <xsl:if test="myns:parseXml(string(.))!=''">
-      <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
-      <tr><td>
-      XML PARSE ERROR:
-      <pre><xsl:value-of select="myns:parseXml(string(.))" /></pre>
-      </td></tr></table>
-    </xsl:if>
-  </xsl:if>
-	<pre><xsl:apply-templates /></pre>
+	<pre><!--<xsl:value-of select="." />--><xsl:call-template name="showArtwork">
+    <xsl:with-param name="mode" select="'html'" />
+    <xsl:with-param name="text" select="." />
+    <xsl:with-param name="initial" select="'yes'" />
+  </xsl:call-template></pre>
 </xsl:template>
 
 <xsl:template match="author">
@@ -991,6 +1001,11 @@ TD.header
   font-family: helvetica, arial, sans-serif;
   font-size: 9px
 }
+.toowide
+{
+	color: red;
+  font-weight: bold;
+}
 .RFC
 {
 	color:#666666;
@@ -1334,6 +1349,84 @@ ins
   	</xsl:choose>
 </xsl:template>
 
+
+
+
+<xsl:template name="showArtworkLine">
+  <xsl:param name="line" />
+  <xsl:param name="mode" />
+  
+  <xsl:variable name="maxw" select="72" />
+  
+  <xsl:if test="string-length($line) &gt; $maxw">
+    <xsl:message>Artwork exceeds maximum width: <xsl:value-of select="$line" /></xsl:message>
+  </xsl:if>
+  
+  <xsl:choose>
+    <xsl:when test="$mode='html'">
+      <xsl:value-of select="substring($line,0,$maxw)" />
+      <xsl:if test="string-length($line) &gt; 72">
+        <span class="toowide"><xsl:value-of select="substring($line,$maxw)" /></span>
+      </xsl:if>
+      <xsl:text>&#10;</xsl:text>
+    </xsl:when>
+    <xsl:otherwise><xsl:value-of select="concat($line,'&#10;')" /></xsl:otherwise>
+  </xsl:choose>
+  
+</xsl:template>
+
+<xsl:template name="showArtwork">
+  <xsl:param name="mode" />
+  <xsl:param name="text" />
+  <xsl:param name="initial" />
+  <xsl:variable name="delim" select="'&#10;'" />
+  <xsl:variable name="first" select="substring-before($text,$delim)" />
+  <xsl:variable name="remainder" select="substring-after($text,$delim)" />
+  
+  <xsl:choose>
+    <xsl:when test="not(contains($text,$delim))">
+      <xsl:call-template name="showArtworkLine">
+        <xsl:with-param name="line" select="$text" />
+        <xsl:with-param name="mode" select="$mode" />
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <!-- suppress empty initial lines -->
+      <xsl:if test="$initial!='yes' or normalize-space($first)!=''">
+        <xsl:call-template name="showArtworkLine">
+          <xsl:with-param name="line" select="$first" />
+          <xsl:with-param name="mode" select="$mode" />
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="$remainder!=''">
+        <xsl:call-template name="showArtwork">
+          <xsl:with-param name="text" select="$remainder" />
+          <xsl:with-param name="mode" select="$mode" />
+          <xsl:with-param name="initial" select="'no'" />
+        </xsl:call-template>
+      </xsl:if>
+    </xsl:otherwise>
+  </xsl:choose>
+  
+</xsl:template>
+
+
+<!--<xsl:template name="dump">
+  <xsl:param name="text" />
+  <xsl:variable name="c" select="substring($text,1,1)"/>
+  <xsl:choose>
+    <xsl:when test="$c='&#9;'">&amp;#9;</xsl:when>
+    <xsl:when test="$c='&#10;'">&amp;#10;</xsl:when>
+    <xsl:when test="$c='&#13;'">&amp;#13;</xsl:when>
+    <xsl:when test="$c='&amp;'">&amp;amp;</xsl:when>
+    <xsl:otherwise><xsl:value-of select="$c" /></xsl:otherwise>
+  </xsl:choose>
+  <xsl:if test="string-length($text) &gt; 1">
+    <xsl:call-template name="dump">
+      <xsl:with-param name="text" select="substring($text,2)" />
+    </xsl:call-template>
+  </xsl:if>
+</xsl:template>-->
 
 
 <xsl:template name="rfclist">
