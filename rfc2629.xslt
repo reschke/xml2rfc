@@ -197,6 +197,10 @@
     2003-05-13  julian.reschke@greenbytes.de
   
     add DC.Creator meta tag, refactoring
+
+    2003-05-15  julian.reschke@greenbytes.de
+  
+    put nbsps between "section" and section number (xref).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -919,7 +923,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.81 2003/05/15 19:09:53 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.82 2003/05/15 19:12:52 jre Exp $" />
       
       <!-- DC creator -->
       <xsl:variable name="creator">
