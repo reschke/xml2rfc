@@ -407,7 +407,8 @@
     
     Put vertical space around top-level TOC entries in TOC.  Switch to
     pt-based CSS. Re-arrange top section. Make hr elements reflect new-page
-    settings in TXT output (compact-PI).
+    settings in TXT output (compact-PI).  Fix page number in footer (CSS
+    print).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2233,8 +2234,20 @@ table.closedissue {
   } 
   @bottom-right {
        font-family: helvetica, arial, sans-serif; 
-       content: "[Page ]" counter(pages) "]"; 
+       content: "[Page " counter(page) "]"; 
   } 
+}
+
+@page:first { 
+    @top-left {
+      content: normal;
+    }
+    @top-right {
+      content: normal;
+    }
+    @top-center {
+      content: normal;
+    }
 }
 </xsl:template>
 
@@ -3384,11 +3397,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.189 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.189 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.190 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.190 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/29 10:02:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/29 10:02:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/29 10:46:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/29 10:46:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
