@@ -492,7 +492,7 @@
 
 <xsl:template match="list[@style='symbols']">
 	<ul class="text">
-    	<xsl:apply-templates />
+    <xsl:apply-templates />
   </ul>
 </xsl:template>
 
@@ -1515,7 +1515,7 @@ ins
 <xsl:template name="insertTocAppendix">
   
   <xsl:if test="//figure[@title!='' or @anchor!='']">
-  	<ul compact="compact" class="toc">
+  	<p>
 	  	<xsl:for-each select="//figure[@title!='' or @anchor!='']">
         <xsl:variable name="title">Figure <xsl:value-of select="position()"/><xsl:if test="@title">: <xsl:value-of select="@title"/></xsl:if>
         </xsl:variable>
@@ -1524,7 +1524,7 @@ ins
           <xsl:with-param name="title" select="$title" />
         </xsl:call-template>
 		  </xsl:for-each>
-  	</ul>
+  	</p>
   </xsl:if>
   
   <!-- experimental -->
