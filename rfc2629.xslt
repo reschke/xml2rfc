@@ -304,6 +304,10 @@
     2004-04-01  julian.reschke@greenbytes.de
     
     Fix RFC3667 output, see <http://lists.xml.resource.org/pipermail/xml2rfc/2004-April/001208.html>
+
+    2004-04-04  julian.reschke@greenbytes.de
+    
+    Add support for section/top attribute.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2157,11 +2161,15 @@ table.closedissue {
   <xsl:param name="number" />
   <xsl:param name="target" />
   <xsl:param name="title" />
+  <xsl:param name="tocparam" />
 
   <!-- handle tocdepth parameter -->
-  <xsl:choose>  
-    <xsl:when test="string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.')) &gt;= $parsedTocDepth">
-      <!-- dropped entry -->
+  <xsl:choose>
+    <xsl:when test="($tocparam='' or $tocparam='default') and string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.')) &gt;= $parsedTocDepth">
+      <!-- dropped entry because of depth-->
+    </xsl:when>
+    <xsl:when test="$tocparam='exclude'">
+      <!-- dropped entry because excluded -->
     </xsl:when>
     <xsl:otherwise>
       <xsl:choose>
@@ -2275,6 +2283,7 @@ table.closedissue {
     <xsl:with-param name="number" select="$sectionNumber"/>
     <xsl:with-param name="target" select="$target"/>
     <xsl:with-param name="title" select="@title"/>
+    <xsl:with-param name="tocparam" select="@toc"/>
   </xsl:call-template>
 
   <xsl:apply-templates mode="toc" />
@@ -2934,11 +2943,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.149 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.149 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.150 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.150 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/04/01 16:36:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/01 16:36:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/04/04 11:17:01 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/04 11:17:01 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
