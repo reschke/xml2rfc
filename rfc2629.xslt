@@ -409,8 +409,8 @@
     pt-based CSS. Re-arrange top section. Make hr elements reflect new-page
     settings in TXT output (compact-PI).  Fix page number in footer (CSS
     print) and add some more experimental support for paged media (tested
-    with Prince 4.1 alpha).  Rewrite TOC generation to generate an HTML
-    list.
+    with Prince 4.1 alpha).  Rewrite TOC and Index generation to generate HTML
+    lists.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2095,6 +2095,24 @@ li.tocline1 {
   margin-left: 0em;
   margin-right: 0em;
 }
+ul.ind {
+  list-style: none;
+  margin-left: 1.5em;
+  margin-right: 0em;
+  padding-left: 0em;
+}
+li.indline0 {
+  font-weight: bold;
+  line-height: 200%;
+  margin-left: 0em;
+  margin-right: 0em;
+}
+li.indline1 {
+  font-weight: normal;
+  line-height: 150%;
+  margin-left: 0em;
+  margin-right: 0em;
+}
 .comment {
   background-color: yellow;
 }
@@ -2339,85 +2357,80 @@ table.closedissue {
     </xsl:for-each>
   </p>
 
-  <table summary="Index">
-
-    <xsl:for-each select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]">
-      <xsl:sort select="translate(@item,$lcase,$ucase)" />
-            
-      <tr>
-        <td>
+  <p>
+    <ul class="ind">
+    
+      <xsl:for-each select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]">
+        <xsl:sort select="translate(@item,$lcase,$ucase)" />
+              
+        <li class="indline0">
           <xsl:variable name="letter" select="translate(substring(@item,1,1),$lcase,$ucase)"/>
           <a name="{$anchor-prefix}.index.{$letter}" href="#{$anchor-prefix}.index.{$letter}">
             <b><xsl:value-of select="$letter" /></b>
           </a>
-        </td>
-      </tr>
+        
+          <ul class="ind">  
+          <xsl:for-each select="key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))">
+      
+            <xsl:sort select="translate(@item,$lcase,$ucase)" />
             
-      <xsl:for-each select="key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))">
+            <xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
+            
+              <xsl:variable name="item" select="@item"/>
+              <xsl:variable name="in-artwork" select="count(//iref[@item=$item and @primary='true' and ancestor::artwork])!=0"/>
+                  
+              <li class="indline1">
+                <xsl:choose>
+                  <xsl:when test="$in-artwork">
+                    <tt><xsl:value-of select="@item" /></tt>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="@item" />
+                  </xsl:otherwise>
+                </xsl:choose>
+                
+                <xsl:for-each select="key('index-item',@item)[not(@subitem) or @subitem='']">
+                  <xsl:sort select="translate(@item,$lcase,$ucase)" />
+                  <xsl:call-template name="insertSingleIref" />
+                </xsl:for-each>
+  
+                <ul class="ind">  
+                <xsl:for-each select="key('index-item',@item)[@subitem and @subitem!='']">
+                  <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
+                  
+                  <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
+      
+                    <xsl:variable name="itemsubitem" select="concat(@item,'..',@subitem)"/>
+                    <xsl:variable name="in-artwork2" select="count(//iref[concat(@item,'..',@subitem)=$itemsubitem and @primary='true' and ancestor::artwork])!=0"/>
+      
+                    <li class="indline1">
+  
+                      <xsl:choose>
+                        <xsl:when test="$in-artwork2">
+                          <tt><xsl:value-of select="@subitem" /></tt>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:value-of select="@subitem" />
+                        </xsl:otherwise>
+                      </xsl:choose>
+                        
+                      <xsl:for-each select="key('index-item-subitem',concat(@item,'..',@subitem))">
+                        <xsl:sort select="translate(@item,$lcase,$ucase)" />                    
+                        <xsl:call-template name="insertSingleIref" />
+                      </xsl:for-each>
     
-        <xsl:sort select="translate(@item,$lcase,$ucase)" />
-        
-        <xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
-        
-          <xsl:variable name="item" select="@item"/>
-          <xsl:variable name="in-artwork" select="count(//iref[@item=$item and @primary='true' and ancestor::artwork])!=0"/>
-              
-          <tr>
-            <td>
-              <xsl:text>&#0160;&#0160;</xsl:text>
-              <xsl:choose>
-                <xsl:when test="$in-artwork">
-                  <tt><xsl:value-of select="@item" /></tt>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:value-of select="@item" />
-                </xsl:otherwise>
-              </xsl:choose>
-              <xsl:text>&#0160;</xsl:text>
-              
-              <xsl:for-each select="key('index-item',@item)[not(@subitem) or @subitem='']">
-                <xsl:sort select="translate(@item,$lcase,$ucase)" />
-                <xsl:call-template name="insertSingleIref" />
-              </xsl:for-each>
-            </td>
-          </tr>
-                
-          <xsl:for-each select="key('index-item',@item)[@subitem and @subitem!='']">
-            <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
-            
-            <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
-
-              <xsl:variable name="itemsubitem" select="concat(@item,'..',@subitem)"/>
-              <xsl:variable name="in-artwork2" select="count(//iref[concat(@item,'..',@subitem)=$itemsubitem and @primary='true' and ancestor::artwork])!=0"/>
-
-              <tr>
-                <td>
-                  <xsl:text>&#0160;&#0160;&#0160;&#0160;</xsl:text>
-                  <xsl:choose>
-                    <xsl:when test="$in-artwork2">
-                      <tt><xsl:value-of select="@subitem" /></tt>
-                    </xsl:when>
-                    <xsl:otherwise>
-                      <xsl:value-of select="@subitem" />
-                    </xsl:otherwise>
-                  </xsl:choose>
-                  <xsl:text>&#0160;</xsl:text>
-                    
-                  <xsl:for-each select="key('index-item-subitem',concat(@item,'..',@subitem))">
-                    <xsl:sort select="translate(@item,$lcase,$ucase)" />                    
-                    <xsl:call-template name="insertSingleIref" />
-                  </xsl:for-each>
-                </td>
-              </tr>
-            </xsl:if>
-          </xsl:for-each>
-                
-        </xsl:if>
-                
-      </xsl:for-each>            
-
-    </xsl:for-each>
-  </table>
+                    </li>
+                  </xsl:if>
+                </xsl:for-each>
+              </ul>
+            </li>
+          </xsl:if>
+                  
+        </xsl:for-each>            
+        </ul></li>
+      </xsl:for-each>
+    </ul>
+  </p>
 </xsl:template>
 
 
@@ -3436,11 +3449,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.192 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.192 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.193 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.193 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/29 17:37:55 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/29 17:37:55 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/29 18:19:06 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/29 18:19:06 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
