@@ -199,7 +199,7 @@
 </msxsl:script>
 
 <xsl:template match="artwork">
-  <xsl:if test="$parse-xml-in-artwork='yes' and function-available('myns:parseXml')">
+  <xsl:if test="not(ancestor::ed:del) and $parse-xml-in-artwork='yes' and function-available('myns:parseXml')">
     <xsl:if test="contains(.,'&lt;?xml')">
       <xsl:variable name="body" select="substring-after(substring-after(.,'&lt;?xml'),'?>')" /> 
       <xsl:if test="$body!='' and myns:parseXml($body)!=''">
@@ -236,7 +236,7 @@
     <td>&#0160;</td>
 		<td><xsl:value-of select="organization" /></td>
   </tr>
-	<xsl:if test="address/postal/street">
+	<xsl:if test="address/postal/street!=''">
     <tr>
       <td>&#0160;</td>
       <td><xsl:for-each select="address/postal/street"><xsl:value-of select="." /><br /></xsl:for-each></td>
@@ -1219,10 +1219,11 @@ ins
 
 <xsl:template name="insertCategoryLong">
 	<xsl:choose>
-    	<xsl:when test="/rfc/@category='bcp'">Best Current Practice</xsl:when>
-        <xsl:when test="/rfc/@category='info'">Informational</xsl:when>
-        <xsl:when test="/rfc/@category='std'">Standards Track</xsl:when>
-        <xsl:otherwise>(category missing or unknown)</xsl:otherwise>
+    <xsl:when test="/rfc/@category='bcp'">Best Current Practice</xsl:when>
+    <xsl:when test="/rfc/@category='info'">Informational</xsl:when>
+    <xsl:when test="/rfc/@category='std'">Standards Track</xsl:when>
+    <xsl:when test="/rfc/@category='exp'">Experimental</xsl:when>
+    <xsl:otherwise>(category missing or unknown)</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 
@@ -1538,6 +1539,25 @@ ins
 
 
 
+<xsl:template name="replace-substring">
+
+	<xsl:param name="string" />
+	<xsl:param name="replace" />
+	<xsl:param name="by" />
+
+	<xsl:choose>
+		<xsl:when test="contains($string,$replace)">
+			<xsl:value-of select="concat(substring-before($string, $replace),$by)" />
+			<xsl:call-template name="replace-substring">
+				<xsl:with-param name="string" select="substring-after($string,$replace)" />
+				<xsl:with-param name="replace" select="$replace" />
+				<xsl:with-param name="by" select="$by" />
+			</xsl:call-template>
+		</xsl:when>
+		<xsl:otherwise><xsl:value-of select="$string" /></xsl:otherwise>
+	</xsl:choose>
+
+</xsl:template>
 
 <xsl:template name="showArtworkLine">
   <xsl:param name="line" />
@@ -1556,6 +1576,16 @@ ins
         <span class="toowide"><xsl:value-of select="substring($line,$maxw)" /></span>
       </xsl:if>
       <xsl:text>&#10;</xsl:text>
+    </xsl:when>
+    <xsl:when test="$mode='nroff'">
+      <xsl:variable name="cline">
+        <xsl:call-template name="replace-substring">
+          <xsl:with-param name="string" select="$line" />
+          <xsl:with-param name="replace" select="'\'" />
+          <xsl:with-param name="by" select="'\\'" />
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:value-of select="concat($cline,'&#10;')" />
     </xsl:when>
     <xsl:otherwise><xsl:value-of select="concat($line,'&#10;')" /></xsl:otherwise>
   </xsl:choose>
