@@ -399,6 +399,9 @@
     
     Bugfixes for HtmlToXhtml converter.
 
+    2005-01-22  julian.reschke@greenbytes.de
+    
+    Enhance generation of HTML h* elements (for Mozilla Outliner).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1471,7 +1474,9 @@ match="list//t//list[@style='letters']" priority="9">
     <xsl:choose>
       <xsl:when test="count(ancestor::section) = 0">h1</xsl:when>
       <xsl:when test="count(ancestor::section) = 1">h2</xsl:when>
-      <xsl:otherwise>h3</xsl:otherwise>
+      <xsl:when test="count(ancestor::section) = 2">h3</xsl:when>
+      <xsl:when test="count(ancestor::section) = 3">h4</xsl:when>
+      <xsl:otherwise>h5</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   
@@ -2006,6 +2011,24 @@ h3 {
   page-break-after: avoid;
 }
 h3 a {
+  color: #000000;
+}
+h4 {
+  color: #000000;
+  font-size: 13px;
+  font-family: helvetica, arial, sans-serif;
+  page-break-after: avoid;
+}
+h4 a {
+  color: #000000;
+}
+h5 {
+  color: #000000;
+  font-size: 13px;
+  font-family: helvetica, arial, sans-serif;
+  page-break-after: avoid;
+}
+h5 a {
   color: #000000;
 }
 img {
@@ -3423,11 +3446,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.185 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.185 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.186 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.186 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/14 15:56:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/14 15:56:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/22 10:37:56 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/22 10:37:56 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
