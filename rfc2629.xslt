@@ -134,6 +134,10 @@
     2002-10-09  fielding
 
     Translate references title to anchor name to avoid non-uri characters.
+    
+    2002-10-13  julian.reschke@greenbytes.de
+    
+    Support for tocdepth PI.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -160,6 +164,26 @@
       translate(/processing-instruction('rfc')[contains(.,'toc=')], '&quot; ', ''),
         'toc=')"
 />
+
+<!-- optional tocdepth-->
+
+<xsl:param name="unparsedTocDepth"
+  select="substring-after(
+      translate(/processing-instruction('rfc')[contains(.,'tocdepth=')], '&quot; ', ''),
+        'tocdepth=')"
+/>
+
+<xsl:variable name="tocDepth">
+  <xsl:choose>
+    <xsl:when test="$unparsedTocDepth='1'">1</xsl:when>
+    <xsl:when test="$unparsedTocDepth='2'">2</xsl:when>
+    <xsl:when test="$unparsedTocDepth='3'">3</xsl:when>
+    <xsl:when test="$unparsedTocDepth='4'">4</xsl:when>
+    <xsl:when test="$unparsedTocDepth='5'">5</xsl:when>
+    <xsl:otherwise>99</xsl:otherwise>
+  </xsl:choose>
+</xsl:variable>
+
 
 <!-- use symbolic reference names instead of numeric ones if a processing instruction <?rfc?>
      exists with contents symrefs="yes". Can be overriden by an XSLT parameter -->
@@ -1427,31 +1451,37 @@ ins
   <xsl:param name="target" />
   <xsl:param name="title" />
 
-  <xsl:choose>
-    <xsl:when test="starts-with($number,'del-')">
-      <xsl:value-of select="'&#160;&#160;&#160;&#160;&#160;&#160;'"/>
-      <del>
-        <xsl:value-of select="$number" />&#0160;
-        <a href="#{$target}"><xsl:value-of select="$title"/></a>
-      </del>
-    </xsl:when>
-    <xsl:when test="$number=''">
-      <b>
-        &#0160;&#0160;
-        <a href="#{$target}"><xsl:value-of select="$title"/></a>
-      </b>
+  <!-- handle tocdepth parameter -->
+  <xsl:choose>  
+    <xsl:when test="string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.')) &gt;= $tocDepth">
+      <!-- dropped entry -->
     </xsl:when>
     <xsl:otherwise>
-      <b>
-        <xsl:value-of select="translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','&#160;')"/>
-        <xsl:value-of select="$number" />&#0160;
-        <a href="#{$target}"><xsl:value-of select="$title"/></a>
-      </b>
+      <xsl:choose>
+        <xsl:when test="starts-with($number,'del-')">
+          <xsl:value-of select="'&#160;&#160;&#160;&#160;&#160;&#160;'"/>
+          <del>
+            <xsl:value-of select="$number" />&#0160;
+            <a href="#{$target}"><xsl:value-of select="$title"/></a>
+          </del>
+        </xsl:when>
+        <xsl:when test="$number=''">
+          <b>
+            &#0160;&#0160;
+            <a href="#{$target}"><xsl:value-of select="$title"/></a>
+          </b>
+        </xsl:when>
+        <xsl:otherwise>
+          <b>
+            <xsl:value-of select="translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','&#160;')"/>
+            <xsl:value-of select="$number" />&#0160;
+            <a href="#{$target}"><xsl:value-of select="$title"/></a>
+          </b>
+        </xsl:otherwise>
+      </xsl:choose>
+      <br />
     </xsl:otherwise>
   </xsl:choose>
-  
-  <br />
-  
 </xsl:template>
 
 
