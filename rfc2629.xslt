@@ -918,7 +918,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.77 2003/05/12 22:24:20 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.78 2003/05/13 08:37:28 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -1603,6 +1603,7 @@ table.resolution
 <xsl:template name="insertCategoryLong">
   <xsl:choose>
     <xsl:when test="/rfc/@category='bcp'">Best Current Practice</xsl:when>
+    <xsl:when test="/rfc/@category='historic'">Historic</xsl:when>
     <xsl:when test="/rfc/@category='info'">Informational</xsl:when>
     <xsl:when test="/rfc/@category='std'">Standards Track</xsl:when>
     <xsl:when test="/rfc/@category='exp'">Experimental</xsl:when>
