@@ -757,13 +757,13 @@
   <a href="#{$target}">
     <xsl:choose>
       <xsl:when test="local-name($node)='section'">
-        section
+        Section
         <xsl:for-each select="$node">
           <xsl:call-template name="sectionnumber" />
         </xsl:for-each>
       </xsl:when>
       <xsl:when test="local-name($node)='figure'">
-        figure
+        Figure
         <xsl:for-each select="$node">
           <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
         </xsl:for-each>
