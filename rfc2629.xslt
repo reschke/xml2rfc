@@ -370,6 +370,10 @@
 
     Add check for unused references. Uppercase letters in list style letters
     when nested into another list.
+
+    2004-10-10  julian.reschke@greenbytes.de
+
+    Fix internal change track pointers.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -3063,9 +3067,11 @@ table.closedissue {
   <xsl:variable name="change" select="."/>
   <xsl:for-each select="@ed:resolves|ed:resolves">
     <xsl:variable name="resolves" select="."/>
+    <!-- need the right context node for proper numbering -->
+    <xsl:variable name="count"><xsl:for-each select=".."><xsl:number level="any" count="*[@ed:resolves=$resolves or ed:resolves=$resolves]" /></xsl:for-each></xsl:variable>
     <a>
       <xsl:attribute name="name">
-        <xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:number level="any" count="*[@ed:resolves=$resolves or ed:resolves=$resolves]" />
+        <xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" />
       </xsl:attribute>
     </a>
     <xsl:choose>
@@ -3400,11 +3406,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.177 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.177 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.178 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.178 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/09/26 14:48:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/26 14:48:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/10/10 18:34:24 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/10/10 18:34:24 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
