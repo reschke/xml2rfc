@@ -405,7 +405,8 @@
 
     2005-01-27  julian.reschke@greenbytes.de
     
-    Put vertical space around top-level TOC entries in TOC.
+    Put vertical space around top-level TOC entries in TOC.  Switch to
+    pt-based CSS. Re-arrange top section.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -880,10 +881,6 @@
 <xsl:template match="front">
   
   <xsl:if test="$xml2rfc-topblock!='no'">
-    <xsl:call-template name="insertTocLink">
-      <xsl:with-param name="includeTitle" select="true()" />
-    </xsl:call-template>
-
     <!-- collect information for left column -->
       
     <xsl:variable name="leftColumn">
@@ -920,6 +917,7 @@
   </xsl:if>
     
   <p class="title">
+    <br/>
     <!-- main title -->
     <xsl:value-of select="title"/>
     <xsl:if test="/rfc/@docName">
@@ -1238,9 +1236,7 @@ match="list//t//list[@style='letters']" priority="9">
   </xsl:variable>
 
   <xsl:if test="$name='1'">
-    <xsl:call-template name="insertTocLink">
-      <xsl:with-param name="rule" select="true()" />
-    </xsl:call-template>
+    <hr class="noprint"/>
   </xsl:if>
 
   <!-- insert pseudo section when needed -->
@@ -1469,9 +1465,7 @@ match="list//t//list[@style='letters']" priority="9">
   </xsl:variable>
     
   <xsl:if test="not(ancestor::section) and not(@myns:notoclink)">
-    <xsl:call-template name="insertTocLink">
-      <xsl:with-param name="rule" select="true()" />
-    </xsl:call-template>
+    <hr class="noprint"/>
   </xsl:if>
   
   <xsl:variable name="elemtype">
@@ -1806,10 +1800,7 @@ match="list//t//list[@style='letters']" priority="9">
 <!-- produce back section with author information -->
 <xsl:template name="insertAuthors">
 
-  <!-- insert link to TOC including horizontal rule -->
-  <xsl:call-template name="insertTocLink">
-    <xsl:with-param name="rule" select="true()" />
-  </xsl:call-template>
+  <hr class="noprint"/>
     
   <h1>
     <xsl:call-template name="insert-conditional-pagebreak"/>
@@ -1981,15 +1972,15 @@ body {
   </xsl:if>
   color: #000000;
   font-family: helvetica, arial, sans-serif;
-  font-size: 13px;
+  font-size: 10pt;
 }
 dl {
   margin-left: 2em;
 }
 h1 {
   color: #333333;
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 14pt;
+  line-height: 14pt;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
@@ -2001,7 +1992,7 @@ h1 a {
 }
 h2 {
   color: #000000;
-  font-size: 14px;
+  font-size: 12pt;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
@@ -2010,7 +2001,7 @@ h2 a {
 }
 h3 {
   color: #000000;
-  font-size: 13px;
+  font-size: 10pt;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
@@ -2019,7 +2010,7 @@ h3 a {
 }
 h4 {
   color: #000000;
-  font-size: 13px;
+  font-size: 10pt;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
@@ -2028,7 +2019,7 @@ h4 a {
 }
 h5 {
   color: #000000;
-  font-size: 13px;
+  font-size: 10pt;
   font-family: helvetica, arial, sans-serif;
   page-break-after: avoid;
 }
@@ -2058,7 +2049,9 @@ table {
   margin-left: 2em;
 }
 table.header {
-  width: 66%;
+  width: 95%;
+  font-size: 10pt;
+  color: white;
 }
 td.top {
   vertical-align: top;
@@ -2071,20 +2064,13 @@ td.right {
   text-align: right;
 }
 td.header-l {
-  width: 33%;
-  color: #ffffff;
-  background-color: #666666;
-  font-size: 10px;
-  font-family: arial, helvetica, sans-serif;
-  vertical-align: top;
+  background-color: gray;
+  width: 50%;
 }
 td.header-r {
-  width: 33%;
-  color: #ffffff;
-  background-color: #666666;
-  font-size: 10px;
-  font-family: arial, helvetica, sans-serif;
-  vertical-align: top;
+  background-color: gray;
+  width: 50%;
+  text-align: right;
 }
 thead {
   display:table-header-group
@@ -2099,20 +2085,6 @@ thead {
   font-size: 14pt;
   background-color: red;
 }
-.hotText {
-  color:#ffffff;
-  font-weight: normal;
-  text-decoration: none;
-  font-family: chelvetica, arial, sans-serif;
-  font-size: 9px
-}
-.link2 {
-  color:#ffffff;
-  font-weight: bold;
-  text-decoration: none;
-  font-family: helvetica, arial, sans-serif;
-  font-size: 9px
-}
 .toowide {
   color: red;
   font-weight: bold;
@@ -2122,28 +2094,26 @@ thead {
   font-weight: bold;
   text-decoration: none;
   font-family: helvetica, arial, sans-serif;
-  font-size: 9px
+  font-size: 9pt
 }
 .title {
   color: #990000;
-  font-size: 22px;
-  line-height: 22px;
+  font-size: 18pt;
+  line-height: 18pt;
   font-weight: bold;
-  text-align: right;
-  font-family: helvetica, arial, sans-serif
+  text-align: center;
 }
 .figure {
   font-weight: bold;
   text-align: center;
-  font-size: 12px;
+  font-size: 9pt;
 }
 .filename {
   color: #333333;
   font-weight: bold;
-  font-size: 16px;
-  line-height: 24px;
-  font-family: helvetica, arial, sans-serif;
-  text-align: right;
+  font-size: 12pt;
+  line-height: 21pt;
+  text-align: center;
 }
 .warning {
   font-size: 14pt;
@@ -2227,7 +2197,7 @@ table.closedissue {
     background-color: white;
     font-family: arial, helvetica, sans-serif;
     vertical-align: top;
-    font-size: 13px;
+    font-size: 10pt;
   }
 
   td.header-r {
@@ -2237,7 +2207,7 @@ table.closedissue {
     font-family: arial, helvetica, sans-serif;
     vertical-align: top;
     text-align: right;
-    font-size: 13px;
+    font-size: 10pt;
   }
 }
 
@@ -2317,10 +2287,7 @@ table.closedissue {
 
 <xsl:template name="insertIndex">
 
-  <!-- insert link to TOC including horizontal rule -->
-  <xsl:call-template name="insertTocLink">
-    <xsl:with-param name="rule" select="true()" />
-  </xsl:call-template> 
+  <hr class="noprint"/>
 
   <h1>
     <xsl:call-template name="insert-conditional-pagebreak"/>
@@ -2573,10 +2540,7 @@ table.closedissue {
 <!-- TOC generation -->
 
 <xsl:template match="/" mode="toc">
-  <xsl:call-template name="insertTocLink">
-    <xsl:with-param name="includeTitle" select="true()" />
-      <xsl:with-param name="rule" select="true()" />
-  </xsl:call-template>
+  <hr class="noprint"/>
 
   <h1 class="np"> <!-- this pagebreak occurs always -->
     <a name="{$anchor-prefix}.toc" href="#{$anchor-prefix}.toc">Table of Contents</a>
@@ -2807,35 +2771,6 @@ table.closedissue {
   </xsl:if>
 
 </xsl:template>
-
-<xsl:template name="insertTocLink">
-  <xsl:param name="includeTitle" select="false()" />
-  <xsl:param name="rule" />
-  <xsl:if test="$rule"><hr class="noprint"/></xsl:if>
-  <xsl:if test="$includeTitle or $xml2rfc-toc='yes'">
-    <table summary="link to TOC" class="noprint" style="margin-left: auto; margin-right: 0; float: right; width: 2.5em;">
-      <xsl:if test="$includeTitle">
-        <tr>
-          <td style="background-color: #000000; text-align: center; vertical-align: middle; height: 2.5em;">
-            <b><span class="RFC">&#0160;RFC&#0160;</span></b>
-            <xsl:if test="/rfc/@number">
-              <br />
-              <span class="hotText"><xsl:value-of select="/rfc/@number"/></span>
-            </xsl:if>
-          </td>
-        </tr>
-      </xsl:if>
-      <xsl:if test="$xml2rfc-toc='yes'">
-        <tr>
-          <td style="background-color: #990000; text-align: center; height: 1.5em;">
-            <a href="#{$anchor-prefix}.toc"><b class="link2">&#0160;TOC&#0160;</b></a>
-          </td>
-        </tr>
-      </xsl:if>
-    </table>
-  </xsl:if>
-</xsl:template>
-
 
 <xsl:template name="referencename">
   <xsl:param name="node" />
@@ -3337,10 +3272,7 @@ table.closedissue {
 
 <xsl:template name="insertComments">
 
-  <!-- insert link to TOC including horizontal rule -->
-  <xsl:call-template name="insertTocLink">
-    <xsl:with-param name="rule" select="true()" />
-  </xsl:call-template>
+  <hr class="noprint"/>
     
   <h1>
     <xsl:call-template name="insert-conditional-pagebreak"/>
@@ -3453,11 +3385,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.187 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.187 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.188 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.188 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/27 13:06:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/27 13:06:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/27 21:50:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/27 21:50:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
