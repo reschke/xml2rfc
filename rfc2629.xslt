@@ -1074,7 +1074,10 @@
   <xsl:variable name="context" select="." />
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="//*[@anchor=$target]" />
-  <!-- should check for undefined targets -->
+  <xsl:if test="count($node)=0">
+    <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
+    <xsl:comment>Undefined target: <xsl:value-of select="@target" /></xsl:comment>
+  </xsl:if>
   <a href="#{$target}">
     <xsl:choose>
       <xsl:when test="local-name($node)='section'">
@@ -2466,11 +2469,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.94 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.94 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.95 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.95 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/06/22 09:19:22 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/06/22 09:19:22 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/06/24 18:32:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/06/24 18:32:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
