@@ -426,7 +426,6 @@
 
 <xsl:output method="html" encoding="iso-8859-1" version="4.0" doctype-public="-//W3C//DTD HTML 4.01//EN" />
 
-
 <!-- process some of the processing instructions supported by Marshall T. Rose's
      xml2rfc sofware, see <http://xml.resource.org/> -->
 
@@ -1001,8 +1000,7 @@
 </xsl:template>
 
 <!-- nested lettered list uses uppercase -->
-<xsl:template 
-match="list//t//list[@style='letters']" priority="9">
+<xsl:template match="list//t//list[@style='letters']" priority="9">
   <ol style="list-style-type: upper-alpha">
     <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
@@ -1394,16 +1392,15 @@ match="list//t//list[@style='letters']" priority="9">
   <xsl:variable name="p">
     <xsl:call-template name="get-paragraph-number" />
   </xsl:variable>
-  <xsl:if test="not(self::text()) or normalize-space(.)!=''">
-    <p>
-      <xsl:if test="string-length($p) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins) and count(preceding-sibling::node())=0">
-        <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
-      </xsl:if>
-      <xsl:call-template name="insertInsDelClass"/>
-      <xsl:call-template name="editingMark" />
-      <xsl:apply-templates mode="t-content2" select="." />
-    </p>
-  </xsl:if>
+  
+  <p>
+    <xsl:if test="string-length($p) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins) and count(preceding-sibling::node())=0">
+      <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
+    </xsl:if>
+    <xsl:call-template name="insertInsDelClass"/>
+    <xsl:call-template name="editingMark" />
+    <xsl:apply-templates mode="t-content2" select="." />
+  </p>
   <xsl:apply-templates mode="t-content" select="following-sibling::*[self::list or self::figure or self::texttable][1]" />
 </xsl:template>               
                
@@ -1466,6 +1463,9 @@ match="list//t//list[@style='letters']" priority="9">
   <xsl:apply-templates select="iref[count(preceding-sibling::*[not(self::iref)])=0]"/>
 
   <xsl:element name="{$elemtype}">
+    <xsl:if test="$sectionNumber!=''">
+      <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$sectionNumber"/></xsl:attribute>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="$sectionNumber='1'">
         <!-- pagebreak, this the first section -->
@@ -1480,7 +1480,7 @@ match="list//t//list[@style='letters']" priority="9">
     <xsl:call-template name="insertInsDelClass" />
         
     <xsl:if test="$sectionNumber!=''">
-      <a name="{$anchor-prefix}.section.{$sectionNumber}" href="#{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>
+      <a href="#{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>
       <xsl:text>&#0160;</xsl:text>
     </xsl:if>
     <xsl:choose>
@@ -3434,11 +3434,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.195 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.195 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.196 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.196 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/01/30 11:12:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 11:12:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/30 12:15:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/30 12:15:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
