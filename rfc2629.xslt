@@ -229,20 +229,19 @@
     source document -->
 	<xsl:apply-templates select="references" />
    
-   	<!-- next, add information about the document's authors -->
-   	<xsl:call-template name="insertAuthors" />
+  <!-- next, add information about the document's authors -->
+  <xsl:call-template name="insertAuthors" />
     
 	<!-- add all other top-level sections under <back> -->
 	<xsl:apply-templates select="*[name()!='references']" />
 
 	<!-- insert the index if index entries exist -->
-    <xsl:if test="//iref">
-    	<xsl:call-template name="insertIndex" />
-    </xsl:if>
+  <xsl:if test="//iref">
+    <xsl:call-template name="insertIndex" />
+  </xsl:if>
 
 	<!-- copyright statements -->
-    <xsl:call-template name="insertCopyright" />
-        
+  <xsl:call-template name="insertCopyright" />      
 </xsl:template>
 
 <xsl:template match="eref[node()]">
@@ -657,16 +656,18 @@
 <!-- utility templates -->
 
 <xsl:template name="collectLeftHeaderColumn">
+  <xsl:param name="mode" />
   <!-- default case -->
   <xsl:if test="not($private)">
   	<myns:item>Network Working Group</myns:item>
     <myns:item>
      	<xsl:choose>
+        <xsl:when test="/rfc/@ipr and $mode='nroff'">Internet Draft</xsl:when>
         <xsl:when test="/rfc/@ipr">INTERNET DRAFT</xsl:when>
         <xsl:otherwise>Request for Comments: <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
       </xsl:choose>
     </myns:item>
-    <xsl:if test="/rfc/@docName">
+    <xsl:if test="/rfc/@docName and $mode!='nroff'">
       <myns:item>
         &lt;<xsl:value-of select="/rfc/@docName" />&gt;
       </myns:item>
@@ -695,10 +696,12 @@
           </xsl:call-template>
       </myns:item>
     </xsl:if>
-    <myns:item>
-     	Category:
-      <xsl:call-template name="insertCategoryLong" />
-    </myns:item>
+    <xsl:if test="$mode!='nroff'">
+      <myns:item>
+       	Category:
+        <xsl:call-template name="insertCategoryLong" />
+      </myns:item>
+    </xsl:if>
     <xsl:if test="/rfc/@ipr">
      	<myns:item>Expires: <xsl:call-template name="expirydate" /></myns:item>
     </xsl:if>
@@ -767,17 +770,15 @@
 
 	<!-- insert link to TOC including horizontal rule -->
 	<xsl:call-template name="insertTocLink">
-    	<xsl:with-param name="rule" select="true()" />
-    </xsl:call-template>
+    <xsl:with-param name="rule" select="true()" />
+  </xsl:call-template>
     
-    <a name="rfc.authors">
-    	<h1>Author's Address<xsl:if test="count(/rfc/front/author) &gt; 1">es</xsl:if></h1>
+  <a name="rfc.authors">
+    <h1>Author's Address<xsl:if test="count(/rfc/front/author) &gt; 1">es</xsl:if></h1>
  	</a>
 
 	<table width="99%" border="0" cellpadding="0" cellspacing="0">
-    	<xsl:for-each select="/rfc/front/author">
-        	<xsl:apply-templates select="." />
-    	</xsl:for-each>
+    <xsl:apply-templates select="/rfc/front/author" />
 	</table>
 </xsl:template>
 
@@ -1077,7 +1078,8 @@ ins
 				Internet-Drafts are working documents of the Internet Engineering
 				Task Force (IETF), its areas, and its working groups.
 				Note that other groups may also distribute working documents as
-				Internet-Drafts.
+				Internet-Drafts.</p>
+      <p>
 				Internet-Drafts are draft documents valid for a maximum of six months
 				and may be updated, replaced, or obsoleted by other documents at any time.
 				It is inappropriate to use Internet-Drafts as reference material or to cite
@@ -1092,7 +1094,7 @@ ins
 				<a href='http://www.ietf.org/shadow.html'>http://www.ietf.org/shadow.html</a>.
 			</p>
 			<p>
-				This Internet-Draft will expire on <xsl:call-template name="expirydate" />.
+				This Internet-Draft will expire in <xsl:call-template name="expirydate" />.
 			</p>
       	</xsl:when>
 
