@@ -386,6 +386,10 @@
     
     Enhanced placement of iref anchors.
 
+    2004-11-06  julian.reschke@greenbytes.de
+    
+    Index: display irefs that appeared (with primary=true) inside artwork elements
+    in a monospaced font.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2292,13 +2296,25 @@ table.closedissue {
       <xsl:for-each select="key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))">
     
         <xsl:sort select="translate(@item,$lcase,$ucase)" />
-         
+        
         <xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
-    
+        
+          <xsl:variable name="item" select="@item"/>
+          <xsl:variable name="in-artwork" select="count(//iref[@item=$item and @primary='true' and ancestor::artwork])!=0"/>
+              
           <tr>
             <td>
-              &#0160;&#0160;<xsl:value-of select="@item" />&#0160;
-                
+              <xsl:text>&#0160;&#0160;</xsl:text>
+              <xsl:choose>
+                <xsl:when test="$in-artwork">
+                  <tt><xsl:value-of select="@item" /></tt>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="@item" />
+                </xsl:otherwise>
+              </xsl:choose>
+              <xsl:text>&#0160;</xsl:text>
+              
               <xsl:for-each select="key('index-item',@item)[not(@subitem) or @subitem='']">
                 <xsl:sort select="translate(@item,$lcase,$ucase)" />
                 <xsl:call-template name="insertSingleIref" />
@@ -2309,17 +2325,30 @@ table.closedissue {
           <xsl:for-each select="key('index-item',@item)[@subitem and @subitem!='']">
             <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
             
-             <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
-            <tr>
-              <td>
-                &#0160;&#0160;&#0160;&#0160;<xsl:value-of select="@subitem" />&#0160;
-                  
-                <xsl:for-each select="key('index-item-subitem',concat(@item,'..',@subitem))">
-                  <xsl:sort select="translate(@item,$lcase,$ucase)" />                    
-                  <xsl:call-template name="insertSingleIref" />
-                </xsl:for-each>
-              </td>
-            </tr>
+            <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
+
+              <xsl:variable name="itemsubitem" select="concat(@item,'..',@subitem)"/>
+              <xsl:variable name="in-artwork2" select="count(//iref[concat(@item,'..',@subitem)=$itemsubitem and @primary='true' and ancestor::artwork])!=0"/>
+
+              <tr>
+                <td>
+                  <xsl:text>&#0160;&#0160;&#0160;&#0160;</xsl:text>
+                  <xsl:choose>
+                    <xsl:when test="$in-artwork2">
+                      <tt><xsl:value-of select="@subitem" /></tt>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:value-of select="@subitem" />
+                    </xsl:otherwise>
+                  </xsl:choose>
+                  <xsl:text>&#0160;</xsl:text>
+                    
+                  <xsl:for-each select="key('index-item-subitem',concat(@item,'..',@subitem))">
+                    <xsl:sort select="translate(@item,$lcase,$ucase)" />                    
+                    <xsl:call-template name="insertSingleIref" />
+                  </xsl:for-each>
+                </td>
+              </tr>
             </xsl:if>
           </xsl:for-each>
                 
@@ -3361,11 +3390,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.182 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.182 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.183 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.183 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/11/03 13:42:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/11/03 13:42:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/11/06 18:58:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/11/06 18:58:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
