@@ -1202,7 +1202,7 @@
     <xsl:call-template name="sectionnumberPara" />
   </xsl:variable>
      
-  <xsl:if test="string-length($paraNumber) &gt; 0 and not(ancestor::ed:del)">
+  <xsl:if test="string-length($paraNumber) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins)">
     <div><a name="{$anchor-prefix}.section.{$paraNumber}" /></div>
   </xsl:if>
 
@@ -3019,11 +3019,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.153 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.153 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.154 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.154 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/04/06 07:58:35 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/06 07:58:35 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/04/06 09:28:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/06 09:28:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
