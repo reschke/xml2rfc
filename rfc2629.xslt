@@ -445,8 +445,8 @@
 
 <xsl:template match="list[@style='empty' or not(@style)]">
 	<blockquote>
-    	<xsl:apply-templates />
-    </blockquote>
+    <xsl:apply-templates />
+  </blockquote>
 </xsl:template>
 
 <xsl:template match="list[starts-with(@style,'format ')]">
