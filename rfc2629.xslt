@@ -921,7 +921,7 @@
       </xsl:if>
       
       <!-- generator -->
-      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.75 2003/05/12 17:56:40 jre Exp $" />
+      <meta name="generator" content="rfc2629.xslt $Id: rfc2629.xslt,v 1.76 2003/05/12 18:02:36 jre Exp $" />
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -1497,7 +1497,7 @@ td.header
 {
   font-weight: bold;
   text-align: center;
-  font-size: 9x;
+  font-size: 12px;
 }
 .filename
 {
