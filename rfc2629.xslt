@@ -366,9 +366,10 @@
     
     Enhance checking of artwork width.
     
-    2004-09-24  julian.reschke@greenbytes.de
+    2004-09-26  julian.reschke@greenbytes.de
 
-    Add check for unused references.
+    Add check for unused references. Uppercase letters in list style letters
+    when nested into another list.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -937,12 +938,22 @@
   </ol>
 </xsl:template>
 
+<!-- nested lettered list uses uppercase -->
+<xsl:template 
+match="list//t//list[@style='letters']" priority="9">
+  <ol style="list-style-type: upper-alpha">
+    <xsl:call-template name="insertInsDelClass"/>
+    <xsl:apply-templates />
+  </ol>
+</xsl:template>
+   
 <xsl:template match="list[@style='symbols']">
   <ul>
     <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </ul>
 </xsl:template>
+
 
 <!-- same for t(ext) elements -->
 
@@ -3389,11 +3400,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.176 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.176 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.177 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.177 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/09/24 11:00:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/24 11:00:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/09/26 14:48:45 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/09/26 14:48:45 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
