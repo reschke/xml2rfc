@@ -312,15 +312,15 @@
 </xsl:template>
 
 <xsl:template match="list[@style='numbers']">
-	<ol class="text">
+	<blockquote><ol class="text">
     	<xsl:apply-templates />
-    </ol>
+	</ol></blockquote>
 </xsl:template>
 
 <xsl:template match="list[@style='symbols']">
 	<ul class="text">
     	<xsl:apply-templates />
-    </ul>
+  </ul>
 </xsl:template>
 
 <!-- same for t(ext) elements -->
