@@ -2193,6 +2193,7 @@ ins
                 <xsl:attribute name="align"><xsl:value-of select="$col/@align" /></xsl:attribute>
               </xsl:if>
               <xsl:apply-templates select="node()" />
+              &#0160;
             </td>
           </xsl:for-each>
         </tr>
