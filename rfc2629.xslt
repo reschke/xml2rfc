@@ -21,6 +21,9 @@
     Fixed default location for RFCs and numbering of section references.
     Support ?rfc editing processing instruction.
     
+    2001-10-07  julian.reschke@greenbytes.de
+    
+    Made telephone number links active.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -127,7 +130,7 @@
 	<xsl:if test="address/phone">
     <tr>
       <td align="right"><b>Phone:&#0160;</b></td>
-			<td><xsl:value-of select="address/phone" /></td>
+			<td><a href="tel:{address/phone}"><xsl:value-of select="address/phone" /></a></td>
     </tr>
   </xsl:if>
 	<xsl:if test="address/email">
