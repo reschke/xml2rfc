@@ -40,6 +40,10 @@
     2001-12-17  julian.reschke@greenbytes.de
     
     Support title attribute on references element
+    
+    2002-01-05  julian.reschke@greenbytes.de
+    
+    Support for list/@style="@format" 
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -297,6 +301,12 @@
     </blockquote>
 </xsl:template>
 
+<xsl:template match="list[starts-with(@style,'format ')]">
+	<table>
+    <xsl:apply-templates />
+  </table>
+</xsl:template>
+
 <xsl:template match="list[@style='hanging']">
 	<blockquote>
     	<dl>
@@ -321,14 +331,14 @@
 
 <xsl:template match="list[@style='empty' or not(@style)]/t">
 	<p>
-    	<xsl:apply-templates />
-    </p>
+    <xsl:apply-templates />
+  </p>
 </xsl:template>
 
 <xsl:template match="list[@style='numbers' or @style='symbols']/t">
 	<li>
-    	<xsl:apply-templates />
-    </li>
+    <xsl:apply-templates />
+  </li>
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']/t">
@@ -336,6 +346,15 @@
     <dd>
     	<xsl:apply-templates />
     </dd>
+</xsl:template>
+
+<xsl:template match="list[starts-with(@style,'format ')]/t">
+	<xsl:variable name="format" select="substring-after(../@style,'format ')" />
+  <xsl:variable name="label" select="concat(substring-before($format,'%d'),position(),substring-after($format,'%d'),'&#0160;')" />
+  <tr>
+    <td><xsl:value-of select="$label" /></td>
+    <td><xsl:apply-templates /></td>
+  </tr>
 </xsl:template>
 
 <xsl:template match="middle">
@@ -566,7 +585,7 @@
 	<!-- should check for undefined targets -->
   <a href="#{$target}">
     <xsl:choose>
-      <xsl:when test="self::section">
+      <xsl:when test="local-name($node)='section'">
         section
         <xsl:for-each select="$node">
           <xsl:number level="multiple" />
@@ -1342,6 +1361,22 @@ ins
   <xsl:if test="@cite">
     <xsl:value-of select="concat(' &lt;',@cite,'&gt;')" />
   </xsl:if>
+</xsl:template>
+
+<!-- special change mark support, not supported by RFC2629 yet -->
+
+<xsl:template match="xhtml:del" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <del>
+    <xsl:copy-of select="@*"/>
+    <xsl:apply-templates />
+  </del>
+</xsl:template>
+
+<xsl:template match="xhtml:ins" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <ins>
+    <xsl:copy-of select="@*"/>
+    <xsl:apply-templates />
+  </ins>
 </xsl:template>
 
 
