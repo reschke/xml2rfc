@@ -1992,7 +1992,9 @@ ins {
 }
 .pn {
   position: absolute;
-  font-size: small;
+  color: white;
+}
+.pn:hover {
   color: #C8A8FF;
 }
 
@@ -3272,11 +3274,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.167 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.167 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.168 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.168 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/05/30 14:49:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/30 14:49:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/05/30 20:00:50 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/30 20:00:50 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
