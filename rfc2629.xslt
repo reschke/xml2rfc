@@ -395,6 +395,10 @@
     
     Add special code so that changes in section titles can be change-tracked.
 
+    2005-01-14  julian.reschke@greenbytes.de
+    
+    Bugfixes for HtmlToXhtml converter.
+
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1833,14 +1837,14 @@ match="list//t//list[@style='letters']" priority="9">
           attempt made to obtain a general license or permission for the use
           of such proprietary rights by implementers or users of this
           specification can be obtained from the IETF on-line IPR repository 
-          at <eref target="http://www.ietf.org/ipr"/>.
+          at <eref myns:is-rfc2629="true" target="http://www.ietf.org/ipr"/>.
         </t>       
         <t myns:is-rfc2629="true">
           The IETF invites any interested party to bring to its attention any
           copyrights, patents or patent applications, or other proprietary
           rights that may cover technology that may be required to implement
           this standard. Please address the information to the IETF at
-          <eref target="mailto:ietf-ipr@ietf.org">ietf-ipr@ietf.org</eref>.
+          <eref myns:is-rfc2629="true" target="mailto:ietf-ipr@ietf.org">ietf-ipr@ietf.org</eref>.
         </t>       
       </xsl:when>
       <xsl:otherwise>
@@ -2443,7 +2447,7 @@ table.closedissue {
             RFC 3668.  This document may not be modified, and derivative works of
             it may not be created, except to publish it as an RFC and to
             translate it into languages other than English<xsl:if test="/rfc/@iprExtract">,
-            other than to extract <xref target="{/rfc/@iprExtract}"/> as-is
+            other than to extract <xref myns:is-rfc2629="true" target="{/rfc/@iprExtract}"/> as-is
             for separate use.</xsl:if>.
           </xsl:when>
           <xsl:when test="/rfc/@ipr = 'noDerivatives3667'">
@@ -2455,7 +2459,7 @@ table.closedissue {
             become aware will be disclosed, in accordance with RFC 3668.  This
             document may not be modified, and derivative works of it may
             not be created<xsl:if test="/rfc/@iprExtract">, other than to extract
-            <xref target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
+            <xref myns:is-rfc2629="true" target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
           </xsl:when>
           
           <xsl:otherwise>CONFORMANCE UNDEFINED.</xsl:otherwise>
@@ -3419,11 +3423,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.184 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.184 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.185 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.185 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/11/14 18:11:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/11/14 18:11:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/01/14 15:56:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/01/14 15:56:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
