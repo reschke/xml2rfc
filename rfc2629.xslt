@@ -235,7 +235,6 @@
     
     Generate HTML lang tag.
     
-    
     2003-08-10  julian.reschke@greenbytes.de
     
     Map spanx/verb to HTML "samp" element. Fix author name display in
@@ -245,7 +244,8 @@
     2003-08-12  julian.reschke@greenbytes.de
     
     Add DCMI dates, identifiers and abstract. Add PI to suppress DCMI
-    generation.
+    generation.  Do not add TOC entry to Copyright Statement when there is
+    none.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -274,19 +274,19 @@
 
 <!-- optional tocdepth-->
 
-<xsl:param name="unparsedTocDepth"
+<xsl:param name="tocDepth"
   select="substring-after(
       translate(/processing-instruction('rfc')[contains(.,'tocdepth=')], '&quot; ', ''),
         'tocdepth=')"
 />
 
-<xsl:variable name="tocDepth">
+<xsl:variable name="parsedTocDepth">
   <xsl:choose>
-    <xsl:when test="$unparsedTocDepth='1'">1</xsl:when>
-    <xsl:when test="$unparsedTocDepth='2'">2</xsl:when>
-    <xsl:when test="$unparsedTocDepth='3'">3</xsl:when>
-    <xsl:when test="$unparsedTocDepth='4'">4</xsl:when>
-    <xsl:when test="$unparsedTocDepth='5'">5</xsl:when>
+    <xsl:when test="$tocDepth='1'">1</xsl:when>
+    <xsl:when test="$tocDepth='2'">2</xsl:when>
+    <xsl:when test="$tocDepth='3'">3</xsl:when>
+    <xsl:when test="$tocDepth='4'">4</xsl:when>
+    <xsl:when test="$tocDepth='5'">5</xsl:when>
     <xsl:otherwise>99</xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
@@ -1871,7 +1871,7 @@ table.resolution
 
   <!-- handle tocdepth parameter -->
   <xsl:choose>  
-    <xsl:when test="string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.')) &gt;= $tocDepth">
+    <xsl:when test="string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.')) &gt;= $parsedTocDepth">
       <!-- dropped entry -->
     </xsl:when>
     <xsl:otherwise>
@@ -1910,12 +1910,14 @@ table.resolution
   <xsl:apply-templates select="*[not(self::references)]" mode="toc" />
 
   <!-- copyright statements -->
-  <xsl:call-template name="insertTocLine">
-    <xsl:with-param name="number" select="'&#167;'"/>
-    <xsl:with-param name="target" select="concat($anchor-prefix,'.ipr')"/>
-    <xsl:with-param name="title" select="'Intellectual Property and Copyright Statements'"/>
-  </xsl:call-template>
-
+  <xsl:if test="not($private)">
+    <xsl:call-template name="insertTocLine">
+      <xsl:with-param name="number" select="'&#167;'"/>
+      <xsl:with-param name="target" select="concat($anchor-prefix,'.ipr')"/>
+      <xsl:with-param name="title" select="'Intellectual Property and Copyright Statements'"/>
+    </xsl:call-template>
+  </xsl:if>
+  
   <!-- insert the index if index entries exist -->
   <xsl:if test="//iref">
     <xsl:call-template name="insertTocLine">
@@ -2572,11 +2574,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.106 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.106 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.107 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.107 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/12 07:24:20 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/12 07:24:20 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/12 23:52:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/12 23:52:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
