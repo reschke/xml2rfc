@@ -324,7 +324,8 @@
 
     2004-05-08  julian.reschke@greenbytes.de
     
-    Add custom support for generating compound index documents.
+    Add custom support for generating compound index documents. Add anchors
+    for each Index letter.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2008,7 +2009,7 @@ table.closedissue {
             
       <tr>
         <td>
-          <b><xsl:value-of select="translate(substring(@item,1,1),$lcase,$ucase)" /></b>
+          <a name="{$anchor-prefix}.index.{translate(substring(@item,1,1),$lcase,$ucase)}"><b><xsl:value-of select="translate(substring(@item,1,1),$lcase,$ucase)" /></b></a>
         </td>
       </tr>
             
@@ -3045,11 +3046,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.157 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.157 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.158 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.158 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/05/08 09:10:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/08 09:10:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/05/08 17:57:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/08 17:57:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
