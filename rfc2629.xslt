@@ -702,7 +702,7 @@
       <xsl:when test="local-name($node)='figure'">
         figure
         <xsl:for-each select="$node">
-          <xsl:number level="any" count="figure[@title or @anchor]" />
+          <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
@@ -1301,9 +1301,9 @@ ins
 		<br />
 	</ul>
   
-  <xsl:if test="//figure[@title or @anchor]">
+  <xsl:if test="//figure[@title!='' or @anchor!='']">
   	<ul compact="compact" class="toc">
-	  	<xsl:for-each select="//figure[@title or @anchor]">
+	  	<xsl:for-each select="//figure[@title!='' or @anchor!='']">
 			  <b>
           <a href="#rfc.figure.{position()}">Figure <xsl:value-of select="position()"/></a><xsl:if test="@title">: <xsl:value-of select="@title"/></xsl:if>
         </b>
