@@ -1123,15 +1123,10 @@ ins
   <xsl:variable name="backlink">#rfc.iref.<xsl:number level="any" /></xsl:variable>
   &#0160;<a href="{$backlink}">
     <xsl:choose>
-      <xsl:when test="@primary='true'">
-        <b><xsl:call-template name="sectionnumber" /></b>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="sectionnumber" />
-      </xsl:otherwise>
+      <xsl:when test="@primary='true'"><b><xsl:call-template name="sectionnumber" /></b></xsl:when>
+      <xsl:otherwise><xsl:call-template name="sectionnumber" /></xsl:otherwise>
     </xsl:choose>
-  </a>
-  <xsl:if test="position()!=last()">,</xsl:if>
+  </a><xsl:if test="position()!=last()">, </xsl:if>
 </xsl:template>
 
 
