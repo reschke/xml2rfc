@@ -1867,11 +1867,11 @@ table.resolution
       </t>
       <t myns:is-rfc2629="true">
         The list of current Internet-Drafts can be accessed at
-        <eref target='http://www.ietf.org/ietf/1id-abstracts.txt' myns:is-rfc2629="true">http://www.ietf.org/ietf/1id-abstracts.txt</eref>.
+        <eref target='http://www.ietf.org/ietf/1id-abstracts.txt' myns:is-rfc2629="true" />.
       </t>
       <t myns:is-rfc2629="true">
         The list of Internet-Draft Shadow Directories can be accessed at
-        <eref target='http://www.ietf.org/shadow.html' myns:is-rfc2629="true">http://www.ietf.org/shadow.html</eref>.
+        <eref target='http://www.ietf.org/shadow.html' myns:is-rfc2629="true"/>.
       </t>
       <t myns:is-rfc2629="true">
         This Internet-Draft will expire in <xsl:call-template name="expirydate" />.
@@ -2682,11 +2682,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.122 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.122 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.123 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.123 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/08/18 21:41:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/18 21:41:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/08/18 22:04:36 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/08/18 22:04:36 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
