@@ -266,7 +266,7 @@
     2003-10-08  julian.reschke@greenbytes.de
     
     Fix minor issue detecting the same org for the header (caused by IE's
-    non-standard whitespace handling).
+    non-standard whitespace handling). Fix default handling for /rfc/@category.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1915,7 +1915,7 @@ table.resolution {
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
-    <xsl:when test="/rfc/@category='info'">
+    <xsl:when test="/rfc/@category='info' or not(/rfc/@category)">
       <t myns:is-rfc2629="true">
         This memo provides information for the Internet community.
         It does not specify an Internet standard of any kind.
@@ -2682,10 +2682,10 @@ table.resolution {
     <xsl:when test="$xml2rfc-private"/> <!-- private draft, footer not set -->
     <xsl:when test="/rfc/@category='bcp'">Best Current Practice</xsl:when>
     <xsl:when test="/rfc/@category='historic'">Historic</xsl:when>
-    <xsl:when test="/rfc/@category='info'">Informational</xsl:when>
+    <xsl:when test="/rfc/@category='info' or not(/rfc/@category)">Informational</xsl:when>
     <xsl:when test="/rfc/@category='std'">Standards Track</xsl:when>
     <xsl:when test="/rfc/@category='exp'">Experimental</xsl:when>
-    <xsl:otherwise>(category missing or unknown)</xsl:otherwise>
+    <xsl:otherwise>(category unknown)</xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
@@ -2713,11 +2713,11 @@ table.resolution {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.130 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.130 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.131 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.131 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/10/09 18:03:44 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/09 18:03:44 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/10/09 18:09:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/09 18:09:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
