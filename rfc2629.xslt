@@ -149,10 +149,14 @@
     xref code: attempt to uppercase "section" and "appendix" when at the start
     of a sentence.
     
-    2003-02-02  jualian.reschke@greenbytes.de
+    2003-02-02  julian.reschke@greenbytes.de
     
     fixed code for vspace blankLines="0", enhanced display for list with "format" style,
     got rid of HTML blockquote elements, added support for "hangIndent"
+    
+    2003-04-10  julian.reschke@greenbytes.de
+    
+    experimental support for appendix and spanx elements
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -855,7 +859,7 @@
 </xsl:template>
                
                
-<xsl:template match="section">
+<xsl:template match="section|appendix">
 
   <xsl:variable name="sectionNumber">
     <xsl:choose>
@@ -895,6 +899,15 @@
   </xsl:element>
   <xsl:apply-templates select="*[not(self::iref)]" />
 </xsl:template>
+
+<xsl:template match="spanx[@style='emph' or not(@style)]">
+  <em><xsl:apply-templates /></em>
+</xsl:template>
+
+<xsl:template match="spanx[@style='verb']">
+  <i><xsl:apply-templates /></i>
+</xsl:template>
+
 
 <xsl:template match="vspace[not(@blankLines) or @blankLines=0]">
   <br />
@@ -1849,7 +1862,8 @@ ins
     </xsl:when>
     <xsl:otherwise>
       <xsl:choose>
-        <xsl:when test="ancestor::back"><xsl:number count="ed:del|ed:ins|section" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
+        <xsl:when test="ancestor::back"><xsl:number count="ed:del|ed:ins|section|appendix" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
+        <xsl:when test="self::appendix"><xsl:number count="ed:del|ed:ins|appendix" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
         <xsl:otherwise><xsl:number count="ed:del|ed:ins|section" level="multiple"/></xsl:otherwise>
       </xsl:choose>
     </xsl:otherwise>
