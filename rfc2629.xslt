@@ -110,6 +110,10 @@
     2002-04-21  julian.reschke@greenbytes.de
     
     Make numbered list inside numbered lists use alphanumeric numbering.
+    
+    2002-05-05  julian.reschke@greenbytes.de
+    
+    Updated issue/editing support.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1751,7 +1755,7 @@ ins
   <a name="{$anchor-prefix}.issue.{@name}">
    <table style="{$style}"> <!-- align="right" width="50%"> -->
       <tr>
-        <td>
+        <td colspan="3">
           <xsl:choose>
             <xsl:when test="@href">
               <em><a href="{@href}"><xsl:value-of select="@name" /></a></em>
@@ -1760,6 +1764,8 @@ ins
               <em><xsl:value-of select="@name" /></em>
             </xsl:otherwise>
           </xsl:choose>
+          &#0160;
+          (type: <xsl:value-of select="@type"/>, status: <xsl:value-of select="@status"/>)
         </td>
       </tr>
       <xsl:for-each select="ed:item">
@@ -1775,6 +1781,21 @@ ins
           </td>
         </tr>
       </xsl:for-each>
+      <xsl:for-each select="ed:resolution">
+        <tr>
+          <td valign="top">
+            <xsl:if test="@entered-by">
+              <a href="mailto:{@entered-by}?subject={/rfc/@docName}, {../@name}"><i><xsl:value-of select="@entered-by"/></i></a>
+            </xsl:if>
+          </td>
+          <td nowrap="nowrap" valign="top">
+            <xsl:value-of select="@date"/>
+          </td>
+          <td valign="top">
+            <em>Resolution:</em>&#0160;<xsl:copy-of select="node()" />
+          </td>
+        </tr>
+      </xsl:for-each>      
     </table>
   </a>
     
@@ -1790,6 +1811,7 @@ ins
       <xsl:sort select="@name" />
       <tr>
         <td><a href="#{$anchor-prefix}.issue.{@name}"><xsl:value-of select="@name" /></a></td>
+        <td><xsl:value-of select="@type" /></td>
         <td><xsl:value-of select="@status" /></td>
         <td><xsl:value-of select="ed:item[1]/@date" /></td>
         <td><a href="mailto:{ed:item[1]/@entered-by}?subject={/rfc/@docName}, {@name}"><xsl:value-of select="ed:item[1]/@entered-by" /></a></td>
@@ -1841,6 +1863,9 @@ ins
 <xsl:template match="ed:del">
   <del>
     <xsl:copy-of select="@*"/>
+    <xsl:if test="not(@title) and @ed:entered-by and @datetime">
+      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',@ed:entered-by)"/></xsl:attribute>
+    </xsl:if>
     <xsl:apply-templates />
   </del>
 </xsl:template>
@@ -1848,7 +1873,37 @@ ins
 <xsl:template match="ed:ins">
   <ins>
     <xsl:copy-of select="@*"/>
+    <xsl:if test="not(@title) and @ed:entered-by and @datetime">
+      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',@ed:entered-by)"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@ed:resolves">
+      <table style="background-color: khaki; border-width: thin; border-style: solid; border-color: black;" align="right">
+        <tr><td>resolves: <a href="#{$anchor-prefix}.issue.{@ed:resolves}"><xsl:value-of select="@ed:resolves"/></a></td></tr>
+      </table>
+    </xsl:if>
     <xsl:apply-templates />
+  </ins>
+</xsl:template>
+
+<xsl:template match="ed:replace">
+  <del>
+    <xsl:copy-of select="@*"/>
+    <xsl:if test="not(@title) and @ed:entered-by and @datetime">
+      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',@ed:entered-by)"/></xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates select="ed:del/node()" />
+  </del>
+  <ins>
+    <xsl:copy-of select="@*"/>
+    <xsl:if test="not(@title) and @ed:entered-by and @datetime">
+      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',@ed:entered-by)"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@ed:resolves">
+      <table style="background-color: khaki; border-width: thin; border-style: solid; border-color: black;" align="right">
+        <tr><td>resolves: <a href="#{$anchor-prefix}.issue.{@ed:resolves}"><xsl:value-of select="@ed:resolves"/></a></td></tr>
+      </table>
+    </xsl:if>
+    <xsl:apply-templates select="ed:ins/node()" />
   </ins>
 </xsl:template>
 
