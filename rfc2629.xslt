@@ -157,6 +157,11 @@
     2003-04-10  julian.reschke@greenbytes.de
     
     experimental support for appendix and spanx elements
+    
+    2003-04-19  julian.reschke@greenbytes.de
+    
+    fixed counting of list numbers in "format %" styles (one counter
+    per unique format string). Added more spanx styles.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -613,44 +618,29 @@
   </dd>
 </xsl:template>
 
-<xsl:template match="list[starts-with(@style,'format ') and contains(@style,'%d')]/t">
+<xsl:template match="list[starts-with(@style,'format ') and (contains(@style,'%c') or contains(@style,'%d'))]/t">
+  <xsl:variable name="list" select=".." />
   <xsl:variable name="format" select="substring-after(../@style,'format ')" />
   <xsl:variable name="pos">
     <xsl:choose>
-      <xsl:when test="../@startAt">
-        <xsl:value-of select="../@startAt - 1 + position()" />
+      <xsl:when test="$list/@counter">
+        <xsl:number level="any" count="list[@counter=$list/@counter or (not(@counter) and @style=$list/@counter)]/t" />
       </xsl:when>
       <xsl:otherwise>
-        <xsl:number level="any" count="list[starts-with(@style,'format ') and contains(@style,'%d')]/t" />
+        <xsl:number level="any" count="list[@counter=$list/@style or (not(@counter) and @style=$list/@style)]/t" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <tr>
     <td class="top">
-      <xsl:value-of select="substring-before($format,'%d')"/><xsl:number value="$pos" format="1" /><xsl:value-of select="substring-after($format,'%d')"/>
-      &#160;
-    </td>
-    <td class="top">
-      <xsl:apply-templates />
-    </td>
-  </tr>
-</xsl:template>
-
-<xsl:template match="list[starts-with(@style,'format ') and contains(@style,'%c')]/t">
-  <xsl:variable name="format" select="substring-after(../@style,'format ')" />
-  <xsl:variable name="pos">
-    <xsl:choose>
-      <xsl:when test="../@startAt">
-        <xsl:value-of select="../@startAt - 1 + position()" />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:number level="any" count="list[starts-with(@style,'format ') and contains(@style,'%c')]/t" />
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <tr>
-    <td class="top">
-      <xsl:value-of select="substring-before($format,'%c')"/><xsl:number value="$pos" format="A" /><xsl:value-of select="substring-after($format,'%c')"/>
+      <xsl:choose>
+        <xsl:when test="contains($format,'%c')">
+          <xsl:value-of select="substring-before($format,'%c')"/><xsl:number value="$pos" format="A" /><xsl:value-of select="substring-after($format,'%c')"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="substring-before($format,'%d')"/><xsl:number value="$pos" format="1" /><xsl:value-of select="substring-after($format,'%d')"/>
+        </xsl:otherwise>
+      </xsl:choose>
       &#160;
     </td>
     <td class="top">
@@ -905,7 +895,11 @@
 </xsl:template>
 
 <xsl:template match="spanx[@style='verb']">
-  <i><xsl:apply-templates /></i>
+  <tt><xsl:apply-templates /></tt>
+</xsl:template>
+
+<xsl:template match="spanx[@style='strong']">
+  <strong><xsl:apply-templates /></strong>
 </xsl:template>
 
 
@@ -2114,6 +2108,28 @@ ins
       <xsl:for-each select=".."><xsl:call-template name="sectionnumberAndEdits" /></xsl:for-each>
     </xsl:otherwise>
   </xsl:choose>
+</xsl:template>
+
+<!-- experimental table formatting -->
+
+<xsl:template match="ed:table">
+  <table><xsl:apply-templates/></table>
+</xsl:template>
+
+<xsl:template match="ed:tr">
+  <tr><xsl:apply-templates/></tr>
+</xsl:template>
+
+<xsl:template match="ed:th">
+  <th><xsl:apply-templates/></th>
+</xsl:template>
+
+<xsl:template match="ed:td">
+  <td><xsl:apply-templates/></td>
+</xsl:template>
+
+<xsl:template match="ed:td[@align='right']">
+  <td align='right'><xsl:apply-templates/></td>
 </xsl:template>
 
 </xsl:stylesheet>
