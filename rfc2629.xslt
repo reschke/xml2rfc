@@ -318,6 +318,10 @@
     
     Fix references TOC generation when there are no references.
 
+    2004-04-24  julian.reschke@greenbytes.de
+    
+    Fix RFC3667 output, see <http://xml.resource.org/pipermail/xml2rfc/2004-April/001246.html>
+
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1611,8 +1615,8 @@
           pertain to the implementation or use of the technology described in
           this document or the extent to which any license under such rights
           might or might not be available; nor does it represent that it has
-          made any independent effort to identify any such rights. Information
-          on the IETF's procedures with respect to rights in IETF Documents
+          made any independent effort to identify any such rights.  Information
+          on the procedures with respect to rights in RFC documents
           can be found in BCP 78 and BCP 79.
         </t>       
         <t myns:is-rfc2629="true">
@@ -3026,11 +3030,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.155 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.155 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.156 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.156 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/04/14 12:50:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/14 12:50:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/04/24 11:10:27 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/04/24 11:10:27 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
