@@ -291,9 +291,9 @@
     
     When PI compact = 'yes', make most CSS print page breaks conditional.
 
-    2004-02-19  julian.reschke@greenbytes.de
+    2004-02-20  julian.reschke@greenbytes.de
     
-    Partial support for RFC3667 IPR changes (xml2rfc 1.22); see
+    Support for RFC3667 IPR changes (xml2rfc 1.22); see
     <http://lists.xml.resource.org/pipermail/xml2rfc/2004-February/001088.html>.
 -->
 
@@ -1264,11 +1264,14 @@
   <br/><xsl:for-each select="//*[position() &lt;= @blankLines]"> <br /></xsl:for-each>
 </xsl:template>
 
+<!-- keep the root for the case when we process XSLT-inline markup -->
+<xsl:variable name="src" select="/" />
+
 <xsl:template match="xref[node()]">
   <xsl:variable name="target" select="@target" />
-  <xsl:variable name="node" select="//*[@anchor=$target]" />
+  <xsl:variable name="node" select="$src//*[@anchor=$target]" />
   <a href="#{$target}"><xsl:apply-templates /></a>
-  <xsl:for-each select="/rfc/back/references/reference[@anchor=$target]">
+  <xsl:for-each select="$src/rfc/back/references/reference[@anchor=$target]">
     <xsl:text> </xsl:text><xsl:call-template name="referencename">
        <xsl:with-param name="node" select="." />
     </xsl:call-template>
@@ -1278,7 +1281,7 @@
 <xsl:template match="xref[not(node())]">
   <xsl:variable name="context" select="." />
   <xsl:variable name="target" select="@target" />
-  <xsl:variable name="node" select="//*[@anchor=$target]" />
+  <xsl:variable name="node" select="$src//*[@anchor=$target]" />
   <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
     <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
     <span class="error">Undefined target: <xsl:value-of select="@target" /></span>
@@ -1333,7 +1336,7 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:attribute name="title"><xsl:value-of select="normalize-space($node/front/title)" /></xsl:attribute>
-        <xsl:call-template name="referencename"><xsl:with-param name="node" select="/rfc/back/references/reference[@anchor=$target]" /></xsl:call-template></xsl:otherwise>
+        <xsl:call-template name="referencename"><xsl:with-param name="node" select="$src/rfc/back/references/reference[@anchor=$target]" /></xsl:call-template></xsl:otherwise>
     </xsl:choose>
   </a>
 </xsl:template>
@@ -2029,14 +2032,16 @@ table.closedissue {
             and any of which I become aware will be disclosed, in accordance
             with RFC 3667. This document may not be modified, and derivative
             works of it may not be created, except to publish it as an RFC and
-            to translate it into languages other than English.
+            to translate it into languages other than English<xsl:if test="/rfc/@iprExtract">,
+            other than to extract <xref target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
           </xsl:when>
           <xsl:when test="/rfc/@ipr = 'noDerivatives3667'">
             By submitting this Internet-Draft, I certify that any applicable
             patent or other IPR claims of which I am aware have been disclosed,
             and any of which I become aware will be disclosed, in accordance
             with RFC 3667. This document may not be modified, and derivative
-            works of it may not be created.
+            works of it may not be created<xsl:if test="/rfc/@iprExtract">,
+            other than to extract <xref target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>..
           </xsl:when>
           
           <xsl:otherwise>CONFORMANCE UNDEFINED.</xsl:otherwise>
@@ -2918,11 +2923,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.146 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.146 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.147 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.147 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/02/19 23:02:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/02/19 23:02:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/02/20 10:03:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/02/20 10:03:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
