@@ -3036,7 +3036,7 @@ table.closedissue {
         <xsl:otherwise>
           <xsl:value-of select="$anchor-prefix"/>
           <xsl:text>.comment.</xsl:text>
-          <xsl:number count="cref[not(@anchor)]"/>
+          <xsl:number count="cref[not(@anchor)]" level="any"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -3089,7 +3089,7 @@ table.closedissue {
           <xsl:otherwise>
             <xsl:value-of select="$anchor-prefix"/>
             <xsl:text>.comment.</xsl:text>
-            <xsl:number count="cref[not(@anchor)]"/>
+            <xsl:number count="cref[not(@anchor)]" level="any"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
@@ -3185,11 +3185,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.161 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.161 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.162 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.162 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/05/20 22:44:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/20 22:44:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/05/21 11:30:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/05/21 11:30:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
