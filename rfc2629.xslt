@@ -60,7 +60,7 @@
 
     2001-01-29  julian.reschke@greenbytes.de
     
-    Added support for sortrefs PI
+    Added support for sortrefs PI. Added support for figure names.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -181,6 +181,15 @@
       </td></tr></table>
     </xsl:if>
   </xsl:if>
+  <xsl:if test="@ed:parse-xml-after and function-available('myns:parseXml')">
+    <xsl:if test="myns:parseXml(string(.))!=''">
+      <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
+      <tr><td>
+      XML PARSE ERROR:
+      <pre><xsl:value-of select="myns:parseXml(string(.))" /></pre>
+      </td></tr></table>
+    </xsl:if>
+  </xsl:if>
 	<pre><xsl:apply-templates /></pre>
 </xsl:template>
 
@@ -267,7 +276,24 @@
 </xsl:template>
                
 <xsl:template match="figure">
+  <xsl:if test="@anchor!=''">
+    <a name="{@anchor}" />
+  </xsl:if>
+  <xsl:choose>
+    <xsl:when test="@title!='' or @anchor!=''">
+      <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
+      <a name="rfc.figure.{$n}" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="n"><xsl:number level="any" count="figure[not(@title!='' or @anchor!='')]" /></xsl:variable>
+      <a name="rfc.figure.u.{$n}" />
+    </xsl:otherwise>
+  </xsl:choose>
 	<xsl:apply-templates />
+  <xsl:if test="@title!='' or @anchor!=''">
+    <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
+    <p class="figure">Figure <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></p>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="front">
@@ -642,13 +668,13 @@
 
 <xsl:template match="xref[node()]">
 	<xsl:variable name="target" select="@target" />
-    <xsl:variable name="node" select="//*[@anchor=$target]" />
+  <xsl:variable name="node" select="//*[@anchor=$target]" />
 	<a href="#{$target}"><xsl:apply-templates /></a>
-    <xsl:if test="/rfc/back/references/reference[@anchor=$target]">
-    	<sup><small><xsl:call-template name="referencename">
-		   	<xsl:with-param name="node" select="." />
-        </xsl:call-template></small></sup>
-  	</xsl:if>
+  <xsl:if test="/rfc/back/references/reference[@anchor=$target]">
+  	<sup><small><xsl:call-template name="referencename">
+	   	<xsl:with-param name="node" select="." />
+    </xsl:call-template></small></sup>
+  </xsl:if>
 </xsl:template>
                
 <xsl:template match="xref[not(node())]">
@@ -661,6 +687,12 @@
         section
         <xsl:for-each select="$node">
           <xsl:number level="multiple" />
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:when test="local-name($node)='figure'">
+        figure
+        <xsl:for-each select="$node">
+          <xsl:number level="any" count="figure[@title or @anchor]" />
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
@@ -976,6 +1008,12 @@ TD.header
   text-align: right;
   font-family: helvetica, arial, sans-serif
 }
+.figure
+{
+  font-weight: bold;
+  text-align: center;
+  font-size: 9x;
+}
 .filename
 {
 	color: #333333;
@@ -1187,8 +1225,8 @@ ins
 	</xsl:call-template>
 
 	<a name="rfc.toc">
-    	<h1>Table of Contents</h1>
-   	</a>
+    <h1>Table of Contents</h1>
+  </a>
 
 	<ul compact="compact" class="toc">
 		<xsl:for-each select="//section|//references">
@@ -1244,6 +1282,17 @@ ins
   		</b>
 		<br />
 	</ul>
+  
+  <xsl:if test="//figure[@title or @anchor]">
+  	<ul compact="compact" class="toc">
+	  	<xsl:for-each select="//figure[@title or @anchor]">
+			  <b>
+          <a href="#rfc.figure.{position()}">Figure <xsl:value-of select="position()"/></a><xsl:if test="@title">: <xsl:value-of select="@title"/></xsl:if>
+        </b>
+        <br />
+		  </xsl:for-each>
+  	</ul>
+  </xsl:if>
   
   <!-- experimental -->
   <xsl:if test="//ed:issue">
@@ -1301,13 +1350,37 @@ ins
     </xsl:choose>
 </xsl:template>
 
-
-<xsl:template name="sectionnumber" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<xsl:template name="sectionnumber">
 	<xsl:choose>
-    <xsl:when test="ancestor::back"><xsl:number count="xhtml:del|xhtml:ins|section" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
-    <xsl:otherwise><xsl:number count="xhtml:del|xhtml:ins|section" level="multiple"/></xsl:otherwise>
+    <xsl:when test="ancestor::back"><xsl:number count="ed:del|ed:ins|section" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
+    <xsl:otherwise><xsl:number count="ed:del|ed:ins|section" level="multiple"/></xsl:otherwise>
   </xsl:choose>
 </xsl:template>
+
+
+<!--
+<xsl:template name="sectionnumber">
+  <xsl:choose>
+    <xsl:when test="../section">
+      <xsl:variable name="prefix">
+        <xsl:for-each select="..">
+          <xsl:call-template name="sectionnumber" />
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:variable name="postfix">
+        <xsl:number count="section" level="single" />
+      </xsl:variable>
+      <xsl:value-of select="concat($prefix,'.',$postfix)"/>
+    </xsl:when>
+    <xsl:otherwise>
+    	<xsl:choose>
+        <xsl:when test="../back"><xsl:number count="section" level="single" format="A" /></xsl:when>
+        <xsl:otherwise><xsl:number count="section" level="single" format="1"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+-->
 
 <xsl:template name="sectionnumberPara">
 	<!-- get section number of ancestor section element, then add t or figure number -->
