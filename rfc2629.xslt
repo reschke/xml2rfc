@@ -133,6 +133,12 @@
 			<td><a href="tel:{address/phone}"><xsl:value-of select="address/phone" /></a></td>
     </tr>
   </xsl:if>
+	<xsl:if test="address/facsimile">
+    <tr>
+      <td align="right"><b>Fax:&#0160;</b></td>
+			<td><a href="fax:{address/facsimile}"><xsl:value-of select="address/facsimile" /></a></td>
+    </tr>
+  </xsl:if>
 	<xsl:if test="address/email">
     <tr>
       <td align="right"><b>EMail:&#0160;</b></td>
