@@ -282,9 +282,10 @@
     rendering of issue links to use inline-styles. Add colored issue markers to
     issues. 
 
-    2003-12-08  julian.reschke@greenbytes.de
+    2003-12-13  julian.reschke@greenbytes.de
     
-    Fix inheritance of ed:entered-by attribute.
+    Fix inheritance of ed:entered-by attribute. Display note elements inside
+    change tracking as well.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -736,6 +737,8 @@
             
   <xsl:apply-templates select="abstract" />
   <xsl:apply-templates select="note" />
+  <!-- show notes inside change tracking as well -->
+  <xsl:apply-templates select="ed:replace[.//note]" />
     
   <xsl:if test="$xml2rfc-toc='yes'">
     <xsl:apply-templates select="/" mode="toc" />
@@ -2792,11 +2795,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.143 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.143 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.144 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.144 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/12/08 21:34:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/12/08 21:34:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/12/13 14:28:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/12/13 14:28:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
