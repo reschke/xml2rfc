@@ -451,6 +451,7 @@
   </xsl:if>  
   
   <xsl:if test="not($private)">
+  
     <!-- Get status info formatted as per RFC2629-->
     <xsl:variable name="preamble"><xsl:call-template name="insertPreamble" /></xsl:variable>
     
@@ -1293,7 +1294,7 @@ ins
 
 <xsl:template name="insertPreamble">
 
-  <section title="Status of this Memo" xmlns="" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+  <section title="Status of this Memo" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
 
 	<xsl:choose>
     <xsl:when test="/rfc/@ipr">
