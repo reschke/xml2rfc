@@ -262,6 +262,11 @@
     Add workaround for broken pre/ins handling in Mozilla
     (see <http://bugzilla.mozilla.org/show_bug.cgi?id=204401>). Make use
     of cite attribute on ed:replace. CSS cleanup.
+    
+    2003-10-08  julian.reschke@greenbytes.de
+    
+    Fix minor issue detecting the same org for the header (caused by IE's
+    non-standard whitespace handling).
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1388,8 +1393,8 @@
     </xsl:variable>
     <xsl:variable name="orgOfFollowing">
       <xsl:choose>
-        <xsl:when test="following-sibling::node()[1]/organization/@abbrev"><xsl:value-of select="following-sibling::node()[1]/organization/@abbrev" /></xsl:when>
-        <xsl:otherwise><xsl:value-of select="following-sibling::node()/organization" /></xsl:otherwise>
+        <xsl:when test="following-sibling::*[1]/organization/@abbrev"><xsl:value-of select="following-sibling::*[1]/organization/@abbrev" /></xsl:when>
+        <xsl:otherwise><xsl:value-of select="following-sibling::*/organization" /></xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:if test="$org != $orgOfFollowing">
@@ -2708,11 +2713,11 @@ table.resolution {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.129 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.129 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.130 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.130 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/10/06 13:25:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/06 13:25:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/10/09 18:03:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/10/09 18:03:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
