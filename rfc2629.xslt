@@ -74,6 +74,11 @@
     2002-02-15  julian.reschke@greenbytes.de
     
     Support for irefs in sections; support iref @primary=true
+    
+    2002-03-03  julian.reschke@greenbytes.de
+    
+    Moved anchor prefix into a constant. Added sanity checks on user anchor
+    names.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -168,6 +173,9 @@
 <!-- character translation tables -->
 <xsl:variable name="lcase" select="'abcdefghijklmnopqrstuvwxyz'" />
 <xsl:variable name="ucase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />       
+
+<!-- prefix for automatically generated anchors -->
+<xsl:variable name="anchor-prefix" select="'rfc'" />
 
 <!-- Templates for the various elements of rfc2629.dtd -->
               
@@ -320,11 +328,11 @@
   <xsl:choose>
     <xsl:when test="@title!='' or @anchor!=''">
       <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
-      <a name="rfc.figure.{$n}" />
+      <a name="{$anchor-prefix}.figure.{$n}" />
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="n"><xsl:number level="any" count="figure[not(@title!='' or @anchor!='')]" /></xsl:variable>
-      <a name="rfc.figure.u.{$n}" />
+      <a name="{$anchor-prefix}.figure.u.{$n}" />
     </xsl:otherwise>
   </xsl:choose>
 	<xsl:apply-templates />
@@ -421,7 +429,7 @@
 
 
 <xsl:template match="iref">
-	<a><xsl:attribute name="name">rfc.iref.<xsl:number level="any"/></xsl:attribute></a>
+	<a><xsl:attribute name="name"><xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any"/></xsl:attribute></a>
 </xsl:template>
 
 <!-- list templates depend on the list style -->
@@ -602,7 +610,7 @@
     <xsl:with-param name="rule" select="true()" />
   </xsl:call-template>
 	
-  <a name="rfc.references">
+  <a name="{$anchor-prefix}.references">
     <h1>References</h1>
   </a>
 	
@@ -627,7 +635,7 @@
     <xsl:with-param name="rule" select="true()" />
   </xsl:call-template>
 	
-  <a name="rfc.references.{@title}">
+  <a name="{$anchor-prefix}.references.{@title}">
     <h1><xsl:value-of select="@title" /></h1>
   </a>
 	
@@ -655,6 +663,9 @@
       </style>
     </head>
 		<body>
+      <!-- insert diagnostics -->
+      <xsl:call-template name="insertDiagnostics"/>
+    
       <xsl:apply-templates select="front" />
       <xsl:apply-templates select="middle" />
       <xsl:apply-templates select="back" />
@@ -666,11 +677,14 @@
 <xsl:template match="t">
 	<xsl:variable name="paraNumber">
     <xsl:call-template name="sectionnumberPara" />
-   </xsl:variable>
+  </xsl:variable>
     
   <p>
+    <xsl:if test="string-length($paraNumber) &gt; 0">
+      <!--<xsl:attribute name="title"><xsl:value-of select="concat($anchor-prefix,'.section.',$paraNumber)" /></xsl:attribute> -->
+      <a name="{$anchor-prefix}.section.{$paraNumber}" />
+    </xsl:if>
     <xsl:call-template name="editingMark" />
-    <xsl:if test="string-length($paraNumber) &gt; 0"><a name="rfc.section.{$paraNumber}" /></xsl:if>
     <xsl:apply-templates />
   </p>
 </xsl:template>
@@ -703,7 +717,7 @@
     <!-- generate anchors for irefs that are immediate childs of this section -->
     <xsl:apply-templates select="iref"/>
     <xsl:if test="$sectionNumber!=''">
-      <a name="rfc.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
+      <a name="{$anchor-prefix}.section.{$sectionNumber}"><xsl:value-of select="$sectionNumber" /></a>&#0160;
     </xsl:if>
     <xsl:choose>
 	    <xsl:when test="@anchor">
@@ -906,7 +920,7 @@
     <xsl:with-param name="rule" select="true()" />
   </xsl:call-template>
     
-  <a name="rfc.authors">
+  <a name="{$anchor-prefix}.authors">
     <h1>Author's Address<xsl:if test="count(/rfc/front/author) &gt; 1">es</xsl:if></h1>
  	</a>
 
@@ -934,7 +948,7 @@
 
 <xsl:template name="insertCopyright">
 
-  <section title="Full Copyright Statement" anchor="rfc.copyright" myns:unnumbered="unnumbered" xmlns="">
+  <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" xmlns="">
 
 	<t>    
 		Copyright (C) The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
@@ -1120,7 +1134,7 @@ ins
 <!-- generate the index section -->
 
 <xsl:template name="insertSingleIref">
-  <xsl:variable name="backlink">#rfc.iref.<xsl:number level="any" /></xsl:variable>
+  <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" /></xsl:variable>
   &#0160;<a href="{$backlink}">
     <xsl:choose>
       <xsl:when test="@primary='true'"><b><xsl:call-template name="sectionnumber" /></b></xsl:when>
@@ -1137,7 +1151,7 @@ ins
 		<xsl:with-param name="rule" select="true()" />
 	</xsl:call-template> 
 
-	<a name="rfc.index">
+	<a name="{$anchor-prefix}.index">
     <h1>Index</h1>
   </a>
 
@@ -1316,7 +1330,7 @@ ins
    	 <xsl:with-param name="rule" select="true()" />
 	</xsl:call-template>
 
-	<a name="rfc.toc">
+	<a name="{$anchor-prefix}.toc">
     <h1>Table of Contents</h1>
   </a>
 
@@ -1367,7 +1381,7 @@ ins
 	<!-- copyright statements -->
   <xsl:call-template name="insertTocLine">
     <xsl:with-param name="number" select="'&#167;'"/>
-    <xsl:with-param name="target" select="'rfc.copyright'"/>
+    <xsl:with-param name="target" select="concat($anchor-prefix,'.copyright')"/>
     <xsl:with-param name="title" select="'Full Copyright Statement'"/>
   </xsl:call-template>
 
@@ -1375,7 +1389,7 @@ ins
   <xsl:if test="//iref">
     <xsl:call-template name="insertTocLine">
       <xsl:with-param name="number" select="'&#167;'"/>
-      <xsl:with-param name="target" select="'rfc.index'"/>
+      <xsl:with-param name="target" select="concat($anchor-prefix,'.index')"/>
       <xsl:with-param name="title" select="'Index'"/>
     </xsl:call-template>
   </xsl:if>
@@ -1391,7 +1405,7 @@ ins
 
   <xsl:call-template name="insertTocLine">
     <xsl:with-param name="number" select="'&#167;'"/>
-    <xsl:with-param name="target" select="'rfc.authors'"/>
+    <xsl:with-param name="target" select="concat($anchor-prefix,'.authors')"/>
     <xsl:with-param name="title" select="$title"/>
   </xsl:call-template>
 
@@ -1401,8 +1415,8 @@ ins
 
   <xsl:variable name="target">
     <xsl:choose>
-      <xsl:when test="@title">rfc.references.<xsl:value-of select="@title" /></xsl:when>
- 	    <xsl:otherwise>rfc.references</xsl:otherwise>
+      <xsl:when test="@title"><xsl:value-of select="$anchor-prefix"/>.references.<xsl:value-of select="@title" /></xsl:when>
+ 	    <xsl:otherwise><xsl:value-of select="$anchor-prefix"/>.references</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 
@@ -1429,7 +1443,7 @@ ins
   <xsl:variable name="target">
     <xsl:choose>
       <xsl:when test="@anchor"><xsl:value-of select="@anchor" /></xsl:when>
- 	    <xsl:otherwise>rfc.section.<xsl:value-of select="$sectionNumber" /></xsl:otherwise>
+ 	    <xsl:otherwise><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$sectionNumber" /></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 
@@ -1465,7 +1479,7 @@ ins
         <xsl:variable name="title">Figure <xsl:value-of select="position()"/><xsl:if test="@title">: <xsl:value-of select="@title"/></xsl:if>
         </xsl:variable>
         <xsl:call-template name="insertTocLine">
-          <xsl:with-param name="target" select="concat('rfc.figure.',position())" />
+          <xsl:with-param name="target" select="concat($anchor-prefix,'.figure.',position())" />
           <xsl:with-param name="title" select="$title" />
         </xsl:call-template>
 		  </xsl:for-each>
@@ -1493,7 +1507,7 @@ ins
 		<xsl:if test="$includeToc='yes'">
     	<tr>
         	<td bgcolor="#990000" align="center" width="30" height="15">
-           		<a href="#rfc.toc" CLASS="link2"><b class="link2">&#0160;TOC&#0160;</b></a>
+           		<a href="#{$anchor-prefix}.toc" CLASS="link2"><b class="link2">&#0160;TOC&#0160;</b></a>
 			</td>
         </tr>
         </xsl:if>
@@ -1645,7 +1659,7 @@ ins
     </xsl:choose>
   </xsl:variable>
   
-  <a name="rfc.issue.{@name}">
+  <a name="{$anchor-prefix}.issue.{@name}">
    <table style="{$style}"> <!-- align="right" width="50%"> -->
       <tr>
         <td>
@@ -1686,7 +1700,7 @@ ins
       <xsl:sort select="@status" />
       <xsl:sort select="@name" />
       <tr>
-        <td><a href="#rfc.issue.{@name}"><xsl:value-of select="@name" /></a></td>
+        <td><a href="#{$anchor-prefix}.issue.{@name}"><xsl:value-of select="@name" /></a></td>
         <td><xsl:value-of select="@status" /></td>
         <td><xsl:value-of select="ed:item[1]/@date" /></td>
         <td><a href="mailto:{ed:item[1]/@entered-by}?subject={/rfc/@docName}, {@name}"><xsl:value-of select="ed:item[1]/@entered-by" /></a></td>
@@ -1710,6 +1724,27 @@ ins
   <xsl:if test="@cite">
     <xsl:value-of select="concat(' &lt;',@cite,'&gt;')" />
   </xsl:if>
+</xsl:template>
+
+<xsl:template name="insertDiagnostics">
+  
+  <!-- check anchor names -->
+  <xsl:variable name="badAnchors" select="//*[starts-with(@anchor,$anchor-prefix)]" />
+  <xsl:if test="$badAnchors">
+    <p>
+      The following anchor names may collide with internally generated anchors because of their prefix "<xsl:value-of select="$anchor-prefix" />":
+      <xsl:for-each select="$badAnchors">
+        <xsl:value-of select="@anchor"/><xsl:if test="position()!=last()">, </xsl:if>
+      </xsl:for-each>
+    </p>
+    <xsl:message>
+      The following anchor names may collide with internally generated anchors because of their prefix "<xsl:value-of select="$anchor-prefix" />":
+      <xsl:for-each select="$badAnchors">
+        <xsl:value-of select="@anchor"/><xsl:if test="position()!=last()">, </xsl:if>
+      </xsl:for-each>
+    </xsl:message>
+  </xsl:if>
+  
 </xsl:template>
 
 <!-- special change mark support, not supported by RFC2629 yet -->
