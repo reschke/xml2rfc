@@ -375,9 +375,10 @@
 
     Fix internal change track pointers.
     
-    2004-10-23  julian.reschke@greenbytes.de
+    2004-10-31  julian.reschke@greenbytes.de
     
-    Allow change tracking on references (as a whole).
+    Allow change tracking on references (as a whole).  Rewrite artwork handling
+    so that it allows change tracking inside artwork.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -640,12 +641,34 @@
     </xsl:if>
   </xsl:if>
   <pre>
-    <xsl:call-template name="insertInsDelClass" />
-    <!--<xsl:value-of select="." />--><xsl:call-template name="showArtwork">
-    <xsl:with-param name="mode" select="'html'" />
-    <xsl:with-param name="text" select="." />
-    <xsl:with-param name="initial" select="'yes'" />
-  </xsl:call-template></pre>
+    <xsl:apply-templates/>
+  </pre>
+  <xsl:call-template name="check-artwork-width">
+    <xsl:with-param name="content"><xsl:apply-templates/></xsl:with-param>
+  </xsl:call-template>
+</xsl:template>
+
+<xsl:template name="check-artwork-width">
+  <xsl:param name="content"/>
+  <xsl:choose>
+    <xsl:when test="not(contains($content,'&#10;'))">
+      <xsl:if test="string-length($content) > 69">
+        <xsl:message>artwork line too long: <xsl:value-of select="$content"/></xsl:message>
+        <p class="error">artwork line too long: <xsl:value-of select="$content"/></p>
+      </xsl:if>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="start" select="substring-before($content,'&#10;')"/> 
+      <xsl:variable name="end" select="substring-after($content,'&#10;')"/> 
+      <xsl:if test="string-length($start) > 69">
+        <xsl:message>artwork line too long: <xsl:value-of select="$start"/></xsl:message>
+        <p class="error">artwork line too long: <xsl:value-of select="$start"/></p>
+      </xsl:if>
+      <xsl:call-template name="check-artwork-width">
+        <xsl:with-param name="content" select="$end"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="artwork[@src and starts-with(@type,'image/')]">
@@ -1455,7 +1478,7 @@ match="list//t//list[@style='letters']" priority="9">
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="$src//*[@anchor=$target]" />
   <a href="#{$target}"><xsl:apply-templates /></a>
-  <xsl:for-each select="$src/rfc/back/references/reference[@anchor=$target]">
+  <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
     <xsl:text> </xsl:text><xsl:call-template name="referencename">
        <xsl:with-param name="node" select="." />
     </xsl:call-template>
@@ -1520,7 +1543,7 @@ match="list//t//list[@style='letters']" priority="9">
       </xsl:when>
       <xsl:otherwise>
         <xsl:attribute name="title"><xsl:value-of select="normalize-space($node/front/title)" /></xsl:attribute>
-        <xsl:call-template name="referencename"><xsl:with-param name="node" select="$src/rfc/back/references/reference[@anchor=$target]" /></xsl:call-template></xsl:otherwise>
+        <xsl:call-template name="referencename"><xsl:with-param name="node" select="$src/rfc/back/references//reference[@anchor=$target]" /></xsl:call-template></xsl:otherwise>
     </xsl:choose>
   </a>
 </xsl:template>
@@ -2730,102 +2753,6 @@ table.closedissue {
 
 </xsl:template>
 
-<xsl:template name="showArtworkLine">
-  <xsl:param name="line" />
-  <xsl:param name="mode" />
-  
-  <!-- make default indentation of 3 characters configurable -->
-  <xsl:variable name="maxw" select="69" />
-  
-  <xsl:if test="string-length($line) &gt; $maxw">
-    <xsl:message>Artwork exceeds maximum width: <xsl:value-of select="$line" /></xsl:message>
-  </xsl:if>
-  
-  <xsl:choose>
-    <xsl:when test="$mode='html'">
-      <xsl:value-of select="substring($line,0,$maxw+1)" />
-      <xsl:if test="string-length($line) &gt; $maxw">
-        <span class="toowide"><xsl:value-of select="substring($line,$maxw+1)" /></span>
-      </xsl:if>
-      <xsl:text>&#10;</xsl:text>
-    </xsl:when>
-    <xsl:when test="$mode='wordml'">
-      <r xmlns="http://schemas.microsoft.com/office/word/2003/wordml">
-        <t><xsl:value-of select="translate($line,' ','&#160;')"/></t>
-      </r>
-    </xsl:when>
-    <xsl:when test="$mode='nroff'">
-      <xsl:variable name="cline">
-        <xsl:call-template name="replace-substring">
-          <xsl:with-param name="string" select="$line" />
-          <xsl:with-param name="replace" select="'\'" />
-          <xsl:with-param name="by" select="'\\'" />
-        </xsl:call-template>
-      </xsl:variable>
-      <xsl:value-of select="concat($cline,'&#10;')" />
-    </xsl:when>
-    <xsl:otherwise><xsl:value-of select="concat($line,'&#10;')" /></xsl:otherwise>
-  </xsl:choose>
-  
-</xsl:template>
-
-<xsl:template name="showArtwork">
-  <xsl:param name="mode" />
-  <xsl:param name="text" />
-  <xsl:param name="initial" />
-  <xsl:variable name="delim" select="'&#10;'" />
-  <xsl:variable name="first" select="substring-before($text,$delim)" />
-  <xsl:variable name="remainder" select="substring-after($text,$delim)" />
-  
-  <xsl:choose>
-    <xsl:when test="not(contains($text,$delim))">
-      <xsl:call-template name="showArtworkLine">
-        <xsl:with-param name="line" select="$text" />
-        <xsl:with-param name="mode" select="$mode" />
-      </xsl:call-template>
-    </xsl:when>
-    <xsl:otherwise>
-      <!-- suppress empty initial lines -->
-      <xsl:if test="$initial!='yes' or normalize-space($first)!=''">
-        <xsl:call-template name="showArtworkLine">
-          <xsl:with-param name="line" select="$first" />
-          <xsl:with-param name="mode" select="$mode" />
-        </xsl:call-template>
-        <xsl:if test="$mode='wordml' and $remainder!=''">
-          <r xmlns="http://schemas.microsoft.com/office/word/2003/wordml">
-            <br />
-          </r>
-        </xsl:if>
-      </xsl:if>
-      <xsl:if test="$remainder!=''">
-        <xsl:call-template name="showArtwork">
-          <xsl:with-param name="text" select="$remainder" />
-          <xsl:with-param name="mode" select="$mode" />
-        </xsl:call-template>
-      </xsl:if>
-    </xsl:otherwise>
-  </xsl:choose>
-  
-</xsl:template>
-
-
-<!--<xsl:template name="dump">
-  <xsl:param name="text" />
-  <xsl:variable name="c" select="substring($text,1,1)"/>
-  <xsl:choose>
-    <xsl:when test="$c='&#9;'">&amp;#9;</xsl:when>
-    <xsl:when test="$c='&#10;'">&amp;#10;</xsl:when>
-    <xsl:when test="$c='&#13;'">&amp;#13;</xsl:when>
-    <xsl:when test="$c='&amp;'">&amp;amp;</xsl:when>
-    <xsl:otherwise><xsl:value-of select="$c" /></xsl:otherwise>
-  </xsl:choose>
-  <xsl:if test="string-length($text) &gt; 1">
-    <xsl:call-template name="dump">
-      <xsl:with-param name="text" select="substring($text,2)" />
-    </xsl:call-template>
-  </xsl:if>
-</xsl:template>-->
-
 
 <xsl:template name="rfclist">
   <xsl:param name="list" />
@@ -3412,11 +3339,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.179 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.179 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.180 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.180 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2004/10/23 11:43:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/10/23 11:43:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2004/10/31 18:59:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2004/10/31 18:59:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
