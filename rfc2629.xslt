@@ -278,7 +278,9 @@
 
     2003-11-29  julian.reschke@greenbytes.de
     
-    Fix color values for table backgrounds for issue rendering.
+    Fix color values for table backgrounds for issue rendering. Change
+    rendering of issue links to use inline-styles. Add colored issue markers to
+    issues. 
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1755,15 +1757,6 @@ ins {
   color: green;
   text-decoration: underline;
 }
-table.resolution {
-  background-color: khaki;
-  border-width: thin;
-  border-style: solid;
-  border-color: black;
-  margin-left: auto;
-  margin-right: 0;
-  float: right;
-}
 
 table.openissue {
   background-color: khaki;
@@ -1778,6 +1771,30 @@ table.closedissue {
   border-style: solid;
   border-color: gray;
   color: gray; 
+}
+
+.closed-issue {
+  border: solid;
+  border-width: thin;
+  background-color: lime;
+  font-size: small;
+  font-weight: bold;
+}
+
+.open-issue {
+  border: solid;
+  border-width: thin;
+  background-color: red;
+  font-size: small;
+  font-weight: bold;
+}
+
+.editor-issue {
+  border: solid;
+  border-width: thin;
+  background-color: yellow;
+  font-size: small;
+  font-weight: bold;
 }
 
 @media print {
@@ -2366,10 +2383,24 @@ table.closedissue {
     </xsl:choose>
   </xsl:variable>
   
-  <div><a name="{$anchor-prefix}.issue.{@name}" /></div>
   <table summary="issue {@name}" class="{$class}">
     <tr>
       <td colspan="3">
+        <a name="{$anchor-prefix}.issue.{@name}">
+          <xsl:choose>
+            <xsl:when test="@status='closed'">
+              <xsl:attribute name="class">closed-issue</xsl:attribute>
+            </xsl:when>
+            <xsl:when test="@status='editor'">
+              <xsl:attribute name="class">editor-issue</xsl:attribute>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:attribute name="class">open-issue</xsl:attribute>
+            </xsl:otherwise>
+          </xsl:choose>
+          <xsl:text>&#160;i&#160;</xsl:text>
+        </a>
+        <xsl:text>&#160;</xsl:text>
         <xsl:choose>
           <xsl:when test="@href">
             <em><a href="{@href}"><xsl:value-of select="@name" /></a></em>
@@ -2494,6 +2525,7 @@ table.closedissue {
 <xsl:template match="@ed:*" />
 
 <xsl:template match="ed:del">
+  <xsl:call-template name="insert-issue-pointer"/>
   <del>
     <xsl:copy-of select="@*[namespace-uri()='']"/>
     <xsl:if test="not(@title) and ancestor-or-self::*/@ed:entered-by and @datetime">
@@ -2504,31 +2536,43 @@ table.closedissue {
 </xsl:template>
 
 <xsl:template match="ed:ins">
+  <xsl:call-template name="insert-issue-pointer"/>
   <ins>
     <xsl:copy-of select="@*[namespace-uri()='']"/>
     <xsl:if test="not(@title) and ancestor-or-self::*/@ed:entered-by and @datetime">
       <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*/@ed:entered-by)"/></xsl:attribute>
     </xsl:if>
-    <xsl:if test="@ed:resolves">
-      <table class="resolution">
-        <tr><td>resolves: <a href="#{$anchor-prefix}.issue.{@ed:resolves}"><xsl:value-of select="@ed:resolves"/></a></td></tr>
-      </table>
-    </xsl:if>
     <xsl:apply-templates />
   </ins>
 </xsl:template>
 
-<xsl:template match="ed:replace">
+<xsl:template name="insert-issue-pointer">
   <xsl:if test="@ed:resolves">
-    <table class="resolution">
-      <tr><td>resolves: <a href="#{$anchor-prefix}.issue.{@ed:resolves}"><xsl:value-of select="@ed:resolves"/></a></td></tr>
-    </table>
+    <xsl:variable name="resolves" select="@ed:resolves"/>
+    <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
+      <xsl:choose>
+        <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
+          <xsl:attribute name="class">closed-issue</xsl:attribute>
+        </xsl:when>
+        <xsl:when test="//ed:issue[@name=$resolves and @status='editor']">
+          <xsl:attribute name="class">editor-issue</xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="class">open-issue</xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>&#160;i&#160;</xsl:text>
+    </a>
   </xsl:if>
+</xsl:template>
+
+<xsl:template match="ed:replace">
   <xsl:if test="@cite">
-    <table class="resolution">
-      <tr><td>see: <a href="{@cite}"><xsl:value-of select="@cite"/></a></td></tr>
-    </table>
+    <a class="editor-issue" href="{@cite}" target="_blank" title="see {@cite}">
+      <xsl:text>&#160;i&#160;</xsl:text>
+    </a>
   </xsl:if>
+  <xsl:call-template name="insert-issue-pointer"/>
   <xsl:if test="ed:del">
     <del>
       <xsl:copy-of select="@*[namespace-uri()='']"/>
@@ -2724,11 +2768,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.140 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.140 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.141 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.141 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/11/29 15:38:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/29 15:38:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/11/29 19:54:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/11/29 19:54:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
