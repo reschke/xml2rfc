@@ -221,6 +221,10 @@
     2003-07-09  julian.reschke@greenbytes.de
     
     Another fix for DC.Creator meta tag creation based on RFC2731
+
+    2003-07-24  julian.reschke@greenbytes.de
+    
+    Fix namespace name for DC.Creator.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -930,7 +934,7 @@
       <xsl:if test="/rfc/@number">
         <link rel="Alternate" title="Authorative ASCII version" href="http://www.ietf.org/rfc/rfc{/rfc/@number}" />
       </xsl:if>
-      <link rel="schema.DC" href="http://purl.org/dc" />
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
       
       <!-- keywords -->
       <xsl:if test="front/keyword">
@@ -2472,11 +2476,11 @@ table.resolution
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.96 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.96 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.97 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.97 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2003/07/09 21:18:27 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/07/09 21:18:27 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2003/07/24 12:14:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2003/07/24 12:14:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
