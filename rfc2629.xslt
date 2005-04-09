@@ -445,6 +445,10 @@
     2005-04-03  fenner@research.att.com
     
     Add RFC3978-style IPR statement support.
+
+    2005-04-10  julian.reschke@greenbytes.de
+    
+    Cleanup author display.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -849,19 +853,19 @@
       </span>
       <xsl:if test="address/phone">
         <span class="vcardline">
-          <b>Phone:&#0160;</b>
+          <xsl:text>Phone: </xsl:text>
           <a href="tel:{translate(address/phone,' ','')}"><span class="tel"><span class="voice"><xsl:value-of select="address/phone" /></span></span></a>
         </span>
       </xsl:if>
       <xsl:if test="address/facsimile">
         <span class="vcardline">
-          <b>Fax:&#0160;</b>
+          <xsl:text>Fax: </xsl:text>
           <a href="fax:{translate(address/facsimile,' ','')}"><span class="tel"><span class="fax"><xsl:value-of select="address/facsimile" /></span></span></a>
         </span>
       </xsl:if>
       <xsl:if test="address/email">
         <span class="vcardline">
-        <b>EMail:&#0160;</b>
+        <xsl:text>EMail: </xsl:text>
         <a>
           <xsl:if test="$xml2rfc-linkmailto!='no'">
             <xsl:attribute name="href">mailto:<xsl:value-of select="address/email" /></xsl:attribute>
@@ -872,7 +876,7 @@
       </xsl:if>
       <xsl:if test="address/uri">
         <span class="vcardline">
-          <b>URI:&#0160;</b>
+          <xsl:text>URI: </xsl:text>
           <a href="{address/uri}" class="url"><xsl:value-of select="address/uri" /></a>
         </span>
       </xsl:if>
@@ -2308,6 +2312,9 @@ del {
   color: red;
   text-decoration: line-through;
 }
+.fn {
+  font-weight: bold;
+}
 ins {
   color: green;
   text-decoration: underline;
@@ -3658,11 +3665,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.218 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.218 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.219 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.219 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/04/03 17:15:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/04/03 17:15:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/04/09 18:57:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/04/09 18:57:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
