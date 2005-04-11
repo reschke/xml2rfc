@@ -446,9 +446,9 @@
     
     Add RFC3978-style IPR statement support.
 
-    2005-04-10  julian.reschke@greenbytes.de
+    2005-04-11  julian.reschke@greenbytes.de
     
-    Cleanup author display.
+    Cleanup author display. hCard related fixes.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -834,7 +834,7 @@
       </span>
       <span class="adr vcardline">
         <xsl:if test="address/postal/street!=''">
-          <span class="street vcardline">
+          <span class="street Street-Address vcardline">
             <xsl:for-each select="address/postal/street">
               <xsl:value-of select="." />
             </xsl:for-each>
@@ -842,13 +842,13 @@
         </xsl:if>
         <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
           <span class="vcardline">
-            <xsl:if test="address/postal/city"><span class="locality"><xsl:value-of select="address/postal/city" /></span>, </xsl:if>
-            <xsl:if test="address/postal/region"><span class="region"><xsl:value-of select="address/postal/region" /></span>&#160;</xsl:if>
-            <xsl:if test="address/postal/code"><span class="pcode"><xsl:value-of select="address/postal/code" /></span></xsl:if>
+            <xsl:if test="address/postal/city"><span class="Locality"><xsl:value-of select="address/postal/city" /></span>, </xsl:if>
+            <xsl:if test="address/postal/region"><span class="Region"><xsl:value-of select="address/postal/region" /></span>&#160;</xsl:if>
+            <xsl:if test="address/postal/code"><span class="Postal-Code"><xsl:value-of select="address/postal/code" /></span></xsl:if>
           </span>
         </xsl:if>
         <xsl:if test="address/postal/country">
-          <span class="country vcardline"><xsl:value-of select="address/postal/country" /></span>
+          <span class="Country vcardline"><xsl:value-of select="address/postal/country" /></span>
         </xsl:if>
       </span>
       <xsl:if test="address/phone">
@@ -3665,11 +3665,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.219 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.219 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.220 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.220 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/04/09 18:57:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/04/09 18:57:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/04/11 11:37:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/04/11 11:37:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
