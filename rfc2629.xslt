@@ -449,6 +449,10 @@
     2005-04-11  julian.reschke@greenbytes.de
     
     Cleanup author display. hCard related fixes.
+    
+    2005-06-06  julian.reschke@greenbytes.de
+    
+    Minor fixes to allow change tracking in doc title.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1005,9 +1009,8 @@
   </xsl:if>
     
   <p class="title">
-    <br/>
     <!-- main title -->
-    <xsl:value-of select="title"/>
+    <xsl:apply-templates select="title"/>
     <xsl:if test="/rfc/@docName">
       <br/>
       <span class="filename"><xsl:value-of select="/rfc/@docName"/></span>
@@ -1420,7 +1423,9 @@
 
   <html lang="{$lang}">
     <head>
-      <title><xsl:value-of select="front/title" /></title>
+      <title>
+        <xsl:apply-templates select="front/title" mode="get-text-content" />
+      </title>
       <style type="text/css" title="Xml2Rfc (sans serif)">
         <xsl:call-template name="insertCss" />
       </style>
@@ -1549,6 +1554,10 @@
     <xsl:apply-templates select="following-sibling::node()[1]" mode="t-content2" />
   </xsl:if>
 </xsl:template>               
+
+<xsl:template match="title">
+  <xsl:apply-templates />
+</xsl:template>
 
 <xsl:template name="insertTitle">
   <xsl:choose>
@@ -2287,6 +2296,7 @@ li.indline1 {
   line-height: 18pt;
   font-weight: bold;
   text-align: center;
+  margin-top: 36pt;
 }
 .figure {
   font-weight: bold;
@@ -3310,14 +3320,10 @@ table.closedissue {
     <xsl:variable name="resolves" select="."/>
     <!-- need the right context node for proper numbering -->
     <xsl:variable name="count"><xsl:for-each select=".."><xsl:number level="any" count="*[@ed:resolves=$resolves or ed:resolves=$resolves]" /></xsl:for-each></xsl:variable>
-    <a>
-      <xsl:attribute name="name">
-        <xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" />
-      </xsl:attribute>
-    </a>
+    <xsl:variable name="id"><xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" /></xsl:variable>
     <xsl:choose>
-      <xsl:when test="not(ancestor::t)">
-        <div style="float: left;">
+      <xsl:when test="not(ancestor::t) and not(ancestor::title)">
+        <div style="float: left;" id="{$id}">
           <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
             <xsl:choose>
               <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
@@ -3336,7 +3342,7 @@ table.closedissue {
         </div>
       </xsl:when>
       <xsl:otherwise>
-        <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
+        <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}" id="{$id}">
           <xsl:choose>
             <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
               <xsl:attribute name="class">closed-issue noprint</xsl:attribute>
@@ -3647,7 +3653,7 @@ table.closedissue {
       <xsl:value-of select="/rfc/front/title/@abbrev" />
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="/rfc/front/title" />
+      <xsl:apply-templates select="/rfc/front/title" mode="get-text-content" />
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -3665,11 +3671,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.220 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.220 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.221 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.221 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/04/11 11:37:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/04/11 11:37:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/05/06 12:00:06 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/05/06 12:00:06 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -3752,6 +3758,19 @@ table.closedissue {
   <xsl:if test="$xml2rfc-compact!='yes'">
     <hr class="noprint" />
   </xsl:if>
+</xsl:template>
+
+<!-- get text content from marked-up text -->
+
+<xsl:template match="text()" mode="get-text-content">
+  <xsl:value-of select="."/>
+</xsl:template>
+
+<xsl:template match="*" mode="get-text-content">
+  <xsl:apply-templates mode="get-text-content"/>
+</xsl:template>
+
+<xsl:template match="ed:del" mode="get-text-content">
 </xsl:template>
 
 </xsl:stylesheet>
