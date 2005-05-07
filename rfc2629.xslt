@@ -450,9 +450,10 @@
     
     Cleanup author display. hCard related fixes.
     
-    2005-06-06  julian.reschke@greenbytes.de
+    2005-06-07  julian.reschke@greenbytes.de
     
-    Minor fixes to allow change tracking in doc title.
+    Minor fixes to allow change tracking in doc title.  Add experimental 
+    support for table border styles. CSS cleanup.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2208,6 +2209,37 @@ pre {
 table {
   margin-left: 2em;
 }
+<xsl:if test="//texttable">
+table.tt {
+  vertical-align: top;
+}
+table.full {
+  border-style: outset;
+  border-width: 1px;
+}
+table.headers {
+  border-style: outset;
+  border-width: 1px;
+}
+table.tt td {
+  vertical-align: top;
+}
+table.full td {
+  border-style: inset;
+  border-width: 1px;
+}
+table.tt th {
+  vertical-align: top;
+}
+table.full th {
+  border-style: inset;
+  border-width: 1px;
+}
+table.headers th {
+  border-style: none none inset none;
+  border-width: 1px;
+}
+</xsl:if>
 table.header {
   width: 95%;
   font-size: 10pt;
@@ -2279,16 +2311,14 @@ li.indline1 {
 .comment {
   background-color: yellow;
 }
+<xsl:if test="$xml2rfc-editing='yes'">
 .editingmark {
   background-color: khaki;
 }
+</xsl:if>
 .error {
   font-size: 14pt;
   background-color: red;
-}
-.toowide {
-  color: red;
-  font-weight: bold;
 }
 .title {
   color: #990000;
@@ -2314,6 +2344,7 @@ li.indline1 {
   font-size: 14pt;
   background-color: yellow;
 }
+<xsl:if test="//ed:del|//ed:replace|//ed:ins">
 del {
   color: red;
   text-decoration: line-through;
@@ -2321,9 +2352,6 @@ del {
 .del {
   color: red;
   text-decoration: line-through;
-}
-.fn {
-  font-weight: bold;
 }
 ins {
   color: green;
@@ -2333,24 +2361,21 @@ ins {
   color: green;
   text-decoration: underline;
 }
-.pn {
-  position: absolute;
-  color: white;
-}
-.pn:hover {
-  color: #C8A8FF;
+</xsl:if>
+.fn {
+  font-weight: bold;
 }
 .vcardline {
   display: block;
 }
 
+<xsl:if test="//ed:issue">
 table.openissue {
   background-color: khaki;
   border-width: thin;
   border-style: solid;
   border-color: black;
 }
-
 table.closedissue {
   background-color: white;
   border-width: thin;
@@ -2358,7 +2383,6 @@ table.closedissue {
   border-color: gray;
   color: gray; 
 }
-
 .closed-issue {
   border: solid;
   border-width: thin;
@@ -2366,7 +2390,6 @@ table.closedissue {
   font-size: smaller;
   font-weight: bold;
 }
-
 .open-issue {
   border: solid;
   border-width: thin;
@@ -2374,7 +2397,6 @@ table.closedissue {
   font-size: smaller;
   font-weight: bold;
 }
-
 .editor-issue {
   border: solid;
   border-width: thin;
@@ -2382,6 +2404,7 @@ table.closedissue {
   font-size: smaller;
   font-weight: bold;
 }
+</xsl:if>
 
 @media print {
   .noprint {
@@ -3448,7 +3471,16 @@ table.closedissue {
 
 <xsl:template match="texttable">
   <xsl:apply-templates select="preamble" />
-  <table summary="{preamble}" border="1" cellpadding="3" cellspacing="0">
+  <xsl:variable name="style">
+    <xsl:text>tt </xsl:text>
+    <xsl:choose>
+      <xsl:when test="@style!=''">
+        <xsl:value-of select="@style"/>
+      </xsl:when>
+      <xsl:otherwise>full</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <table summary="{preamble}" class="{$style}" cellpadding="3" cellspacing="0">
     <thead>
       <tr>
         <xsl:apply-templates select="ttcol" />
@@ -3459,14 +3491,14 @@ table.closedissue {
       <xsl:for-each select="c[(position() mod $columns) = 1]">
         <tr>
           <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
-            <td class="top">
+            <td>
               <xsl:variable name="pos" select="position()" />
               <xsl:variable name="col" select="../ttcol[position() = $pos]" />
               <xsl:if test="$col/@align">
                 <xsl:attribute name="style">text-align: <xsl:value-of select="$col/@align" />;</xsl:attribute>
               </xsl:if>
               <xsl:apply-templates select="node()" />
-              <xsl:text>&#0160;</xsl:text>
+              <xsl:text>&#160;</xsl:text>
             </td>
           </xsl:for-each>
         </tr>
@@ -3477,7 +3509,7 @@ table.closedissue {
 </xsl:template>
 
 <xsl:template match="ttcol">
-  <th valign="top">
+  <th>
     <xsl:variable name="width">
       <xsl:if test="@width">width: <xsl:value-of select="@width" />; </xsl:if>
     </xsl:variable>
@@ -3671,11 +3703,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.221 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.221 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.222 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.222 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/05/06 12:00:06 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/05/06 12:00:06 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/05/07 13:02:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/05/07 13:02:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
