@@ -450,7 +450,7 @@
     
     Cleanup author display. hCard related fixes.
     
-    2005-06-07  julian.reschke@greenbytes.de
+    2005-05-07  julian.reschke@greenbytes.de
     
     Minor fixes to allow change tracking in doc title.  Add experimental 
     support for table border styles. CSS cleanup.
@@ -3703,11 +3703,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.222 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.222 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.223 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.223 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/05/07 13:02:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/05/07 13:02:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/05/12 07:30:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/05/12 07:30:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
