@@ -454,6 +454,10 @@
     
     Minor fixes to allow change tracking in doc title.  Add experimental 
     support for table border styles. CSS cleanup.
+    
+    2005-06-18  julian.reschke@greenbytes.de
+    
+    Implement missing support for references to texttables.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -954,16 +958,10 @@
   <xsl:if test="@anchor!=''">
     <div id="{@anchor}"/>
   </xsl:if>
-  <xsl:choose>
-    <xsl:when test="@title!='' or @anchor!=''">
-      <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
-      <div id="{$anchor-prefix}.figure.{$n}" />
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:variable name="n"><xsl:number level="any" count="figure[not(@title!='' or @anchor!='')]" /></xsl:variable>
-      <div id="{$anchor-prefix}.figure.u.{$n}" />
-    </xsl:otherwise>
-  </xsl:choose>
+  <xsl:variable name="anch">
+    <xsl:call-template name="get-figure-anchor"/>
+  </xsl:variable>
+  <div id="{$anch}" />
   <xsl:apply-templates />
   <xsl:if test="@title!='' or @anchor!=''">
     <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
@@ -1753,6 +1751,24 @@
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:when test="local-name($node)='texttable'">
+        <xsl:variable name="tabcnt">
+          <xsl:for-each select="$node">
+            <xsl:number level="any" count="texttable[@title!='' or @anchor!='']" />
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="@format='counter'">
+            <xsl:value-of select="$tabcnt" />
+          </xsl:when>
+          <xsl:when test="@format='title'">
+            <xsl:value-of select="$node/@title" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="normalize-space(concat('Table&#160;',$tabcnt))"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -3470,42 +3486,58 @@ table.closedissue {
 <!-- table formatting -->
 
 <xsl:template match="texttable">
-  <xsl:apply-templates select="preamble" />
-  <xsl:variable name="style">
-    <xsl:text>tt </xsl:text>
-    <xsl:choose>
-      <xsl:when test="@style!=''">
-        <xsl:value-of select="@style"/>
-      </xsl:when>
-      <xsl:otherwise>full</xsl:otherwise>
-    </xsl:choose>
+
+  <xsl:variable name="anch">
+    <xsl:call-template name="get-table-anchor"/>
   </xsl:variable>
-  <table summary="{preamble}" class="{$style}" cellpadding="3" cellspacing="0">
-    <thead>
-      <tr>
-        <xsl:apply-templates select="ttcol" />
-      </tr>
-    </thead>
-    <tbody>
-      <xsl:variable name="columns" select="count(ttcol)" />
-      <xsl:for-each select="c[(position() mod $columns) = 1]">
+
+  <div id="{$anch}">
+    <xsl:if test="@anchor!=''">
+      <div id="{@anchor}"/>
+    </xsl:if>
+    <xsl:apply-templates select="preamble" />
+    <xsl:variable name="style">
+      <xsl:text>tt </xsl:text>
+      <xsl:choose>
+        <xsl:when test="@style!=''">
+          <xsl:value-of select="@style"/>
+        </xsl:when>
+        <xsl:otherwise>full</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <table summary="{preamble}" class="{$style}" cellpadding="3" cellspacing="0">
+      <thead>
         <tr>
-          <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
-            <td>
-              <xsl:variable name="pos" select="position()" />
-              <xsl:variable name="col" select="../ttcol[position() = $pos]" />
-              <xsl:if test="$col/@align">
-                <xsl:attribute name="style">text-align: <xsl:value-of select="$col/@align" />;</xsl:attribute>
-              </xsl:if>
-              <xsl:apply-templates select="node()" />
-              <xsl:text>&#160;</xsl:text>
-            </td>
-          </xsl:for-each>
+          <xsl:apply-templates select="ttcol" />
         </tr>
-      </xsl:for-each>
-    </tbody>
-  </table>
-  <xsl:apply-templates select="postamble" />
+      </thead>
+      <tbody>
+        <xsl:variable name="columns" select="count(ttcol)" />
+        <xsl:for-each select="c[(position() mod $columns) = 1]">
+          <tr>
+            <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
+              <td>
+                <xsl:variable name="pos" select="position()" />
+                <xsl:variable name="col" select="../ttcol[position() = $pos]" />
+                <xsl:if test="$col/@align">
+                  <xsl:attribute name="style">text-align: <xsl:value-of select="$col/@align" />;</xsl:attribute>
+                </xsl:if>
+                <xsl:apply-templates select="node()" />
+                <xsl:text>&#160;</xsl:text>
+              </td>
+            </xsl:for-each>
+          </tr>
+        </xsl:for-each>
+      </tbody>
+    </table>
+    <xsl:apply-templates select="postamble" />
+
+    <xsl:if test="@title!='' or @anchor!=''">
+      <xsl:variable name="n"><xsl:number level="any" count="texttable[@title!='' or @anchor!='']" /></xsl:variable>
+      <p class="figure">Table <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></p>
+    </xsl:if>
+  </div>
+  
 </xsl:template>
 
 <xsl:template match="ttcol">
@@ -3703,11 +3735,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.223 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.223 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.224 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.224 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/05/12 07:30:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/05/12 07:30:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/06/18 07:59:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/06/18 07:59:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -3780,6 +3812,34 @@ table.closedissue {
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="get-table-anchor">
+  <xsl:value-of select="$anchor-prefix"/>
+  <xsl:text>.table.</xsl:text>
+  <xsl:choose>
+    <xsl:when test="@title!='' or @anchor!=''">
+      <xsl:number level="any" count="texttable[@title!='' or @anchor!='']" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>u.</xsl:text>
+      <xsl:number level="any" count="texttable[not(@title!='' or @anchor!='')]" />
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-figure-anchor">
+  <xsl:value-of select="$anchor-prefix"/>
+  <xsl:text>.figure.</xsl:text>
+  <xsl:choose>
+    <xsl:when test="@title!='' or @anchor!=''">
+      <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>u.</xsl:text>
+      <xsl:number level="any" count="figure[not(@title!='' or @anchor!='')]" />
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="insert-conditional-pagebreak">
   <xsl:if test="$xml2rfc-compact!='yes'">
     <xsl:attribute name="class">np</xsl:attribute>
@@ -3804,5 +3864,6 @@ table.closedissue {
 
 <xsl:template match="ed:del" mode="get-text-content">
 </xsl:template>
+
 
 </xsl:stylesheet>
