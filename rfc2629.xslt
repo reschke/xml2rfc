@@ -458,6 +458,11 @@
     2005-06-18  julian.reschke@greenbytes.de
     
     Implement missing support for references to texttables.
+
+    2005-09-25  julian.reschke@greenbytes.de
+    
+    Use (-moz-)column-count when printing the index.
+
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2455,6 +2460,11 @@ table.closedissue {
   a.iref {
     content: target-counter(attr(href), page);
   }
+  
+  .print2col {
+    column-count: 2;
+    -moz-column-count: 2;
+  }
 }
 
 @page {
@@ -2560,6 +2570,7 @@ table.closedissue {
     </xsl:for-each>
   </p>
 
+  <div class="print2col">
   <ul class="ind">
   
     <xsl:for-each select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]">
@@ -2638,7 +2649,8 @@ table.closedissue {
       </li>
     </xsl:for-each>
   </ul>
-
+  </div>
+  
 </xsl:template>
 
 
@@ -3735,11 +3747,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.224 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.224 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.225 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.225 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/06/18 07:59:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/06/18 07:59:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/09/25 18:28:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/09/25 18:28:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
