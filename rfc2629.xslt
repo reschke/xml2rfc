@@ -466,6 +466,11 @@
     2005-10-04  julian.reschke@greenbytes.de
     
     Report missing element templates with xsl:message.
+    
+    2005-10-15  julian.reschke@greenbytes.de
+    
+    Process t/@anchor.
+
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -1133,18 +1138,21 @@
 
 <xsl:template match="list[@style='empty' or not(@style)]/t">
   <dd style="margin-top: .5em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:apply-templates />
   </dd>
 </xsl:template>
 
 <xsl:template match="list[@style='numbers' or @style='symbols' or @style='letters']/t">
   <li>
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:apply-templates />
   </li>
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']/t">
   <dt style="margin-top: .5em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:value-of select="@hangText" />
   </dt>
   <dd>
@@ -1170,6 +1178,7 @@
     </xsl:choose>
   </xsl:variable>
   <dt>
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:choose>
       <xsl:when test="contains($format,'%c')">
         <xsl:value-of select="substring-before($format,'%c')"/><xsl:number value="$pos" format="a" /><xsl:value-of select="substring-after($format,'%c')"/>
@@ -1518,7 +1527,14 @@
 
 
 <xsl:template match="t">
-  <xsl:apply-templates mode="t-content" select="node()[1]" />
+  <xsl:choose>
+    <xsl:when test="@anchor">
+      <span id="{@anchor}"><xsl:apply-templates mode="t-content" select="node()[1]" /></span>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates mode="t-content" select="node()[1]" />
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- for t-content, dispatch to default templates if it's block-level content -->
@@ -3751,11 +3767,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.226 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.226 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.227 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.227 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/10/04 08:24:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/10/04 08:24:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/10/15 16:40:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/10/15 16:40:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
