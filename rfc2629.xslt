@@ -470,6 +470,11 @@
     2005-10-15  julian.reschke@greenbytes.de
     
     Process t/@anchor.
+    
+    2005-10-23  julian.reschke@greenbytes.de
+    
+    More workarounds for Mozilla's broken del/ins handling (this time for
+    figures).
 
 -->
 
@@ -779,6 +784,7 @@
     <xsl:when test="@align='right'">
       <div style="display:table; margin-left: auto; margin-right: 0pt; width: 0pt;">
         <pre style="margin-left: 0em;">
+          <xsl:call-template name="insertInsDelClass"/>
           <xsl:copy-of select="$display"/>
         </pre>          
       </div>
@@ -786,12 +792,14 @@
     <xsl:when test="@align='center'">
       <div style="display:table; margin-left: auto; margin-right: auto; width: 0pt;">
         <pre style="margin-left: 0em;">
+          <xsl:call-template name="insertInsDelClass"/>
           <xsl:copy-of select="$display"/>
         </pre>          
       </div>
     </xsl:when>
     <xsl:otherwise>
       <pre>
+        <xsl:call-template name="insertInsDelClass"/>
         <xsl:copy-of select="$display"/>
       </pre>
     </xsl:otherwise>
@@ -1206,6 +1214,7 @@
 
 <xsl:template match="postamble">
   <p>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:call-template name="editingMark" />
     <xsl:apply-templates />
   </p>
@@ -1213,6 +1222,7 @@
 
 <xsl:template match="preamble">
   <p>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:call-template name="editingMark" />
     <xsl:apply-templates />
   </p>
@@ -3767,11 +3777,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.227 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.227 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.228 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.228 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/10/15 16:40:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/10/15 16:40:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/10/23 14:29:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/10/23 14:29:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
