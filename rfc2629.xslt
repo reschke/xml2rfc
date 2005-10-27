@@ -475,6 +475,10 @@
     
     More workarounds for Mozilla's broken del/ins handling (this time for
     figures).
+    
+    2005-10-27  julian.reschke@greenbytes.de
+    
+    lowercase hCard class names
 
 -->
 
@@ -848,14 +852,14 @@
         </xsl:if>
         <!-- components of name (hidden from display -->
         <span class="n" style="display: none">
-          <span class="Family-Name"><xsl:value-of select="@surname"/></span>
+          <span class="family-name"><xsl:value-of select="@surname"/></span>
           <!-- given-name family-name -->
           <xsl:if test="@surname=substring(@fullname,1 + string-length(@fullname) - string-length(@surname))">
-            <span class="Given-Name"><xsl:value-of select="normalize-space(substring(@fullname,1,string-length(@fullname) - string-length(@surname)))"/></span>
+            <span class="given-name"><xsl:value-of select="normalize-space(substring(@fullname,1,string-length(@fullname) - string-length(@surname)))"/></span>
           </xsl:if>
           <!-- family-name given-name -->
           <xsl:if test="starts-with(@fullname,@surname)">
-            <span class="Given-Name"><xsl:value-of select="normalize-space(substring-after(@fullname,@surname))"/></span>
+            <span class="given-name"><xsl:value-of select="normalize-space(substring-after(@fullname,@surname))"/></span>
           </xsl:if>
         </span>
       </span>
@@ -864,7 +868,7 @@
       </span>
       <span class="adr vcardline">
         <xsl:if test="address/postal/street!=''">
-          <span class="street Street-Address vcardline">
+          <span class="street street-address vcardline">
             <xsl:for-each select="address/postal/street">
               <xsl:value-of select="." />
             </xsl:for-each>
@@ -872,13 +876,13 @@
         </xsl:if>
         <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
           <span class="vcardline">
-            <xsl:if test="address/postal/city"><span class="Locality"><xsl:value-of select="address/postal/city" /></span>, </xsl:if>
-            <xsl:if test="address/postal/region"><span class="Region"><xsl:value-of select="address/postal/region" /></span>&#160;</xsl:if>
-            <xsl:if test="address/postal/code"><span class="Postal-Code"><xsl:value-of select="address/postal/code" /></span></xsl:if>
+            <xsl:if test="address/postal/city"><span class="locality"><xsl:value-of select="address/postal/city" /></span>, </xsl:if>
+            <xsl:if test="address/postal/region"><span class="region"><xsl:value-of select="address/postal/region" /></span>&#160;</xsl:if>
+            <xsl:if test="address/postal/code"><span class="postal-code"><xsl:value-of select="address/postal/code" /></span></xsl:if>
           </span>
         </xsl:if>
         <xsl:if test="address/postal/country">
-          <span class="Country vcardline"><xsl:value-of select="address/postal/country" /></span>
+          <span class="country-name vcardline"><xsl:value-of select="address/postal/country" /></span>
         </xsl:if>
       </span>
       <xsl:if test="address/phone">
@@ -3777,11 +3781,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.228 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.228 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.229 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.229 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/10/23 14:29:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/10/23 14:29:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/10/27 16:43:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/10/27 16:43:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
