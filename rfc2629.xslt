@@ -491,6 +491,10 @@
     2005-12-12  julian.reschke@greenbytes.de
     
     Fix some validity problems when change tracking occured inside lists.
+    
+    2005-12-18  julian.reschke@greenbytes.de
+    
+    Add change tracking inside the index.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -2601,6 +2605,7 @@ table.closedissue {
       </xsl:variable>
       <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" /></xsl:variable>
       <a class="iref" href="{$backlink}">
+        <xsl:call-template name="insertInsDelClass"/>
         <xsl:choose>
           <xsl:when test="@primary='true'"><b><xsl:value-of select="$n"/></b></xsl:when>
           <xsl:otherwise><xsl:value-of select="$n"/></xsl:otherwise>
@@ -3824,11 +3829,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.232 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.232 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.233 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.233 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/12/12 18:05:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/12/12 18:05:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/12/18 20:22:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/12/18 20:22:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
