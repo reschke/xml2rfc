@@ -2003,6 +2003,11 @@ table.closedissue {
   border-color: gray;
   color: gray; 
 }
+.bg-issue {
+  border: solid;
+  border-width: 1px;
+  font-size: 7pt;
+}
 .closed-issue {
   border: solid;
   border-width: thin;
@@ -2971,10 +2976,14 @@ table.closedissue {
     <xsl:variable name="resolves" select="."/>
     <!-- need the right context node for proper numbering -->
     <xsl:variable name="count"><xsl:for-each select=".."><xsl:number level="any" count="*[@ed:resolves=$resolves or ed:resolves=$resolves]" /></xsl:for-each></xsl:variable>
+    <xsl:variable name="total" select="count(//*[@ed:resolves=$resolves or ed:resolves=$resolves])" />
     <xsl:variable name="id"><xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" /></xsl:variable>
     <xsl:choose>
       <xsl:when test="not(ancestor::t) and not(ancestor::title)">
         <div style="float: left;" id="{$id}">
+          <xsl:if test="$count > 1">
+            <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count - 1}">&#x2191;</a>
+          </xsl:if>
           <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
             <xsl:choose>
               <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
@@ -2989,11 +2998,17 @@ table.closedissue {
             </xsl:choose>
             <xsl:text>&#160;I&#160;</xsl:text>
           </a>
+          <xsl:if test="$count &lt; $total">
+            <a class="bg-issue" title="next change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count + 1}">&#x2193;</a>
+          </xsl:if>
           <xsl:text>&#160;</xsl:text>
         </div>
       </xsl:when>
       <xsl:otherwise>
-        <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}" id="{$id}">
+        <xsl:if test="$count > 1">
+          <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count - 1}">&#x2191;</a>
+        </xsl:if>
+        <a title="resolves: {$resolves}" id="{$id}" href="#{$anchor-prefix}.issue.{$resolves}">
           <xsl:choose>
             <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
               <xsl:attribute name="class">closed-issue noprint</xsl:attribute>
@@ -3007,6 +3022,9 @@ table.closedissue {
           </xsl:choose>
           <xsl:text>&#160;I&#160;</xsl:text>
         </a>
+        <xsl:if test="$count &lt; $total">
+          <a class="bg-issue" title="next change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count + 1}">&#x2193;</a>
+        </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
@@ -3361,11 +3379,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.234 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.234 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.235 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.235 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/01/01 18:50:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/01/01 18:50:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/02/04 11:01:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/02/04 11:01:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
