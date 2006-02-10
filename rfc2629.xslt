@@ -292,10 +292,19 @@
 
 <msxsl:script language="JScript" implements-prefix="myns">
   function parseXml(str) {
-    var doc = new ActiveXObject ("MSXML2.DOMDocument");
-    doc.async = false;
-    if (doc.loadXML (str)) return "";
-    return doc.parseError.reason + "\n" + doc.parseError.srcText + " (" + doc.parseError.line + "/" + doc.parseError.linepos + ")";
+    try {
+      var doc = new ActiveXObject("MSXML2.DOMDocument");
+      doc.async = false;
+      if (doc.loadXML(str)) {
+        return "";
+      }
+      else {
+        return doc.parseError.reason + "\n" + doc.parseError.srcText + " (" + doc.parseError.line + "/" + doc.parseError.linepos + ")";
+      }
+    }
+    catch(e) {
+      return "";
+    }
   }
 </msxsl:script>
 
@@ -3379,11 +3388,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.235 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.235 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.236 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.236 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/02/04 11:01:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/02/04 11:01:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/02/10 14:58:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/02/10 14:58:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
