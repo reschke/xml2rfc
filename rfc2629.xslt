@@ -1425,8 +1425,7 @@
     <myns:item>Network Working Group</myns:item>
     <myns:item>
        <xsl:choose>
-        <xsl:when test="/rfc/@ipr and $mode='nroff'">Internet Draft</xsl:when>
-        <xsl:when test="/rfc/@ipr">INTERNET DRAFT</xsl:when>
+        <xsl:when test="/rfc/@ipr">Internet Draft</xsl:when>
         <xsl:otherwise>Request for Comments: <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
       </xsl:choose>
     </myns:item>
@@ -1465,7 +1464,14 @@
     </xsl:if>
     <xsl:if test="$mode!='nroff'">
       <myns:item>
-        <xsl:text>Category: </xsl:text>
+        <xsl:choose>
+          <xsl:when test="/rfc/@number">
+            <xsl:text>Category: </xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>Intended status: </xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:call-template name="get-category-long" />
       </myns:item>
     </xsl:if>
@@ -3392,11 +3398,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.237 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.237 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.238 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.238 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/02/11 13:50:31 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/02/11 13:50:31 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/02/25 16:13:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/02/25 16:13:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
