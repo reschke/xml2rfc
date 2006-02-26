@@ -2794,6 +2794,24 @@ table.closedissue {
   </xsl:if>
 </xsl:template>
 
+<!-- experimental internal ref support -->
+<xsl:template match="ed:ref">
+  <xsl:variable name="val" select="."/>
+  <xsl:variable name="target" select="//*[@anchor and ed:anchor-alias/@value=$val]"/>
+  <xsl:choose>
+    <xsl:when test="$target">
+      <a href="#{$target/@anchor}"><xsl:value-of select="."/></a>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:message>WARNING: internal link target for '<xsl:value-of select="."/>' does not exist.</xsl:message>
+      <xsl:value-of select="."/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- Nothing to do here -->
+<xsl:template match="ed:anchor-alias" />
+
 <!-- experimental annotation support -->
 
 <xsl:template match="ed:issue">
@@ -3398,11 +3416,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.238 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.238 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.239 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.239 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/02/25 16:13:44 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/02/25 16:13:44 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/02/26 16:07:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/02/26 16:07:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
