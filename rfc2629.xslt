@@ -1617,7 +1617,65 @@
 
 <xsl:template name="insertCopyright" xmlns="">
 
-  <section title="Intellectual Property Statement" anchor="{$anchor-prefix}.ipr" myns:unnumbered="unnumbered" myns:is-rfc2629="true">
+  <xsl:choose>
+    <xsl:when test="$ipr-rfc3667">
+      <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
+        <t myns:is-rfc2629="true">
+          Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).
+        </t>
+        <t myns:is-rfc2629="true">
+          This document is subject to the rights, licenses and restrictions
+          contained in BCP 78<xsl:if test="/rfc/@submissionType='independent'"> and at <eref target="http://www.rfc-editor.org/copyright.html"/></xsl:if>, and except as set forth therein, the authors
+          retain all their rights.
+        </t>
+        <t myns:is-rfc2629="true">
+          This document and the information contained herein are provided on an
+          &#8220;AS IS&#8221; basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS
+          OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET
+          ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED,
+          INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE 
+          INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED 
+          WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+        </t>
+      </section>    
+    </xsl:when>
+    <xsl:otherwise>
+      <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
+        <t myns:is-rfc2629="true">
+          Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
+        </t>
+        <t myns:is-rfc2629="true">
+          This document and translations of it may be copied and furnished to
+          others, and derivative works that comment on or otherwise explain it
+          or assist in its implementation may be prepared, copied, published and
+          distributed, in whole or in part, without restriction of any kind,
+          provided that the above copyright notice and this paragraph are
+          included on all such copies and derivative works. However, this
+          document itself may not be modified in any way, such as by removing
+          the copyright notice or references to the Internet Society or other
+          Internet organizations, except as needed for the purpose of
+          developing Internet standards in which case the procedures for
+          copyrights defined in the Internet Standards process must be
+          followed, or as required to translate it into languages other than
+          English.
+        </t>
+        <t myns:is-rfc2629="true">
+          The limited permissions granted above are perpetual and will not be
+          revoked by the Internet Society or its successors or assignees.
+        </t>
+        <t myns:is-rfc2629="true">
+          This document and the information contained herein is provided on an
+          &#8220;;AS IS&#8221; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+          TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
+          BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
+          HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
+          MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+        </t>
+      </section>
+    </xsl:otherwise>
+  </xsl:choose>
+
+  <section title="Intellectual Property" anchor="{$anchor-prefix}.ipr" myns:unnumbered="unnumbered" myns:is-rfc2629="true">
     <xsl:choose>
       <xsl:when test="$ipr-rfc3667">
         <t myns:is-rfc2629="true">
@@ -1682,71 +1740,10 @@
     </xsl:choose>
   </section>
   
-  <xsl:if test="$ipr-rfc3667">
-    <section title="Disclaimer of Validity" anchor="{$anchor-prefix}.disclaimer" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
-      <t myns:is-rfc2629="true">
-        This document and the information contained herein are provided on an
-        &#8220;AS IS&#8221; basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS
-        OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET
-        ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED,
-        INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE 
-        INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED 
-        WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
-      </t>
-    </section>
-  </xsl:if>
-
-  <xsl:choose>
-    <xsl:when test="$ipr-rfc3667">
-      <section title="Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
-        <t myns:is-rfc2629="true">
-          Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).
-          This document is subject to the rights, licenses and restrictions
-          contained in BCP 78, and except as set forth therein, the authors
-          retain all their rights.
-        </t>
-      </section>    
-    </xsl:when>
-    <xsl:otherwise>
-      <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
-        <t myns:is-rfc2629="true">
-          Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
-        </t>
-        <t myns:is-rfc2629="true">
-          This document and translations of it may be copied and furnished to
-          others, and derivative works that comment on or otherwise explain it
-          or assist in its implementation may be prepared, copied, published and
-          distributed, in whole or in part, without restriction of any kind,
-          provided that the above copyright notice and this paragraph are
-          included on all such copies and derivative works. However, this
-          document itself may not be modified in any way, such as by removing
-          the copyright notice or references to the Internet Society or other
-          Internet organizations, except as needed for the purpose of
-          developing Internet standards in which case the procedures for
-          copyrights defined in the Internet Standards process must be
-          followed, or as required to translate it into languages other than
-          English.
-        </t>
-        <t myns:is-rfc2629="true">
-          The limited permissions granted above are perpetual and will not be
-          revoked by the Internet Society or its successors or assignees.
-        </t>
-        <t myns:is-rfc2629="true">
-          This document and the information contained herein is provided on an
-          &#8220;;AS IS&#8221; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
-          TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
-          BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
-          HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
-          MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
-        </t>
-      </section>
-    </xsl:otherwise>
-  </xsl:choose>
-  
   <section title="Acknowledgement" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
     <t myns:is-rfc2629="true">
-      Funding for the RFC Editor function is currently provided by the
-      Internet Society.
+      Funding for the RFC Editor function is provided by the IETF
+      Administrative Support Activity (IASA).
     </t>
   </section>
 
@@ -3416,11 +3413,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.240 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.240 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.241 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.241 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/02/27 17:30:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/02/27 17:30:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/03/17 15:18:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/17 15:18:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
