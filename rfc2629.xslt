@@ -1625,7 +1625,7 @@
         </t>
         <t myns:is-rfc2629="true">
           This document is subject to the rights, licenses and restrictions
-          contained in BCP 78<xsl:if test="/rfc/@submissionType='independent'"> and at <eref target="http://www.rfc-editor.org/copyright.html"/></xsl:if>, and except as set forth therein, the authors
+          contained in BCP 78<xsl:if test="/rfc/@submissionType='independent'"> and at <eref myns:is-rfc2629="true" target="http://www.rfc-editor.org/copyright.html"/></xsl:if>, and except as set forth therein, the authors
           retain all their rights.
         </t>
         <t myns:is-rfc2629="true">
@@ -3413,11 +3413,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.241 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.241 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.242 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.242 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/03/17 15:18:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/17 15:18:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/03/17 16:56:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/17 16:56:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
