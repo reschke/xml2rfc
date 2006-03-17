@@ -969,8 +969,7 @@
           <xsl:with-param name="no" select="$sectionNumber"/>
         </xsl:call-template>
       </a>
-      <xsl:text> </xsl:text>
-      <a href="#{$anchor-prefix}.references">References</a>
+      <xsl:text> References</xsl:text>
     </h1>
   </xsl:if>
   
@@ -995,7 +994,6 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:attribute name="id"><xsl:value-of select="concat($anchor-prefix,'.references',$anchorpref)"/></xsl:attribute>
-    <a name="{$anchor-prefix}.references{$anchorpref}"/>
     <a href="#{$anchor-prefix}.section.{$sectionNumber}">
       <xsl:call-template name="emit-section-number">
         <xsl:with-param name="no" select="$sectionNumber"/>
@@ -3413,11 +3411,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.242 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.242 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.243 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.243 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/03/17 16:56:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/17 16:56:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/03/17 20:33:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/17 20:33:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
