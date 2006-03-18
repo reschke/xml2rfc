@@ -790,7 +790,7 @@
 </xsl:template>
 
 <xsl:template match="postamble">
-  <xsl:if test="node()">
+  <xsl:if test="normalize-space(.) != ''">
     <p>
       <xsl:call-template name="insertInsDelClass"/>
       <xsl:call-template name="editingMark" />
@@ -800,7 +800,7 @@
 </xsl:template>
 
 <xsl:template match="preamble">
-  <xsl:if test="node()">
+  <xsl:if test="normalize-space(.) != ''">
     <p>
       <xsl:call-template name="insertInsDelClass"/>
       <xsl:call-template name="editingMark" />
@@ -3417,11 +3417,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.244 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.244 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.245 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.245 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/03/18 14:55:39 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/18 14:55:39 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/03/18 15:55:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/18 15:55:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
