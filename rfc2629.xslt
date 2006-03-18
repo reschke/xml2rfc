@@ -428,25 +428,27 @@
       <span class="org vcardline">
         <xsl:value-of select="organization" />
       </span>
-      <span class="adr vcardline">
-        <xsl:if test="address/postal/street!=''">
-          <span class="street street-address vcardline">
-            <xsl:for-each select="address/postal/street">
-              <xsl:value-of select="." />
-            </xsl:for-each>
-          </span>
-        </xsl:if>
-        <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
-          <span class="vcardline">
-            <xsl:if test="address/postal/city"><span class="locality"><xsl:value-of select="address/postal/city" /></span>, </xsl:if>
-            <xsl:if test="address/postal/region"><span class="region"><xsl:value-of select="address/postal/region" /></span>&#160;</xsl:if>
-            <xsl:if test="address/postal/code"><span class="postal-code"><xsl:value-of select="address/postal/code" /></span></xsl:if>
-          </span>
-        </xsl:if>
-        <xsl:if test="address/postal/country">
-          <span class="country-name vcardline"><xsl:value-of select="address/postal/country" /></span>
-        </xsl:if>
-      </span>
+      <xsl:if test="address/postal">
+        <span class="adr vcardline">
+          <xsl:if test="address/postal/street!=''">
+            <span class="street street-address vcardline">
+              <xsl:for-each select="address/postal/street">
+                <xsl:value-of select="." />
+              </xsl:for-each>
+            </span>
+          </xsl:if>
+          <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
+            <span class="vcardline">
+              <xsl:if test="address/postal/city"><span class="locality"><xsl:value-of select="address/postal/city" /></span>, </xsl:if>
+              <xsl:if test="address/postal/region"><span class="region"><xsl:value-of select="address/postal/region" /></span>&#160;</xsl:if>
+              <xsl:if test="address/postal/code"><span class="postal-code"><xsl:value-of select="address/postal/code" /></span></xsl:if>
+            </span>
+          </xsl:if>
+          <xsl:if test="address/postal/country">
+            <span class="country-name vcardline"><xsl:value-of select="address/postal/country" /></span>
+          </xsl:if>
+        </span>
+      </xsl:if>
       <xsl:if test="address/phone">
         <span class="vcardline">
           <xsl:text>Phone: </xsl:text>
@@ -784,23 +786,27 @@
 <xsl:template match="note">
   <xsl:variable name="num"><xsl:number/></xsl:variable>
   <h1 id="{$anchor-prefix}.note.{$num}"><a href="#{$anchor-prefix}.note.{$num}"/><xsl:value-of select="@title" /></h1>
-    <xsl:apply-templates />
+  <xsl:apply-templates />
 </xsl:template>
 
 <xsl:template match="postamble">
-  <p>
-    <xsl:call-template name="insertInsDelClass"/>
-    <xsl:call-template name="editingMark" />
-    <xsl:apply-templates />
-  </p>
+  <xsl:if test="node()">
+    <p>
+      <xsl:call-template name="insertInsDelClass"/>
+      <xsl:call-template name="editingMark" />
+      <xsl:apply-templates />
+    </p>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="preamble">
-  <p>
-    <xsl:call-template name="insertInsDelClass"/>
-    <xsl:call-template name="editingMark" />
-    <xsl:apply-templates />
-  </p>
+  <xsl:if test="node()">
+    <p>
+      <xsl:call-template name="insertInsDelClass"/>
+      <xsl:call-template name="editingMark" />
+      <xsl:apply-templates />
+    </p>
+  </xsl:if>
 </xsl:template>
 
 
@@ -3411,11 +3417,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.243 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.243 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.244 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.244 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/03/17 20:33:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/17 20:33:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/03/18 14:55:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/18 14:55:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
