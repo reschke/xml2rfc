@@ -431,9 +431,9 @@
         </span>
       </xsl:if>
       <xsl:if test="address/postal">
-        <span class="adr vcardline">
+        <span class="adr">
           <xsl:if test="address/postal/street!=''">
-            <span class="street street-address vcardline">
+            <span class="street-address vcardline">
               <xsl:for-each select="address/postal/street">
                 <xsl:value-of select="." />
               </xsl:for-each>
@@ -452,15 +452,15 @@
         </span>
       </xsl:if>
       <xsl:if test="address/phone">
-        <span class="vcardline">
+        <span class="vcardline tel">
           <xsl:text>Phone: </xsl:text>
-          <a href="tel:{translate(address/phone,' ','')}"><span class="tel"><span class="voice"><xsl:value-of select="address/phone" /></span></span></a>
+          <a href="tel:{translate(address/phone,' ','')}"><span class="value"><xsl:value-of select="address/phone" /></span></a>
         </span>
       </xsl:if>
       <xsl:if test="address/facsimile">
-        <span class="vcardline">
-          <xsl:text>Fax: </xsl:text>
-          <a href="fax:{translate(address/facsimile,' ','')}"><span class="tel"><span class="fax"><xsl:value-of select="address/facsimile" /></span></span></a>
+        <span class="vcardline tel">
+          <span class="type">Fax</span><xsl:text>: </xsl:text>
+          <a href="fax:{translate(address/facsimile,' ','')}"><span class="value"><xsl:value-of select="address/facsimile" /></span></a>
         </span>
       </xsl:if>
       <xsl:if test="address/email">
@@ -1061,7 +1061,7 @@
         <link><xsl:copy-of select="@*" /></link>
       </xsl:for-each>
       <xsl:if test="/rfc/@number">
-        <link rel="Alternate" title="Authorative ASCII version" href="http://www.ietf.org/rfc/rfc{/rfc/@number}" />
+        <link rel="Alternate" title="Authorative ASCII version" href="http://www.ietf.org/rfc/rfc{/rfc/@number}.txt" />
       </xsl:if>
 
       <!-- generator -->
@@ -3419,11 +3419,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.246 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.246 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.247 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.247 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/03/18 17:49:27 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/18 17:49:27 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/03/19 16:41:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/19 16:41:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
