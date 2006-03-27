@@ -1184,7 +1184,6 @@
 <xsl:template name="insertTitle">
   <xsl:choose>
     <xsl:when test="@ed:old-title">
-      <xsl:call-template name="insert-issue-pointer"/>
       <del>
         <xsl:if test="ancestor-or-self::*[@ed:entered-by] and @ed:datetime">
           <xsl:attribute name="title"><xsl:value-of select="concat(@ed:datetime,', ',ancestor-or-self::*[@ed:entered-by][1]/@ed:entered-by)"/></xsl:attribute>
@@ -1256,6 +1255,12 @@
       </a>
       <xsl:text>&#0160;</xsl:text>
     </xsl:if>
+    
+    <!-- issue tracking? -->
+    <xsl:if test="@ed:resolves">
+      <xsl:call-template name="insert-issue-pointer"/>
+    </xsl:if>
+    
     <xsl:choose>
       <xsl:when test="@anchor">
         <a name="{@anchor}" href="#{@anchor}"><xsl:call-template name="insertTitle"/></a>
@@ -2859,7 +2864,11 @@ table.closedissue {
     <xsl:for-each select="ed:item">
       <tr>
         <td class="top">
-          <a href="mailto:{@entered-by}?subject={/rfc/@docName}, {../@name}"><i><xsl:value-of select="@entered-by"/></i></a>
+          <xsl:if test="@entered-by">
+            <a href="mailto:{@entered-by}?subject={/rfc/@docName},%20{../@name}">
+              <i><xsl:value-of select="@entered-by"/></i>
+            </a>
+          </xsl:if>
         </td>
         <td class="topnowrap">
           <xsl:value-of select="@date"/>
@@ -2875,7 +2884,7 @@ table.closedissue {
       <tr>
         <td class="top">
           <xsl:if test="@entered-by">
-            <a href="mailto:{@entered-by}?subject={/rfc/@docName}, {../@name}"><i><xsl:value-of select="@entered-by"/></i></a>
+            <a href="mailto:{@entered-by}?subject={/rfc/@docName},%20{../@name}"><i><xsl:value-of select="@entered-by"/></i></a>
           </xsl:if>
         </td>
         <td class="topnowrap">
@@ -2924,7 +2933,7 @@ table.closedissue {
         <td><xsl:value-of select="@type" /></td>
         <td><xsl:value-of select="@status" /></td>
         <td><xsl:value-of select="ed:item[1]/@date" /></td>
-        <td><a href="mailto:{ed:item[1]/@entered-by}?subject={/rfc/@docName}, {@name}"><xsl:value-of select="ed:item[1]/@entered-by" /></a></td>
+        <td><a href="mailto:{ed:item[1]/@entered-by}?subject={/rfc/@docName},%20{@name}"><xsl:value-of select="ed:item[1]/@entered-by" /></a></td>
       </tr>
     </xsl:for-each>
   </table>
@@ -3020,7 +3029,8 @@ table.closedissue {
     <xsl:variable name="total" select="count(//*[@ed:resolves=$resolves or ed:resolves=$resolves])" />
     <xsl:variable name="id"><xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" /></xsl:variable>
     <xsl:choose>
-      <xsl:when test="not(ancestor::t) and not(ancestor::title)">
+      <!-- block level? -->
+      <xsl:when test="not(ancestor::t) and not(ancestor::title) and not(ancestor::artwork) and not($change/@ed:old-title)">
         <div style="float: left;" id="{$id}">
           <xsl:if test="$count > 1">
             <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count - 1}">&#x2191;</a>
@@ -3420,11 +3430,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.249 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.249 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.250 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.250 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/03/25 18:10:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/25 18:10:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/03/27 20:08:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/27 20:08:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
