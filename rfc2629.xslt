@@ -1627,20 +1627,20 @@
 
 <!-- insert copyright statement -->
 
-<xsl:template name="insertCopyright" xmlns="">
+<xsl:template name="insertCopyright" myns:namespaceless-elements="xml2rfc">
 
   <xsl:choose>
     <xsl:when test="$ipr-rfc3667">
-      <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
-        <t myns:is-rfc2629="true">
+      <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+        <t>
           Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).
         </t>
-        <t myns:is-rfc2629="true">
+        <t>
           This document is subject to the rights, licenses and restrictions
-          contained in BCP 78<xsl:if test="/rfc/@submissionType='independent'"> and at <eref myns:is-rfc2629="true" target="http://www.rfc-editor.org/copyright.html"/></xsl:if>, and except as set forth therein, the authors
+          contained in BCP 78<xsl:if test="/rfc/@submissionType='independent'"> and at <eref target="http://www.rfc-editor.org/copyright.html"/></xsl:if>, and except as set forth therein, the authors
           retain all their rights.
         </t>
-        <t myns:is-rfc2629="true">
+        <t>
           This document and the information contained herein are provided on an
           &#8220;AS IS&#8221; basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS
           OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET
@@ -1652,11 +1652,11 @@
       </section>    
     </xsl:when>
     <xsl:otherwise>
-      <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
-        <t myns:is-rfc2629="true">
+      <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+        <t>
           Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
         </t>
-        <t myns:is-rfc2629="true">
+        <t>
           This document and translations of it may be copied and furnished to
           others, and derivative works that comment on or otherwise explain it
           or assist in its implementation may be prepared, copied, published and
@@ -1671,11 +1671,11 @@
           followed, or as required to translate it into languages other than
           English.
         </t>
-        <t myns:is-rfc2629="true">
+        <t>
           The limited permissions granted above are perpetual and will not be
           revoked by the Internet Society or its successors or assignees.
         </t>
-        <t myns:is-rfc2629="true">
+        <t>
           This document and the information contained herein is provided on an
           &#8220;;AS IS&#8221; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
           TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
@@ -1687,10 +1687,10 @@
     </xsl:otherwise>
   </xsl:choose>
 
-  <section title="Intellectual Property" anchor="{$anchor-prefix}.ipr" myns:unnumbered="unnumbered" myns:is-rfc2629="true">
+  <section title="Intellectual Property" anchor="{$anchor-prefix}.ipr" myns:unnumbered="unnumbered">
     <xsl:choose>
       <xsl:when test="$ipr-rfc3667">
-        <t myns:is-rfc2629="true">
+        <t>
           The IETF takes no position regarding the validity or scope of any
           Intellectual Property Rights or other rights that might be claimed to
           pertain to the implementation or use of the technology described in
@@ -1700,24 +1700,24 @@
           on the procedures with respect to rights in RFC documents
           can be found in BCP 78 and BCP 79.
         </t>       
-        <t myns:is-rfc2629="true">
+        <t>
           Copies of IPR disclosures made to the IETF Secretariat and any
           assurances of licenses to be made available, or the result of an
           attempt made to obtain a general license or permission for the use
           of such proprietary rights by implementers or users of this
           specification can be obtained from the IETF on-line IPR repository 
-          at <eref myns:is-rfc2629="true" target="http://www.ietf.org/ipr"/>.
+          at <eref target="http://www.ietf.org/ipr"/>.
         </t>       
-        <t myns:is-rfc2629="true">
+        <t>
           The IETF invites any interested party to bring to its attention any
           copyrights, patents or patent applications, or other proprietary
           rights that may cover technology that may be required to implement
           this standard. Please address the information to the IETF at
-          <eref myns:is-rfc2629="true" target="mailto:ietf-ipr@ietf.org">ietf-ipr@ietf.org</eref>.
+          <eref target="mailto:ietf-ipr@ietf.org">ietf-ipr@ietf.org</eref>.
         </t>       
       </xsl:when>
       <xsl:otherwise>
-        <t myns:is-rfc2629="true">
+        <t>
           The IETF takes no position regarding the validity or scope of
           any intellectual property or other rights that might be claimed
           to  pertain to the implementation or use of the technology
@@ -1733,7 +1733,7 @@
           proprietary rights by implementors or users of this
           specification can be obtained from the IETF Secretariat.
         </t>
-        <t myns:is-rfc2629="true">
+        <t>
           The IETF invites any interested party to bring to its
           attention any copyrights, patents or patent applications, or
           other proprietary rights which may cover technology that may be
@@ -1741,7 +1741,7 @@
           information to the IETF Executive Director.
         </t>
         <xsl:if test="$xml2rfc-iprnotified='yes'">
-          <t myns:is-rfc2629="true">
+          <t>
             The IETF has been notified of intellectual property rights
             claimed in regard to some or all of the specification contained
             in this document. For more information consult the online list
@@ -1752,8 +1752,8 @@
     </xsl:choose>
   </section>
   
-  <section title="Acknowledgement" myns:unnumbered="unnumbered" myns:notoclink="notoclink" myns:is-rfc2629="true">
-    <t myns:is-rfc2629="true">
+  <section title="Acknowledgement" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+    <t>
       Funding for the RFC Editor function is provided by the IETF
       Administrative Support Activity (IASA).
     </t>
@@ -2289,13 +2289,13 @@ table.closedissue {
 
 
 
-<xsl:template name="insertPreamble" xmlns="">
+<xsl:template name="insertPreamble" myns:namespaceless-elements="xml2rfc">
 
-  <section title="Status of this Memo" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.status" myns:is-rfc2629="true">
+  <section title="Status of this Memo" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.status">
 
   <xsl:choose>
     <xsl:when test="/rfc/@ipr">
-      <t myns:is-rfc2629="true">
+      <t>
         <xsl:choose>
           
           <!-- RFC2026 -->
@@ -2340,7 +2340,7 @@ table.closedissue {
             RFC 3668.  This document may not be modified, and derivative works of
             it may not be created, except to publish it as an RFC and to
             translate it into languages other than English<xsl:if test="/rfc/@iprExtract">,
-            other than to extract <xref myns:is-rfc2629="true" target="{/rfc/@iprExtract}"/> as-is
+            other than to extract <xref target="{/rfc/@iprExtract}"/> as-is
             for separate use.</xsl:if>.
           </xsl:when>
           <xsl:when test="/rfc/@ipr = 'noDerivatives3667'">
@@ -2352,7 +2352,7 @@ table.closedissue {
             become aware will be disclosed, in accordance with RFC 3668.  This
             document may not be modified, and derivative works of it may
             not be created<xsl:if test="/rfc/@iprExtract">, other than to extract
-            <xref myns:is-rfc2629="true" target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
+            <xref target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
           </xsl:when>
           
           <!-- RFC3978 -->
@@ -2371,7 +2371,7 @@ table.closedissue {
             Section 6 of BCP 79.  This document may not be modified, and derivative works of
             it may not be created, except to publish it as an RFC and to
             translate it into languages other than English<xsl:if test="/rfc/@iprExtract">,
-            other than to extract <xref myns:is-rfc2629="true" target="{/rfc/@iprExtract}"/> as-is
+            other than to extract <xref target="{/rfc/@iprExtract}"/> as-is
             for separate use.</xsl:if>.
           </xsl:when>
           <xsl:when test="/rfc/@ipr = 'noDerivatives3978'">
@@ -2381,46 +2381,46 @@ table.closedissue {
             becomes aware will be disclosed, in accordance with Section 6 of BCP 79.  This
             document may not be modified, and derivative works of it may
             not be created<xsl:if test="/rfc/@iprExtract">, other than to extract
-            <xref myns:is-rfc2629="true" target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
+            <xref target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
           </xsl:when>
 
           <xsl:otherwise>CONFORMANCE UNDEFINED.</xsl:otherwise>
         </xsl:choose>
       </t>
-      <t myns:is-rfc2629="true">
+      <t>
         Internet-Drafts are working documents of the Internet Engineering
         Task Force (IETF), its areas, and its working groups.
         Note that other groups may also distribute working documents as
         Internet-Drafts.
       </t>
-      <t myns:is-rfc2629="true">
+      <t>
         Internet-Drafts are draft documents valid for a maximum of six months
         and may be updated, replaced, or obsoleted by other documents at any time.
         It is inappropriate to use Internet-Drafts as reference material or to cite
         them other than as &#8220;work in progress&#8221;.
       </t>
-      <t myns:is-rfc2629="true">
+      <t>
         The list of current Internet-Drafts can be accessed at
-        <eref target='http://www.ietf.org/ietf/1id-abstracts.txt' myns:is-rfc2629="true" />.
+        <eref target='http://www.ietf.org/ietf/1id-abstracts.txt'/>.
       </t>
-      <t myns:is-rfc2629="true">
+      <t>
         The list of Internet-Draft Shadow Directories can be accessed at
-        <eref target='http://www.ietf.org/shadow.html' myns:is-rfc2629="true"/>.
+        <eref target='http://www.ietf.org/shadow.html'/>.
       </t>
-      <t myns:is-rfc2629="true">
+      <t>
         This Internet-Draft will expire in <xsl:call-template name="expirydate" />.
       </t>
     </xsl:when>
 
     <xsl:when test="/rfc/@category='bcp'">
-      <t myns:is-rfc2629="true">
+      <t>
         This document specifies an Internet Best Current Practices for the Internet
         Community, and requests discussion and suggestions for improvements.
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
     <xsl:when test="/rfc/@category='exp'">
-      <t myns:is-rfc2629="true">
+      <t>
         This memo defines an Experimental Protocol for the Internet community.
         It does not specify an Internet standard of any kind.
         Discussion and suggestions for improvement are requested.
@@ -2428,21 +2428,21 @@ table.closedissue {
       </t>
     </xsl:when>
     <xsl:when test="/rfc/@category='historic'">
-      <t myns:is-rfc2629="true">
+      <t>
         This memo describes a historic protocol for the Internet community.
         It does not specify an Internet standard of any kind.
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
     <xsl:when test="/rfc/@category='info' or not(/rfc/@category)">
-      <t myns:is-rfc2629="true">
+      <t>
         This memo provides information for the Internet community.
         It does not specify an Internet standard of any kind.
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
     <xsl:when test="/rfc/@category='std'">
-      <t myns:is-rfc2629="true">
+      <t>
         This document specifies an Internet standards track protocol for the Internet
         community, and requests discussion and suggestions for improvements.
         Please refer to the current edition of the &#8220;Internet Official Protocol
@@ -2451,14 +2451,14 @@ table.closedissue {
       </t>
     </xsl:when>
     <xsl:otherwise>
-      <t myns:is-rfc2629="true">UNSUPPORTED CATEGORY.</t>
+      <t>UNSUPPORTED CATEGORY.</t>
     </xsl:otherwise>
   </xsl:choose>
   
   </section>
 
-  <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice" myns:is-rfc2629="true">
-  <t myns:is-rfc2629="true">
+  <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice">
+  <t>
     Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
   </t>
   </section>
@@ -3098,7 +3098,7 @@ table.closedissue {
       <xsl:if test="ed:del">
         <del>
           <xsl:copy-of select="@*[namespace-uri()='']"/>
-          <xsl:if test="not(@title) and ancestor-or-self::*[@ed:entered-by] and @datetime">
+          <xsl:if test="not(@title) and ancestor-or-self::xsl:template[@ed:entered-by] and @datetime">
             <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*[@ed:entered-by][1]/@ed:entered-by)"/></xsl:attribute>
           </xsl:if>
           <xsl:apply-templates select="ed:del/node()" />
@@ -3430,11 +3430,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.250 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.250 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.251 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.251 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/03/27 20:08:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/03/27 20:08:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/04/01 19:25:36 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/04/01 19:25:36 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
