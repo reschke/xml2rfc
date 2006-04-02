@@ -260,6 +260,9 @@
 <xsl:variable name="plain" select="' #/ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
 <xsl:variable name="touri" select="'___abcdefghijklmnopqrstuvwxyz'" />
 
+<!-- characters excluded from text matching with iref/@item and iref/@subitem -->
+<xsl:variable name="iref-match-exclude" select="',:'" />
+
 <!-- prefix for automatically generated anchors -->
 <xsl:variable name="anchor-prefix" select="'rfc'" />
 
@@ -1171,7 +1174,29 @@
 </xsl:template>               
 
 <xsl:template mode="t-content2" match="text()">
-  <xsl:apply-templates select="." />
+  <xsl:variable name="c" select="normalize-space(translate(.,$iref-match-exclude,''))"/>
+  <!-- special case #1: we have a sibling 'iref' element whose value is
+  identical with this node's text; therefore we assume this is a definition
+  and put out a matching HTML tag -->
+  <xsl:variable name="ir1" select="../iref[@item = $c]"/>
+  <!-- special case #2: we have a sibling 'iref' element whose value for
+  "subitem" is identical with this node's text; therefore we assume this 
+  is to be displayed as bold, such in a list-specific header -->
+  <xsl:variable name="ir2" select="../iref[@subitem = $c]"/>
+
+  <xsl:choose>
+    <xsl:when test="$ir1">
+      <xsl:value-of select="substring-before(normalize-space(.),$ir1/@item)"/>
+      <dfn><xsl:value-of select="$ir1/@item"/></dfn>
+      <xsl:value-of select="substring-after(normalize-space(.),$ir1/@item)"/>
+    </xsl:when>
+    <xsl:when test="$ir2">
+      <i><xsl:apply-templates select="." /></i>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates select="." />
+    </xsl:otherwise>
+  </xsl:choose>
   <xsl:if test="not(following-sibling::node()[1] [self::list or self::figure or self::texttable])">
     <xsl:apply-templates select="following-sibling::node()[1]" mode="t-content2" />
   </xsl:if>
@@ -1786,6 +1811,9 @@ body {
   color: #000000;
   font-family: verdana, helvetica, arial, sans-serif;
   font-size: 10pt;
+}
+dfn {
+  font-style: italic;
 }
 dl {
   margin-left: 2em;
@@ -3430,11 +3458,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.251 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.251 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.252 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.252 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/04/01 19:25:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/04/01 19:25:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/04/02 18:16:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/04/02 18:16:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
