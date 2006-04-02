@@ -261,7 +261,7 @@
 <xsl:variable name="touri" select="'___abcdefghijklmnopqrstuvwxyz'" />
 
 <!-- characters excluded from text matching with iref/@item and iref/@subitem -->
-<xsl:variable name="iref-match-exclude" select="',:'" />
+<xsl:variable name="iref-match-exclude" select="',:/'" />
 
 <!-- prefix for automatically generated anchors -->
 <xsl:variable name="anchor-prefix" select="'rfc'" />
@@ -3458,11 +3458,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.252 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.252 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.253 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.253 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/04/02 18:16:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/04/02 18:16:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/04/02 18:53:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/04/02 18:53:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
