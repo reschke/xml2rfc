@@ -1786,6 +1786,15 @@ address {
   margin-left: 2em;
   font-style: normal;
 }
+<xsl:if test="//x:blockquote">
+blockquote {
+  border-style: solid;
+  border-color: gray;
+  border-width: 0 0 0 .25em;
+  font-style: italic;
+  padding-left: 0.5em;
+}
+</xsl:if>
 body {
   <xsl:if test="$xml2rfc-background!=''">
   background: url(<xsl:value-of select="$xml2rfc-background" />) #ffffff left top;
@@ -1864,9 +1873,11 @@ pre {
   margin-left: 3em;
   background-color: lightyellow;
 }
+<xsl:if test="//x:q">
 q {
   font-style: italic;
 }
+</xsl:if>
 table {
   margin-left: 2em;
 }
@@ -2806,7 +2817,7 @@ table.closedissue {
 <xsl:template name="get-paragraph-number">
   <!-- get section number of ancestor section element, then add t or figure number -->
   <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered'])">
-    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|figure" />
+    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|figure|x:blockquote" />
   </xsl:if>
 </xsl:template>
 
@@ -2840,6 +2851,22 @@ table.closedissue {
     <xsl:copy-of select="@cite"/>
     <xsl:apply-templates/>
   </q>
+</xsl:template>
+
+<xsl:template match="x:blockquote">
+  <xsl:variable name="p">
+    <xsl:call-template name="get-paragraph-number" />
+  </xsl:variable>
+
+  <blockquote>
+      <xsl:if test="string-length($p) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins) and count(preceding-sibling::node())=0">
+        <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
+      </xsl:if>
+      <xsl:call-template name="insertInsDelClass"/>
+      <xsl:call-template name="editingMark" />
+    <xsl:copy-of select="@cite"/>
+    <xsl:apply-templates/>
+  </blockquote>
 </xsl:template>
 
 <!-- Definitions -->
@@ -3459,11 +3486,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.255 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.255 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.256 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.256 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/04/15 09:54:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/04/15 09:54:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/04/21 12:35:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/04/21 12:35:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
