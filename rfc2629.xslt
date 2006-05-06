@@ -1980,6 +1980,13 @@ li.indline1 {
   margin-left: 0em;
   margin-right: 0em;
 }
+<xsl:if test="//x:bcp14">
+.bcp14 {
+  text-transform:     lowercase;
+  font-variant:       small-caps;
+  font-style:         normal;
+}
+</xsl:if>
 .comment {
   background-color: yellow;
 }
@@ -2853,6 +2860,32 @@ table.closedissue {
   </q>
 </xsl:template>
 
+<xsl:template match="x:bcp14">
+  <!-- check valid BCP14 keywords, then emphasize them -->
+  <xsl:variable name="c" select="normalize-space(.)"/>
+  <xsl:choose>
+    <xsl:when test="$c='MUST' or $c='REQUIRED' or $c='SHALL'">
+      <em class="bcp14"><xsl:value-of select="."/></em>
+    </xsl:when>
+    <xsl:when test="$c='MUST NOT' or $c='SHALL NOT'">
+      <em class="bcp14"><xsl:value-of select="."/></em>
+    </xsl:when>
+    <xsl:when test="$c='SHOULD' or $c='RECOMMENDED'">
+      <em class="bcp14"><xsl:value-of select="."/></em>
+    </xsl:when>
+    <xsl:when test="$c='SHOULD NOT' or $c='NOT RECOMMENDED'">
+      <em class="bcp14"><xsl:value-of select="."/></em>
+    </xsl:when>
+    <xsl:when test="$c='MAY' or $c='OPTIONAL'">
+      <em class="bcp14"><xsl:value-of select="."/></em>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="."/>
+      <xsl:message>ERROR: unknown BCP14 keyword: <xsl:value-of select="."/></xsl:message>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="x:blockquote">
   <xsl:variable name="p">
     <xsl:call-template name="get-paragraph-number" />
@@ -3492,11 +3525,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.258 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.258 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.259 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.259 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/05/03 12:15:20 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/05/03 12:15:20 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/05/06 12:15:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/05/06 12:15:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
