@@ -159,7 +159,7 @@
 
 <xsl:param name="xml2rfc-private"
   select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'private=')], concat($quote-chars,' '), ''),
+      translate(/processing-instruction('rfc')[contains(.,'private=')], $quote-chars, ''),
         'private=')"
 />
 
@@ -1552,8 +1552,8 @@
     <xsl:variable name="pos" select="position()" />
     <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1"> 
       <tr>
-        <td class="header-l"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
-        <td class="header-r"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template>&#0160;</td>
+        <td class="header-l"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
+        <td class="header-r"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
       </tr>
     </xsl:if>
   </xsl:for-each>
@@ -2823,7 +2823,7 @@ table.closedissue {
 
 <xsl:template name="get-paragraph-number">
   <!-- get section number of ancestor section element, then add t or figure number -->
-  <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered'])">
+  <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered']) and not(ancestor::x:blockquote)">
     <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|figure|x:blockquote" />
   </xsl:if>
 </xsl:template>
@@ -2892,11 +2892,11 @@ table.closedissue {
   </xsl:variable>
 
   <blockquote>
-      <xsl:if test="string-length($p) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins) and count(preceding-sibling::node())=0">
-        <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
-      </xsl:if>
-      <xsl:call-template name="insertInsDelClass"/>
-      <xsl:call-template name="editingMark" />
+    <xsl:if test="string-length($p) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins)">
+      <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
+    </xsl:if>
+    <xsl:call-template name="insertInsDelClass"/>
+    <xsl:call-template name="editingMark" />
     <xsl:copy-of select="@cite"/>
     <xsl:apply-templates/>
   </blockquote>
@@ -3525,11 +3525,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.259 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.259 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.260 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.260 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/05/06 12:15:35 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/05/06 12:15:35 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/05/14 08:39:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/05/14 08:39:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
