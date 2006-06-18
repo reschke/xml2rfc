@@ -2916,6 +2916,64 @@ table.closedissue {
   </b>
 </xsl:template>
 
+<!-- box drawing -->
+
+<!-- nop for alignment -->
+<xsl:template match="x:x"/>
+
+<!-- box (top) -->
+<xsl:template match="x:bt">
+  <xsl:text>&#x250c;</xsl:text>
+  <xsl:value-of select="translate(substring(.,2,string-length(.)-2),'-','&#x2500;')"/>
+  <xsl:text>&#x2510;</xsl:text>
+</xsl:template>
+
+<!-- box (center) -->
+<xsl:template match="x:bc">
+  <xsl:variable name="first" select="substring(.,1)"/>
+  <xsl:variable name="last" select="substring(.,string-length(.)-1)"/>
+  <xsl:variable name="content" select="substring(.,2,string-length(.)-2)"/>
+  <xsl:variable name="is-delimiter" select="translate($content,'-','')=''"/>
+  
+  <xsl:choose>
+    <xsl:when test="$is-delimiter">
+      <xsl:text>&#x251c;</xsl:text>
+      <xsl:value-of select="translate($content,'-','&#x2500;')"/>
+      <xsl:text>&#x2524;</xsl:text>
+    </xsl:when>
+    <xsl:when test="*">
+      <xsl:for-each select="node()">
+        <xsl:choose>
+          <xsl:when test="position()=1">
+            <xsl:text>&#x2502;</xsl:text>
+            <xsl:value-of select="substring(.,2)"/>
+          </xsl:when>
+          <xsl:when test="position()=last()">
+            <xsl:value-of select="substring(.,1,string-length(.)-1)"/>
+            <xsl:text>&#x2502;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="."/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:for-each>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>&#x2502;</xsl:text>
+      <xsl:value-of select="$content"/>
+      <xsl:text>&#x2502;</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+  
+</xsl:template>
+
+<!-- box (bottom) -->
+<xsl:template match="x:bb">
+  <xsl:text>&#x2514;</xsl:text>
+  <xsl:value-of select="translate(substring(.,2,string-length(.)-2),'-','&#x2500;')"/>
+  <xsl:text>&#x2518;</xsl:text>
+</xsl:template>
+
 <!-- experimental annotation support -->
 
 <xsl:template match="ed:issue">
@@ -3525,11 +3583,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.260 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.260 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.261 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.261 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/05/14 08:39:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/05/14 08:39:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/06/18 16:11:30 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/06/18 16:11:30 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
