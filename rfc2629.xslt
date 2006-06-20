@@ -1128,7 +1128,7 @@
 <xsl:template match="t">
   <xsl:choose>
     <xsl:when test="@anchor">
-      <span id="{@anchor}"><xsl:apply-templates mode="t-content" select="node()[1]" /></span>
+      <div id="{@anchor}"><xsl:apply-templates mode="t-content" select="node()[1]" /></div>
     </xsl:when>
     <xsl:otherwise>
       <xsl:apply-templates mode="t-content" select="node()[1]" />
@@ -2227,10 +2227,13 @@ table.closedissue {
       <xsl:sort select="translate(@item,$lcase,$ucase)" />
       
       <xsl:variable name="letter" select="translate(substring(@item,1,1),$lcase,$ucase)"/>
-      <a href="#{$anchor-prefix}.index.{$letter}">
-        <xsl:value-of select="$letter" />
-        <xsl:text> </xsl:text>
-      </a>
+      <!-- character? -->
+      <xsl:if test="translate($letter,concat($lcase,$ucase,'0123456789'),'')=''">
+        <a href="#{$anchor-prefix}.index.{$letter}">
+          <xsl:value-of select="$letter" />
+          <xsl:text> </xsl:text>
+        </a>
+      </xsl:if>
     </xsl:for-each>
   </p>
 
@@ -2242,9 +2245,17 @@ table.closedissue {
             
       <li class="indline0">
         <xsl:variable name="letter" select="translate(substring(@item,1,1),$lcase,$ucase)"/>
-        <a name="{$anchor-prefix}.index.{$letter}" href="#{$anchor-prefix}.index.{$letter}">
-          <b><xsl:value-of select="$letter" /></b>
-        </a>
+        
+        <xsl:choose>
+          <xsl:when test="translate($letter,concat($lcase,$ucase,'0123456789'),'')=''">
+            <a name="{$anchor-prefix}.index.{$letter}" href="#{$anchor-prefix}.index.{$letter}">
+              <b><xsl:value-of select="$letter" /></b>
+            </a>
+          </xsl:when>
+          <xsl:otherwise>
+            <b><xsl:value-of select="$letter" /></b>
+          </xsl:otherwise>
+        </xsl:choose>
       
         <ul class="ind">  
           <xsl:for-each select="key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))">
@@ -3583,11 +3594,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.261 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.261 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.262 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.262 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/06/18 16:11:30 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/06/18 16:11:30 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/06/20 16:17:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/06/20 16:17:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
