@@ -376,6 +376,20 @@
   </xsl:call-template>
 </xsl:template>
 
+<!-- special case for first text node in artwork -->
+<xsl:template match="artwork/text()[1]">
+  <xsl:choose>
+    <xsl:when test="starts-with(.,'&#10;')">
+      <!-- reduce leading whitespace -->
+      <xsl:value-of select="substring(.,2)"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="."/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+
 <xsl:template name="check-artwork-width">
   <xsl:param name="content"/>
   <xsl:choose>
@@ -3594,11 +3608,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.262 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.262 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.263 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.263 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/06/20 16:17:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/06/20 16:17:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/06/24 10:00:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/06/24 10:00:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
