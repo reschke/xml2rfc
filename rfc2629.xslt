@@ -748,7 +748,7 @@
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']/t | list[@style='hanging']/ed:replace/ed:*/t">
-  <dt style="margin-top: .5em">
+  <dt>
     <xsl:call-template name="insertInsDelClass"/>
     <xsl:for-each select="../..">
       <xsl:call-template name="insert-issue-pointer"/>
@@ -1822,6 +1822,9 @@ cite {
 }
 dl {
   margin-left: 2em;
+}
+dt {
+  margin-top: .5em;
 }
 h1 {
   color: #333333;
@@ -3608,11 +3611,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.263 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.263 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.264 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.264 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/06/24 10:00:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/06/24 10:00:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/06/24 12:11:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/06/24 12:11:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
