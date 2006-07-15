@@ -448,11 +448,11 @@
       <xsl:if test="address/postal">
         <span class="adr">
           <xsl:if test="address/postal/street!=''">
-            <span class="street-address vcardline">
-              <xsl:for-each select="address/postal/street">
+            <xsl:for-each select="address/postal/street">
+              <span class="street-address vcardline">
                 <xsl:value-of select="." />
-              </xsl:for-each>
-            </span>
+              </span>
+            </xsl:for-each>
           </xsl:if>
           <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
             <span class="vcardline">
@@ -3611,11 +3611,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.264 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.264 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.265 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.265 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/06/24 12:11:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/06/24 12:11:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/07/15 11:22:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/15 11:22:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
