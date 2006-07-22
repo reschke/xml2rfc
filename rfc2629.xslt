@@ -1468,6 +1468,9 @@
               </xsl:when>
               <xsl:otherwise>Section <xsl:value-of select="@x:sec"/></xsl:otherwise>
             </xsl:choose>
+            <xsl:if test="@x:fmt='of'">
+              <xsl:text> of </xsl:text>
+            </xsl:if>
           </xsl:when>
           <xsl:when test="@x:fmt='number'">
             <xsl:choose>
@@ -3707,11 +3710,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.266 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.266 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.267 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.267 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/07/22 16:17:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/22 16:17:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/07/22 18:01:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/22 18:01:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
