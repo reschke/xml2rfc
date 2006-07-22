@@ -231,7 +231,11 @@
 
 <!-- URL prefix for RFCs. -->
 
-<xsl:param name="rfcUrlPrefix" select="'http://www.ietf.org/rfc/rfc'" />
+<!--<xsl:param name="rfcUrlPrefix" select="'http://www.ietf.org/rfc/rfc'" />
+<xsl:param name="rfcUrlPostfix" select="'.txt'" /> -->
+<xsl:param name="rfcUrlPrefix" select="'http://tools.ietf.org/html/'" />
+<xsl:param name="rfcUrlPostfix" select="''" />
+<xsl:param name="rfcUrlFrag" select="'section-'" />
 
 <!-- warning re: absent node-set ext. function -->
 <xsl:variable name="node-set-warning">
@@ -826,6 +830,22 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:template name="computed-target">
+  <xsl:param name="bib"/>
+  <xsl:param name="ref"/>
+
+  <xsl:choose>
+    <xsl:when test="$bib/seriesInfo/@name='RFC'">
+      <xsl:value-of select="concat($rfcUrlPrefix,$bib/seriesInfo[@name='RFC']/@value,$rfcUrlPostfix)" />
+      <xsl:if test="$ref and $ref/@x:sec and $rfcUrlFrag">
+        <xsl:value-of select="concat('#',$rfcUrlFrag,$ref/@x:sec)"/>
+      </xsl:if>
+    </xsl:when>
+    <xsl:otherwise />
+  </xsl:choose>  
+  
+</xsl:template>
+
 
 <xsl:template match="reference">
 
@@ -838,12 +858,11 @@
   <xsl:variable name="target">
     <xsl:choose>
       <xsl:when test="@target"><xsl:value-of select="@target" /></xsl:when>
-      <xsl:when test="seriesInfo/@name='RFC'"><xsl:value-of select="concat($rfcUrlPrefix,seriesInfo[@name='RFC']/@value,'.txt')" /></xsl:when>
-      <xsl:when test="seriesInfo[starts-with(.,'RFC')]">
-        <xsl:variable name="rfcRef" select="seriesInfo[starts-with(.,'RFC')]" />
-        <xsl:value-of select="concat($rfcUrlPrefix,substring-after (normalize-space($rfcRef), ' '),'.txt')" />
-      </xsl:when>
-      <xsl:otherwise />
+      <xsl:otherwise>
+        <xsl:call-template name="computed-target">
+          <xsl:with-param name="bib" select="."/>
+        </xsl:call-template>
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   
@@ -1351,9 +1370,9 @@
     <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
     <span class="error">Undefined target: <xsl:value-of select="@target" /></span>
   </xsl:if>
-  <a href="#{$target}">
-    <xsl:choose>
-      <xsl:when test="local-name($node)='section'">
+  <xsl:choose>
+    <xsl:when test="local-name($node)='section'">
+      <a href="#{$target}">
         <xsl:variable name="refname">
           <xsl:for-each select="$node">
             <xsl:call-template name="get-section-type">
@@ -1380,8 +1399,10 @@
             <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
           </xsl:otherwise>
         </xsl:choose>
-      </xsl:when>
-      <xsl:when test="local-name($node)='figure'">
+      </a>
+    </xsl:when>
+    <xsl:when test="local-name($node)='figure'">
+      <a href="#{$target}">
         <xsl:variable name="figcnt">
           <xsl:for-each select="$node">
             <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
@@ -1398,8 +1419,10 @@
             <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
           </xsl:otherwise>
         </xsl:choose>
-      </xsl:when>
-      <xsl:when test="local-name($node)='texttable'">
+      </a>
+    </xsl:when>
+    <xsl:when test="local-name($node)='texttable'">
+      <a href="#{$target}">
         <xsl:variable name="tabcnt">
           <xsl:for-each select="$node">
             <xsl:number level="any" count="texttable[@title!='' or @anchor!='']" />
@@ -1416,16 +1439,89 @@
             <xsl:value-of select="normalize-space(concat('Table&#160;',$tabcnt))"/>
           </xsl:otherwise>
         </xsl:choose>
-      </xsl:when>
-      <xsl:otherwise>
-        <cite title="{normalize-space($node/front/title)}">
-          <xsl:call-template name="referencename">
-            <xsl:with-param name="node" select="$src/rfc/back/references//reference[@anchor=$target]" />
-          </xsl:call-template>
-        </cite>
-      </xsl:otherwise>
-    </xsl:choose>
-  </a>
+      </a>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="href">
+        <xsl:call-template name="computed-target">
+          <xsl:with-param name="bib" select="$node"/>
+          <xsl:with-param name="ref" select="."/>
+        </xsl:call-template>
+      </xsl:variable>
+
+      <!--
+      Formats:
+      
+        ()      [XXXX] (Section SS)
+        ,       [XXXX], Section SS
+        of      Section SS of [XXXX]
+        sec     Section SS
+        number  SS
+      -->
+      
+      <xsl:if test="@x:sec">
+        <xsl:choose>
+          <xsl:when test="@x:fmt='of' or @x:fmt='sec'">
+            <xsl:choose>
+              <xsl:when test="$href!=''">
+                <a href="{$href}">Section <xsl:value-of select="@x:sec"/></a>
+              </xsl:when>
+              <xsl:otherwise>Section <xsl:value-of select="@x:sec"/></xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
+          <xsl:when test="@x:fmt='number'">
+            <xsl:choose>
+              <xsl:when test="$href!=''">
+                <a href="{$href}"><xsl:value-of select="@x:sec"/></a>
+              </xsl:when>
+              <xsl:otherwise><xsl:value-of select="@x:sec"/></xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
+          <xsl:when test="@x:fmt=','"/>
+          <xsl:when test="@x:fmt='()'"/>
+          <xsl:otherwise>
+            <xsl:message>UNKNOWN xref x:fmt: <xsl:value-of select="@x:fmt"/></xsl:message>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:if>
+
+      <xsl:if test="not(@x:sec) or (@x:fmt!='sec' and @x:fmt!='number')">
+        <a href="#{$target}">
+          <cite title="{normalize-space($node/front/title)}">
+            <xsl:call-template name="referencename">
+              <xsl:with-param name="node" select="$node" />
+            </xsl:call-template>
+          </cite>
+        </a>
+      </xsl:if>
+      
+      <xsl:if test="@x:sec">
+        <xsl:choose>
+          <xsl:when test="@x:fmt='()'">
+            <xsl:text> (</xsl:text>
+            <xsl:choose>
+              <xsl:when test="$href!=''">
+                <a href="{$href}">Section <xsl:value-of select="@x:sec"/></a>
+              </xsl:when>
+              <xsl:otherwise>Section <xsl:value-of select="@x:sec"/></xsl:otherwise>
+            </xsl:choose>
+            <xsl:text>)</xsl:text>
+          </xsl:when>
+          <xsl:when test="@x:fmt=','">
+            <xsl:text>, </xsl:text>
+            <xsl:choose>
+              <xsl:when test="$href!=''">
+                <a href="{$href}">Section <xsl:value-of select="@x:sec"/></a>
+              </xsl:when>
+              <xsl:otherwise>Section <xsl:value-of select="@x:sec"/></xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
+          <xsl:otherwise/>
+        </xsl:choose>
+      </xsl:if>
+      
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 
@@ -2820,14 +2916,14 @@ table.closedissue {
   <xsl:choose>
     <xsl:when test="contains($list,',')">
       <xsl:variable name="rfcNo" select="substring-before($list,',')" />
-      <a href="{concat($rfcUrlPrefix,$rfcNo,'.txt')}"><xsl:value-of select="$rfcNo" /></a>,
+      <a href="{concat($rfcUrlPrefix,$rfcNo,$rfcUrlPostfix)}"><xsl:value-of select="$rfcNo" /></a>,
       <xsl:call-template name="rfclist">
         <xsl:with-param name="list" select="normalize-space(substring-after($list,','))" />
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="rfcNo" select="$list" />
-      <a href="{concat($rfcUrlPrefix,$rfcNo,'.txt')}"><xsl:value-of select="$rfcNo" /></a>
+      <a href="{concat($rfcUrlPrefix,$rfcNo,$rfcUrlPostfix)}"><xsl:value-of select="$rfcNo" /></a>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -3611,11 +3707,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.265 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.265 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.266 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.266 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/07/15 11:22:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/15 11:22:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/07/22 16:17:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/22 16:17:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
