@@ -752,14 +752,16 @@
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']/t | list[@style='hanging']/ed:replace/ed:*/t">
-  <dt>
-    <xsl:call-template name="insertInsDelClass"/>
-    <xsl:for-each select="../..">
-      <xsl:call-template name="insert-issue-pointer"/>
-    </xsl:for-each>
-    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
-    <xsl:value-of select="@hangText" />
-  </dt>
+  <xsl:if test="@hangText!=''">
+    <dt>
+      <xsl:call-template name="insertInsDelClass"/>
+      <xsl:for-each select="../..">
+        <xsl:call-template name="insert-issue-pointer"/>
+      </xsl:for-each>
+      <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
+      <xsl:value-of select="@hangText" />
+    </dt>
+  </xsl:if>
   <dd>
     <xsl:call-template name="insertInsDelClass"/>
     <!-- if hangIndent present, use 0.7 of the specified value (1em is the width of the "m" character -->
@@ -2846,20 +2848,46 @@ table.closedissue {
     </xsl:choose>
   </xsl:variable>
 
-  <li>
-    <xsl:call-template name="insert-toc-line">
-      <xsl:with-param name="number" select="$sectionNumber"/>
-      <xsl:with-param name="target" select="$target"/>
-      <xsl:with-param name="title" select="@title"/>
-      <xsl:with-param name="tocparam" select="@toc"/>
-    </xsl:call-template>
-  
-    <xsl:if test=".//section">
+  <!-- obtain content, just to check whether we need to recurse at all -->
+  <xsl:variable name="content">
+    <li>
+      <xsl:call-template name="insert-toc-line">
+        <xsl:with-param name="number" select="$sectionNumber"/>
+        <xsl:with-param name="target" select="$target"/>
+        <xsl:with-param name="title" select="@title"/>
+        <xsl:with-param name="tocparam" select="@toc"/>
+      </xsl:call-template>
+    
       <ul class="toc">
         <xsl:apply-templates mode="toc" />
       </ul>
-    </xsl:if>
-  </li>
+    </li>
+  </xsl:variable>
+  
+  <xsl:if test="$content!=''">
+    <li>
+      <xsl:call-template name="insert-toc-line">
+        <xsl:with-param name="number" select="$sectionNumber"/>
+        <xsl:with-param name="target" select="$target"/>
+        <xsl:with-param name="title" select="@title"/>
+        <xsl:with-param name="tocparam" select="@toc"/>
+      </xsl:call-template>
+    
+      <!-- obtain nested content, just to check whether we need to recurse at all -->
+      <xsl:variable name="nested-content">
+        <ul class="toc">
+          <xsl:apply-templates mode="toc" />
+        </ul>
+      </xsl:variable>
+      
+      <!-- only recurse if we need to (do not produce useless list container) -->      
+      <xsl:if test="$nested-content!=''">
+        <ul class="toc">
+          <xsl:apply-templates mode="toc" />
+        </ul>
+      </xsl:if>
+    </li>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="middle" mode="toc">
@@ -3729,11 +3757,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.268 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.268 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.269 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.269 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/07/23 08:31:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/23 08:31:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/07/24 12:15:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/24 12:15:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
