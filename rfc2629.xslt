@@ -1046,6 +1046,13 @@
     </xsl:choose>
   </xsl:variable>
   
+  <xsl:variable name="title">
+    <xsl:choose>
+      <xsl:when test="not(@title) or @title=''">References</xsl:when>
+      <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  
   <xsl:element name="{$elemtype}"> 
     <xsl:if test="$name='1'">
       <xsl:call-template name="insert-conditional-pagebreak"/>
@@ -1066,13 +1073,10 @@
       </xsl:call-template>
     </a>
     <xsl:text> </xsl:text>
-    <xsl:choose>
-      <xsl:when test="not(@title) or @title=''">References</xsl:when>
-      <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
-    </xsl:choose>
+    <xsl:value-of select="$title"/>
   </xsl:element>
  
-  <table summary="{@title}" border="0" cellpadding="2">
+  <table summary="{$title}" border="0" cellpadding="2">
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes'">
         <xsl:apply-templates>
@@ -3775,11 +3779,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.272 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.272 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.273 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.273 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/07/29 14:14:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/29 14:14:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/07/29 19:28:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/29 19:28:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
