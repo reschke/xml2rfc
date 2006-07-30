@@ -432,7 +432,7 @@
           (<xsl:value-of select="@role" />)
         </xsl:if>
         <!-- components of name (hidden from display -->
-        <span class="n" style="display: none">
+        <span class="n hidden">
           <span class="family-name"><xsl:value-of select="@surname"/></span>
           <!-- given-name family-name -->
           <xsl:if test="@surname=substring(@fullname,1 + string-length(@fullname) - string-length(@surname))">
@@ -673,7 +673,7 @@
 <!-- list templates depend on the list style -->
 
 <xsl:template match="list[@style='empty' or not(@style)]">
-  <dl>
+  <dl class="empty">
     <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </dl>
@@ -734,7 +734,8 @@
 <!-- same for t(ext) elements -->
 
 <xsl:template match="list[@style='empty' or not(@style)]/t">
-  <dd style="margin-top: .5em">
+  <!-- Inherited through CSS now <dd style="margin-top: .5em">-->
+  <dd>
     <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:apply-templates />
   </dd>
@@ -1708,8 +1709,8 @@
     <xsl:variable name="pos" select="position()" />
     <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1"> 
       <tr>
-        <td class="header-l"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
-        <td class="header-r"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
+        <td class="front left"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
+        <td class="front right"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
       </tr>
     </xsl:if>
   </xsl:for-each>
@@ -1965,6 +1966,10 @@ cite {
 dl {
   margin-left: 2em;
 }
+<!-- spacing between two entries in definition lists -->
+dl.empty dd {
+  margin-top: .5em;
+}
 dt {
   margin-top: .5em;
 }
@@ -2083,17 +2088,9 @@ td.topnowrap {
   vertical-align: top;
   white-space: nowrap; 
 }
-td.right {
-  text-align: right;
-}
-td.header-l {
+td.front {
   background-color: gray;
   width: 50%;
-}
-td.header-r {
-  background-color: gray;
-  width: 50%;
-  text-align: right;
 }
 thead {
   display:table-header-group;
@@ -2154,17 +2151,12 @@ li.indline1 {
   background-color: khaki;
 }
 </xsl:if>
+.center {
+  text-align: center;
+}
 .error {
   font-size: 14pt;
   background-color: red;
-}
-.title {
-  color: #990000;
-  font-size: 18pt;
-  line-height: 18pt;
-  font-weight: bold;
-  text-align: center;
-  margin-top: 36pt;
 }
 .figure {
   font-weight: bold;
@@ -2177,6 +2169,29 @@ li.indline1 {
   font-size: 12pt;
   line-height: 21pt;
   text-align: center;
+}
+.fn {
+  font-weight: bold;
+}
+.hidden {
+  display: none;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.title {
+  color: #990000;
+  font-size: 18pt;
+  line-height: 18pt;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 36pt;
+}
+.vcardline {
+  display: block;
 }
 .warning {
   font-size: 14pt;
@@ -2200,12 +2215,6 @@ ins {
   text-decoration: underline;
 }
 </xsl:if>
-.fn {
-  font-weight: bold;
-}
-.vcardline {
-  display: block;
-}
 
 <xsl:if test="//ed:issue">
 table.openissue {
@@ -3563,11 +3572,18 @@ table.closedissue {
               <td>
                 <xsl:variable name="pos" select="position()" />
                 <xsl:variable name="col" select="../ttcol[position() = $pos]" />
-                <xsl:if test="$col/@align">
-                  <xsl:attribute name="style">text-align: <xsl:value-of select="$col/@align" />;</xsl:attribute>
-                </xsl:if>
+                <xsl:choose>
+                  <xsl:when test="$col/@align='right' or $col/@align='center'">
+                    <xsl:attribute name="class"><xsl:value-of select="$col/@align"/></xsl:attribute>
+                  </xsl:when>
+                  <xsl:when test="$col/@align='left' or not($col/@align)">
+                    <!-- that's the default, nothing to do here -->
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:message>Unknown align attribute on ttcol: <xsl:value-of select="$col/@align"/></xsl:message>
+                  </xsl:otherwise>
+                </xsl:choose>
                 <xsl:apply-templates select="node()" />
-                <xsl:text>&#160;</xsl:text>
               </td>
             </xsl:for-each>
           </tr>
@@ -3586,16 +3602,23 @@ table.closedissue {
 
 <xsl:template match="ttcol">
   <th>
-    <xsl:variable name="width">
-      <xsl:if test="@width">width: <xsl:value-of select="@width" />; </xsl:if>
-    </xsl:variable>
-    <xsl:variable name="align">
-      <xsl:choose>
-        <xsl:when test="@align">text-align: <xsl:value-of select="@align" />;</xsl:when>
-        <xsl:otherwise>text-align: left;</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:attribute name="style"><xsl:value-of select="concat($width,$align)" /></xsl:attribute>
+    
+    <xsl:choose>
+      <xsl:when test="@align='right' or @align='center' or @align='left'">
+        <xsl:attribute name="class"><xsl:value-of select="@align"/></xsl:attribute>
+      </xsl:when>
+      <xsl:when test="not(@align)">
+        <!-- that's the default, nothing to do here -->
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:message>Unknown align attribute on ttcol: <xsl:value-of select="@align"/></xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
+    
+    <xsl:if test="@width">
+      <xsl:attribute name="style">width: <xsl:value-of select="@width" />;</xsl:attribute>
+    </xsl:if>
+
     <xsl:apply-templates />
   </th>
 </xsl:template>
@@ -3779,11 +3802,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.273 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.273 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.274 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.274 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/07/29 19:28:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/29 19:28:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/07/30 09:50:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/30 09:50:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
