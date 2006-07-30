@@ -876,7 +876,7 @@
 
   <!-- check for reference to reference -->
   <xsl:variable name="anchor" select="@anchor"/>
-  <xsl:if test="not(//xref[@target=$anchor])">
+  <xsl:if test="not(ancestor::ed:del) and not(//xref[@target=$anchor])">
     <xsl:message>WARNING: unused reference '<xsl:value-of select="@anchor"/>'</xsl:message>
   </xsl:if>
 
@@ -894,15 +894,16 @@
   <tr>
     <td class="topnowrap">
       <xsl:call-template name="insertInsDelClass"/>
+      <xsl:variable name="deleted" select="ancestor::ed:del"/>
       <xsl:for-each select="../..">
-        <xsl:call-template name="insert-issue-pointer"/>
+        <xsl:call-template name="insert-issue-pointer">
+          <xsl:with-param name="deleted-anchor" select="$deleted"/>
+        </xsl:call-template>
       </xsl:for-each>
-      <b>
-        <a name="{@anchor}">
-          <xsl:call-template name="referencename">
-            <xsl:with-param name="node" select="." />
-          </xsl:call-template>
-        </a>
+      <b id="{@anchor}">
+        <xsl:call-template name="referencename">
+          <xsl:with-param name="node" select="." />
+        </xsl:call-template>
       </b>
     </td>
     
@@ -2214,6 +2215,9 @@ ins {
   color: green;
   text-decoration: underline;
 }
+div.issuepointer {
+  float: left;
+}
 </xsl:if>
 
 <xsl:if test="//ed:issue">
@@ -2963,10 +2967,26 @@ table.closedissue {
 
 <xsl:template name="referencename">
   <xsl:param name="node" />
-  <xsl:choose>
-    <xsl:when test="$xml2rfc-symrefs='yes'">[<xsl:value-of select="$node/@anchor" />]</xsl:when>
-    <xsl:otherwise><xsl:for-each select="$node">[<xsl:number level="any" />]</xsl:for-each></xsl:otherwise>
-  </xsl:choose>
+  <xsl:for-each select="$node">
+    <xsl:choose>
+      <xsl:when test="$xml2rfc-symrefs='yes' and ancestor::ed:del">
+        <xsl:variable name="unprefixed" select="substring-after(@anchor,'deleted-')"/>
+        <xsl:choose>
+          <xsl:when test="$unprefixed!=''">
+            <xsl:value-of select="concat('[',$unprefixed,']')"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:if test="count(//reference[@anchor=current()/@anchor])!=1">
+              <xsl:message>Deleted duplicate anchors should have the prefix "deleted-": <xsl:value-of select="@anchor"/></xsl:message>
+            </xsl:if>
+            <xsl:value-of select="concat('[',@anchor,']')"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:when test="$xml2rfc-symrefs='yes'">[<xsl:value-of select="@anchor" />]</xsl:when>
+      <xsl:otherwise>[<xsl:number level="any" />]</xsl:otherwise>
+    </xsl:choose>
+  </xsl:for-each>  
 </xsl:template>
 
 
@@ -3379,30 +3399,34 @@ table.closedissue {
 </xsl:template>
 
 <xsl:template name="insert-issue-pointer">
+  <xsl:param name="deleted-anchor"/>
   <xsl:variable name="change" select="."/>
   <xsl:for-each select="@ed:resolves|ed:resolves">
     <xsl:variable name="resolves" select="."/>
     <!-- need the right context node for proper numbering -->
     <xsl:variable name="count"><xsl:for-each select=".."><xsl:number level="any" count="*[@ed:resolves=$resolves or ed:resolves=$resolves]" /></xsl:for-each></xsl:variable>
     <xsl:variable name="total" select="count(//*[@ed:resolves=$resolves or ed:resolves=$resolves])" />
-    <xsl:variable name="id"><xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" /></xsl:variable>
+    <xsl:variable name="id">
+      <xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" />
+      <xsl:if test="$deleted-anchor">.deleted</xsl:if>
+    </xsl:variable>
     <xsl:choose>
       <!-- block level? -->
       <xsl:when test="not(ancestor::t) and not(ancestor::title) and not(ancestor::artwork) and not($change/@ed:old-title)">
-        <div style="float: left;" id="{$id}">
+        <div class="issuepointer noprint" id="{$id}">
           <xsl:if test="$count > 1">
             <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count - 1}">&#x2191;</a>
           </xsl:if>
           <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
             <xsl:choose>
               <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
-                <xsl:attribute name="class">closed-issue noprint</xsl:attribute>
+                <xsl:attribute name="class">closed-issue</xsl:attribute>
               </xsl:when>
               <xsl:when test="//ed:issue[@name=$resolves and @status='editor']">
-                <xsl:attribute name="class">editor-issue noprint</xsl:attribute>
+                <xsl:attribute name="class">editor-issue</xsl:attribute>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:attribute name="class">open-issue noprint</xsl:attribute>
+                <xsl:attribute name="class">open-issue</xsl:attribute>
               </xsl:otherwise>
             </xsl:choose>
             <xsl:text>&#160;I&#160;</xsl:text>
@@ -3802,11 +3826,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.274 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.274 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.275 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.275 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/07/30 09:50:42 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/30 09:50:42 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/07/30 11:48:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/30 11:48:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
