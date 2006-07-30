@@ -660,14 +660,7 @@
 
 <xsl:template match="iref">
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any"/></xsl:variable>
-  <xsl:choose>
-    <xsl:when test="ancestor::t|ancestor::figure">
-      <a name="{$anchor}"/>
-    </xsl:when>
-    <xsl:otherwise>
-      <div id="{$anchor}"/>
-    </xsl:otherwise>
-  </xsl:choose>
+  <div id="{$anchor}"/>
 </xsl:template>
 
 <!-- list templates depend on the list style -->
@@ -733,9 +726,10 @@
 
 <!-- same for t(ext) elements -->
 
-<xsl:template match="list[@style='empty' or not(@style)]/t">
+<xsl:template match="list[@style='empty' or not(@style)]/t | list[@style='empty' or not(@style)]/ed:replace/ed:*/t">
   <!-- Inherited through CSS now <dd style="margin-top: .5em">-->
   <dd>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:apply-templates />
   </dd>
@@ -809,7 +803,7 @@
 
 <xsl:template match="note">
   <xsl:variable name="num"><xsl:number/></xsl:variable>
-  <h1 id="{$anchor-prefix}.note.{$num}"><a href="#{$anchor-prefix}.note.{$num}"/><xsl:value-of select="@title" /></h1>
+  <h1 id="{$anchor-prefix}.note.{$num}"><a href="#{$anchor-prefix}.note.{$num}"><xsl:value-of select="@title" /></a></h1>
   <xsl:apply-templates />
 </xsl:template>
 
@@ -1032,7 +1026,7 @@
       <xsl:variable name="sectionNumber">
         <xsl:call-template name="get-references-section-number"/>
       </xsl:variable>
-      <a name="{$anchor-prefix}.section.{$sectionNumber}" href="#{$anchor-prefix}.section.{$sectionNumber}">
+      <a id="{$anchor-prefix}.section.{$sectionNumber}" href="#{$anchor-prefix}.section.{$sectionNumber}">
         <xsl:call-template name="emit-section-number">
           <xsl:with-param name="no" select="$sectionNumber"/>
         </xsl:call-template>
@@ -1326,7 +1320,7 @@
     
     <xsl:choose>
       <xsl:when test="@anchor">
-        <a name="{@anchor}" href="#{@anchor}"><xsl:call-template name="insertTitle"/></a>
+        <a id="{@anchor}" href="#{@anchor}"><xsl:call-template name="insertTitle"/></a>
       </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="insertTitle"/>
@@ -2420,7 +2414,7 @@ table.closedissue {
         
         <xsl:choose>
           <xsl:when test="translate($letter,concat($lcase,$ucase,'0123456789'),'')=''">
-            <a name="{$anchor-prefix}.index.{$letter}" href="#{$anchor-prefix}.index.{$letter}">
+            <a id="{$anchor-prefix}.index.{$letter}" href="#{$anchor-prefix}.index.{$letter}">
               <b><xsl:value-of select="$letter" /></b>
             </a>
           </xsl:when>
@@ -3212,7 +3206,7 @@ table.closedissue {
   <table summary="issue {@name}" class="{$class}">
     <tr>
       <td colspan="3">
-        <a name="{$anchor-prefix}.issue.{@name}">
+        <a id="{$anchor-prefix}.issue.{@name}">
           <xsl:choose>
             <xsl:when test="@status='closed'">
               <xsl:attribute name="class">closed-issue</xsl:attribute>
@@ -3301,7 +3295,7 @@ table.closedissue {
 
 <xsl:template name="insertIssuesList">
 
-  <h2><a name="{$anchor-prefix}.issues-list" href="#{$anchor-prefix}.issues-list">Issues list</a></h2>
+  <h2><a id="{$anchor-prefix}.issues-list" href="#{$anchor-prefix}.issues-list">Issues list</a></h2>
   <table summary="Issues list">
     <xsl:for-each select="//ed:issue">
       <xsl:sort select="@status" />
@@ -3696,7 +3690,7 @@ table.closedissue {
     
   <h1>
     <xsl:call-template name="insert-conditional-pagebreak"/>
-    <a name="{$anchor-prefix}.comments">Editorial Comments</a>
+    <a id="{$anchor-prefix}.comments" href="#{$anchor-prefix}.comments">Editorial Comments</a>
   </h1>
 
   <dl>
@@ -3713,10 +3707,7 @@ table.closedissue {
           </xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
-      <dt>
-        <xsl:if test="$xml2rfc-inline!='yes'">
-          <a name="{$cid}"/>
-        </xsl:if>
+      <dt id="{$cid}">
         [<xsl:value-of select="$cid"/>]
       </dt>
       <dd>
@@ -3826,11 +3817,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.275 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.275 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.276 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.276 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/07/30 11:48:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/30 11:48:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/07/30 21:22:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/30 21:22:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
