@@ -660,7 +660,14 @@
 
 <xsl:template match="iref">
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any"/></xsl:variable>
-  <div id="{$anchor}"/>
+  <xsl:choose>
+    <xsl:when test="ancestor::t|ancestor::figure">
+      <span id="{$anchor}"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <div id="{$anchor}"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- list templates depend on the list style -->
@@ -3406,7 +3413,7 @@ table.closedissue {
     </xsl:variable>
     <xsl:choose>
       <!-- block level? -->
-      <xsl:when test="not(ancestor::t) and not(ancestor::title) and not(ancestor::artwork) and not($change/@ed:old-title)">
+      <xsl:when test="not(ancestor::t) and not(ancestor::title) and not(ancestor::figure) and not($change/@ed:old-title)">
         <div class="issuepointer noprint" id="{$id}">
           <xsl:if test="$count > 1">
             <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count - 1}">&#x2191;</a>
@@ -3817,11 +3824,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.276 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.276 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.277 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.277 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/07/30 21:22:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/30 21:22:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/07/31 08:34:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/31 08:34:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
