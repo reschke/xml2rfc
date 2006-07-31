@@ -37,8 +37,9 @@
                 xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
                 xmlns:ed="http://greenbytes.de/2002/rfcedit"
                 xmlns:x="http://purl.org/net/xml2rfc/ext"
+                xmlns:xhtml="http://www.w3.org/1999/xhtml"
 
-                exclude-result-prefixes="msxsl exslt myns ed x"
+                exclude-result-prefixes="msxsl exslt myns ed x xhtml"
                 >
 
 <xsl:strip-space elements="back front list middle rfc section"/>                
@@ -810,7 +811,12 @@
 
 <xsl:template match="note">
   <xsl:variable name="num"><xsl:number/></xsl:variable>
-  <h1 id="{$anchor-prefix}.note.{$num}"><a href="#{$anchor-prefix}.note.{$num}"><xsl:value-of select="@title" /></a></h1>
+    <h1 id="{$anchor-prefix}.note.{$num}">
+      <xsl:call-template name="insertInsDelClass"/>
+      <a href="#{$anchor-prefix}.note.{$num}">
+        <xsl:value-of select="@title" />
+      </a>
+    </h1>
   <xsl:apply-templates />
 </xsl:template>
 
@@ -1723,9 +1729,19 @@
   <xsl:param name="nodes" />
   <xsl:for-each select="$nodes">
     <xsl:choose>
-      <xsl:when test="namespace-uri()='http://www.w3.org/1999/xhtml'"><xsl:element name="{name()}" namespace="{namespace-uri()}"><xsl:copy-of select="@*|node()" /></xsl:element></xsl:when>
-      <xsl:when test="self::*"><xsl:element name="{name()}"><xsl:copy-of select="@*|node()" /></xsl:element></xsl:when>
-      <xsl:otherwise><xsl:copy-of select="." /></xsl:otherwise>
+      <xsl:when test="namespace-uri()='http://www.w3.org/1999/xhtml'">
+        <xsl:element name="{name()}" namespace="{namespace-uri()}">
+          <xsl:copy-of select="@*|node()" />
+        </xsl:element>
+      </xsl:when>
+      <xsl:when test="self::*">
+        <xsl:element name="{name()}">
+          <xsl:copy-of select="@*|node()" />
+        </xsl:element>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy-of select="." />
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
 </xsl:template>
@@ -3240,40 +3256,10 @@ table.closedissue {
         (type: <xsl:value-of select="@type"/>, status: <xsl:value-of select="@status"/>)
       </td>
     </tr>
-    <xsl:for-each select="ed:item">
-      <tr>
-        <td class="top">
-          <xsl:if test="@entered-by">
-            <a href="mailto:{@entered-by}?subject={/rfc/@docName},%20{../@name}">
-              <i><xsl:value-of select="@entered-by"/></i>
-            </a>
-          </xsl:if>
-        </td>
-        <td class="topnowrap">
-          <xsl:value-of select="@date"/>
-        </td>
-        <td class="top">
-          <xsl:call-template name="copynodes">
-            <xsl:with-param name="nodes" select="node()" />
-          </xsl:call-template>
-        </td>
-      </tr>
-    </xsl:for-each>
-    <xsl:for-each select="ed:resolution">
-      <tr>
-        <td class="top">
-          <xsl:if test="@entered-by">
-            <a href="mailto:{@entered-by}?subject={/rfc/@docName},%20{../@name}"><i><xsl:value-of select="@entered-by"/></i></a>
-          </xsl:if>
-        </td>
-        <td class="topnowrap">
-          <xsl:value-of select="@datetime"/>
-        </td>
-        <td class="top">
-          <em>Resolution:</em>&#0160;<xsl:copy-of select="node()" />
-        </td>
-      </tr>
-    </xsl:for-each>
+
+    <xsl:apply-templates select="ed:item"/>
+    <xsl:apply-templates select="ed:resolution"/>
+
     <xsl:variable name="changes" select="//*[@ed:resolves=current()/@name or ed:resolves=current()/@name]" />
     <xsl:if test="$changes">
       <tr>
@@ -3298,6 +3284,64 @@ table.closedissue {
     </xsl:if>
   </table>
     
+</xsl:template>
+
+<xsl:template match="ed:item">
+  <tr>
+    <td class="top">
+      <xsl:if test="@entered-by">
+        <a href="mailto:{@entered-by}?subject={/rfc/@docName},%20{../@name}">
+          <i><xsl:value-of select="@entered-by"/></i>
+        </a>
+      </xsl:if>
+    </td>
+    <td class="topnowrap">
+      <xsl:value-of select="@date"/>
+    </td>
+    <td class="top">
+      <xsl:call-template name="copynodes">
+        <xsl:with-param name="nodes" select="node()" />
+      </xsl:call-template>
+    </td>
+  </tr>
+</xsl:template>
+
+<xsl:template match="ed:resolution">
+  <tr>
+    <td class="top">
+      <xsl:if test="@entered-by">
+        <a href="mailto:{@entered-by}?subject={/rfc/@docName},%20{../@name}"><i><xsl:value-of select="@entered-by"/></i></a>
+      </xsl:if>
+    </td>
+    <td class="topnowrap">
+      <xsl:value-of select="@datetime"/>
+    </td>
+    <td class="top">
+      <em>Resolution:</em>
+      <xsl:apply-templates select="node()" mode="issuehtml"/>
+    </td>
+  </tr>
+</xsl:template>
+
+<!-- special templates for handling XHTML in issues -->
+<xsl:template match="text()" mode="issuehtml">
+  <xsl:value-of select="."/>
+</xsl:template>
+
+<xsl:template match="*|@*" mode="issuehtml">
+  <xsl:message terminate="yes">Unexpected node in issue HTML: <xsl:value-of select="local-name(.)"/></xsl:message>
+</xsl:template>
+
+<xsl:template match="a|xhtml:a|br|xhtml:br|i|xhtml:i" mode="issuehtml">
+  <xsl:element name="{local-name()}">
+    <xsl:apply-templates select="@*|node()" mode="issuehtml"/>
+  </xsl:element>
+</xsl:template>
+
+<xsl:template match="a/@href|xhtml:a/@href" mode="issuehtml">
+  <xsl:attribute name="{local-name(.)}">
+    <xsl:value-of select="."/>
+  </xsl:attribute>
 </xsl:template>
 
 <xsl:template name="insertIssuesList">
@@ -3824,11 +3868,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.277 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.277 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.278 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.278 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/07/31 08:34:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/31 08:34:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/07/31 22:17:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/31 22:17:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
