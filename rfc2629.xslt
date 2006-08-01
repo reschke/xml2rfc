@@ -234,7 +234,7 @@
 
 <!--<xsl:param name="rfcUrlPrefix" select="'http://www.ietf.org/rfc/rfc'" />
 <xsl:param name="rfcUrlPostfix" select="'.txt'" /> -->
-<xsl:param name="rfcUrlPrefix" select="'http://tools.ietf.org/html/'" />
+<xsl:param name="rfcUrlPrefix" select="'http://tools.ietf.org/html/rfc'" />
 <xsl:param name="rfcUrlPostfix" select="''" />
 <xsl:param name="rfcUrlFrag" select="'section-'" />
 
@@ -3330,13 +3330,13 @@ table.closedissue {
   <xsl:message terminate="yes">Unexpected node in issue HTML: <xsl:value-of select="local-name(.)"/></xsl:message>
 </xsl:template>
 
-<xsl:template match="a|xhtml:a|br|xhtml:br|cite|xhtml:cite|em|xhtml:em|i|xhtml:i|pre|xhtml:pre" mode="issuehtml">
+<xsl:template match="xhtml:a|xhtml:br|xhtml:cite|xhtml:em|xhtml:i|xhtml:pre" mode="issuehtml">
   <xsl:element name="{local-name()}">
     <xsl:apply-templates select="@*|node()" mode="issuehtml"/>
   </xsl:element>
 </xsl:template>
 
-<xsl:template match="a/@href|xhtml:a/@href" mode="issuehtml">
+<xsl:template match="xhtml:a/@href" mode="issuehtml">
   <xsl:attribute name="{local-name(.)}">
     <xsl:value-of select="."/>
   </xsl:attribute>
@@ -3866,11 +3866,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.279 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.279 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.280 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.280 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/08/01 07:46:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/01 07:46:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/08/01 13:06:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/01 13:06:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
