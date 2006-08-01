@@ -3299,9 +3299,7 @@ table.closedissue {
       <xsl:value-of select="@date"/>
     </td>
     <td class="top">
-      <xsl:call-template name="copynodes">
-        <xsl:with-param name="nodes" select="node()" />
-      </xsl:call-template>
+      <xsl:apply-templates select="node()" mode="issuehtml"/>
     </td>
   </tr>
 </xsl:template>
@@ -3332,7 +3330,7 @@ table.closedissue {
   <xsl:message terminate="yes">Unexpected node in issue HTML: <xsl:value-of select="local-name(.)"/></xsl:message>
 </xsl:template>
 
-<xsl:template match="a|xhtml:a|br|xhtml:br|i|xhtml:i" mode="issuehtml">
+<xsl:template match="a|xhtml:a|br|xhtml:br|cite|xhtml:cite|em|xhtml:em|i|xhtml:i|pre|xhtml:pre" mode="issuehtml">
   <xsl:element name="{local-name()}">
     <xsl:apply-templates select="@*|node()" mode="issuehtml"/>
   </xsl:element>
@@ -3868,11 +3866,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.278 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.278 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.279 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.279 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/07/31 22:17:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/07/31 22:17:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/08/01 07:46:47 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/01 07:46:47 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
