@@ -2158,7 +2158,6 @@ li.indline1 {
 .bcp14 {
   text-transform:     lowercase;
   font-variant:       small-caps;
-  font-style:         normal;
 }
 </xsl:if>
 .comment {
@@ -3866,11 +3865,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.281 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.281 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.282 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.282 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/08/05 10:58:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/05 10:58:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/08/05 15:23:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/05 15:23:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
