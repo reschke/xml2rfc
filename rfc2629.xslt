@@ -877,8 +877,8 @@
 
   <xsl:choose>
     <xsl:when test="$bib/@target">
-      <xsl:if test="$ref and $ref/@x:sec and $ref/@x:frag">
-        <xsl:value-of select="concat($bib/@target,'#',$ref/@x:frag)"/>
+      <xsl:if test="$ref and $ref/@x:sec and $ref/@x:rel">
+        <xsl:value-of select="concat($bib/@target,$ref/@x:rel)"/>
       </xsl:if>
     </xsl:when>
     <xsl:otherwise>
@@ -3883,11 +3883,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.283 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.283 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.284 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.284 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/08/06 11:49:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/06 11:49:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/08/06 18:13:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/06 18:13:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
