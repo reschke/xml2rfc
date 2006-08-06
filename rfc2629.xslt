@@ -230,13 +230,19 @@
  /> 
 
 
-<!-- URL prefix for RFCs. -->
+<!-- URL templates for RFCs and Internet Drafts. -->
 
-<!--<xsl:param name="rfcUrlPrefix" select="'http://www.ietf.org/rfc/rfc'" />
-<xsl:param name="rfcUrlPostfix" select="'.txt'" /> -->
+<!-- Reference the authorative ASCII versions
+<xsl:param name="rfcUrlPrefix" select="'http://www.ietf.org/rfc/rfc'" />
+<xsl:param name="rfcUrlPostfix" select="'.txt'" />
+-->
+<!-- Reference the marked up versions over on http://tools.ietf.org/html. -->
 <xsl:param name="rfcUrlPrefix" select="'http://tools.ietf.org/html/rfc'" />
 <xsl:param name="rfcUrlPostfix" select="''" />
 <xsl:param name="rfcUrlFrag" select="'section-'" />
+<xsl:param name="internetDraftUrlPrefix" select="'http://tools.ietf.org/html/'" />
+<xsl:param name="internetDraftUrlPostfix" select="''" />
+<xsl:param name="internetDraftUrlFrag" select="'section-'" />
 
 <!-- warning re: absent node-set ext. function -->
 <xsl:variable name="node-set-warning">
@@ -852,6 +858,12 @@
       <xsl:value-of select="concat($rfcUrlPrefix,$bib/seriesInfo[@name='RFC']/@value,$rfcUrlPostfix)" />
       <xsl:if test="$ref and $ref/@x:sec and $rfcUrlFrag">
         <xsl:value-of select="concat('#',$rfcUrlFrag,$ref/@x:sec)"/>
+      </xsl:if>
+    </xsl:when>
+    <xsl:when test="$bib/seriesInfo/@name='Internet-Draft'">
+      <xsl:value-of select="concat($internetDraftUrlPrefix,$bib/seriesInfo[@name='Internet-Draft']/@value,$internetDraftUrlPostfix)" />
+      <xsl:if test="$ref and $ref/@x:sec and $internetDraftUrlFrag">
+        <xsl:value-of select="concat('#',$internetDraftUrlFrag,$ref/@x:sec)"/>
       </xsl:if>
     </xsl:when>
     <xsl:otherwise />
@@ -2156,9 +2168,15 @@ li.indline1 {
 }
 <xsl:if test="//x:bcp14">
 .bcp14 {
-  text-transform:     lowercase;
-  font-variant:       small-caps;
+  font-style: normal;
+  text-transform: lowercase;
+  font-variant: small-caps;
 }
+<xsl:if test="//x:blockquote">
+blockquote > * .bcp14 {
+  font-style: italic;
+}
+</xsl:if>
 </xsl:if>
 .comment {
   background-color: yellow;
@@ -3865,11 +3883,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.282 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.282 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.283 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.283 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/08/05 15:23:42 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/05 15:23:42 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/08/06 11:49:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/06 11:49:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
