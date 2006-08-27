@@ -1023,6 +1023,12 @@
         <xsl:value-of select="front/date/@year" />
       </xsl:if>
       
+      <xsl:if test="@target">
+        <xsl:text>, &lt;</xsl:text>
+        <a href="{@target}"><xsl:value-of select="@target"/></a>
+        <xsl:text>&gt;</xsl:text>
+      </xsl:if>
+      
       <xsl:text>.</xsl:text>
 
       <xsl:for-each select="annotation">
@@ -1412,18 +1418,67 @@
 <!-- keep the root for the case when we process XSLT-inline markup -->
 <xsl:variable name="src" select="/" />
 
+<xsl:template name="render-section-ref">
+  <xsl:param name="from" />
+  <xsl:param name="to" />
+  <xsl:variable name="target" select="$from/@target" />
+
+  <a href="#{$target}">
+    <xsl:variable name="refname">
+      <xsl:for-each select="$to">
+        <xsl:call-template name="get-section-type">
+          <xsl:with-param name="prec" select="$from/preceding-sibling::node()[1]" />
+        </xsl:call-template>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:variable name="refnum">
+      <xsl:for-each select="$to">
+        <xsl:call-template name="get-section-number" />
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:attribute name="title">
+      <xsl:value-of select="$to/@title" />
+    </xsl:attribute>
+    <xsl:choose>
+      <xsl:when test="@format='counter'">
+        <xsl:value-of select="$refnum"/>
+      </xsl:when>
+      <xsl:when test="@format='title'">
+        <xsl:value-of select="$to/@title"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </a>
+</xsl:template>
+
 <xsl:template match="xref[node()]">
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="$src//*[@anchor=$target]" />
-  <a href="#{$target}"><xsl:apply-templates /></a>
-  <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
-    <xsl:text> </xsl:text>
-    <cite title="{normalize-space(front/title)}">
-      <xsl:call-template name="referencename">
-         <xsl:with-param name="node" select="." />
+  <xsl:choose>
+    <xsl:when test="local-name($node)='section' or local-name($node)='appendix'">
+      <xsl:apply-templates/>
+      <xsl:variable name="context" select="."/>
+      <xsl:text> (</xsl:text>
+      <xsl:call-template name="render-section-ref">
+        <xsl:with-param name="from" select="."/>
+        <xsl:with-param name="to" select="$node"/>
       </xsl:call-template>
-    </cite>
-  </xsl:for-each>
+      <xsl:text>)</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <a href="#{$target}"><xsl:apply-templates /></a>
+      <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
+        <xsl:text> </xsl:text>
+        <cite title="{normalize-space(front/title)}">
+          <xsl:call-template name="referencename">
+             <xsl:with-param name="node" select="." />
+          </xsl:call-template>
+        </cite>
+      </xsl:for-each>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
                
 <xsl:template match="xref[not(node())]">
@@ -1435,35 +1490,11 @@
     <span class="error">Undefined target: <xsl:value-of select="@target" /></span>
   </xsl:if>
   <xsl:choose>
-    <xsl:when test="local-name($node)='section'">
-      <a href="#{$target}">
-        <xsl:variable name="refname">
-          <xsl:for-each select="$node">
-            <xsl:call-template name="get-section-type">
-              <xsl:with-param name="prec" select="$context/preceding-sibling::node()[1]" />
-            </xsl:call-template>
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:variable name="refnum">
-          <xsl:for-each select="$node">
-            <xsl:call-template name="get-section-number" />
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:attribute name="title">
-          <xsl:value-of select="$node/@title" />
-        </xsl:attribute>
-        <xsl:choose>
-          <xsl:when test="@format='counter'">
-            <xsl:value-of select="$refnum"/>
-          </xsl:when>
-          <xsl:when test="@format='title'">
-            <xsl:value-of select="$node/@title"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </a>
+    <xsl:when test="local-name($node)='section' or local-name($node)='appendix'">
+      <xsl:call-template name="render-section-ref">
+        <xsl:with-param name="from" select="."/>
+        <xsl:with-param name="to" select="$node"/>
+      </xsl:call-template>
     </xsl:when>
     <xsl:when test="local-name($node)='figure'">
       <a href="#{$target}">
@@ -3883,11 +3914,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.284 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.284 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.285 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.285 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/08/06 18:13:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/06 18:13:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/08/27 11:51:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/27 11:51:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
