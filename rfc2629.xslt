@@ -913,7 +913,9 @@
   <tr>
     <td class="topnowrap">
       <xsl:call-template name="insertInsDelClass"/>
-      <xsl:variable name="deleted" select="ancestor::ed:del"/>
+      <xsl:variable name="del-node" select="ancestor::ed:del"/>
+      <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
+      <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
       <xsl:for-each select="../..">
         <xsl:call-template name="insert-issue-pointer">
           <xsl:with-param name="deleted-anchor" select="$deleted"/>
@@ -3918,11 +3920,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.286 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.286 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.287 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.287 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/08/31 06:47:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/08/31 06:47:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/10/25 14:25:56 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/10/25 14:25:56 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
