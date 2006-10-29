@@ -283,8 +283,25 @@
 <xsl:variable name="anchor-prefix" select="'rfc'" />
 
 <!-- IPR version switch -->
-<xsl:variable name="ipr-rfc3667" select="(/rfc/@number &gt; 3708) or not((/rfc/@ipr = 'full2026') or 
-  (/rfc/@ipr = 'noDerivativeWorks2026') or (/rfc/@ipr = 'noDerivativeWorksNow') or (/rfc/@ipr = 'none'))" />
+<xsl:variable name="ipr-rfc3667" select="(
+  /rfc/@number &gt; 3708) or
+  not(
+    (/rfc/@ipr = 'full2026') or
+    (/rfc/@ipr = 'noDerivativeWorks2026') or
+    (/rfc/@ipr = 'noDerivativeWorksNow') or
+    (/rfc/@ipr = 'none') or
+    (/rfc/@ipr = '') or
+    not(/rfc/@ipr)
+  )" />
+
+<xsl:variable name="ipr-rfc4748" select="(
+  $ipr-rfc3667 and
+    (
+      (/rfc/@number &gt; 4671) or
+      (/rfc/front/date/@year &gt; 2006) or
+      (/rfc/front/date/@year &gt; 2005 and (/rfc/front/date/@month='November' or /rfc/front/date/@month='December'))
+    )
+  )" />
 
 <!-- will document have an index -->
 <xsl:variable name="has-index" select="//iref or (//xref and $xml2rfc-ext-include-references-in-index='yes')" />
@@ -1878,7 +1895,14 @@
     <xsl:when test="$ipr-rfc3667">
       <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
         <t>
-          Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).
+          <xsl:choose>
+            <xsl:when test="$ipr-rfc4748">
+              Copyright &#169; The IETF Trust (<xsl:value-of select="/rfc/front/date/@year" />).
+            </xsl:when>
+            <xsl:otherwise>
+              Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).
+            </xsl:otherwise>
+          </xsl:choose>
         </t>
         <t>
           This document is subject to the rights, licenses and restrictions
@@ -1886,17 +1910,35 @@
           retain all their rights.
         </t>
         <t>
-          This document and the information contained herein are provided on an
-          &#8220;AS IS&#8221; basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS
-          OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET
-          ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED,
-          INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE 
-          INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED 
-          WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+          <xsl:choose>
+            <xsl:when test="$ipr-rfc4748">
+              This document and the information contained herein are provided
+              on an &#8220;AS IS&#8221; basis and THE CONTRIBUTOR,
+              THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY),
+              THE INTERNET SOCIETY, THE IETF TRUST AND THE INTERNET ENGINEERING
+              TASK FORCE DISCLAIM ALL WARRANTIES,
+              EXPRESS OR IMPLIED,
+              INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE
+              INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED
+              WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+            </xsl:when>
+            <xsl:otherwise>
+              This document and the information contained herein are provided
+              on an &#8220;AS IS&#8221; basis and THE CONTRIBUTOR,
+              THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY),
+              THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM
+              ALL WARRANTIES,
+              EXPRESS OR IMPLIED,
+              INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE
+              INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED
+              WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+            </xsl:otherwise>
+          </xsl:choose>
         </t>
       </section>    
     </xsl:when>
     <xsl:otherwise>
+      <!-- <http://tools.ietf.org/html/rfc2026#section-10.4> -->
       <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
         <t>
           Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
@@ -2851,7 +2893,14 @@ table.closedissue {
 
   <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice">
   <t>
-    Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
+    <xsl:choose>
+      <xsl:when test="$ipr-rfc4748">
+        Copyright &#169; The IETF Trust (<xsl:value-of select="/rfc/front/date/@year" />).  All Rights Reserved.
+      </xsl:when>
+      <xsl:otherwise>
+        Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).  All Rights Reserved.
+      </xsl:otherwise>
+    </xsl:choose>
   </t>
   </section>
   
@@ -4036,11 +4085,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.290 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.290 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.291 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.291 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/10/28 14:30:11 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/10/28 14:30:11 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/10/29 09:03:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/10/29 09:03:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
