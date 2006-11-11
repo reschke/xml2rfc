@@ -1450,50 +1450,54 @@
 <xsl:template name="render-section-ref">
   <xsl:param name="from" />
   <xsl:param name="to" />
-  <xsl:variable name="target" select="$from/@target" />
 
-  <a href="#{$target}">
-    <xsl:variable name="refname">
-      <xsl:for-each select="$to">
-        <xsl:call-template name="get-section-type">
-          <xsl:with-param name="prec" select="$from/preceding-sibling::node()[1]" />
-        </xsl:call-template>
-      </xsl:for-each>
-    </xsl:variable>
-    <xsl:variable name="refnum">
-      <xsl:for-each select="$to">
-        <xsl:call-template name="get-section-number" />
-      </xsl:for-each>
-    </xsl:variable>
-    <xsl:attribute name="title">
-      <xsl:value-of select="$to/@title" />
-    </xsl:attribute>
-    <xsl:choose>
-      <xsl:when test="@format='counter'">
-        <xsl:value-of select="$refnum"/>
-      </xsl:when>
-      <xsl:when test="@format='title'">
-        <xsl:value-of select="$to/@title"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </a>
+  <xsl:variable name="refname">
+    <xsl:for-each select="$to">
+      <xsl:call-template name="get-section-type">
+        <xsl:with-param name="prec" select="$from/preceding-sibling::node()[1]" />
+      </xsl:call-template>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:variable name="refnum">
+    <xsl:for-each select="$to">
+      <xsl:call-template name="get-section-number" />
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:attribute name="title">
+    <xsl:value-of select="$to/@title" />
+  </xsl:attribute>
+  <xsl:choose>
+    <xsl:when test="@format='counter'">
+      <xsl:value-of select="$refnum"/>
+    </xsl:when>
+    <xsl:when test="@format='title'">
+      <xsl:value-of select="$to/@title"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="xref[node()]">
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="$src//*[@anchor=$target]" />
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
   <xsl:choose>
     <xsl:when test="local-name($node)='section' or local-name($node)='appendix'">
       <xsl:apply-templates/>
       <xsl:variable name="context" select="."/>
       <xsl:text> (</xsl:text>
-      <xsl:call-template name="render-section-ref">
-        <xsl:with-param name="from" select="."/>
-        <xsl:with-param name="to" select="$node"/>
-      </xsl:call-template>
+      <a href="#{@target}">
+        <!-- insert id when a backlink to this xref is needed in the index -->
+        <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]">
+          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+        </xsl:if>
+        <xsl:call-template name="render-section-ref">
+          <xsl:with-param name="from" select="."/>
+          <xsl:with-param name="to" select="$node"/>
+        </xsl:call-template>
+      </a>
       <xsl:text>)</xsl:text>
     </xsl:when>
     <xsl:otherwise>
@@ -1521,10 +1525,16 @@
   </xsl:if>
   <xsl:choose>
     <xsl:when test="local-name($node)='section' or local-name($node)='appendix'">
-      <xsl:call-template name="render-section-ref">
-        <xsl:with-param name="from" select="."/>
-        <xsl:with-param name="to" select="$node"/>
-      </xsl:call-template>
+      <a href="#{@target}">
+        <!-- insert id when a backlink to this xref is needed in the index -->
+        <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]">
+          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+        </xsl:if>
+        <xsl:call-template name="render-section-ref">
+          <xsl:with-param name="from" select="."/>
+          <xsl:with-param name="to" select="$node"/>
+        </xsl:call-template>
+      </a>
     </xsl:when>
     <xsl:when test="local-name($node)='figure'">
       <a href="#{$target}">
@@ -2498,7 +2508,26 @@ table.closedissue {
           <xsl:otherwise>&#167;</xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
-      <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" /></xsl:variable>
+      <xsl:variable name="backlink">
+        <xsl:choose>
+          <xsl:when test="self::xref">
+            <xsl:variable name="target" select="@target"/>
+            <xsl:text>#</xsl:text>
+            <xsl:value-of select="$anchor-prefix"/>
+            <xsl:text>.xref.</xsl:text>
+            <xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/>
+          </xsl:when>
+          <xsl:when test="self::iref">
+            <xsl:text>#</xsl:text>
+            <xsl:value-of select="$anchor-prefix"/>
+            <xsl:text>.iref.</xsl:text>
+            <xsl:number level="any"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:message>Unsupported element type for insertSingleIref</xsl:message>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
       <a class="iref" href="{$backlink}">
         <xsl:call-template name="insertInsDelClass"/>
         <xsl:choose>
@@ -2665,8 +2694,11 @@ table.closedissue {
                         </xsl:choose>
                         <xsl:text>&#160;&#160;</xsl:text>
                         
-                        <xsl:for-each select="key('index-item',@item)[not(@subitem) or @subitem='']">
-                          <xsl:sort select="translate(@item,$lcase,$ucase)" />
+                        <xsl:variable name="irefs3" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
+                        <xsl:variable name="xrefs3" select="//xref[@target=$irefs3[@x:for-anchor='']/../@anchor or @target=$irefs3/@x:for-anchor]"/>
+
+                        <xsl:for-each select="$irefs3|$xrefs3">
+                          <!-- <xsl:sort select="translate(@item,$lcase,$ucase)" />  -->
                           <xsl:call-template name="insertSingleIref" />
                         </xsl:for-each>
           
@@ -2693,8 +2725,11 @@ table.closedissue {
                                   </xsl:choose>
                                   <xsl:text>&#160;&#160;</xsl:text>
                                     
-                                  <xsl:for-each select="key('index-item-subitem',concat(@item,'..',@subitem))">
-                                    <xsl:sort select="translate(@item,$lcase,$ucase)" />                    
+                                  <xsl:variable name="irefs4" select="key('index-item-subitem',concat(@item,'..',@subitem))"/>
+                                  <xsl:variable name="xrefs4" select="//xref[@target=$irefs4[@x:for-anchor='']/../@anchor or @target=$irefs4/@x:for-anchor]"/>
+
+                                  <xsl:for-each select="$irefs4|$xrefs4">
+                                    <!--<xsl:sort select="translate(@item,$lcase,$ucase)" />-->                    
                                     <xsl:call-template name="insertSingleIref" />
                                   </xsl:for-each>
                 
@@ -4085,11 +4120,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.291 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.291 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.292 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.292 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/10/29 09:03:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/10/29 09:03:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/11/11 15:00:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/11/11 15:00:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
