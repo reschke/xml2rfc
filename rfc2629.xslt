@@ -1522,6 +1522,18 @@
   <xsl:variable name="node" select="$src//*[@anchor=$target]" />
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
   <xsl:choose>
+    <xsl:when test="@x:fmt='none'">
+      <a href="#{@target}">
+        <xsl:if test="local-name($node)='reference' and $xml2rfc-ext-include-references-in-index='yes'">
+          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+        </xsl:if>
+        <!-- insert id when a backlink to this xref is needed in the index -->
+        <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]">
+          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+        </xsl:if>
+        <xsl:apply-templates/>
+      </a>
+    </xsl:when>
     <xsl:when test="local-name($node)='section' or local-name($node)='appendix'">
       <xsl:apply-templates/>
       <xsl:variable name="context" select="."/>
@@ -4158,11 +4170,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.296 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.296 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.297 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.297 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/11/30 20:16:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/11/30 20:16:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/12/03 19:45:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/12/03 19:45:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
