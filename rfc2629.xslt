@@ -347,6 +347,27 @@
   }
 </msxsl:script>
 
+<xsl:template name="add-artwork-class">
+  <xsl:choose>
+    <xsl:when test="@type='abnf' or @type='abnf2616' or @type='dtd'">
+      <xsl:attribute name="class">abnf</xsl:attribute>
+    </xsl:when>
+    <xsl:when test="starts-with(@type,'message/http') and contains(@type,'msgtype=&quot;request&quot;')">
+      <xsl:attribute name="class">text2</xsl:attribute>
+    </xsl:when>
+    <xsl:when test="starts-with(@type,'message/http')">
+      <xsl:attribute name="class">text</xsl:attribute>
+    </xsl:when>
+    <xsl:when test="starts-with(@type,'drawing')">
+      <xsl:attribute name="class">drawing</xsl:attribute>
+    </xsl:when>
+    <xsl:when test="starts-with(@type,'text/plain') or @type='example'">
+      <xsl:attribute name="class">text</xsl:attribute>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="artwork">
   <xsl:if test="not(ancestor::ed:del) and $xml2rfc-ext-parse-xml-in-artwork='yes' and function-available('myns:parseXml')">
     <xsl:if test="contains(.,'&lt;?xml')">
@@ -387,16 +408,18 @@
   </xsl:variable>  
   <xsl:choose>
     <xsl:when test="@align='right'">
-      <div style="display:table; margin-left: auto; margin-right: 0pt; width: 0pt;">
+      <div style="display:table; margin-left: auto; margin-right: 0pt;">
         <pre style="margin-left: 0em;">
+          <xsl:call-template name="add-artwork-class"/>
           <xsl:call-template name="insertInsDelClass"/>
           <xsl:copy-of select="$display"/>
         </pre>          
       </div>
     </xsl:when>
     <xsl:when test="@align='center'">
-      <div style="display:table; margin-left: auto; margin-right: auto; width: 0pt;">
+      <div style="display:table; margin-left: auto; margin-right: auto;">
         <pre style="margin-left: 0em;">
+          <xsl:call-template name="add-artwork-class"/>
           <xsl:call-template name="insertInsDelClass"/>
           <xsl:copy-of select="$display"/>
         </pre>          
@@ -404,6 +427,7 @@
     </xsl:when>
     <xsl:otherwise>
       <pre>
+        <xsl:call-template name="add-artwork-class"/>
         <xsl:call-template name="insertInsDelClass"/>
         <xsl:copy-of select="$display"/>
       </pre>
@@ -2219,6 +2243,28 @@ p {
 pre {
   margin-left: 3em;
   background-color: lightyellow;
+  padding: .25em;
+}
+pre.text2 {
+  border-style: dotted;
+  border-width: 1px;
+  background-color: #f0f0f0;
+  width: 69em;
+}
+pre.abnf {
+  background-color: white;
+}
+pre.text {
+  border-style: dotted;
+  border-width: 1px;
+  background-color: #f8f8f8;
+  width: 69em;
+}
+pre.drawing {
+  border-style: solid;
+  border-width: 1px;
+  background-color: #f8f8f8;
+  padding: 2em;
 }
 <xsl:if test="//x:q">
 q {
@@ -4170,11 +4216,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.297 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.297 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.298 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.298 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/12/03 19:45:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/12/03 19:45:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/12/04 16:53:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/12/04 16:53:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
