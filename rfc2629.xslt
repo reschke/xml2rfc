@@ -1683,7 +1683,13 @@
           <xsl:when test="@x:fmt='of' or @x:fmt='sec'">
             <xsl:choose>
               <xsl:when test="$href!=''">
-                <a href="{$href}">Section <xsl:value-of select="@x:sec"/></a>
+                <a href="{$href}">
+                  <xsl:if test="@x:fmt='sec' and $xml2rfc-ext-include-references-in-index='yes'">
+                    <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+                  </xsl:if>
+                  <xsl:text>Section </xsl:text>
+                  <xsl:value-of select="@x:sec"/>
+                </a>
               </xsl:when>
               <xsl:otherwise>Section <xsl:value-of select="@x:sec"/></xsl:otherwise>
             </xsl:choose>
@@ -1694,7 +1700,12 @@
           <xsl:when test="@x:fmt='number'">
             <xsl:choose>
               <xsl:when test="$href!=''">
-                <a href="{$href}"><xsl:value-of select="@x:sec"/></a>
+                <a href="{$href}">
+                  <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+                    <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+                  </xsl:if>
+                  <xsl:value-of select="@x:sec"/>
+                </a>
               </xsl:when>
               <xsl:otherwise><xsl:value-of select="@x:sec"/></xsl:otherwise>
             </xsl:choose>
@@ -4227,11 +4238,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.302 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.302 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.303 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.303 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/12/06 14:43:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/12/06 14:43:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/12/07 19:58:23 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/12/07 19:58:23 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
