@@ -1545,14 +1545,18 @@
 </xsl:template>
 
 <xsl:template match="xref[node()]">
+
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="$src//*[@anchor=$target]" />
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
+
   <xsl:choose>
+
+    <!-- x:fmt='none': do not generate any links -->
     <xsl:when test="@x:fmt='none'">
       <xsl:choose>
-        <xsl:when test="local-name($node)='reference'">
-        <cite title="{normalize-space($node/front/title)}">
+        <xsl:when test="name($node)='reference'">
+          <cite title="{normalize-space($node/front/title)}">
             <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
               <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
             </xsl:if>
@@ -1568,7 +1572,15 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
-    <xsl:when test="local-name($node)='section' or local-name($node)='appendix'">
+  
+    <!-- Other x:fmt values than "none": unsupported -->
+    <xsl:when test="@x:fmt and @x:fmt!='none'">
+      <xsl:message>unknown xref/@x:fmt extension: <xsl:value-of select="@x:fmt"/></xsl:message>
+      <span class="error">unknown xref/@x:fmt extension: <xsl:value-of select="@x:fmt"/></span>
+    </xsl:when>
+
+    <!-- Section links -->
+    <xsl:when test="name($node)='section' or name($node)='appendix'">
       <xsl:apply-templates/>
       <xsl:variable name="context" select="."/>
       <xsl:text> (</xsl:text>
@@ -1584,6 +1596,7 @@
       </a>
       <xsl:text>)</xsl:text>
     </xsl:when>
+
     <xsl:otherwise>
       <a href="#{$target}"><xsl:apply-templates /></a>
       <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
@@ -1596,9 +1609,11 @@
       </xsl:for-each>
     </xsl:otherwise>
   </xsl:choose>
+
 </xsl:template>
                
 <xsl:template match="xref[not(node())]">
+
   <xsl:variable name="context" select="." />
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
@@ -1607,8 +1622,11 @@
     <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
     <span class="error">Undefined target: <xsl:value-of select="@target" /></span>
   </xsl:if>
+
   <xsl:choose>
-    <xsl:when test="local-name($node)='section' or local-name($node)='appendix'">
+  
+    <!-- Section links -->
+    <xsl:when test="name($node)='section' or name($node)='appendix'">
       <a href="#{@target}">
         <!-- insert id when a backlink to this xref is needed in the index -->
         <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]">
@@ -1620,7 +1638,9 @@
         </xsl:call-template>
       </a>
     </xsl:when>
-    <xsl:when test="local-name($node)='figure'">
+
+    <!-- Figure links -->
+    <xsl:when test="name($node)='figure'">
       <a href="#{$target}">
         <xsl:variable name="figcnt">
           <xsl:for-each select="$node">
@@ -1640,7 +1660,9 @@
         </xsl:choose>
       </a>
     </xsl:when>
-    <xsl:when test="local-name($node)='texttable'">
+    
+    <!-- Table links -->
+    <xsl:when test="name($node)='texttable'">
       <a href="#{$target}">
         <xsl:variable name="tabcnt">
           <xsl:for-each select="$node">
@@ -1660,7 +1682,10 @@
         </xsl:choose>
       </a>
     </xsl:when>
-    <xsl:otherwise>
+    
+    <!-- Reference links -->
+    <xsl:when test="name($node)='reference'">
+
       <xsl:variable name="href">
         <xsl:call-template name="computed-target">
           <xsl:with-param name="bib" select="$node"/>
@@ -1678,7 +1703,13 @@
         number  SS
       -->
       
+      <xsl:if test="@x:fmt and not(@x:fmt='()' or @x:fmt=',' or @x:fmt='of' or @x:fmt='sec' or @x:fmt='anchor' or @x:fmt='number')">
+        <xsl:message>unknown xref/@x:fmt extension: <xsl:value-of select="@x:fmt"/></xsl:message>
+        <span class="error">unknown xref/@x:fmt extension: <xsl:value-of select="@x:fmt"/></span>
+      </xsl:if>
+
       <xsl:if test="@x:sec">
+
         <xsl:choose>
           <xsl:when test="@x:fmt='of' or @x:fmt='sec'">
             <xsl:choose>
@@ -1710,11 +1741,7 @@
               <xsl:otherwise><xsl:value-of select="@x:sec"/></xsl:otherwise>
             </xsl:choose>
           </xsl:when>
-          <xsl:when test="@x:fmt=','"/>
-          <xsl:when test="@x:fmt='()'"/>
-          <xsl:otherwise>
-            <xsl:message>UNKNOWN xref x:fmt: <xsl:value-of select="@x:fmt"/></xsl:message>
-          </xsl:otherwise>
+          <xsl:otherwise/>
         </xsl:choose>
       </xsl:if>
 
@@ -1724,9 +1751,20 @@
             <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
           </xsl:if>
           <cite title="{normalize-space($node/front/title)}">
-            <xsl:call-template name="referencename">
-              <xsl:with-param name="node" select="$node" />
-            </xsl:call-template>
+            <xsl:variable name="val">
+              <xsl:call-template name="referencename">
+                <xsl:with-param name="node" select="$node" />
+              </xsl:call-template>
+            </xsl:variable>
+            <xsl:choose>
+              <xsl:when test="@x:fmt='anchor'">
+                <!-- remove brackets -->
+                <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$val"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </cite>
         </a>
       </xsl:if>
@@ -1755,7 +1793,11 @@
           <xsl:otherwise/>
         </xsl:choose>
       </xsl:if>
-      
+    </xsl:when>
+    
+    <xsl:otherwise>
+      <xsl:message>xref to unknown element: <xsl:value-of select="name($node)"/></xsl:message>
+      <span class="error">xref to unknown element: <xsl:value-of select="name($node)"/></span>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -3347,6 +3389,7 @@ table.closedissue {
 
 <xsl:template name="referencename">
   <xsl:param name="node" />
+  
   <xsl:for-each select="$node">
     <xsl:choose>
       <xsl:when test="$xml2rfc-symrefs='yes' and ancestor::ed:del">
@@ -4238,11 +4281,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.303 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.303 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.304 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.304 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2006/12/07 19:58:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/12/07 19:58:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2006/12/10 14:47:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2006/12/10 14:47:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
