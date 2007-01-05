@@ -1813,7 +1813,7 @@
 </xsl:template>
 
 <xsl:template match="/">
-  <xsl:copy><xsl:apply-templates select="node()" /></xsl:copy>
+  <xsl:apply-templates select="*" />
 </xsl:template>
 
 
@@ -4281,11 +4281,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.308 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.308 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.309 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.309 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/01/05 10:36:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/01/05 10:36:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/01/05 22:09:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/01/05 22:09:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
