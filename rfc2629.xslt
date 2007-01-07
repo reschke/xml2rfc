@@ -2062,7 +2062,7 @@
               This document and the information contained herein are provided
               on an &#8220;AS IS&#8221; basis and THE CONTRIBUTOR,
               THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY),
-              THE INTERNET SOCIETY, THE IETF TRUST, AND THE INTERNET ENGINEERING
+              THE INTERNET SOCIETY, THE IETF TRUST AND THE INTERNET ENGINEERING
               TASK FORCE DISCLAIM ALL WARRANTIES,
               EXPRESS OR IMPLIED,
               INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE
@@ -2073,7 +2073,7 @@
               This document and the information contained herein are provided
               on an &#8220;AS IS&#8221; basis and THE CONTRIBUTOR,
               THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY),
-              THE INTERNET SOCIETY, AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM
+              THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM
               ALL WARRANTIES,
               EXPRESS OR IMPLIED,
               INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE
@@ -2188,8 +2188,8 @@
   
   <section title="Acknowledgement" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
     <t>
-      Funding for the RFC Editor function is currently provided by the Internet
-      Society.
+      Funding for the RFC Editor function is provided by the IETF
+      Administrative Support Activity (IASA).
     </t>
   </section>
 
@@ -4281,11 +4281,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.309 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.309 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.310 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.310 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/01/05 22:09:51 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/01/05 22:09:51 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/01/07 13:32:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/01/07 13:32:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
