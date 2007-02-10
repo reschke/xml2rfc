@@ -4056,10 +4056,12 @@ table.closedissue {
       </thead>
       <tbody>
         <xsl:variable name="columns" select="count(ttcol)" />
-        <xsl:for-each select="c[(position() mod $columns) = 1]">
+        <xsl:variable name="fields" select="c | ed:replace/ed:ins/c | ed:replace/ed:del/c" />
+        <xsl:for-each select="$fields[(position() mod $columns) = 1]">
           <tr>
             <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
               <td>
+                <xsl:call-template name="insertInsDelClass"/>
                 <xsl:variable name="pos" select="position()" />
                 <xsl:variable name="col" select="../ttcol[position() = $pos]" />
                 <xsl:choose>
@@ -4289,11 +4291,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.313 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.313 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.314 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.314 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/01/29 09:43:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/01/29 09:43:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/02/10 15:52:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/02/10 15:52:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
