@@ -92,6 +92,14 @@
         'inline=')"
 />
 
+<!-- rfc strict PI -->
+
+<xsl:param name="xml2rfc-strict"
+  select="substring-after(
+      translate(/processing-instruction('rfc')[contains(.,'strict=')], concat($quote-chars,' '), ''),
+        'strict=')"
+/>
+
 <!-- include a table of contents if a processing instruction <?rfc?>
      exists with contents toc="yes". Can be overriden by an XSLT parameter -->
 
@@ -1316,6 +1324,12 @@
 
 
 <xsl:template match="t">
+  <xsl:if test="preceding-sibling::section or preceding-sibling::appendix">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">The paragraph below is misplaced; maybe a section is closed in the wrong place: </xsl:with-param>
+      <xsl:with-param name="msg2"><xsl:value-of select="."/></xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
   <xsl:choose>
     <xsl:when test="@anchor">
       <div id="{@anchor}"><xsl:apply-templates mode="t-content" select="node()[1]" /></div>
@@ -2461,8 +2475,9 @@ blockquote > * .bcp14 {
   text-align: center;
 }
 .error {
-  font-size: 14pt;
-  background-color: red;
+  color: red;
+  font-style: italic;
+  font-weight: bold;
 }
 .figure {
   font-weight: bold;
@@ -4026,6 +4041,15 @@ table.closedissue {
   </xsl:choose>
 </xsl:template>
 
+<!-- utilities for warnings -->
+
+<xsl:template name="warning">
+  <xsl:param name="msg"/>
+  <xsl:param name="msg2"/>
+  <div class="error">WARNING: <xsl:value-of select="$msg"/></div>
+  <xsl:message>WARNING: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/></xsl:message>
+</xsl:template>
+
 <!-- table formatting -->
 
 <xsl:template match="texttable">
@@ -4291,11 +4315,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.315 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.315 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.316 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.316 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/03/05 13:58:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/05 13:58:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/03/09 13:17:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/09 13:17:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
