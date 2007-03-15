@@ -1624,6 +1624,9 @@
       <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
         <xsl:text> </xsl:text>
         <cite title="{normalize-space(front/title)}">
+          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+            <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+          </xsl:if>
           <xsl:call-template name="referencename">
              <xsl:with-param name="node" select="." />
           </xsl:call-template>
@@ -4315,11 +4318,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.316 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.316 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.317 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.317 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/03/09 13:17:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/09 13:17:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/03/15 13:26:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/15 13:26:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
