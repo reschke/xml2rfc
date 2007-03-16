@@ -1965,8 +1965,8 @@
     <xsl:variable name="pos" select="position()" />
     <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1"> 
       <tr>
-        <td class="front left"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
-        <td class="front right"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
+        <td class="header left"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
+        <td class="header right"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
       </tr>
     </xsl:if>
   </xsl:for-each>
@@ -2406,7 +2406,7 @@ td.topnowrap {
   vertical-align: top;
   white-space: nowrap; 
 }
-td.front {
+td.header {
   background-color: gray;
   width: 50%;
 }
@@ -2594,21 +2594,12 @@ table.closedissue {
     width: 90%;
   }
 
-  td.header-l {
+  td.header {
     width: 50%;
     color: black;
     background-color: white;
     vertical-align: top;
-    font-size: 10pt;
-  }
-
-  td.header-r {
-    width: 33%;
-    color: black;
-    background-color: white;
-    vertical-align: top;
-    text-align: right;
-    font-size: 10pt;
+    font-size: 12pt;
   }
 
   ul.toc a::after {
@@ -4318,11 +4309,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.317 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.317 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.318 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.318 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/03/15 13:26:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/15 13:26:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/03/16 17:32:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/16 17:32:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
