@@ -220,6 +220,14 @@
         'authors-section=')"
 />
 
+<!-- justification? -->
+
+<xsl:param name="xml2rfc-ext-justification"
+  select="substring-after(
+      translate(/processing-instruction('rfc-ext')[contains(.,'justification=')], concat($quote-chars,' '), ''),
+        'justification=')"
+/>
+
 <!-- trailing dots in section numbers -->
 
 <xsl:param name="xml2rfc-ext-sec-no-trailing-dots"
@@ -2260,7 +2268,9 @@ cite {
 }
 dd {
   margin-right: 2em;
-}
+<xsl:if test="$xml2rfc-ext-justification='always'">
+  text-align: justify;
+</xsl:if>}
 dl {
   margin-left: 2em;
 }
@@ -2322,7 +2332,9 @@ img {
 li {
   margin-left: 2em;
   margin-right: 2em;
-}
+<xsl:if test="$xml2rfc-ext-justification='always'">
+  text-align: justify;
+</xsl:if>}
 ol {
   margin-left: 2em;
   margin-right: 2em;
@@ -2330,7 +2342,9 @@ ol {
 p {
   margin-left: 2em;
   margin-right: 2em;
-}
+<xsl:if test="$xml2rfc-ext-justification='always'">
+  text-align: justify;
+</xsl:if>}
 pre {
   margin-left: 3em;
   background-color: lightyellow;
@@ -2628,7 +2642,17 @@ table.closedissue {
     -moz-column-count: 2;<!-- for Firefox -->
     column-fill: auto;<!-- for PrinceXML -->
   }
-}
+<xsl:if test="$xml2rfc-ext-justification='print'">
+  dd {
+    text-align: justify;
+  }
+  li {
+    text-align: justify;
+  }
+  p {
+    text-align: justify;
+  }
+</xsl:if>}
 
 @page {
   @top-left {
@@ -4323,11 +4347,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.319 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.319 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.320 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.320 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/03/20 08:32:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/20 08:32:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/03/20 17:12:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/20 17:12:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
