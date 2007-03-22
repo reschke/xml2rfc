@@ -741,13 +741,26 @@
 
 
 <xsl:template match="iref">
-  <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any"/></xsl:variable>
+  <xsl:variable name="anchor"><xsl:call-template name="compute-iref-anchor"/></xsl:variable>
   <xsl:choose>
     <xsl:when test="ancestor::t|ancestor::figure">
       <span id="{$anchor}"/>
     </xsl:when>
     <xsl:otherwise>
       <div id="{$anchor}"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="compute-iref-anchor">
+  <xsl:variable name="first" select="translate(substring(@item,1,1),$ucase,$lcase)"/>
+  <xsl:variable name="nkey" select="translate($first,$lcase,'')"/>
+  <xsl:choose>
+    <xsl:when test="$nkey=''">
+      <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:value-of select="$first"/>.<xsl:number level="any" count="iref[starts-with(translate(@item,$ucase,$lcase),$first)]"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" count="iref[translate(substring(@item,1,1),concat($lcase,$ucase),'')='']"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -2734,9 +2747,7 @@ table.closedissue {
           </xsl:when>
           <xsl:when test="self::iref">
             <xsl:text>#</xsl:text>
-            <xsl:value-of select="$anchor-prefix"/>
-            <xsl:text>.iref.</xsl:text>
-            <xsl:number level="any"/>
+            <xsl:call-template name="compute-iref-anchor"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:message>Unsupported element type for insertSingleIref</xsl:message>
@@ -4347,11 +4358,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.320 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.320 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.321 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.321 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/03/20 17:12:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/20 17:12:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/03/22 13:47:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/22 13:47:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
