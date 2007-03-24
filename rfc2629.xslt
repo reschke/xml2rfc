@@ -480,7 +480,7 @@
       <xsl:variable name="start" select="substring-before($content,'&#10;')"/> 
       <xsl:variable name="end" select="substring-after($content,'&#10;')"/> 
       <xsl:if test="string-length($start) > 69">
-        <xsl:message>artwork line too long: <xsl:value-of select="$start"/></xsl:message>
+        <xsl:message>WARNING: artwork line too long: <xsl:value-of select="$start"/></xsl:message>
       </xsl:if>
       <xsl:call-template name="check-artwork-width">
         <xsl:with-param name="content" select="$end"/>
@@ -4358,11 +4358,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.321 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.321 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.322 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.322 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/03/22 13:47:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/22 13:47:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/03/24 15:12:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/24 15:12:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
