@@ -1177,11 +1177,13 @@
     <xsl:if test="ancestor::ed:del">
       <xsl:text>del-</xsl:text>
     </xsl:if>
-    <xsl:number/>      
+    <xsl:number level="any"/>      
   </xsl:variable>
+  
+  <xsl:variable name="refseccount" select="count(/rfc/back/references)+count(/rfc/back/ed:replace/ed:ins/references)"/>
 
   <!-- insert pseudo section when needed -->
-  <xsl:if test="$name='1' and count(/*/back/references)!=1">
+  <xsl:if test="$name='1' and $refseccount!=1">
     <xsl:call-template name="insert-conditional-hrule"/>
     <h1 id="{$anchor-prefix}.references">
       <xsl:call-template name="insert-conditional-pagebreak"/>
@@ -1199,7 +1201,7 @@
   
   <xsl:variable name="elemtype">
     <xsl:choose>
-      <xsl:when test="count(/*/back/references)!=1">h2</xsl:when>
+      <xsl:when test="$refseccount!=1">h2</xsl:when>
       <xsl:otherwise>h1</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -3292,12 +3294,14 @@ table.closedissue {
   as toplevel section; (b) multiple references sections (add one toplevel
   container with subsection) -->
 
+  <xsl:variable name="refsecs" select="/rfc/back/references|/rfc/back/ed:replace/ed:ins/references"/>
+   
   <xsl:choose>
-    <xsl:when test="count(/*/back/references) = 0">
+    <xsl:when test="count($refsecs) = 0">
       <!-- nop -->
     </xsl:when>
-    <xsl:when test="count(/*/back/references) = 1">
-      <xsl:for-each select="/*/back/references">
+    <xsl:when test="count($refsecs) = 1">
+      <xsl:for-each select="$refsecs">
         <xsl:variable name="title">
           <xsl:choose>
             <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
@@ -3329,7 +3333,7 @@ table.closedissue {
   
         <ul class="toc">
           <!-- ...with subsections... -->    
-          <xsl:for-each select="/*/back/references">
+          <xsl:for-each select="$refsecs">
             <xsl:variable name="title">
               <xsl:choose>
                 <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
@@ -3342,7 +3346,7 @@ table.closedissue {
             </xsl:variable>
     
             <xsl:variable name="num">
-              <xsl:number/>
+              <xsl:number level="any"/>
             </xsl:variable>
     
             <li>
@@ -4072,8 +4076,8 @@ table.closedissue {
     </xsl:when>
     <xsl:when test="self::references">
       <xsl:choose>
-        <xsl:when test="count(/*/back/references)=1"><xsl:call-template name="get-references-section-number"/></xsl:when>
-        <xsl:otherwise><xsl:call-template name="get-references-section-number"/>.<xsl:number/></xsl:otherwise>
+        <xsl:when test="count(/*/back/references)+count(/*/back/ed:replace/ed:ins/references)=1"><xsl:call-template name="get-references-section-number"/></xsl:when>
+        <xsl:otherwise><xsl:call-template name="get-references-section-number"/>.<xsl:number level="any"/></xsl:otherwise>
       </xsl:choose>
     </xsl:when>
     <xsl:when test="self::middle or self::back"><!-- done --></xsl:when>
@@ -4358,11 +4362,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.322 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.322 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.323 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.323 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/03/24 15:12:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/24 15:12:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/03/28 12:52:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/28 12:52:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -4431,7 +4435,7 @@ table.closedissue {
 
 <!-- get the section number for the references section -->
 <xsl:template name="get-references-section-number">
-  <xsl:value-of select="count(/rfc/middle/section) + 1"/>
+  <xsl:value-of select="count(/rfc/middle/section) + count(/rfc/middle/ed:replace/ed:ins/section) + 1"/>
 </xsl:template>
 
 <xsl:template name="emit-section-number">
