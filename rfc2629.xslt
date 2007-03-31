@@ -365,7 +365,7 @@
 
 <xsl:template name="add-artwork-class">
   <xsl:choose>
-    <xsl:when test="@type='abnf' or @type='abnf2616' or @type='application/xml-dtd' or @type='rnc'">
+    <xsl:when test="@type='abnf' or @type='abnf2616' or @type='application/xml-dtd' or @type='inline' or @type='rnc'">
       <xsl:attribute name="class">inline</xsl:attribute>
     </xsl:when>
     <xsl:when test="starts-with(@type,'message/http') and contains(@type,'msgtype=&quot;request&quot;')">
@@ -4362,11 +4362,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.323 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.323 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.324 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.324 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/03/28 12:52:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/28 12:52:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/03/31 18:46:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/31 18:46:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
