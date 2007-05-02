@@ -3936,12 +3936,14 @@ table.closedissue {
     <xsl:variable name="total" select="count(//*[@ed:resolves=$resolves or ed:resolves=$resolves])" />
     <xsl:variable name="id">
       <xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" />
-      <xsl:if test="$deleted-anchor">.deleted</xsl:if>
     </xsl:variable>
     <xsl:choose>
       <!-- block level? -->
       <xsl:when test="not(ancestor::t) and not(ancestor::title) and not(ancestor::figure) and not($change/@ed:old-title)">
-        <div class="issuepointer noprint" id="{$id}">
+        <div class="issuepointer noprint">
+          <xsl:if test="not($deleted-anchor)">
+            <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+          </xsl:if>
           <xsl:if test="$count > 1">
             <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count - 1}">&#x2191;</a>
           </xsl:if>
@@ -3969,7 +3971,10 @@ table.closedissue {
         <xsl:if test="$count > 1">
           <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count - 1}">&#x2191;</a>
         </xsl:if>
-        <a title="resolves: {$resolves}" id="{$id}" href="#{$anchor-prefix}.issue.{$resolves}">
+        <a title="resolves: {$resolves}" href="#{$anchor-prefix}.issue.{$resolves}">
+          <xsl:if test="not($deleted-anchor)">
+            <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+          </xsl:if>
           <xsl:choose>
             <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
               <xsl:attribute name="class">closed-issue noprint</xsl:attribute>
@@ -4362,11 +4367,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.324 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.324 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.325 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.325 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/03/31 18:46:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/03/31 18:46:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/05/02 14:17:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/02 14:17:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
