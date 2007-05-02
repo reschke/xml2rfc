@@ -864,8 +864,13 @@
   <xsl:if test="@hangText!=''">
     <dt>
       <xsl:call-template name="insertInsDelClass"/>
+      <xsl:variable name="del-node" select="ancestor::ed:del"/>
+      <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
+      <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
       <xsl:for-each select="../..">
-        <xsl:call-template name="insert-issue-pointer"/>
+        <xsl:call-template name="insert-issue-pointer">
+          <xsl:with-param name="deleted-anchor" select="$deleted"/>
+        </xsl:call-template>
       </xsl:for-each>
       <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
       <xsl:value-of select="@hangText" />
@@ -890,9 +895,16 @@
   <xsl:if test="@hangText!=''">
     <dt>
       <xsl:call-template name="insertInsDelClass"/>
-      <xsl:for-each select="../..">
-        <xsl:call-template name="insert-issue-pointer"/>
-      </xsl:for-each>
+      <xsl:if test="count(preceding-sibling::t)=0">
+        <xsl:variable name="del-node" select="ancestor::ed:del"/>
+        <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
+        <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
+        <xsl:for-each select="../..">
+          <xsl:call-template name="insert-issue-pointer">
+            <xsl:with-param name="deleted-anchor" select="$deleted"/>
+          </xsl:call-template>
+        </xsl:for-each>
+      </xsl:if>
       <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
       <xsl:value-of select="@hangText" />
     </dt>
@@ -1227,7 +1239,7 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:attribute name="id"><xsl:value-of select="concat($anchor-prefix,'.references',$anchorpref)"/></xsl:attribute>
-    <a href="#{$anchor-prefix}.section.{$sectionNumber}">
+    <a href="#{$anchor-prefix}.section.{$sectionNumber}" id="{$anchor-prefix}.section.{$sectionNumber}">
       <xsl:call-template name="emit-section-number">
         <xsl:with-param name="no" select="$sectionNumber"/>
       </xsl:call-template>
@@ -4367,11 +4379,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.325 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.325 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.326 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.326 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/05/02 14:17:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/02 14:17:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/05/02 18:55:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/02 18:55:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
