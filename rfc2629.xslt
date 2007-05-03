@@ -840,12 +840,7 @@
 <xsl:template match="list[@style='numbers' or @style='symbols' or @style='letters']/x:lt">
   <li>
     <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
-    <xsl:for-each select="t">
-      <p style="margin-left: 0em;">
-        <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
-        <xsl:apply-templates/>
-      </p>
-    </xsl:for-each>
+    <xsl:apply-templates select="t" />
   </li>
 </xsl:template>
 
@@ -882,12 +877,7 @@
     <xsl:if test="../@hangIndent and ../@hangIndent!='0'">
       <xsl:attribute name="style">margin-left: <xsl:value-of select="../@hangIndent * 0.7"/>em</xsl:attribute>
     </xsl:if>
-    <xsl:for-each select="t">
-      <p style="margin-top: 0em; margin-left: 0em;">
-        <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
-        <xsl:apply-templates/>
-      </p>
-    </xsl:for-each>
+    <xsl:apply-templates select="t" />
   </dd>
 </xsl:template>
 
@@ -909,14 +899,21 @@
       <xsl:value-of select="@hangText" />
     </dt>
   </xsl:if>
-  <dd>
-    <xsl:call-template name="insertInsDelClass"/>
-    <!-- if hangIndent present, use 0.7 of the specified value (1em is the width of the "m" character -->
-    <xsl:if test="../@hangIndent and ../@hangIndent!='0'">
-      <xsl:attribute name="style">margin-left: <xsl:value-of select="../@hangIndent * 0.7"/>em</xsl:attribute>
-    </xsl:if>
-    <xsl:apply-templates />
-  </dd>
+
+  <xsl:variable name="dd-content">
+    <xsl:apply-templates/>
+  </xsl:variable>
+
+  <xsl:if test="$dd-content!=''">
+    <dd>
+      <xsl:call-template name="insertInsDelClass"/>
+      <!-- if hangIndent present, use 0.7 of the specified value (1em is the width of the "m" character -->
+      <xsl:if test="../@hangIndent and ../@hangIndent!='0'">
+        <xsl:attribute name="style">margin-left: <xsl:value-of select="../@hangIndent * 0.7"/>em</xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates />
+    </dd>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="list[starts-with(@style,'format ') and (contains(@style,'%c') or contains(@style,'%d'))]/t">
@@ -1391,7 +1388,7 @@
   <!-- do not open a new p element if this is a whitespace-only text node and no siblings follow -->  
   <xsl:if test="not(self::text() and normalize-space(.)='' and not(following-sibling::node()))">
     <p>
-      <xsl:if test="string-length($p) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins) and count(preceding-sibling::node())=0">
+      <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins) and not(ancestor::x:lt) and count(preceding-sibling::node())=0">
         <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
       </xsl:if>
       <xsl:call-template name="insertInsDelClass"/>
@@ -1407,7 +1404,7 @@
   <xsl:if test="not(following-sibling::node()[1] [self::list or self::figure or self::texttable])">
     <xsl:apply-templates select="following-sibling::node()[1]" mode="t-content2" />
   </xsl:if>
-</xsl:template>               
+</xsl:template>       
 
 <xsl:template mode="t-content2" match="text()">
   <xsl:apply-templates select="." />
@@ -2305,6 +2302,9 @@ dl {
 dl.empty dd {
   margin-top: .5em;
 }
+dl p {
+  margin-left: 0em;
+}
 dt {
   margin-top: .5em;
 }
@@ -2365,6 +2365,9 @@ li {
 ol {
   margin-left: 2em;
   margin-right: 2em;
+}
+ol p {
+  margin-left: 0em;
 }
 p {
   margin-left: 2em;
@@ -2484,6 +2487,9 @@ li.tocline1 {
 }
 li.tocline2 {
   font-size: 0pt;
+}
+ul p {
+  margin-left: 0em;
 }
 ul.ind {
   list-style: none;
@@ -4383,11 +4389,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.327 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.327 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.328 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.328 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/05/03 10:36:39 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/03 10:36:39 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/05/03 14:12:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/03 14:12:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
