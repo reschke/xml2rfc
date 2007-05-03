@@ -4009,9 +4009,13 @@ table.closedissue {
 </xsl:template>
 
 <xsl:template match="ed:replace">
-  <!-- we need to special-case things like lists -->
+  <!-- we need to special-case things like lists and tables -->
   <xsl:choose>
-    <xsl:when test="parent::list or parent::references">
+    <xsl:when test="parent::list">
+      <xsl:apply-templates select="ed:del/node()" />
+      <xsl:apply-templates select="ed:ins/node()" />
+    </xsl:when>
+    <xsl:when test="ancestor::references">
       <xsl:apply-templates select="ed:del/node()" />
       <xsl:apply-templates select="ed:ins/node()" />
     </xsl:when>
@@ -4379,11 +4383,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.326 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.326 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.327 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.327 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/05/02 18:55:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/02 18:55:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/05/03 10:36:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/03 10:36:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
