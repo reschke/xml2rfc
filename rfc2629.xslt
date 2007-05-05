@@ -2269,20 +2269,16 @@ address {
   margin-top: 1em;
   margin-left: 2em;
   font-style: normal;
-}
-<xsl:if test="//x:blockquote">
+}<xsl:if test="//x:blockquote">
 blockquote {
   border-style: solid;
   border-color: gray;
   border-width: 0 0 0 .25em;
   font-style: italic;
   padding-left: 0.5em;
-}
-</xsl:if>
-body {
-  <xsl:if test="$xml2rfc-background!=''">
-  background: url(<xsl:value-of select="$xml2rfc-background" />) #ffffff left top;
-  </xsl:if>
+}</xsl:if>
+body {<xsl:if test="$xml2rfc-background!=''">
+  background: url(<xsl:value-of select="$xml2rfc-background" />) #ffffff left top;</xsl:if>
   color: #000000;
   font-family: verdana, helvetica, arial, sans-serif;
   font-size: 10pt;
@@ -2291,10 +2287,9 @@ cite {
   font-style: normal;
 }
 dd {
-  margin-right: 2em;
-<xsl:if test="$xml2rfc-ext-justification='always'">
-  text-align: justify;
-</xsl:if>}
+  margin-right: 2em;<xsl:if test="$xml2rfc-ext-justification='always'">
+  text-align: justify;</xsl:if>
+}
 dl {
   margin-left: 2em;
 }
@@ -2358,10 +2353,9 @@ img {
 }
 li {
   margin-left: 2em;
-  margin-right: 2em;
-<xsl:if test="$xml2rfc-ext-justification='always'">
-  text-align: justify;
-</xsl:if>}
+  margin-right: 2em;<xsl:if test="$xml2rfc-ext-justification='always'">
+  text-align: justify;</xsl:if>
+}
 ol {
   margin-left: 2em;
   margin-right: 2em;
@@ -2371,10 +2365,9 @@ ol p {
 }
 p {
   margin-left: 2em;
-  margin-right: 2em;
-<xsl:if test="$xml2rfc-ext-justification='always'">
-  text-align: justify;
-</xsl:if>}
+  margin-right: 2em;<xsl:if test="$xml2rfc-ext-justification='always'">
+  text-align: justify;</xsl:if>
+}
 pre {
   margin-left: 3em;
   background-color: lightyellow;
@@ -2401,16 +2394,13 @@ pre.drawing {
   border-width: 1px;
   background-color: #f8f8f8;
   padding: 2em;
-}
-<xsl:if test="//x:q">
+}<xsl:if test="//x:q">
 q {
   font-style: italic;
-}
-</xsl:if>
+}</xsl:if>
 table {
   margin-left: 2em;
-}
-<xsl:if test="//texttable">
+}<xsl:if test="//texttable">
 table.tt {
   vertical-align: top;
 }
@@ -2439,8 +2429,7 @@ table.full th {
 table.headers th {
   border-style: none none inset none;
   border-width: 1px;
-}
-</xsl:if>
+}</xsl:if>
 table.header {
   width: 95%;
   font-size: 10pt;
@@ -2509,26 +2498,20 @@ li.indline1 {
   margin-left: 0em;
   margin-right: 0em;
 }
-<xsl:if test="//x:bcp14">
-.bcp14 {
+<xsl:if test="//x:bcp14">.bcp14 {
   font-style: normal;
   text-transform: lowercase;
   font-variant: small-caps;
-}
-<xsl:if test="//x:blockquote">
+}</xsl:if><xsl:if test="//x:blockquote">
 blockquote > * .bcp14 {
   font-style: italic;
-}
-</xsl:if>
-</xsl:if>
+}</xsl:if>
 .comment {
   background-color: yellow;
-}
-<xsl:if test="$xml2rfc-editing='yes'">
+}<xsl:if test="$xml2rfc-editing='yes'">
 .editingmark {
   background-color: khaki;
-}
-</xsl:if>
+}</xsl:if>
 .center {
   text-align: center;
 }
@@ -2576,8 +2559,7 @@ blockquote > * .bcp14 {
   font-size: 14pt;
   background-color: yellow;
 }
-<xsl:if test="//ed:del|//ed:replace|//ed:ins">
-del {
+<xsl:if test="//ed:del|//ed:replace|//ed:ins">del {
   color: red;
   text-decoration: line-through;
 }
@@ -2595,10 +2577,7 @@ ins {
 }
 div.issuepointer {
   float: left;
-}
-</xsl:if>
-
-<xsl:if test="//ed:issue">
+}</xsl:if><xsl:if test="//ed:issue">
 table.openissue {
   background-color: khaki;
   border-width: thin;
@@ -2611,6 +2590,9 @@ table.closedissue {
   border-style: solid;
   border-color: gray;
   color: gray; 
+}
+thead th {
+  text-align: left;
 }
 .bg-issue {
   border: solid;
@@ -2637,8 +2619,7 @@ table.closedissue {
   background-color: yellow;
   font-size: smaller;
   font-weight: bold;
-}
-</xsl:if>
+}</xsl:if>
 
 @media print {
   .noprint {
@@ -3847,19 +3828,30 @@ table.closedissue {
 
 <xsl:template name="insertIssuesList">
 
-  <h2><a id="{$anchor-prefix}.issues-list" href="#{$anchor-prefix}.issues-list">Issues list</a></h2>
+  <h2 id="{$anchor-prefix}.issues-list" ><a href="#{$anchor-prefix}.issues-list">Issues list</a></h2>
   <table summary="Issues list">
-    <xsl:for-each select="//ed:issue">
-      <xsl:sort select="@status" />
-      <xsl:sort select="@name" />
-      <tr>
-        <td><a href="#{$anchor-prefix}.issue.{@name}"><xsl:value-of select="@name" /></a></td>
-        <td><xsl:value-of select="@type" /></td>
-        <td><xsl:value-of select="@status" /></td>
-        <td><xsl:value-of select="ed:item[1]/@date" /></td>
-        <td><a href="mailto:{ed:item[1]/@entered-by}?subject={/rfc/@docName},%20{@name}"><xsl:value-of select="ed:item[1]/@entered-by" /></a></td>
-      </tr>
-    </xsl:for-each>
+    <tbody>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Raised By</th>
+        </tr>
+      </thead>
+      <xsl:for-each select="//ed:issue">
+        <xsl:sort select="@status" />
+        <xsl:sort select="@name" />
+        <tr>
+          <td><a href="#{$anchor-prefix}.issue.{@name}"><xsl:value-of select="@name" /></a></td>
+          <td><xsl:value-of select="@type" /></td>
+          <td><xsl:value-of select="@status" /></td>
+          <td><xsl:value-of select="ed:item[1]/@date" /></td>
+          <td><a href="mailto:{ed:item[1]/@entered-by}?subject={/rfc/@docName},%20{@name}"><xsl:value-of select="ed:item[1]/@entered-by" /></a></td>
+        </tr>
+      </xsl:for-each>
+    </tbody>
   </table>
   
 </xsl:template>
@@ -4389,11 +4381,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.329 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.329 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.330 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.330 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/05/04 13:04:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/04 13:04:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/05/05 13:50:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/05 13:50:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
