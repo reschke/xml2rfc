@@ -32,14 +32,15 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
                 
-                xmlns:msxsl="urn:schemas-microsoft-com:xslt"
-                xmlns:exslt="http://exslt.org/common"
-                xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
                 xmlns:ed="http://greenbytes.de/2002/rfcedit"
+                xmlns:exslt="http://exslt.org/common"
+                xmlns:msxsl="urn:schemas-microsoft-com:xslt"
+                xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
+                xmlns:saxon="http://icl.com/saxon"
                 xmlns:x="http://purl.org/net/xml2rfc/ext"
                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
 
-                exclude-result-prefixes="msxsl exslt myns ed x xhtml"
+                exclude-result-prefixes="ed exslt msxsl myns saxon x xhtml"
                 >
 
 <xsl:strip-space elements="back front list middle rfc section"/>                
@@ -480,7 +481,7 @@
       <xsl:variable name="start" select="substring-before($content,'&#10;')"/> 
       <xsl:variable name="end" select="substring-after($content,'&#10;')"/> 
       <xsl:if test="string-length($start) > 69">
-        <xsl:message>WARNING: artwork line too long: <xsl:value-of select="$start"/></xsl:message>
+        <xsl:message>WARNING: artwork line too long: <xsl:value-of select="$start"/><xsl:call-template name="lineno"/></xsl:message>
       </xsl:if>
       <xsl:call-template name="check-artwork-width">
         <xsl:with-param name="content" select="$end"/>
@@ -1031,7 +1032,7 @@
   <!-- check for reference to reference -->
   <xsl:variable name="anchor" select="@anchor"/>
   <xsl:if test="not(ancestor::ed:del) and not(//xref[@target=$anchor])">
-    <xsl:message>WARNING: unused reference '<xsl:value-of select="@anchor"/>'</xsl:message>
+    <xsl:message>WARNING: unused reference '<xsl:value-of select="@anchor"/>'<xsl:call-template name="lineno"/></xsl:message>
   </xsl:if>
 
   <xsl:variable name="target">
@@ -1261,6 +1262,11 @@
 </xsl:template>
 
 <xsl:template match="rfc">
+  
+  <!-- conformance checks -->
+  <xsl:if test="$xml2rfc-symrefs!='no' and $xml2rfc-symrefs!='yes' and //reference">
+    <xsl:message>WARNING: symrefs PI not specified; default will change from 'no' to 'yes' soon.</xsl:message>
+  </xsl:if>
   
   <xsl:variable name="lang">
     <xsl:call-template name="get-lang" />
@@ -1872,13 +1878,6 @@
 <xsl:template match="/">
   <xsl:apply-templates select="*" />
 </xsl:template>
-
-
-
-
-
-
-
 
 <!-- utility templates -->
 
@@ -3563,7 +3562,7 @@ thead th {
       <a href="#{$target/@anchor}"><xsl:value-of select="."/></a>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:message>WARNING: internal link target for '<xsl:value-of select="."/>' does not exist.</xsl:message>
+      <xsl:message>WARNING: internal link target for '<xsl:value-of select="."/>' does not exist.<xsl:call-template name="lineno"/></xsl:message>
       <xsl:value-of select="."/>
     </xsl:otherwise>
   </xsl:choose>
@@ -4113,7 +4112,7 @@ thead th {
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
   <div class="error">WARNING: <xsl:value-of select="$msg"/></div>
-  <xsl:message>WARNING: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/></xsl:message>
+  <xsl:message>WARNING: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/><xsl:call-template name="lineno"/></xsl:message>
 </xsl:template>
 
 <!-- table formatting -->
@@ -4381,11 +4380,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.330 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.330 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.331 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.331 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/05/05 13:50:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/05 13:50:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/05/17 16:55:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/17 16:55:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -4523,5 +4522,15 @@ thead th {
 <xsl:template match="ed:del" mode="get-text-content">
 </xsl:template>
 
+<!-- diag support -->
+<xsl:template name="lineno">
+  <xsl:if test="function-available('saxon:line-number')">
+    <xsl:if test="saxon:line-number() > 0">
+      <xsl:text> (at line </xsl:text>
+      <xsl:value-of select="saxon:line-number()"/>
+      <xsl:text>)</xsl:text>
+    </xsl:if>
+  </xsl:if>
+</xsl:template>
 
 </xsl:stylesheet>
