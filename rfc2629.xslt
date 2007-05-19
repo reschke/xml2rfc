@@ -2076,13 +2076,27 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="get-authors-section-number">
+  <xsl:if test="/*/x:assign-section-number[@builtin-target='authors']">
+    <xsl:value-of select="/*/x:assign-section-number[@builtin-target='authors']/@number"/>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template name="insertAuthors">
 
   <xsl:call-template name="insert-conditional-hrule"/>
+  
+  <xsl:variable name="number">
+    <xsl:call-template name="get-authors-section-number"/>
+  </xsl:variable>
     
   <h1 id="{$anchor-prefix}.authors">
     <xsl:call-template name="insert-conditional-pagebreak"/>
-    <xsl:call-template name="get-authors-section-title"/>
+    <xsl:if test="$number != ''">
+      <a href="#{$anchor-prefix}.section.{$number}" id="{$anchor-prefix}.section.{$number}"><xsl:value-of select="$number"/>.</a>
+      <xsl:text> </xsl:text>
+    </xsl:if>
+    <a href="#{$anchor-prefix}.authors"><xsl:call-template name="get-authors-section-title"/></a>
   </h1>
 
   <xsl:apply-templates select="/rfc/front/author" />
@@ -3272,15 +3286,18 @@ thead th {
 </xsl:template>
 
 <xsl:template match="front" mode="toc">
-
-  <xsl:variable name="title">
-    <xsl:call-template name="get-authors-section-title"/>
-  </xsl:variable>
   
   <li>
+    <xsl:variable name="authors-title">
+      <xsl:call-template name="get-authors-section-title"/>
+    </xsl:variable>
+    <xsl:variable name="authors-number">
+      <xsl:call-template name="get-authors-section-number"/>
+    </xsl:variable>
     <xsl:call-template name="insert-toc-line">
       <xsl:with-param name="target" select="concat($anchor-prefix,'.authors')"/>
-      <xsl:with-param name="title" select="$title"/>
+      <xsl:with-param name="title" select="$authors-title"/>
+      <xsl:with-param name="number" select="$authors-number"/>
     </xsl:call-template>
   </li>
 
@@ -4059,6 +4076,9 @@ thead th {
 <xsl:template name="sectionnumberAndEdits">
   <xsl:choose>
     <xsl:when test="ancestor::ed:del">del-<xsl:number count="ed:del//section" level="any"/></xsl:when>
+    <xsl:when test="@x:fixed-section-number">
+      <xsl:value-of select="@x:fixed-section-number"/>
+    </xsl:when>
     <xsl:when test="self::section and parent::ed:ins and local-name(../..)='replace'">
       <xsl:for-each select="../.."><xsl:call-template name="sectionnumberAndEdits" /></xsl:for-each>
       <xsl:for-each select="..">
@@ -4380,11 +4400,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.332 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.332 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.333 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.333 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/05/18 10:29:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/18 10:29:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/05/19 20:27:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/19 20:27:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -4415,8 +4435,12 @@ thead th {
 
 <xsl:template name="get-section-number">
   <xsl:variable name="hasEdits" select="count(//ed:del|//ed:ins)!=0" />
+  <xsl:variable name="anchor" select="@anchor"/>
   <xsl:choose>
-    <xsl:when test="$hasEdits">
+    <xsl:when test="@x:fixed-section-number">
+      <xsl:value-of select="@x:fixed-section-number"/>
+    </xsl:when>
+    <xsl:when test="$hasEdits or ancestor::*/@x:fixed-section-number">
       <xsl:call-template name="sectionnumberAndEdits" />
     </xsl:when>
     <xsl:otherwise>
