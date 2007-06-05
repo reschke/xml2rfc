@@ -698,6 +698,12 @@
     <xsl:if test="/rfc/@docName">
       <br/>
       <span class="filename"><xsl:value-of select="/rfc/@docName"/></span>
+      
+      <xsl:if test="contains(/rfc/@docName,'.')">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">The @docName attribute should contain the base name, not the filename (thus no file extension).</xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
     </xsl:if>  
   </p>
   
@@ -4400,11 +4406,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.334 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.334 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.335 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.335 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/05/28 16:41:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/05/28 16:41:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/06/05 13:48:47 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/06/05 13:48:47 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
