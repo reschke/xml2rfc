@@ -1073,16 +1073,20 @@
     <td class="top">
       <xsl:call-template name="insertInsDelClass"/>
       <xsl:for-each select="front/author">
+        <xsl:variable name="initials">
+          <xsl:call-template name="format-initials"/>
+        </xsl:variable>
+      
         <xsl:choose>
           <xsl:when test="@surname and @surname!=''">
             <xsl:variable name="displayname">
               <!-- surname/initials is reversed for last author except when it's the only one -->
               <xsl:choose>
                 <xsl:when test="position()=last() and position()!=1">
-                  <xsl:value-of select="concat(@initials,' ',@surname)" />
+                  <xsl:value-of select="concat($initials,' ',@surname)" />
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:value-of select="concat(@surname,', ',@initials)" />
+                  <xsl:value-of select="concat(@surname,', ',$initials)" />
                 </xsl:otherwise>
               </xsl:choose>
               <xsl:if test="@role='editor'">
@@ -1327,7 +1331,10 @@
               
         <!-- DC creator, see RFC2731 -->
         <xsl:for-each select="/rfc/front/author">
-          <meta name="DC.Creator" content="{concat(@surname,', ',@initials)}" />
+          <xsl:variable name="initials">
+            <xsl:call-template name="format-initials"/>
+          </xsl:variable>
+          <meta name="DC.Creator" content="{concat(@surname,', ',$initials)}" />
         </xsl:for-each>
         
         <xsl:if test="not($xml2rfc-private)">
@@ -1957,9 +1964,12 @@
 
 <xsl:template name="collectRightHeaderColumn">
   <xsl:for-each select="author">
+    <xsl:variable name="initials">
+      <xsl:call-template name="format-initials"/>
+    </xsl:variable>
     <xsl:if test="@surname">
       <myns:item>
-        <xsl:value-of select="concat(@initials,' ',@surname)" />
+        <xsl:value-of select="concat($initials,' ',@surname)" />
         <xsl:if test="@role">
           <xsl:choose>
             <xsl:when test="@role='editor'">
@@ -4406,11 +4416,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.336 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.336 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.337 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.337 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/06/07 11:12:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/06/07 11:12:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/06/26 17:08:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/06/26 17:08:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -4523,6 +4533,18 @@ thead th {
     <xsl:otherwise>
       <xsl:text>u.</xsl:text>
       <xsl:number level="any" count="figure[not(@title!='' or @anchor!='')]" />
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- reformat contents of author/@initials -->
+<xsl:template name="format-initials">
+  <xsl:choose>
+    <xsl:when test="string-length(@initials)=1">
+      <xsl:value-of select="concat(@initials,'.')"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="@initials"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
