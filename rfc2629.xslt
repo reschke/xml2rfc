@@ -296,6 +296,10 @@
   match="iref"
     use="concat(@item,'..',@subitem)" />
 
+<xsl:key name="index-xref"
+  match="xref[@x:sec]"
+    use="concat(@target,'..',@x:sec)" />
+
 <!-- prefix for automatically generated anchors -->
 <xsl:variable name="anchor-prefix" select="'rfc'" />
 
@@ -2933,9 +2937,33 @@ thead th {
                         </em>
                         <xsl:text>&#160;&#160;</xsl:text>
                         
-                        <xsl:for-each select="//xref[@target=current()/@anchor] | . | //reference[@anchor=concat('deleted-',current()/@anchor)]">
+                        <xsl:variable name="rs" select="//xref[@target=current()/@anchor] | . | //reference[@anchor=concat('deleted-',current()/@anchor)]"/>
+                        <xsl:for-each select="$rs">
                           <xsl:call-template name="insertSingleXref" />
                         </xsl:for-each>
+
+                        <xsl:variable name="rs2" select="$rs[@x:sec]"/>
+
+                        <xsl:if test="$rs2">
+                          <ul class="ind">  
+                            <xsl:for-each select="$rs2">
+                              <xsl:sort select="substring-before(concat(@x:sec,'.'),'.')" data-type="number"/>
+                              <xsl:sort select="substring(@x:sec,1+string-length(substring-before(@x:sec,'.')))" data-type="number"/>
+                              <xsl:if test="generate-id(.) = generate-id(key('index-xref',concat(@target,'..',@x:sec)))">
+                                <li class="indline1">
+                                  <em>
+                                    <xsl:text>Section </xsl:text>
+                                    <xsl:value-of select="@x:sec"/>
+                                  </em>
+                                  <xsl:text>&#160;&#160;</xsl:text>
+                                  <xsl:for-each select="key('index-xref',concat(@target,'..',@x:sec))">
+                                    <xsl:call-template name="insertSingleXref" />
+                                  </xsl:for-each>
+                                </li>
+                              </xsl:if>
+                            </xsl:for-each>
+                          </ul>
+                        </xsl:if>
                       </li>
                     </xsl:if>
                   </xsl:when>
@@ -4427,11 +4455,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.339 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.339 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.340 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.340 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/07/14 09:00:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/07/14 09:00:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/07/14 15:16:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/07/14 15:16:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
