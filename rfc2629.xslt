@@ -3760,6 +3760,22 @@ thead th {
 
 <!-- experimental annotation support -->
 
+<xsl:template match="ed:issueref">
+  <xsl:choose>
+    <xsl:when test=".=//ed:issue/@name">
+      <a href="#{$anchor-prefix}.issue.{.}">
+        <xsl:apply-templates/>
+      </a>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">Dangling ed:issueref: <xsl:value-of select="."/></xsl:with-param>
+      </xsl:call-template>
+      <xsl:apply-templates/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="ed:issue">
   <xsl:variable name="class">
     <xsl:choose>
@@ -4456,11 +4472,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.342 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.342 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.343 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.343 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/09/02 12:55:24 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/09/02 12:55:24 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/09/02 20:31:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/09/02 20:31:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
