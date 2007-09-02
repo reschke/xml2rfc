@@ -2292,6 +2292,9 @@
 a {
   text-decoration: none;
 }
+a.smpl {
+  color: black;
+}
 a:hover {
   text-decoration: underline;
 }
@@ -2312,7 +2315,7 @@ blockquote {
 }</xsl:if>
 body {<xsl:if test="$xml2rfc-background!=''">
   background: url(<xsl:value-of select="$xml2rfc-background" />) #ffffff left top;</xsl:if>
-  color: #000000;
+  color: black;
   font-family: verdana, helvetica, arial, sans-serif;
   font-size: 10pt;
 }<xsl:if test="//xhtml:p">
@@ -2340,7 +2343,6 @@ dt {
   margin-top: .5em;
 }
 h1 {
-  color: #333333;
   font-size: 14pt;
   line-height: 21pt;
   page-break-after: avoid;
@@ -2352,37 +2354,33 @@ h1 a {
   color: #333333;
 }
 h2 {
-  color: #000000;
   font-size: 12pt;
   line-height: 15pt;
   page-break-after: avoid;
 }
 h2 a {
-  color: #000000;
+  color: black;
 }
 h3 {
-  color: #000000;
   font-size: 10pt;
   page-break-after: avoid;
 }
 h3 a {
-  color: #000000;
+  color: black;
 }
 h4 {
-  color: #000000;
   font-size: 10pt;
   page-break-after: avoid;
 }
 h4 a {
-  color: #000000;
+  color: black;
 }
 h5 {
-  color: #000000;
   font-size: 10pt;
   page-break-after: avoid;
 }
 h5 a {
-  color: #000000;
+  color: black;
 }
 img {
   margin-left: 3em;
@@ -3626,7 +3624,7 @@ thead th {
   <xsl:variable name="target" select="//*[(@anchor and x:anchor-alias/@value=$val) or (@anchor=$val)]"/>
   <xsl:choose>
     <xsl:when test="$target">
-      <a href="#{$target/@anchor}"><xsl:value-of select="."/></a>
+      <a href="#{$target/@anchor}" class="smpl"><xsl:value-of select="."/></a>
     </xsl:when>
     <xsl:otherwise>
       <xsl:message>WARNING: internal link target for '<xsl:value-of select="."/>' does not exist.<xsl:call-template name="lineno"/></xsl:message>
@@ -4458,11 +4456,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.341 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.341 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.342 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.342 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/07/21 13:59:39 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/07/21 13:59:39 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/09/02 12:55:24 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/09/02 12:55:24 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
