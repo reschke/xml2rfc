@@ -3897,7 +3897,7 @@ thead th {
   <xsl:message terminate="yes">Unexpected node in issue HTML: <xsl:value-of select="local-name(.)"/></xsl:message>
 </xsl:template>
 
-<xsl:template match="xhtml:a|xhtml:b|xhtml:br|xhtml:cite|xhtml:del|xhtml:em|xhtml:i|xhtml:ins|xhtml:q|xhtml:pre" mode="issuehtml">
+<xsl:template match="xhtml:a|xhtml:b|xhtml:br|xhtml:cite|xhtml:del|xhtml:em|xhtml:i|xhtml:ins|xhtml:q|xhtml:pre|xhtml:tt" mode="issuehtml">
   <xsl:element name="{local-name()}">
     <xsl:apply-templates select="@*|node()" mode="issuehtml"/>
   </xsl:element>
@@ -4472,11 +4472,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.344 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.344 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.345 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.345 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/09/09 11:14:22 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/09/09 11:14:22 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/10/06 18:08:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/10/06 18:08:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
