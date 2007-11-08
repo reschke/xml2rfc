@@ -1814,6 +1814,24 @@
         </xsl:choose>
       </xsl:variable>
 
+      <xsl:variable name="title">
+        <xsl:choose>
+          <xsl:when test="starts-with(@x:rel,'#') and not(@x:sec) and $node/x:source/@href">
+            <xsl:variable name="extdoc" select="document($node/x:source/@href)"/>
+            <xsl:variable name="nodes" select="$extdoc//*[@anchor=substring-after(current()/@x:rel,'#')]"/>
+            <xsl:if test="not($nodes)">
+              <xsl:call-template name="error">
+                <xsl:with-param name="msg">Anchor '<xsl:value-of select="substring-after(current()/@x:rel,'#')"/>' not found in <xsl:value-of select="$node/x:source/@href"/>.</xsl:with-param>
+              </xsl:call-template>
+            </xsl:if>
+            <xsl:for-each select="$nodes">
+              <xsl:value-of select="@title"/>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise />
+        </xsl:choose>
+      </xsl:variable>
+
       <!--
       Formats:
       
@@ -1836,6 +1854,9 @@
             <xsl:choose>
               <xsl:when test="$href!=''">
                 <a href="{$href}">
+                  <xsl:if test="$title!=''">
+                    <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+                  </xsl:if>
                   <xsl:if test="@x:fmt='sec' and $xml2rfc-ext-include-references-in-index='yes'">
                     <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
                   </xsl:if>
@@ -1853,6 +1874,9 @@
             <xsl:choose>
               <xsl:when test="$href!=''">
                 <a href="{$href}">
+                  <xsl:if test="$title!=''">
+                    <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+                  </xsl:if>
                   <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
                     <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
                   </xsl:if>
@@ -1906,7 +1930,13 @@
             <xsl:text>, </xsl:text>
             <xsl:choose>
               <xsl:when test="$href!=''">
-                <a href="{$href}">Section <xsl:value-of select="$sec"/></a>
+                <a href="{$href}">
+                  <xsl:if test="$title!=''">
+                    <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+                  </xsl:if>
+                  <xsl:text>Section </xsl:text>
+                  <xsl:value-of select="$sec"/>
+                </a>
               </xsl:when>
               <xsl:otherwise>Section <xsl:value-of select="$sec"/></xsl:otherwise>
             </xsl:choose>
@@ -4556,11 +4586,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.347 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.347 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.348 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.348 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/10/17 18:01:49 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/10/17 18:01:49 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/11/08 15:07:49 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/11/08 15:07:49 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
