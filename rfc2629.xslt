@@ -3347,6 +3347,8 @@ thead th {
   <xsl:param name="target" />
   <xsl:param name="title" />
   <xsl:param name="tocparam" />
+  <xsl:param name="oldtitle" />
+  <xsl:param name="waschanged" />
 
   <!-- handle tocdepth parameter -->
   <xsl:choose>
@@ -3381,7 +3383,17 @@ thead th {
             </xsl:call-template>
             <xsl:text>&#160;&#160;&#160;</xsl:text>
           </xsl:if>
-          <a href="#{$target}"><xsl:value-of select="$title"/></a>
+          <a href="#{$target}">
+            <xsl:choose>
+              <xsl:when test="$waschanged!=''">
+                <ins><xsl:value-of select="$title"/></ins>
+                <del><xsl:value-of select="$oldtitle"/></del>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$title"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </a>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:otherwise>
@@ -3545,6 +3557,8 @@ thead th {
         <xsl:with-param name="target" select="$target"/>
         <xsl:with-param name="title" select="@title"/>
         <xsl:with-param name="tocparam" select="@toc"/>
+        <xsl:with-param name="oldtitle" select="@ed:old-title"/>
+        <xsl:with-param name="waschanged" select="@ed:resolves"/>
       </xsl:call-template>
     
       <ul class="toc">
@@ -3560,6 +3574,8 @@ thead th {
         <xsl:with-param name="target" select="$target"/>
         <xsl:with-param name="title" select="@title"/>
         <xsl:with-param name="tocparam" select="@toc"/>
+        <xsl:with-param name="oldtitle" select="@ed:old-title"/>
+        <xsl:with-param name="waschanged" select="@ed:resolves"/>
       </xsl:call-template>
     
       <!-- obtain nested content, just to check whether we need to recurse at all -->
@@ -4588,11 +4604,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.350 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.350 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.351 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.351 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/11/21 14:53:39 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/11/21 14:53:39 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/11/24 12:04:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/11/24 12:04:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
