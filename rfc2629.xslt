@@ -1816,6 +1816,14 @@
         </xsl:choose>
       </xsl:variable>
 
+      <xsl:variable name="fmt">
+        <xsl:choose>
+          <xsl:when test="@x:fmt!=''"><xsl:value-of select="@x:fmt"/></xsl:when>
+          <xsl:when test="ancestor::artwork">,</xsl:when>
+          <xsl:otherwise>of</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+
       <xsl:variable name="title">
         <xsl:choose>
           <xsl:when test="starts-with(@x:rel,'#') and not(@x:sec) and $node/x:source/@href">
@@ -1844,22 +1852,22 @@
         number  SS
       -->
       
-      <xsl:if test="@x:fmt and not(@x:fmt='()' or @x:fmt=',' or @x:fmt='of' or @x:fmt='sec' or @x:fmt='anchor' or @x:fmt='number')">
-        <xsl:message>unknown xref/@x:fmt extension: <xsl:value-of select="@x:fmt"/></xsl:message>
-        <span class="error">unknown xref/@x:fmt extension: <xsl:value-of select="@x:fmt"/></span>
+      <xsl:if test="$fmt and not($fmt='()' or $fmt=',' or $fmt='of' or $fmt='sec' or $fmt='anchor' or $fmt='number')">
+        <xsl:message>unknown xref/@x:fmt extension: <xsl:value-of select="$fmt"/></xsl:message>
+        <span class="error">unknown xref/@x:fmt extension: <xsl:value-of select="$fmt"/></span>
       </xsl:if>
 
       <xsl:if test="$sec!=''">
-
+              
         <xsl:choose>
-          <xsl:when test="@x:fmt='of' or @x:fmt='sec'">
+          <xsl:when test="$fmt='of' or $fmt='sec'">
             <xsl:choose>
               <xsl:when test="$href!=''">
                 <a href="{$href}">
                   <xsl:if test="$title!=''">
                     <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
                   </xsl:if>
-                  <xsl:if test="@x:fmt='sec' and $xml2rfc-ext-include-references-in-index='yes'">
+                  <xsl:if test="$fmt='sec' and $xml2rfc-ext-include-references-in-index='yes'">
                     <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
                   </xsl:if>
                   <xsl:text>Section </xsl:text>
@@ -1868,11 +1876,11 @@
               </xsl:when>
               <xsl:otherwise>Section <xsl:value-of select="$sec"/></xsl:otherwise>
             </xsl:choose>
-            <xsl:if test="@x:fmt='of'">
+            <xsl:if test="$fmt='of'">
               <xsl:text> of </xsl:text>
             </xsl:if>
           </xsl:when>
-          <xsl:when test="@x:fmt='number'">
+          <xsl:when test="$fmt='number'">
             <xsl:choose>
               <xsl:when test="$href!=''">
                 <a href="{$href}">
@@ -1888,11 +1896,11 @@
               <xsl:otherwise><xsl:value-of select="$sec"/></xsl:otherwise>
             </xsl:choose>
           </xsl:when>
-          <xsl:otherwise/>
+          <xsl:otherwise />
         </xsl:choose>
       </xsl:if>
 
-      <xsl:if test="$sec='' or (@x:fmt!='sec' and @x:fmt!='number')">
+      <xsl:if test="$sec='' or ($fmt!='sec' and $fmt!='number')">
         <a href="#{$target}">
           <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
             <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
@@ -1904,7 +1912,7 @@
               </xsl:call-template>
             </xsl:variable>
             <xsl:choose>
-              <xsl:when test="@x:fmt='anchor'">
+              <xsl:when test="$fmt='anchor'">
                 <!-- remove brackets -->
                 <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
               </xsl:when>
@@ -1918,7 +1926,7 @@
       
       <xsl:if test="$sec!=''">
         <xsl:choose>
-          <xsl:when test="@x:fmt='()'">
+          <xsl:when test="$fmt='()'">
             <xsl:text> (</xsl:text>
             <xsl:choose>
               <xsl:when test="$href!=''">
@@ -1928,7 +1936,7 @@
             </xsl:choose>
             <xsl:text>)</xsl:text>
           </xsl:when>
-          <xsl:when test="@x:fmt=','">
+          <xsl:when test="$fmt=','">
             <xsl:text>, </xsl:text>
             <xsl:choose>
               <xsl:when test="$href!=''">
@@ -4604,11 +4612,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.351 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.351 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.352 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.352 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/11/24 12:04:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/11/24 12:04:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/12/09 19:23:50 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/12/09 19:23:50 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
