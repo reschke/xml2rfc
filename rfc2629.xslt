@@ -1815,6 +1815,14 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
+      
+      <xsl:variable name="secterm">
+        <xsl:choose>
+          <!-- starts with letter? -->
+          <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">Appendix</xsl:when>
+          <xsl:otherwise>Section</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
 
       <xsl:variable name="fmt">
         <xsl:choose>
@@ -1870,11 +1878,12 @@
                   <xsl:if test="$fmt='sec' and $xml2rfc-ext-include-references-in-index='yes'">
                     <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
                   </xsl:if>
-                  <xsl:text>Section </xsl:text>
+                  <xsl:value-of select="$secterm"/>
+                  <xsl:text> </xsl:text>
                   <xsl:value-of select="$sec"/>
                 </a>
               </xsl:when>
-              <xsl:otherwise>Section <xsl:value-of select="$sec"/></xsl:otherwise>
+              <xsl:otherwise><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></xsl:otherwise>
             </xsl:choose>
             <xsl:if test="$fmt='of'">
               <xsl:text> of </xsl:text>
@@ -1930,9 +1939,9 @@
             <xsl:text> (</xsl:text>
             <xsl:choose>
               <xsl:when test="$href!=''">
-                <a href="{$href}">Section <xsl:value-of select="$sec"/></a>
+                <a href="{$href}"><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></a>
               </xsl:when>
-              <xsl:otherwise>Section <xsl:value-of select="$sec"/></xsl:otherwise>
+              <xsl:otherwise><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></xsl:otherwise>
             </xsl:choose>
             <xsl:text>)</xsl:text>
           </xsl:when>
@@ -1944,11 +1953,12 @@
                   <xsl:if test="$title!=''">
                     <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
                   </xsl:if>
-                  <xsl:text>Section </xsl:text>
+                  <xsl:value-of select="$secterm"/>
+                  <xsl:text> </xsl:text>
                   <xsl:value-of select="$sec"/>
                 </a>
               </xsl:when>
-              <xsl:otherwise>Section <xsl:value-of select="$sec"/></xsl:otherwise>
+              <xsl:otherwise><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></xsl:otherwise>
             </xsl:choose>
           </xsl:when>
           <xsl:otherwise/>
@@ -4612,11 +4622,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.352 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.352 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.353 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.353 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/12/09 19:23:50 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/12/09 19:23:50 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/12/11 23:20:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/12/11 23:20:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
