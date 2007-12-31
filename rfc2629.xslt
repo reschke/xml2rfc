@@ -626,8 +626,9 @@
         <xsl:apply-templates select="exslt:node-set($copyright)" />
       </xsl:when>
       <xsl:otherwise>
-        <xsl:message><xsl:value-of select="$node-set-warning"/></xsl:message>
-        <p class="error"><xsl:value-of select="$node-set-warning"/></p>
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg" select="$node-set-warning"/>
+        </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
@@ -695,8 +696,9 @@
           </xsl:call-template>
         </xsl:when>    
         <xsl:otherwise>
-          <xsl:message><xsl:value-of select="$node-set-warning"/></xsl:message>
-          <p class="error"><xsl:value-of select="$node-set-warning"/></p>
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg" select="$node-set-warning"/>
+          </xsl:call-template>
         </xsl:otherwise>
       </xsl:choose>
     </table>
@@ -738,8 +740,9 @@
         <xsl:apply-templates select="exslt:node-set($preamble)" />
       </xsl:when>
       <xsl:otherwise>
-        <xsl:message><xsl:value-of select="$node-set-warning"/></xsl:message>
-        <p class="error"><xsl:value-of select="$node-set-warning"/></p>
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg" select="$node-set-warning"/>
+        </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
@@ -1675,8 +1678,9 @@
   
     <!-- Other x:fmt values than "none": unsupported -->
     <xsl:when test="@x:fmt and @x:fmt!='none'">
-      <xsl:message>unknown xref/@x:fmt extension: <xsl:value-of select="@x:fmt"/></xsl:message>
-      <span class="error">unknown xref/@x:fmt extension: <xsl:value-of select="@x:fmt"/></span>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('unknown xref/@x:fmt extension: ',@x:fmt)"/>
+      </xsl:call-template>
     </xsl:when>
 
     <!-- Section links -->
@@ -1722,8 +1726,9 @@
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
   <xsl:variable name="node" select="$src//*[@anchor=$target]" />
   <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
-    <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
-    <span class="error">Undefined target: <xsl:value-of select="@target" /></span>
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg" select="concat('Undefined target: ',@target)"/>
+    </xsl:call-template>
   </xsl:if>
 
   <xsl:choose>
@@ -1861,8 +1866,9 @@
       -->
       
       <xsl:if test="$fmt and not($fmt='()' or $fmt=',' or $fmt='of' or $fmt='sec' or $fmt='anchor' or $fmt='number')">
-        <xsl:message>unknown xref/@x:fmt extension: <xsl:value-of select="$fmt"/></xsl:message>
-        <span class="error">unknown xref/@x:fmt extension: <xsl:value-of select="$fmt"/></span>
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg" select="concat('unknown xref/@x:fmt extension: ',$fmt)"/>
+        </xsl:call-template>
       </xsl:if>
 
       <xsl:if test="$sec!=''">
@@ -1967,8 +1973,9 @@
     </xsl:when>
     
     <xsl:otherwise>
-      <xsl:message>xref to unknown element: <xsl:value-of select="name($node)"/></xsl:message>
-      <span class="error">xref to unknown element: <xsl:value-of select="name($node)"/></span>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('xref to unknown element: ',name($node))"/>
+      </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -3709,6 +3716,12 @@ thead th {
   <xsl:choose>
     <xsl:when test="contains($list,',')">
       <xsl:variable name="rfcNo" select="substring-before($list,',')" />
+      <xsl:if test="count(//references//reference/seriesInfo[@name='RFC' and @value=$rfcNo])=0">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="inline" select="'no'"/>
+          <xsl:with-param name="msg" select="concat('front matter mentions RFC',$rfcNo,' for which there is no reference element')"/>
+        </xsl:call-template>
+      </xsl:if>
       <a href="{concat($rfcUrlPrefix,$rfcNo,$rfcUrlPostfix)}"><xsl:value-of select="$rfcNo" /></a>,
       <xsl:call-template name="rfclist">
         <xsl:with-param name="list" select="normalize-space(substring-after($list,','))" />
@@ -3716,6 +3729,12 @@ thead th {
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="rfcNo" select="$list" />
+      <xsl:if test="count(//references//reference/seriesInfo[@name='RFC' and @value=$rfcNo])=0">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="inline" select="'no'"/>
+          <xsl:with-param name="msg" select="concat('front matter mentions RFC',$rfcNo,' for which there is no reference element')"/>
+        </xsl:call-template>
+      </xsl:if>
       <a href="{concat($rfcUrlPrefix,$rfcNo,$rfcUrlPostfix)}"><xsl:value-of select="$rfcNo" /></a>
     </xsl:otherwise>
   </xsl:choose>
@@ -4346,14 +4365,20 @@ thead th {
 <xsl:template name="warning">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
-  <div class="error">WARNING: <xsl:value-of select="$msg"/></div>
+  <xsl:param name="inline"/>
+  <xsl:if test="$inline!='no'">
+    <div class="error">WARNING: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/></div>
+  </xsl:if>
   <xsl:message>WARNING: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/><xsl:call-template name="lineno"/></xsl:message>
 </xsl:template>
 
 <xsl:template name="error">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
-  <div class="error">ERROR: <xsl:value-of select="$msg"/></div>
+  <xsl:param name="inline"/>
+  <xsl:if test="$inline='no'">
+    <div class="error">ERROR: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/></div>
+  </xsl:if>
   <xsl:message>ERROR: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/><xsl:call-template name="lineno"/></xsl:message>
 </xsl:template>
 
@@ -4622,11 +4647,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.353 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.353 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.354 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.354 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/12/11 23:20:44 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/12/11 23:20:44 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2007/12/31 13:43:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/12/31 13:43:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
