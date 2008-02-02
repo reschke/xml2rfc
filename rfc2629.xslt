@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2006-2007, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2008, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -781,6 +781,19 @@
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" count="iref[translate(substring(@item,1,1),concat($lcase,$ucase),'')='']"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="compute-extref-anchor">
+  <xsl:variable name="first" select="translate(substring(.,1,1),$ucase,$lcase)"/>
+  <xsl:variable name="nkey" select="translate($first,$lcase,'')"/>
+  <xsl:choose>
+    <xsl:when test="$nkey=''">
+      <xsl:value-of select="$anchor-prefix"/>.extref.<xsl:value-of select="$first"/>.<xsl:number level="any" count="x:ref[starts-with(translate(.,$ucase,$lcase),$first)]"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$anchor-prefix"/>.extref.<xsl:number level="any" count="x:ref[translate(substring(.,1,1),concat($lcase,$ucase),'')='']"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -2885,6 +2898,10 @@ thead th {
             <xsl:text>#</xsl:text>
             <xsl:call-template name="compute-iref-anchor"/>
           </xsl:when>
+          <xsl:when test="self::x:ref">
+            <xsl:text>#</xsl:text>
+            <xsl:call-template name="compute-extref-anchor"/>
+          </xsl:when>
           <xsl:otherwise>
             <xsl:message>Unsupported element type for insertSingleIref</xsl:message>
           </xsl:otherwise>
@@ -3108,8 +3125,9 @@ thead th {
                         
                         <xsl:variable name="irefs3" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
                         <xsl:variable name="xrefs3" select="//xref[@target=$irefs3[@x:for-anchor='']/../@anchor or @target=$irefs3/@x:for-anchor]"/>
+                        <xsl:variable name="extrefs3" select="//x:ref[.=$irefs3[@x:for-anchor='']/../@anchor or .=$irefs3/@x:for-anchor]"/>
 
-                        <xsl:for-each select="$irefs3|$xrefs3">
+                        <xsl:for-each select="$irefs3|$xrefs3|$extrefs3">
                           <!-- <xsl:sort select="translate(@item,$lcase,$ucase)" />  -->
                           <xsl:call-template name="insertSingleIref" />
                         </xsl:for-each>
@@ -3139,8 +3157,9 @@ thead th {
                                     
                                   <xsl:variable name="irefs4" select="key('index-item-subitem',concat(@item,'..',@subitem))"/>
                                   <xsl:variable name="xrefs4" select="//xref[@target=$irefs4[@x:for-anchor='']/../@anchor or @target=$irefs4/@x:for-anchor]"/>
+                                  <xsl:variable name="extrefs4" select="//x:ref[.=$irefs4[@x:for-anchor='']/../@anchor or .=$irefs4/@x:for-anchor]"/>
 
-                                  <xsl:for-each select="$irefs4|$xrefs4">
+                                  <xsl:for-each select="$irefs4|$xrefs4|$extrefs4">
                                     <!--<xsl:sort select="translate(@item,$lcase,$ucase)" />-->                    
                                     <xsl:call-template name="insertSingleIref" />
                                   </xsl:for-each>
@@ -3774,9 +3793,16 @@ thead th {
 <xsl:template match="x:ref">
   <xsl:variable name="val" select="."/>
   <xsl:variable name="target" select="//*[(@anchor and x:anchor-alias/@value=$val) or (@anchor and ed:replace/ed:ins/x:anchor-alias/@value=$val) or (@anchor=$val)]"/>
+  <xsl:variable name="irefs" select="//iref[@x:for-anchor=$val]"/>
   <xsl:choose>
     <xsl:when test="$target">
-      <a href="#{$target/@anchor}" class="smpl"><xsl:value-of select="."/></a>
+      <a href="#{$target/@anchor}" class="smpl">
+        <!-- to be indexed? -->
+        <xsl:if test="$irefs">
+          <xsl:attribute name="id"><xsl:call-template name="compute-extref-anchor"/></xsl:attribute>
+        </xsl:if>
+        <xsl:value-of select="."/>
+      </a>
     </xsl:when>
     <xsl:otherwise>
       <xsl:message>WARNING: internal link target for '<xsl:value-of select="."/>' does not exist.<xsl:call-template name="lineno"/></xsl:message>
@@ -4647,11 +4673,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.354 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.354 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.355 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.355 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2007/12/31 13:43:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2007/12/31 13:43:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/02/02 22:04:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/02 22:04:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
