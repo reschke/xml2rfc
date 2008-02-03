@@ -659,8 +659,8 @@
   </xsl:variable>
   <div id="{$anch}" />
   <xsl:apply-templates />
-  <xsl:if test="@title!='' or @anchor!=''">
-    <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
+  <xsl:if test="(@title!='' or @anchor!='') and not(@suppress-title='true')">
+    <xsl:variable name="n"><xsl:number level="any" count="figure[(@title!='' or @anchor!='') and not(@suppress-title='true')]" /></xsl:variable>
     <p class="figure">Figure <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></p>
   </xsl:if>
 </xsl:template>
@@ -1765,7 +1765,7 @@
       <a href="#{$target}">
         <xsl:variable name="figcnt">
           <xsl:for-each select="$node">
-            <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
+            <xsl:number level="any" count="figure[(@title!='' or @anchor!='') and not(@suppress-title='true')]" />
           </xsl:for-each>
         </xsl:variable>
         <xsl:choose>
@@ -1787,7 +1787,7 @@
       <a href="#{$target}">
         <xsl:variable name="tabcnt">
           <xsl:for-each select="$node">
-            <xsl:number level="any" count="texttable[@title!='' or @anchor!='']" />
+            <xsl:number level="any" count="texttable[(@title!='' or @anchor!='') and not(@suppress-title='true')]" />
           </xsl:for-each>
         </xsl:variable>
         <xsl:choose>
@@ -4466,8 +4466,8 @@ thead th {
     </table>
     <xsl:apply-templates select="postamble" />
 
-    <xsl:if test="@title!='' or @anchor!=''">
-      <xsl:variable name="n"><xsl:number level="any" count="texttable[@title!='' or @anchor!='']" /></xsl:variable>
+    <xsl:if test="(@title!='' or @anchor!='') and not(@suppress-title='true')">
+      <xsl:variable name="n"><xsl:number level="any" count="texttable[(@title!='' or @anchor!='') and not(@suppress-title='true')]" /></xsl:variable>
       <p class="figure">Table <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></p>
     </xsl:if>
   </div>
@@ -4673,11 +4673,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.355 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.355 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.356 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.356 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/02/02 22:04:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/02 22:04:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/02/03 13:29:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/03 13:29:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
