@@ -4518,7 +4518,7 @@ thead th {
       <xsl:if test="$xml2rfc-inline!='yes'">
         <xsl:attribute name="title">
           <xsl:if test="@source"><xsl:value-of select="@source"/>: </xsl:if>
-          <xsl:value-of select="."/>
+          <xsl:apply-templates select="text()|eref"/>
         </xsl:attribute>
       </xsl:if>
       <xsl:text>[</xsl:text>
@@ -4526,7 +4526,7 @@ thead th {
         <xsl:when test="$xml2rfc-inline='yes'">
           <xsl:value-of select="$cid"/>
           <xsl:text>: </xsl:text>
-          <xsl:value-of select="."/>
+          <xsl:apply-templates select="text()|eref"/>
           <xsl:if test="@source"> --<xsl:value-of select="@source"/></xsl:if>
         </xsl:when>
         <xsl:otherwise>
@@ -4673,11 +4673,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.356 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.356 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.357 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.357 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/02/03 13:29:11 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/03 13:29:11 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/02/06 14:33:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/06 14:33:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
