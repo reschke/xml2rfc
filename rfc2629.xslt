@@ -328,6 +328,21 @@
     )
   )" />
 
+<xsl:variable name="ipr-2007-08" select="(
+  $ipr-rfc4748 and
+    (
+      (/rfc/@number &gt; 5000
+        and /rfc/@number != 5020
+        and /rfc/@number != 5021
+        and /rfc/@number != 5034
+        and /rfc/@number != 5052
+        and /rfc/@number != 5065
+        and /rfc/@number != 5094) or
+      (/rfc/front/date/@year &gt; 2008) or
+      (not(/rfc/@number) and /rfc/front/date/@year &gt; 2007 and (/rfc/front/date/@month='September' or /rfc/front/date/@month='October' or /rfc/front/date/@month='November' or /rfc/front/date/@month='December'))
+    )
+  )" />
+
 <!-- will document have an index -->
 <xsl:variable name="has-index" select="//iref or (//xref and $xml2rfc-ext-include-references-in-index='yes')" />
           
@@ -2244,6 +2259,7 @@
       <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
         <t>
           <xsl:choose>
+            <xsl:when test="$ipr-2007-08"/>
             <xsl:when test="$ipr-rfc4748">
               Copyright &#169; The IETF Trust (<xsl:value-of select="/rfc/front/date/@year" />).
             </xsl:when>
@@ -3357,18 +3373,23 @@ thead th {
   
   </section>
 
-  <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice">
-  <t>
-    <xsl:choose>
-      <xsl:when test="$ipr-rfc4748">
-        Copyright &#169; The IETF Trust (<xsl:value-of select="/rfc/front/date/@year" />).  All Rights Reserved.
-      </xsl:when>
-      <xsl:otherwise>
-        Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).  All Rights Reserved.
-      </xsl:otherwise>
-    </xsl:choose>
-  </t>
-  </section>
+  <xsl:choose>
+    <xsl:when test="$ipr-2007-08"/>
+    <xsl:when test="$ipr-rfc4748">
+      <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice">
+        <t>
+          Copyright &#169; The IETF Trust (<xsl:value-of select="/rfc/front/date/@year" />).  All Rights Reserved.
+        </t>
+      </section>
+    </xsl:when>
+    <xsl:otherwise>
+      <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice">
+        <t>
+          Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).  All Rights Reserved.
+      </t>
+      </section>
+    </xsl:otherwise>
+  </xsl:choose>
   
 </xsl:template>
 
@@ -4701,11 +4722,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.358 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.358 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.359 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.359 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/02/17 16:03:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/17 16:03:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/02/20 22:36:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/20 22:36:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
