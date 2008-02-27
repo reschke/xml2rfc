@@ -33,6 +33,7 @@
                 version="1.0"
                 
                 xmlns:ed="http://greenbytes.de/2002/rfcedit"
+                xmlns:date="http://exslt.org/dates-and-times"
                 xmlns:exslt="http://exslt.org/common"
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
                 xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
@@ -40,7 +41,7 @@
                 xmlns:x="http://purl.org/net/xml2rfc/ext"
                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
 
-                exclude-result-prefixes="ed exslt msxsl myns saxon x xhtml"
+                exclude-result-prefixes="date ed exslt msxsl myns saxon x xhtml"
                 >
 
 <xsl:strip-space elements="back front list middle rfc section"/>                
@@ -239,21 +240,26 @@
 
 <!-- choose whether or not to do mailto links --> 
   
- <xsl:param name="xml2rfc-linkmailto" 
-   select="substring-after( 
-       translate(/processing-instruction('rfc')[contains(.,'linkmailto=')], concat($quote-chars,' '), ''), 
-         'linkmailto=')" 
- /> 
+<xsl:param name="xml2rfc-linkmailto" 
+  select="substring-after( 
+      translate(/processing-instruction('rfc')[contains(.,'linkmailto=')], concat($quote-chars,' '), ''), 
+        'linkmailto=')" 
+/> 
 
 
 <!-- iprnotified switch --> 
   
- <xsl:param name="xml2rfc-iprnotified" 
-   select="substring-after( 
-       translate(/processing-instruction('rfc')[contains(.,'iprnotified=')], concat($quote-chars,' '), ''), 
-         'iprnotified=')" 
- /> 
+<xsl:param name="xml2rfc-iprnotified" 
+  select="substring-after( 
+      translate(/processing-instruction('rfc')[contains(.,'iprnotified=')], concat($quote-chars,' '), ''), 
+        'iprnotified=')" 
+/> 
 
+<!-- publication date handling -->
+
+
+
+ 
 
 <!-- URL templates for RFCs and Internet Drafts. -->
 
@@ -323,8 +329,8 @@
   $ipr-rfc3667 and
     (
       (/rfc/@number &gt; 4671) or
-      (/rfc/front/date/@year &gt; 2006) or
-      (/rfc/front/date/@year &gt; 2005 and (/rfc/front/date/@month='November' or /rfc/front/date/@month='December'))
+      ($xml2rfc-ext-pub-year &gt; 2006) or
+      ($xml2rfc-ext-pub-year &gt; 2005 and $xml2rfc-ext-pub-month-numeric >= 11)
     )
   )" />
 
@@ -338,8 +344,8 @@
         and /rfc/@number != 5052
         and /rfc/@number != 5065
         and /rfc/@number != 5094) or
-      (/rfc/front/date/@year &gt; 2008) or
-      (not(/rfc/@number) and /rfc/front/date/@year &gt; 2007 and (/rfc/front/date/@month='September' or /rfc/front/date/@month='October' or /rfc/front/date/@month='November' or /rfc/front/date/@month='December'))
+      ($xml2rfc-ext-pub-year &gt; 2008) or
+      (not(/rfc/@number) and $xml2rfc-ext-pub-year &gt; 2007 and $xml2rfc-ext-pub-month-numeric >= 9)
     )
   )" />
 
@@ -497,14 +503,20 @@
   <xsl:choose>
     <xsl:when test="not(contains($content,'&#10;'))">
       <xsl:if test="string-length($content) > 69">
-        <xsl:message>artwork line too long: <xsl:value-of select="$content"/></xsl:message>
+        <xsl:call-template name="warning">
+          <xsl:with-param name="inline" select="'no'"/>
+          <xsl:with-param name="msg">artwork line too long: '<xsl:value-of select="$content"/>' (<xsl:value-of select="string-length($content)"/> characters)</xsl:with-param>
+        </xsl:call-template>
       </xsl:if>
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="start" select="substring-before($content,'&#10;')"/> 
       <xsl:variable name="end" select="substring-after($content,'&#10;')"/> 
       <xsl:if test="string-length($start) > 69">
-        <xsl:message>WARNING: artwork line too long: <xsl:value-of select="$start"/><xsl:call-template name="lineno"/></xsl:message>
+        <xsl:call-template name="warning">
+          <xsl:with-param name="inline" select="'no'"/>
+          <xsl:with-param name="msg">artwork line too long: '<xsl:value-of select="$start"/>' (<xsl:value-of select="string-length($start)"/> characters)</xsl:with-param>
+        </xsl:call-template>
       </xsl:if>
       <xsl:call-template name="check-artwork-width">
         <xsl:with-param name="content" select="$end"/>
@@ -1225,7 +1237,7 @@
       
       <xsl:if test="front/date/@year != '' and front/date/@year != '???'">
         <xsl:text>, </xsl:text>
-        <xsl:if test="front/date/@month and (front/date/@month!='???' and front/date/@month!='')"><xsl:value-of select="front/date/@month" />&#0160;</xsl:if>
+        <xsl:if test="front/date/@month!=''"><xsl:value-of select="front/date/@month" />&#0160;</xsl:if>
         <xsl:value-of select="front/date/@year" />
       </xsl:if>
       
@@ -1405,8 +1417,7 @@
             </xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
-          <xsl:variable name="month"><xsl:call-template name="get-month-as-num"/></xsl:variable>
-          <meta name="DC.Date.Issued" scheme="ISO8601" content="{/rfc/front/date/@year}-{$month}" />
+          <meta name="DC.Date.Issued" scheme="ISO8601" content="{$xml2rfc-ext-pub-year}-{$xml2rfc-ext-pub-month-numeric}" />
   
           <xsl:if test="/rfc/@obsoletes!=''">
             <xsl:call-template name="rfclist-for-dcmeta">
@@ -2129,7 +2140,15 @@
     </xsl:if>
   </xsl:for-each>
   <myns:item>
-    <xsl:value-of select="concat(date/@month,' ',date/@year)" />
+    <xsl:if test="$xml2rfc-ext-pub-month!=''">
+      <xsl:value-of select="$xml2rfc-ext-pub-month" />
+      <xsl:if test="$xml2rfc-ext-pub-day!='' and /rfc/@ipr and not(/rfc/@number)">
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="$xml2rfc-ext-pub-day" />
+        <xsl:text>,</xsl:text>
+      </xsl:if>
+    </xsl:if>
+    <xsl:value-of select="concat(' ',$xml2rfc-ext-pub-year)" />
   </myns:item>
 </xsl:template>
 
@@ -2177,41 +2196,59 @@
 
 
 <xsl:template name="expirydate">
-  <xsl:variable name="date" select="/rfc/front/date" />
   <xsl:choose>
-      <xsl:when test="$date/@month='January'">July <xsl:value-of select="$date/@year" /></xsl:when>
-      <xsl:when test="$date/@month='February'">August <xsl:value-of select="$date/@year" /></xsl:when>
-      <xsl:when test="$date/@month='March'">September <xsl:value-of select="$date/@year" /></xsl:when>
-      <xsl:when test="$date/@month='April'">October <xsl:value-of select="$date/@year" /></xsl:when>
-      <xsl:when test="$date/@month='May'">November <xsl:value-of select="$date/@year" /></xsl:when>
-      <xsl:when test="$date/@month='June'">December <xsl:value-of select="$date/@year" /></xsl:when>
-      <xsl:when test="$date/@month='July'">January <xsl:value-of select="$date/@year + 1" /></xsl:when>
-      <xsl:when test="$date/@month='August'">February <xsl:value-of select="$date/@year + 1" /></xsl:when>
-      <xsl:when test="$date/@month='September'">March <xsl:value-of select="$date/@year + 1" /></xsl:when>
-      <xsl:when test="$date/@month='October'">April <xsl:value-of select="$date/@year + 1" /></xsl:when>
-      <xsl:when test="$date/@month='November'">May <xsl:value-of select="$date/@year + 1" /></xsl:when>
-      <xsl:when test="$date/@month='December'">June <xsl:value-of select="$date/@year + 1" /></xsl:when>
-        <xsl:otherwise>WRONG SYNTAX FOR MONTH</xsl:otherwise>
-     </xsl:choose>
+    <xsl:when test="$xml2rfc-ext-pub-month='January'">July <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+    <xsl:when test="$xml2rfc-ext-pub-month='February'">August <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+    <xsl:when test="$xml2rfc-ext-pub-month='March'">September <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+    <xsl:when test="$xml2rfc-ext-pub-month='April'">October <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+    <xsl:when test="$xml2rfc-ext-pub-month='May'">November <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+    <xsl:when test="$xml2rfc-ext-pub-month='June'">December <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+    <xsl:when test="$xml2rfc-ext-pub-month='July'">January <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+    <xsl:when test="$xml2rfc-ext-pub-month='August'">February <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+    <xsl:when test="$xml2rfc-ext-pub-month='September'">March <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+    <xsl:when test="$xml2rfc-ext-pub-month='October'">April <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+    <xsl:when test="$xml2rfc-ext-pub-month='November'">May <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+    <xsl:when test="$xml2rfc-ext-pub-month='December'">June <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+      <xsl:otherwise>WRONG SYNTAX FOR MONTH</xsl:otherwise>
+   </xsl:choose>
 </xsl:template>
 
 <xsl:template name="get-month-as-num">
-  <xsl:variable name="date" select="/rfc/front/date" />
+  <xsl:param name="month" />
   <xsl:choose>
-      <xsl:when test="$date/@month='January'">01</xsl:when>
-      <xsl:when test="$date/@month='February'">02</xsl:when>
-      <xsl:when test="$date/@month='March'">03</xsl:when>
-      <xsl:when test="$date/@month='April'">04</xsl:when>
-      <xsl:when test="$date/@month='May'">05</xsl:when>
-      <xsl:when test="$date/@month='June'">06</xsl:when>
-      <xsl:when test="$date/@month='July'">07</xsl:when>
-      <xsl:when test="$date/@month='August'">08</xsl:when>
-      <xsl:when test="$date/@month='September'">09</xsl:when>
-      <xsl:when test="$date/@month='October'">10</xsl:when>
-      <xsl:when test="$date/@month='November'">11</xsl:when>
-      <xsl:when test="$date/@month='December'">12</xsl:when>
-        <xsl:otherwise>WRONG SYNTAX FOR MONTH</xsl:otherwise>
-     </xsl:choose>
+    <xsl:when test="$month='January'">01</xsl:when>
+    <xsl:when test="$month='February'">02</xsl:when>
+    <xsl:when test="$month='March'">03</xsl:when>
+    <xsl:when test="$month='April'">04</xsl:when>
+    <xsl:when test="$month='May'">05</xsl:when>
+    <xsl:when test="$month='June'">06</xsl:when>
+    <xsl:when test="$month='July'">07</xsl:when>
+    <xsl:when test="$month='August'">08</xsl:when>
+    <xsl:when test="$month='September'">09</xsl:when>
+    <xsl:when test="$month='October'">10</xsl:when>
+    <xsl:when test="$month='November'">11</xsl:when>
+    <xsl:when test="$month='December'">12</xsl:when>
+    <xsl:otherwise>WRONG SYNTAX FOR MONTH</xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-month-as-name">
+  <xsl:param name="month"/>
+  <xsl:choose>
+    <xsl:when test="$month=1">January</xsl:when>
+    <xsl:when test="$month=2">February</xsl:when>
+    <xsl:when test="$month=3">March</xsl:when>
+    <xsl:when test="$month=4">April</xsl:when>
+    <xsl:when test="$month=5">May</xsl:when>
+    <xsl:when test="$month=6">June</xsl:when>
+    <xsl:when test="$month=7">July</xsl:when>
+    <xsl:when test="$month=8">August</xsl:when>
+    <xsl:when test="$month=9">September</xsl:when>
+    <xsl:when test="$month=10">October</xsl:when>
+    <xsl:when test="$month=11">November</xsl:when>
+    <xsl:when test="$month=12">December</xsl:when>
+    <xsl:otherwise>WRONG SYNTAX FOR MONTH</xsl:otherwise>
+   </xsl:choose>
 </xsl:template>
 
 <!-- produce back section with author information -->
@@ -2261,10 +2298,10 @@
           <xsl:choose>
             <xsl:when test="$ipr-2007-08"/>
             <xsl:when test="$ipr-rfc4748">
-              Copyright &#169; The IETF Trust (<xsl:value-of select="/rfc/front/date/@year" />).
+              Copyright &#169; The IETF Trust (<xsl:value-of select="$xml2rfc-ext-pub-year" />).
             </xsl:when>
             <xsl:otherwise>
-              Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).
+              Copyright &#169; The Internet Society (<xsl:value-of select="$xml2rfc-ext-pub-year" />).
             </xsl:otherwise>
           </xsl:choose>
         </t>
@@ -2305,7 +2342,7 @@
       <!-- <http://tools.ietf.org/html/rfc2026#section-10.4> -->
       <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
         <t>
-          Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />). All Rights Reserved.
+          Copyright &#169; The Internet Society (<xsl:value-of select="$xml2rfc-ext-pub-year" />). All Rights Reserved.
         </t>
         <t>
           This document and translations of it may be copied and furnished to
@@ -3378,14 +3415,14 @@ thead th {
     <xsl:when test="$ipr-rfc4748">
       <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice">
         <t>
-          Copyright &#169; The IETF Trust (<xsl:value-of select="/rfc/front/date/@year" />).  All Rights Reserved.
+          Copyright &#169; The IETF Trust (<xsl:value-of select="$xml2rfc-ext-pub-year" />).  All Rights Reserved.
         </t>
       </section>
     </xsl:when>
     <xsl:otherwise>
       <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice">
         <t>
-          Copyright &#169; The Internet Society (<xsl:value-of select="/rfc/front/date/@year" />).  All Rights Reserved.
+          Copyright &#169; The Internet Society (<xsl:value-of select="$xml2rfc-ext-pub-year" />).  All Rights Reserved.
       </t>
       </section>
     </xsl:otherwise>
@@ -4722,11 +4759,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.359 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.359 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.360 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.360 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/02/20 22:36:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/20 22:36:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/02/27 13:51:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/27 13:51:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -4734,7 +4771,7 @@ thead th {
 </xsl:template>
 
 <xsl:template name="get-header-right">
-  <xsl:value-of select="concat(/rfc/front/date/@month,' ',/rfc/front/date/@year)" />
+  <xsl:value-of select="concat($xml2rfc-ext-pub-month, ' ', $xml2rfc-ext-pub-year)" />
 </xsl:template>
 
 <xsl:template name="get-keywords">
@@ -4890,5 +4927,117 @@ thead th {
     </xsl:if>
   </xsl:if>
 </xsl:template>
+
+<!-- date handling -->
+
+<msxsl:script language="JScript" implements-prefix="date">
+  this['year'] = function (x) {
+    if (x) {throw "not supported"};
+    return (new Date()).getFullYear();
+  }
+
+  this['month-in-year'] = function (x) {
+    if (x) {throw "not supported"};
+    return 1 + (new Date()).getMonth();
+  }
+
+  this['day-in-month'] = function (x) {
+    if (x) {throw "not supported"};
+    return (new Date()).getDate();
+  }
+</msxsl:script>
+
+<xsl:variable name="may-default-dates">
+  <xsl:choose>
+    <xsl:when test="function-available('date:year') and function-available('date:month-in-year') and date:day-in-month()">
+      <xsl:variable name="year-specified" select="/rfc/front/date/@year and /rfc/front/date/@year!=''"/>
+      <xsl:variable name="month-specified" select="/rfc/front/date/@month and /rfc/front/date/@month!=''"/>
+      <xsl:variable name="day-specified" select="/rfc/front/date/@day and /rfc/front/date/@day!=''"/>
+      <xsl:variable name="system-month">
+        <xsl:call-template name="get-month-as-name">
+          <xsl:with-param name="month" select="date:month-in-year()"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:choose>
+        <xsl:when test="$year-specified and /rfc/front/date/@year!=date:year()">Specified year <xsl:value-of select="/rfc/front/date/@year"/> does not match system date (<xsl:value-of select="date:year()"/>)</xsl:when>
+        <xsl:when test="$month-specified and /rfc/front/date/@month!=$system-month">Specified month <xsl:value-of select="/rfc/front/date/@month"/> does not match system date (<xsl:value-of select="$system-month"/>)</xsl:when>
+        <xsl:when test="$day-specified and /rfc/front/date/@day!=date:day-in-month()">Specified day does not match system date</xsl:when>
+        <xsl:when test="not($year-specified) and ($month-specified or $day-specified)">Can't default year when month or day is specified</xsl:when>
+        <xsl:when test="not($month-specified) and $day-specified">Can't default month when day is specified</xsl:when>
+        <xsl:otherwise>yes</xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <!-- may, but won't -->
+    <xsl:otherwise>yes</xsl:otherwise> 
+  </xsl:choose>
+</xsl:variable>
+
+<xsl:param name="xml2rfc-ext-pub-year">
+  <xsl:choose>
+    <xsl:when test="/rfc/front/date/@year and /rfc/front/date/@year!=''">
+      <xsl:value-of select="/rfc/front/date/@year"/>
+    </xsl:when>
+    <xsl:when test="function-available('date:year')">
+      <xsl:if test="/rfc/front/date/@month and /rfc/front/date/@month!=''">
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg" select="'defaulting publication year although month was specified'"/>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="/rfc/front/date/@day and /rfc/front/date/@day!=''">
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg" select="'defaulting publication year although day was specified'"/>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:value-of select="date:year()"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="'/rfc/front/date/@year missing (and XSLT processor cannot compute the system date)'"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:param>
+
+<xsl:param name="xml2rfc-ext-pub-month">
+  <xsl:choose>
+    <xsl:when test="/rfc/front/date/@month and /rfc/front/date/@month!=''">
+      <xsl:value-of select="/rfc/front/date/@month"/>
+    </xsl:when>
+    <xsl:when test="function-available('date:month-in-year') and $may-default-dates='yes'">
+      <xsl:call-template name="get-month-as-name">
+        <xsl:with-param name="month" select="date:month-in-year()"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="function-available('date:month-in-year') and $may-default-dates!='yes'">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="inline" select="'no'"/>
+        <xsl:with-param name="msg" select="$may-default-dates"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="'/rfc/front/date/@month missing (and XSLT processor cannot compute the system date)'"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:param>
+
+<xsl:param name="xml2rfc-ext-pub-month-numeric">
+  <xsl:call-template name="get-month-as-num">
+    <xsl:with-param name="month" select="$xml2rfc-ext-pub-month" />
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:param name="xml2rfc-ext-pub-day">
+  <xsl:choose>
+    <xsl:when test="/rfc/front/date/@day and /rfc/front/date/@day!=''">
+      <xsl:value-of select="/rfc/front/date/@day"/>
+    </xsl:when>
+    <xsl:when test="function-available('date:day-in-month') and $may-default-dates='yes'">
+      <xsl:value-of select="date:day-in-month()"/>
+    </xsl:when>
+    <xsl:otherwise /> <!-- harmless, we just don't have it -->
+  </xsl:choose>
+</xsl:param>
 
 </xsl:stylesheet>
