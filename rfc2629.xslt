@@ -2646,7 +2646,10 @@ td.topnowrap {
 td.header {
   background-color: gray;
   width: 50%;
-}
+}<xsl:if test="/rfc/@obsoletes | /rfc/@updates">
+td.header a {
+  color: white;
+}</xsl:if>
 td.reference {
   vertical-align: top;
   white-space: nowrap;
@@ -4759,11 +4762,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.360 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.360 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.361 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.361 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/02/27 13:51:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/27 13:51:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/02/28 16:24:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/28 16:24:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
