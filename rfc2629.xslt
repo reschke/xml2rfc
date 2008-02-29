@@ -255,12 +255,6 @@
         'iprnotified=')" 
 /> 
 
-<!-- publication date handling -->
-
-
-
- 
-
 <!-- URL templates for RFCs and Internet Drafts. -->
 
 <!-- Reference the authorative ASCII versions
@@ -348,6 +342,19 @@
       (not(/rfc/@number) and $xml2rfc-ext-pub-year &gt; 2007 and $xml2rfc-ext-pub-month-numeric >= 9)
     )
   )" />
+
+<!-- funding switch -->  
+<xsl:variable name="funding0" select="(
+  /rfc/@number &gt; 2499) or
+  (not(/rfc/@number) and /rfc/@docName and $xml2rfc-ext-pub-year &gt;= 1999
+  )" />
+  
+<xsl:variable name="funding1" select="(
+  /rfc/@number &gt; 4320) or
+  (not(/rfc/@number) and /rfc/@docName and $xml2rfc-ext-pub-year &gt;= 2006
+  )" />
+
+<xsl:variable name="funding2" select="$ipr-2007-08"/>
 
 <!-- will document have an index -->
 <xsl:variable name="has-index" select="//iref or (//xref and $xml2rfc-ext-include-references-in-index='yes')" />
@@ -2440,12 +2447,26 @@
     </xsl:choose>
   </section>
   
-  <section title="Acknowledgement" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
-    <t>
-      Funding for the RFC Editor function is provided by the IETF
-      Administrative Support Activity (IASA).
-    </t>
-  </section>
+  <xsl:choose>
+    <xsl:when test="$funding2"/>
+    <xsl:when test="$funding1 and /rfc/@number">
+      <section title="Acknowledgement" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+        <t>
+          Funding for the RFC Editor function is provided by the IETF
+          Administrative Support Activity (IASA).
+        </t>
+      </section>
+    </xsl:when>
+    <xsl:when test="$funding0 and /rfc/@number">
+      <section title="Acknowledgement" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+        <t>
+          Funding for the RFC Editor function is currently provided by
+          the Internet Society.
+        </t>
+      </section>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
 
 </xsl:template>
 
@@ -4762,11 +4783,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.361 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.361 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.362 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.362 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/02/28 16:24:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/28 16:24:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/02/29 17:10:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/29 17:10:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
