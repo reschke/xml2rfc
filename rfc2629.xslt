@@ -37,11 +37,12 @@
                 xmlns:exslt="http://exslt.org/common"
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
                 xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
-                xmlns:saxon="http://icl.com/saxon"
+                xmlns:saxon-old="http://icl.com/saxon"
+                xmlns:saxon="http://saxon.sf.net/"
                 xmlns:x="http://purl.org/net/xml2rfc/ext"
                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
 
-                exclude-result-prefixes="date ed exslt msxsl myns saxon x xhtml"
+                exclude-result-prefixes="date ed exslt msxsl myns saxon saxon-old x xhtml"
                 >
 
 <xsl:strip-space elements="back front list middle rfc section"/>                
@@ -4783,11 +4784,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.362 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.362 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.363 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.363 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/02/29 17:10:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/02/29 17:10:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/03/01 14:30:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/03/01 14:30:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -4943,6 +4944,13 @@ thead th {
 
 <!-- diag support -->
 <xsl:template name="lineno">
+  <xsl:if test="function-available('saxon-old:line-number')">
+    <xsl:if test="saxon-old:line-number() > 0">
+      <xsl:text> (at line </xsl:text>
+      <xsl:value-of select="saxon-old:line-number()"/>
+      <xsl:text>)</xsl:text>
+    </xsl:if>
+  </xsl:if>
   <xsl:if test="function-available('saxon:line-number')">
     <xsl:if test="saxon:line-number() > 0">
       <xsl:text> (at line </xsl:text>
