@@ -4696,7 +4696,7 @@ thead th {
         [<xsl:value-of select="$cid"/>]
       </dt>
       <dd>
-        <xsl:value-of select="."/>
+        <xsl:apply-templates select="node()"/>
         <xsl:if test="@source"> --<xsl:value-of select="@source"/></xsl:if>
       </dd>
     </xsl:for-each>
@@ -4802,11 +4802,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.367 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.367 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.368 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.368 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/05/19 13:00:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/05/19 13:00:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/06/03 16:48:36 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/03 16:48:36 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
