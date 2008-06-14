@@ -3140,6 +3140,7 @@ thead th {
                         <xsl:text>&#160;&#160;</xsl:text>
                         
                         <xsl:variable name="rs" select="//xref[@target=current()/@anchor] | . | //reference[@anchor=concat('deleted-',current()/@anchor)]"/>
+                        
                         <xsl:for-each select="$rs">
                           <xsl:call-template name="insertSingleXref" />
                         </xsl:for-each>
@@ -3154,7 +3155,14 @@ thead th {
                               <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-sec',concat(@target,'..',@x:sec)))">
                                 <li class="indline1">
                                   <em>
-                                    <xsl:text>Section </xsl:text>
+                                    <xsl:choose>
+                                      <xsl:when test="translate(substring(@x:sec,1,1),$ucase,'')=''">
+                                        <xsl:text>Appendix </xsl:text>
+                                      </xsl:when>
+                                      <xsl:otherwise>
+                                        <xsl:text>Section </xsl:text>
+                                      </xsl:otherwise>
+                                    </xsl:choose>
                                     <xsl:value-of select="@x:sec"/>
                                   </em>
                                   <xsl:text>&#160;&#160;</xsl:text>
@@ -3177,10 +3185,20 @@ thead th {
                                 <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-anchor',concat(@target,'..',@x:rel)))">
                                   <li class="indline1">
                                     <em>
-                                      <xsl:text>Section </xsl:text>
-                                      <xsl:for-each select="$doc//*[@anchor=substring-after(current()/@x:rel,'#')]">
-                                        <xsl:call-template name="get-section-number"/>
-                                      </xsl:for-each>
+                                      <xsl:variable name="sec">
+                                        <xsl:for-each select="$doc//*[@anchor=substring-after(current()/@x:rel,'#')]">
+                                          <xsl:call-template name="get-section-number"/>
+                                        </xsl:for-each>
+                                      </xsl:variable>
+                                      <xsl:choose>
+                                        <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
+                                          <xsl:text>Appendix </xsl:text>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                          <xsl:text>Section </xsl:text>
+                                        </xsl:otherwise>
+                                      </xsl:choose>
+                                      <xsl:value-of select="$sec"/>
                                     </em>
                                     <xsl:text>&#160;&#160;</xsl:text>
                                     <xsl:for-each select="key('index-xref-by-anchor',concat(@target,'..',@x:rel))">
@@ -4802,11 +4820,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.368 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.368 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.369 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.369 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/06/03 16:48:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/03 16:48:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/06/14 15:52:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/14 15:52:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -4888,7 +4906,7 @@ thead th {
 </xsl:template>
 
 <xsl:template name="get-section-type">
-  <xsl:param name="prec" />
+  <xsl:param name="prec" /> <!-- TODO: check this, it's unused -->
   <xsl:choose>
     <xsl:when test="ancestor::back">Appendix</xsl:when>
     <xsl:otherwise>Section</xsl:otherwise>
