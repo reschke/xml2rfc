@@ -654,9 +654,6 @@
   
     <!-- emit it -->
     <xsl:choose>
-      <xsl:when test="function-available('msxsl:node-set')">
-        <xsl:apply-templates select="msxsl:node-set($copyright)" />
-      </xsl:when>
       <xsl:when test="function-available('exslt:node-set')">
         <xsl:apply-templates select="exslt:node-set($copyright)" />
       </xsl:when>
@@ -718,12 +715,6 @@
     <!-- insert the collected information -->
     <table summary="header information" class="header" border="0" cellpadding="1" cellspacing="1">
       <xsl:choose>
-        <xsl:when test="function-available('msxsl:node-set')">
-          <xsl:call-template name="emitheader">
-            <xsl:with-param name="lc" select="msxsl:node-set($leftColumn)" />    
-            <xsl:with-param name="rc" select="msxsl:node-set($rightColumn)" />    
-          </xsl:call-template>
-        </xsl:when>    
         <xsl:when test="function-available('exslt:node-set')">
           <xsl:call-template name="emitheader">
             <xsl:with-param name="lc" select="exslt:node-set($leftColumn)" />    
@@ -768,9 +759,6 @@
     
     <!-- emit it -->
     <xsl:choose>
-      <xsl:when test="function-available('msxsl:node-set')">
-        <xsl:apply-templates select="msxsl:node-set($preamble)" />
-      </xsl:when>
       <xsl:when test="function-available('exslt:node-set')">
         <xsl:apply-templates select="exslt:node-set($preamble)" />
       </xsl:when>
@@ -4820,11 +4808,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.369 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.369 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.370 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.370 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/06/14 15:52:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/14 15:52:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/06/16 10:53:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/16 10:53:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -4995,6 +4983,13 @@ thead th {
     </xsl:if>
   </xsl:if>
 </xsl:template>
+
+<!-- define exslt:node-set for msxml -->       
+<msxsl:script language="JScript" implements-prefix="exslt">
+  this['node-set'] = function (x) {
+    return x;
+  }
+</msxsl:script>
 
 <!-- date handling -->
 
