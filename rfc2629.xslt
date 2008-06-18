@@ -360,6 +360,9 @@
 <!-- will document have an index -->
 <xsl:variable name="has-index" select="//iref or (//xref and $xml2rfc-ext-include-references-in-index='yes')" />
           
+<!-- does the document contain edits? -->
+<xsl:variable name="has-edits" select="//ed:ins | //ed:del | //ed:replace" />
+
 <!-- Templates for the various elements of rfc2629.dtd -->
               
 <xsl:template match="text()[not(ancestor::artwork)]">
@@ -2784,7 +2787,7 @@ blockquote > * .bcp14 {
   font-size: 14pt;
   background-color: yellow;
 }
-<xsl:if test="//ed:del|//ed:replace|//ed:ins">del {
+<xsl:if test="$has-edits">del {
   color: red;
   text-decoration: line-through;
 }
@@ -4808,11 +4811,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.370 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.370 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.371 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.371 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/06/16 10:53:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/16 10:53:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/06/18 16:42:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/18 16:42:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -4842,13 +4845,12 @@ thead th {
 </xsl:template>
 
 <xsl:template name="get-section-number">
-  <xsl:variable name="hasEdits" select="count(//ed:del|//ed:ins)!=0" />
   <xsl:variable name="anchor" select="@anchor"/>
   <xsl:choose>
     <xsl:when test="@x:fixed-section-number">
       <xsl:value-of select="@x:fixed-section-number"/>
     </xsl:when>
-    <xsl:when test="$hasEdits or ancestor::*/@x:fixed-section-number">
+    <xsl:when test="$has-edits or ancestor::*/@x:fixed-section-number">
       <xsl:call-template name="sectionnumberAndEdits" />
     </xsl:when>
     <xsl:otherwise>
