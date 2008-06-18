@@ -305,6 +305,10 @@
   match="xref[@x:rel]"
     use="concat(@target,'..',@x:rel)" />
 
+<xsl:key name="anchor-item"
+  match="//*[@anchor]"
+    use="@anchor"/>
+
 <!-- prefix for automatically generated anchors -->
 <xsl:variable name="anchor-prefix" select="'rfc'" />
 
@@ -1701,7 +1705,7 @@
 <xsl:template match="xref[node()]">
 
   <xsl:variable name="target" select="@target" />
-  <xsl:variable name="node" select="$src//*[@anchor=$target]" />
+  <xsl:variable name="node" select="key('anchor-item',$target)" />
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
 
   <xsl:choose>
@@ -1775,7 +1779,7 @@
   <xsl:variable name="context" select="." />
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
-  <xsl:variable name="node" select="$src//*[@anchor=$target]" />
+  <xsl:variable name="node" select="key('anchor-item',$target)" />
   <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
     <xsl:call-template name="error">
       <xsl:with-param name="msg" select="concat('Undefined target: ',@target)"/>
@@ -3899,9 +3903,12 @@ thead th {
 </xsl:template>
 
 <!-- internal ref support -->
+<xsl:key name="anchor-item-alias" match="//*[@anchor and (x:anchor-alias/@value or ed:replace/ed:ins/x:anchor-alias)]" use="x:anchor-alias/@value | ed:replace/ed:ins/x:anchor-alias/@value"/>
+
 <xsl:template match="x:ref">
   <xsl:variable name="val" select="."/>
-  <xsl:variable name="target" select="//*[(@anchor and x:anchor-alias/@value=$val) or (@anchor and ed:replace/ed:ins/x:anchor-alias/@value=$val) or (@anchor=$val)]"/>
+<!--  <xsl:variable name="target" select="//*[(@anchor and x:anchor-alias/@value=$val) or (@anchor and ed:replace/ed:ins/x:anchor-alias/@value=$val) or (@anchor=$val)]"/> -->
+  <xsl:variable name="target" select="key('anchor-item',$val) | key('anchor-item-alias',$val)"/>
   <xsl:variable name="irefs" select="//iref[@x:for-anchor=$val]"/>
   <xsl:choose>
     <xsl:when test="$target">
@@ -4820,11 +4827,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.372 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.372 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.373 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.373 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/06/18 18:57:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/18 18:57:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/06/18 20:26:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/18 20:26:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
