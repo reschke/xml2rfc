@@ -1107,7 +1107,10 @@
   <!-- check for reference to reference -->
   <xsl:variable name="anchor" select="@anchor"/>
   <xsl:if test="not(ancestor::ed:del) and not(//xref[@target=$anchor])">
-    <xsl:message>WARNING: unused reference '<xsl:value-of select="@anchor"/>'<xsl:call-template name="lineno"/></xsl:message>
+    <xsl:call-template name="warning">
+      <xsl:with-param name="inline" select="'no'"/>
+      <xsl:with-param name="msg">unused reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
+    </xsl:call-template>
   </xsl:if>
 
   <xsl:variable name="target">
@@ -1344,7 +1347,10 @@
   
   <!-- conformance checks -->
   <xsl:if test="$xml2rfc-symrefs!='no' and $xml2rfc-symrefs!='yes' and //reference">
-    <xsl:message>WARNING: symrefs PI not specified; default has changed from 'no' to 'yes'.</xsl:message>
+    <xsl:call-template name="warning">
+      <xsl:with-param name="inline" select="'no'"/>
+      <xsl:with-param name="msg">symrefs PI not specified; default has changed from 'no' to 'yes'.</xsl:with-param>
+    </xsl:call-template>
   </xsl:if>
   
   <xsl:variable name="lang">
@@ -3908,7 +3914,10 @@ thead th {
       </a>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:message>WARNING: internal link target for '<xsl:value-of select="."/>' does not exist.<xsl:call-template name="lineno"/></xsl:message>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="inline" select="'no'"/>
+        <xsl:with-param name="msg">internal link target for '<xsl:value-of select="."/>' does not exist.</xsl:with-param>
+      </xsl:call-template>
       <xsl:value-of select="."/>
     </xsl:otherwise>
   </xsl:choose>
@@ -4811,11 +4820,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.371 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.371 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.372 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.372 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/06/18 16:42:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/18 16:42:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/06/18 18:57:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/18 18:57:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
