@@ -309,6 +309,10 @@
   match="//*[@anchor]"
     use="@anchor"/>
 
+<xsl:key name="xref-item"
+  match="//xref"
+    use="@target"/>
+
 <!-- prefix for automatically generated anchors -->
 <xsl:variable name="anchor-prefix" select="'rfc'" />
 
@@ -1110,7 +1114,7 @@
 
   <!-- check for reference to reference -->
   <xsl:variable name="anchor" select="@anchor"/>
-  <xsl:if test="not(ancestor::ed:del) and not(//xref[@target=$anchor])">
+  <xsl:if test="not(ancestor::ed:del) and not(key('xref-item',$anchor))">
     <xsl:call-template name="warning">
       <xsl:with-param name="inline" select="'no'"/>
       <xsl:with-param name="msg">unused reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
@@ -3140,7 +3144,7 @@ thead th {
                         </em>
                         <xsl:text>&#160;&#160;</xsl:text>
                         
-                        <xsl:variable name="rs" select="//xref[@target=current()/@anchor] | . | //reference[@anchor=concat('deleted-',current()/@anchor)]"/>
+                        <xsl:variable name="rs" select="key('xref-item',current()/@anchor) | . | //reference[@anchor=concat('deleted-',current()/@anchor)]"/>
                         
                         <xsl:for-each select="$rs">
                           <xsl:call-template name="insertSingleXref" />
@@ -3232,7 +3236,7 @@ thead th {
                         <xsl:text>&#160;&#160;</xsl:text>
                         
                         <xsl:variable name="irefs3" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
-                        <xsl:variable name="xrefs3" select="//xref[@target=$irefs3[@x:for-anchor='']/../@anchor or @target=$irefs3/@x:for-anchor]"/>
+                        <xsl:variable name="xrefs3" select="key('xref-item',$irefs3[@x:for-anchor='']/../@anchor) | key('xref-item',$irefs3/@x:for-anchor)"/>
                         <xsl:variable name="extrefs3" select="//x:ref[.=$irefs3[@x:for-anchor='']/../@anchor or .=$irefs3/@x:for-anchor]"/>
 
                         <xsl:for-each select="$irefs3|$xrefs3|$extrefs3">
@@ -3264,7 +3268,7 @@ thead th {
                                   <xsl:text>&#160;&#160;</xsl:text>
                                     
                                   <xsl:variable name="irefs4" select="key('index-item-subitem',concat(@item,'..',@subitem))"/>
-                                  <xsl:variable name="xrefs4" select="//xref[@target=$irefs4[@x:for-anchor='']/../@anchor or @target=$irefs4/@x:for-anchor]"/>
+                                  <xsl:variable name="xrefs4" select="key('xref-item',$irefs4[@x:for-anchor='']/../@anchor) | key('xref-item',$irefs4/@x:for-anchor)"/>
                                   <xsl:variable name="extrefs4" select="//x:ref[.=$irefs4[@x:for-anchor='']/../@anchor or .=$irefs4/@x:for-anchor]"/>
 
                                   <xsl:for-each select="$irefs4|$xrefs4|$extrefs4">
@@ -4827,11 +4831,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.373 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.373 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.374 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.374 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/06/18 20:26:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/18 20:26:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/06/19 11:05:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/19 11:05:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
