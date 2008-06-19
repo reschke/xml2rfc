@@ -313,6 +313,10 @@
   match="//xref"
     use="@target"/>
 
+<xsl:key name="extref-item"
+  match="//x:ref"
+    use="."/>
+
 <!-- prefix for automatically generated anchors -->
 <xsl:variable name="anchor-prefix" select="'rfc'" />
 
@@ -3237,7 +3241,7 @@ thead th {
                         
                         <xsl:variable name="irefs3" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
                         <xsl:variable name="xrefs3" select="key('xref-item',$irefs3[@x:for-anchor='']/../@anchor) | key('xref-item',$irefs3/@x:for-anchor)"/>
-                        <xsl:variable name="extrefs3" select="//x:ref[.=$irefs3[@x:for-anchor='']/../@anchor or .=$irefs3/@x:for-anchor]"/>
+                        <xsl:variable name="extrefs3" select="key('extref-item',$irefs3[@x:for-anchor='']/../@anchor) | key('extref-item',$irefs3/@x:for-anchor)"/>
 
                         <xsl:for-each select="$irefs3|$xrefs3|$extrefs3">
                           <!-- <xsl:sort select="translate(@item,$lcase,$ucase)" />  -->
@@ -3269,7 +3273,7 @@ thead th {
                                     
                                   <xsl:variable name="irefs4" select="key('index-item-subitem',concat(@item,'..',@subitem))"/>
                                   <xsl:variable name="xrefs4" select="key('xref-item',$irefs4[@x:for-anchor='']/../@anchor) | key('xref-item',$irefs4/@x:for-anchor)"/>
-                                  <xsl:variable name="extrefs4" select="//x:ref[.=$irefs4[@x:for-anchor='']/../@anchor or .=$irefs4/@x:for-anchor]"/>
+                                  <xsl:variable name="extrefs4" select="key('extref-item',$irefs4[@x:for-anchor='']/../@anchor) | key('extref-item',$irefs4/@x:for-anchor)"/>
 
                                   <xsl:for-each select="$irefs4|$xrefs4|$extrefs4">
                                     <!--<xsl:sort select="translate(@item,$lcase,$ucase)" />-->                    
@@ -4831,11 +4835,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.375 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.375 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.376 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.376 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/06/19 12:28:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/19 12:28:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/06/19 13:32:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/19 13:32:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
