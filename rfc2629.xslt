@@ -1782,6 +1782,8 @@
 
 </xsl:template>
                
+<xsl:key name="iref-xanch" match="iref[@x:for-anchor]" use="@x:for-anchor"/>            
+               
 <xsl:template match="xref[not(node())]">
 
   <xsl:variable name="context" select="." />
@@ -1800,7 +1802,7 @@
     <xsl:when test="name($node)='section' or name($node)='appendix'">
       <a href="#{@target}">
         <!-- insert id when a backlink to this xref is needed in the index -->
-        <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]">
+        <xsl:if test="key('iref-xanch',$target) | key('iref-xanch','')[../@anchor=$target]">
           <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
         </xsl:if>
         <xsl:call-template name="render-section-ref">
@@ -4835,11 +4837,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.376 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.376 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.377 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.377 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/06/19 13:32:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/19 13:32:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/06/19 15:49:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/19 15:49:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
