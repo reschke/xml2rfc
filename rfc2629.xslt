@@ -3144,7 +3144,7 @@ thead th {
                         </em>
                         <xsl:text>&#160;&#160;</xsl:text>
                         
-                        <xsl:variable name="rs" select="key('xref-item',current()/@anchor) | . | //reference[@anchor=concat('deleted-',current()/@anchor)]"/>
+                        <xsl:variable name="rs" select="key('xref-item',current()/@anchor) | . | key('anchor-item',concat('deleted-',current()/@anchor))"/>
                         
                         <xsl:for-each select="$rs">
                           <xsl:call-template name="insertSingleXref" />
@@ -3222,7 +3222,7 @@ thead th {
                     <!-- regular iref -->
                     <xsl:if test="generate-id(.) = generate-id(key('index-item',concat(@item,@anchor)))">
                       <xsl:variable name="item" select="@item"/>
-                      <xsl:variable name="in-artwork" select="count(//iref[@item=$item and @primary='true' and ancestor::artwork])!=0"/>
+                      <xsl:variable name="in-artwork" select="key('index-item',$item)[@primary='true' and ancestor::artwork]"/>
                           
                       <li class="indline1">
                         <xsl:choose>
@@ -3253,7 +3253,7 @@ thead th {
                               <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
                   
                                 <xsl:variable name="itemsubitem" select="concat(@item,'..',@subitem)"/>
-                                <xsl:variable name="in-artwork2" select="count(//iref[concat(@item,'..',@subitem)=$itemsubitem and @primary='true' and ancestor::artwork])!=0"/>
+                                <xsl:variable name="in-artwork2" select="key('index-item-subitem',concat(@item,'..',@subitem))[@primary='true' and ancestor::artwork]" />
                   
                                 <li class="indline1">
               
@@ -4831,11 +4831,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.374 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.374 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.375 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.375 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/06/19 11:05:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/19 11:05:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/06/19 12:28:15 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/19 12:28:15 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
