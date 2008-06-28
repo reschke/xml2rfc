@@ -617,17 +617,21 @@
           <a href="fax:{translate(address/facsimile,' ','')}"><span class="value"><xsl:value-of select="address/facsimile" /></span></a>
         </span>
       </xsl:if>
-      <xsl:if test="address/email">
+      <xsl:for-each select="address/email">
+        <xsl:variable name="email">
+          <xsl:call-template name="extract-email"/>
+        </xsl:variable>
+        
         <span class="vcardline">
-        <xsl:text>EMail: </xsl:text>
-        <a>
-          <xsl:if test="$xml2rfc-linkmailto!='no'">
-            <xsl:attribute name="href">mailto:<xsl:value-of select="address/email" /></xsl:attribute>
-          </xsl:if>
-          <span class="email"><xsl:value-of select="address/email" /></span>
-        </a>
+          <xsl:text>EMail: </xsl:text>
+          <a>
+            <xsl:if test="$xml2rfc-linkmailto!='no'">
+              <xsl:attribute name="href">mailto:<xsl:value-of select="$email" /></xsl:attribute>
+            </xsl:if>
+            <span class="email"><xsl:value-of select="$email" /></span>
+          </a>
         </span>
-      </xsl:if>
+      </xsl:for-each>
       <xsl:if test="address/uri">
         <span class="vcardline">
           <xsl:text>URI: </xsl:text>
@@ -4837,11 +4841,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.377 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.377 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.378 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.378 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/06/19 15:49:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/19 15:49:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/06/28 10:04:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/06/28 10:04:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -4967,6 +4971,34 @@ thead th {
       <xsl:value-of select="@initials"/>
     </xsl:otherwise>
   </xsl:choose>
+</xsl:template>
+
+<!-- checking for email element -->
+<xsl:template name="extract-email">
+  <xsl:variable name="email" select="normalize-space(.)"/>
+  <xsl:if test="string-length(.) != string-length($email) or contains($email,' ')">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="inline" select="'no'"/>
+      <xsl:with-param name="msg">excessive whitespace in email address: '<xsl:value-of select="."/>'</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  
+  <xsl:variable name="email2">
+    <xsl:choose>
+      <xsl:when test="starts-with($email,'mailto:')">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="inline" select="'no'"/>
+          <xsl:with-param name="msg">email should not include URI scheme: '<xsl:value-of select="."/>'</xsl:with-param>
+        </xsl:call-template>
+        <xsl:value-of select="substring($email, 1 + string-length('mailto:'))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$email"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  
+  <xsl:value-of select="$email2"/>
 </xsl:template>
 
 <xsl:template name="insert-conditional-pagebreak">
