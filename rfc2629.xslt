@@ -4046,21 +4046,52 @@ thead th {
   <xsl:apply-templates/>
 </xsl:template>
 
-<!-- XML checking -->
 <xsl:template match="x:parse-xml">
-  <xsl:variable name="content">
-    <xsl:apply-templates/>
-  </xsl:variable>
-  <xsl:copy-of select="$content"/>
-  <xsl:if test="function-available('myns:parseXml')">
-    <xsl:variable name="check" select="concat($content,'')"/>
-    <xsl:if test="myns:parseXml($check)!=''">
-      <xsl:call-template name="error">
-        <xsl:with-param name="msg" select="concat('Parse error in XML: ', myns:parseXml($check))"/>
-      </xsl:call-template>
-    </xsl:if>
+  <xsl:apply-templates/>
+
+  <xsl:if test="function-available('exslt:node-set')">
+    <xsl:variable name="cleaned">
+      <xsl:apply-templates mode="cleanup-edits"/>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="function-available('myns:parseXml')">
+        <xsl:if test="myns:parseXml(concat($cleaned,''))!=''">
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg" select="concat('Parse error in XML: ', myns:parseXml(concat($cleaned,'')))"/>
+          </xsl:call-template>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="function-available('saxon:parse')">
+        <xsl:variable name="parsed" select="saxon:parse(concat($cleaned,''))"/>
+        <xsl:if test="$parsed='foo'">
+          <xsl:comment>should not get here</xsl:comment>
+        </xsl:if>
+      </xsl:when>
+      <xsl:otherwise></xsl:otherwise>
+    </xsl:choose>
   </xsl:if>
 </xsl:template>
+
+<!-- cleanup for ins/del -->
+
+<xsl:template match="comment()|@*" mode="cleanup-edits"><xsl:copy/></xsl:template>
+
+<xsl:template match="text()" mode="cleanup-edits"><xsl:copy/></xsl:template>
+
+<xsl:template match="/" mode="cleanup-edits">
+	<xsl:copy><xsl:apply-templates select="node()" mode="cleanup-edits" /></xsl:copy>
+</xsl:template>
+
+<xsl:template match="ed:del" mode="cleanup-edits"/>
+
+<xsl:template match="ed:replace" mode="cleanup-edits">
+  <xsl:apply-templates mode="cleanup-edits"/>
+</xsl:template>
+
+<xsl:template match="ed:ins" mode="cleanup-edits">
+  <xsl:apply-templates mode="cleanup-edits"/>
+</xsl:template>
+
 
 <!-- ABNF support -->
 <xsl:template name="to-abnf-char-sequence">
@@ -4950,11 +4981,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.380 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.380 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.381 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.381 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/07/10 11:19:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/07/10 11:19:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/07/11 13:04:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/07/11 13:04:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
