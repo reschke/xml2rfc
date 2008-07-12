@@ -4981,11 +4981,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.381 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.381 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.382 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.382 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/07/11 13:04:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/07/11 13:04:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/07/12 13:01:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/07/12 13:01:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -5045,6 +5045,11 @@ thead th {
                 <xsl:call-template name="get-references-section-number"/>.<xsl:number count="references"/>
               </xsl:otherwise>
             </xsl:choose>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:when test="ancestor::reference">
+          <xsl:for-each select="ancestor::reference">
+            <xsl:call-template name="get-section-number"/>
           </xsl:for-each>
         </xsl:when>
         <xsl:when test="ancestor::back"><xsl:number count="section|appendix" level="multiple" format="A.1.1.1.1.1.1.1" /></xsl:when>
