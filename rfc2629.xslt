@@ -632,12 +632,16 @@
           </a>
         </span>
       </xsl:for-each>
-      <xsl:if test="address/uri">
+      <xsl:for-each select="address/uri">
+        <xsl:variable name="uri">
+          <xsl:call-template name="extract-uri"/>
+        </xsl:variable>
+
         <span class="vcardline">
           <xsl:text>URI: </xsl:text>
-          <a href="{address/uri}" class="url"><xsl:value-of select="address/uri" /></a>
+          <a href="{$uri}" class="url"><xsl:value-of select="$uri" /></a>
         </span>
-      </xsl:if>
+      </xsl:for-each>
     </address>
 
 </xsl:template>
@@ -4981,11 +4985,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.382 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.382 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.383 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.383 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/07/12 13:01:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/07/12 13:01:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/07/16 06:37:06 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/07/16 06:37:06 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -5144,6 +5148,19 @@ thead th {
   </xsl:variable>
   
   <xsl:value-of select="$email2"/>
+</xsl:template>
+
+<!-- checking for uri element -->
+<xsl:template name="extract-uri">
+  <xsl:variable name="uri" select="normalize-space(.)"/>
+  <xsl:if test="string-length(.) != string-length($uri) or contains($uri,' ')">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="inline" select="'no'"/>
+      <xsl:with-param name="msg">excessive whitespace in URI: '<xsl:value-of select="."/>'</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  
+  <xsl:value-of select="$uri"/>
 </xsl:template>
 
 <xsl:template name="insert-conditional-pagebreak">
