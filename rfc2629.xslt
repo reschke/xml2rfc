@@ -3867,12 +3867,9 @@ thead th {
   <xsl:choose>
     <xsl:when test="contains($list,',')">
       <xsl:variable name="rfcNo" select="substring-before($list,',')" />
-      <xsl:if test="count(//references//reference/seriesInfo[@name='RFC' and @value=$rfcNo])=0">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="inline" select="'no'"/>
-          <xsl:with-param name="msg" select="concat('front matter mentions RFC ',$rfcNo,' for which there is no reference element')"/>
-        </xsl:call-template>
-      </xsl:if>
+      <xsl:call-template name="check-front-matter-ref">
+        <xsl:with-param name="name" select="$rfcNo"/>
+      </xsl:call-template>
       <a href="{concat($rfcUrlPrefix,$rfcNo,$rfcUrlPostfix)}"><xsl:value-of select="$rfcNo" /></a>,
       <xsl:call-template name="rfclist">
         <xsl:with-param name="list" select="normalize-space(substring-after($list,','))" />
@@ -3880,13 +3877,32 @@ thead th {
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="rfcNo" select="$list" />
-      <xsl:if test="count(//references//reference/seriesInfo[@name='RFC' and @value=$rfcNo])=0">
+      <xsl:call-template name="check-front-matter-ref">
+        <xsl:with-param name="name" select="$rfcNo"/>
+      </xsl:call-template>
+      <a href="{concat($rfcUrlPrefix,$rfcNo,$rfcUrlPostfix)}"><xsl:value-of select="$rfcNo" /></a>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="check-front-matter-ref">
+  <xsl:param name="name"/>
+  <xsl:choose>
+    <xsl:when test="starts-with($name,'draft-')">
+      <xsl:if test="count(//references//reference/seriesInfo[@name='Internet-Draft' and @value=$name])=0">
         <xsl:call-template name="warning">
           <xsl:with-param name="inline" select="'no'"/>
-          <xsl:with-param name="msg" select="concat('front matter mentions RFC',$rfcNo,' for which there is no reference element')"/>
+          <xsl:with-param name="msg" select="concat('front matter mentions I-D ',$name,' for which there is no reference element')"/>
         </xsl:call-template>
       </xsl:if>
-      <a href="{concat($rfcUrlPrefix,$rfcNo,$rfcUrlPostfix)}"><xsl:value-of select="$rfcNo" /></a>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:if test="count(//references//reference/seriesInfo[@name='RFC' and @value=$name])=0">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="inline" select="'no'"/>
+          <xsl:with-param name="msg" select="concat('XXXfront matter mentions RFC ',$name,' for which there is no reference element')"/>
+        </xsl:call-template>
+      </xsl:if>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -4994,11 +5010,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.384 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.384 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.385 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.385 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/07/18 10:33:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/07/18 10:33:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/07/21 06:58:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/07/21 06:58:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
