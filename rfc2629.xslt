@@ -2400,7 +2400,7 @@
         </t>
         <t>
           This document and the information contained herein is provided on an
-          &#8220;;AS IS&#8221; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+          &#8220;AS IS&#8221; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
           TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
           BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
           HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
@@ -5010,11 +5010,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.385 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.385 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.386 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.386 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/07/21 06:58:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/07/21 06:58:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/08/08 11:24:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/08/08 11:24:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
