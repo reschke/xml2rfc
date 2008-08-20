@@ -2537,7 +2537,10 @@ br.p {
 }</xsl:if>
 cite {
   font-style: normal;
-}
+}<xsl:if test="//x:note">
+div.note {
+  margin-left: 2em;
+}</xsl:if>
 dd {
   margin-right: 2em;<xsl:if test="$xml2rfc-ext-justification='always'">
   text-align: justify;</xsl:if>
@@ -3926,8 +3929,8 @@ thead th {
 
 <xsl:template name="get-paragraph-number">
   <!-- get section number of ancestor section element, then add t or figure number -->
-  <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered']) and not(ancestor::x:blockquote)">
-    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|figure|x:blockquote" />
+  <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered']) and not(ancestor::x:blockquote) and not(ancestor::x:note)">
+    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|figure|x:blockquote|x:note" />
   </xsl:if>
 </xsl:template>
 
@@ -3974,6 +3977,13 @@ thead th {
     <xsl:copy-of select="@cite"/>
     <xsl:apply-templates/>
   </q>
+</xsl:template>
+
+<!-- Notes -->
+<xsl:template match="x:note">
+  <div class="note">
+    <xsl:apply-templates/>
+  </div>
 </xsl:template>
 
 <xsl:template match="x:bcp14">
@@ -5017,11 +5027,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.388 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.388 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.389 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.389 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/08/11 09:18:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/08/11 09:18:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/08/20 14:21:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/08/20 14:21:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
