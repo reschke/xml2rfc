@@ -1404,7 +1404,16 @@
         <link><xsl:copy-of select="@*" /></link>
       </xsl:for-each>
       <xsl:if test="/rfc/@number">
-        <link rel="Alternate" title="Authorative ASCII version" href="http://www.ietf.org/rfc/rfc{/rfc/@number}.txt" />
+        <xsl:variable name="number">
+          <xsl:choose>
+            <xsl:when test="string-length(/rfc/@number) &lt; 2">000<xsl:value-of select="/rfc/@number"/></xsl:when>
+            <xsl:when test="string-length(/rfc/@number) &lt; 3">00<xsl:value-of select="/rfc/@number"/></xsl:when>
+            <xsl:when test="string-length(/rfc/@number) &lt; 4">0<xsl:value-of select="/rfc/@number"/></xsl:when>
+            <xsl:otherwise><xsl:value-of select="/rfc/@number"/></xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <link rel="Alternate" title="Authorative ASCII Version" href="http://www.ietf.org/rfc/rfc{/rfc/@number}.txt" />
+        <link rel="Help" title="Additional Information on tools.ietf.org" href="http://tools.ietf.org/html/rfc{$number}" />
       </xsl:if>
 
       <!-- generator -->
@@ -5039,11 +5048,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.390 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.390 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.391 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.391 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/08/24 08:49:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/08/24 08:49:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/08/31 10:32:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/08/31 10:32:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
