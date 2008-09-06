@@ -551,9 +551,33 @@
 
 <xsl:template match="artwork[@src and starts-with(@type,'image/')]">
   <p>
-    <img src="{@src}" alt="{.}">
-      <xsl:copy-of select="@width|@height"/>
-    </img>
+    <xsl:choose>
+      <xsl:when test="@type='image/svg+xml'">
+        <object data="{@src}" type="image/svg+xml">
+          <xsl:choose>
+            <xsl:when test="@width!='' or @height!=''">
+              <xsl:copy-of select="@width|@height"/>
+            </xsl:when>
+            <xsl:otherwise xmlns:svg="http://www.w3.org/2000/svg">
+              <!-- try to find width and height from SVG -->
+              <xsl:variable name="svg" select="document(@src)"/>
+              <xsl:for-each select="$svg/svg:svg/@width|$svg/svg:svg/@height">
+                <!-- strip out the units, cross the fingers pixels are meant -->
+                <xsl:attribute name="{local-name()}">
+                  <xsl:value-of select="translate(.,concat($ucase,$lcase),'')"/>
+                </xsl:attribute>
+              </xsl:for-each>
+            </xsl:otherwise>
+          </xsl:choose>
+          <xsl:apply-templates/>
+        </object>
+      </xsl:when>
+      <xsl:otherwise>
+        <img src="{@src}" alt="{.}">
+          <xsl:copy-of select="@width|@height"/>
+        </img>
+      </xsl:otherwise>
+    </xsl:choose>
   </p>
 </xsl:template>
 
@@ -5048,11 +5072,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.391 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.391 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.392 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.392 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/08/31 10:32:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/08/31 10:32:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/09/06 18:33:06 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/06 18:33:06 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
