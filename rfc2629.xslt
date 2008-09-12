@@ -780,6 +780,7 @@
     
   <p class="title">
     <!-- main title -->
+
     <xsl:apply-templates select="title"/>
     <xsl:if test="/rfc/@docName">
       <br/>
@@ -1561,6 +1562,20 @@
 </xsl:template>               
 
 <xsl:template match="title">
+  <xsl:if test="@abbrev and string-length(@abbrev) > 40">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="inline" select="'no'"/>
+      <xsl:with-param name="msg">title/@abbrev too long (max 40 characters)</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+
+  <xsl:if test="string-length(.) > 40 and (not(@abbrev) or @abbrev='')">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="inline" select="'no'"/>
+      <xsl:with-param name="msg">title too long, should supply title/@abbrev attribute with less than 40 characters</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+
   <xsl:apply-templates />
 </xsl:template>
 
@@ -5072,11 +5087,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.392 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.392 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.393 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.393 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/09/06 18:33:06 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/06 18:33:06 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/09/12 12:28:27 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/12 12:28:27 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
