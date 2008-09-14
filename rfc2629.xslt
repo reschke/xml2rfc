@@ -732,6 +732,7 @@
 
 <xsl:template match="figure">
   <xsl:if test="@anchor!=''">
+    <xsl:call-template name="check-anchor"/>
     <div id="{@anchor}"/>
   </xsl:if>
   <xsl:variable name="anch">
@@ -936,26 +937,26 @@
 <xsl:template match="list[@style='empty' or not(@style)]/t | list[@style='empty' or not(@style)]/ed:replace/ed:*/t">
   <!-- Inherited through CSS now <dd style="margin-top: .5em">-->
   <dd>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:call-template name="insertInsDelClass"/>
-    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:apply-templates />
   </dd>
 </xsl:template>
 
 <xsl:template match="list[@style='numbers' or @style='symbols' or @style='letters']/x:lt">
   <li>
-    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates select="t" />
   </li>
 </xsl:template>
 
 <xsl:template match="list[@style='numbers' or @style='symbols' or @style='letters']/t | list[@style='numbers' or @style='symbols' or @style='letters']/ed:replace/ed:*/t">
   <li>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:call-template name="insertInsDelClass"/>
     <xsl:for-each select="../..">
       <xsl:call-template name="insert-issue-pointer"/>
     </xsl:for-each>
-    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:apply-templates />
   </li>
 </xsl:template>
@@ -963,6 +964,7 @@
 <xsl:template match="list[@style='hanging']/x:lt">
   <xsl:if test="@hangText!=''">
     <dt>
+      <xsl:call-template name="copy-anchor"/>
       <xsl:call-template name="insertInsDelClass"/>
       <xsl:variable name="del-node" select="ancestor::ed:del"/>
       <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
@@ -972,7 +974,6 @@
           <xsl:with-param name="deleted-anchor" select="$deleted"/>
         </xsl:call-template>
       </xsl:for-each>
-      <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
       <xsl:value-of select="@hangText" />
     </dt>
   </xsl:if>
@@ -989,6 +990,7 @@
 <xsl:template match="list[@style='hanging']/t | list[@style='hanging']/ed:replace/ed:*/t">
   <xsl:if test="@hangText!=''">
     <dt>
+      <xsl:call-template name="copy-anchor"/>
       <xsl:call-template name="insertInsDelClass"/>
       <xsl:if test="count(preceding-sibling::t)=0">
         <xsl:variable name="del-node" select="ancestor::ed:del"/>
@@ -1000,7 +1002,6 @@
           </xsl:call-template>
         </xsl:for-each>
       </xsl:if>
-      <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
       <xsl:value-of select="@hangText" />
     </dt>
   </xsl:if>
@@ -1035,7 +1036,7 @@
     </xsl:choose>
   </xsl:variable>
   <dt>
-    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:choose>
       <xsl:when test="contains($format,'%c')">
         <xsl:value-of select="substring-before($format,'%c')"/><xsl:number value="$pos" format="a" /><xsl:value-of select="substring-after($format,'%c')"/>
@@ -1079,9 +1080,7 @@
 <xsl:template match="preamble">
   <xsl:if test="normalize-space(.) != ''">
     <p>
-      <xsl:if test="@anchor">
-        <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
-      </xsl:if>
+      <xsl:call-template name="copy-anchor"/>
       <xsl:call-template name="insertInsDelClass"/>
       <xsl:call-template name="editingMark" />
       <xsl:apply-templates />
@@ -1158,6 +1157,8 @@
       <xsl:with-param name="msg">unused reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
+
+  <xsl:call-template name="check-anchor"/>
 
   <xsl:variable name="target">
     <xsl:choose>
@@ -1668,6 +1669,7 @@
     
     <xsl:choose>
       <xsl:when test="@anchor">
+        <xsl:call-template name="check-anchor"/>
         <a id="{@anchor}" href="#{@anchor}"><xsl:call-template name="insertTitle"/></a>
       </xsl:when>
       <xsl:otherwise>
@@ -1681,27 +1683,21 @@
 
 <xsl:template match="spanx[@style='emph' or not(@style)]">
   <em>
-    <xsl:if test="@anchor">
-      <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
-    </xsl:if>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates />
   </em>
 </xsl:template>
 
 <xsl:template match="spanx[@style='verb']">
   <samp>
-    <xsl:if test="@anchor">
-      <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
-    </xsl:if>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates />
   </samp>
 </xsl:template>
 
 <xsl:template match="spanx[@style='strong']">
   <strong>
-    <xsl:if test="@anchor">
-      <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
-    </xsl:if>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates />
   </strong>
 </xsl:template>
@@ -3958,6 +3954,27 @@ thead th {
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="check-anchor">
+  <xsl:if test="@anchor and @anchor!=''">
+    <!-- check validity of anchor name -->
+    <xsl:variable name="test">
+      <xsl:element name="{@anchor}"/>
+    </xsl:variable>
+    <xsl:if test="count(exslt:node-set($test)//*) = 0">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('&quot;',@anchor,'&quot; is not a valid XML name')"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="copy-anchor">
+  <xsl:call-template name="check-anchor"/>
+  <xsl:if test="@anchor and @anchor!=''">
+    <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template name="rfclist-for-dcmeta">
   <xsl:param name="list" />
   <xsl:choose>
@@ -4079,9 +4096,7 @@ thead th {
 <!-- Definitions -->
 <xsl:template match="x:dfn">
   <dfn>
-    <xsl:if test="@anchor">
-      <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
-    </xsl:if>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates/>
   </dfn>
 </xsl:template>
@@ -5087,11 +5102,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.393 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.393 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.394 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.394 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/09/12 12:28:27 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/12 12:28:27 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/09/14 13:19:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/14 13:19:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
