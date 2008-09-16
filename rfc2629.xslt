@@ -2346,22 +2346,24 @@
 
 <xsl:template name="insertAuthors">
 
-  <xsl:call-template name="insert-conditional-hrule"/>
-  
   <xsl:variable name="number">
     <xsl:call-template name="get-authors-section-number"/>
   </xsl:variable>
     
-  <h1 id="{$anchor-prefix}.authors">
-    <xsl:call-template name="insert-conditional-pagebreak"/>
-    <xsl:if test="$number != ''">
-      <a href="#{$anchor-prefix}.section.{$number}" id="{$anchor-prefix}.section.{$number}"><xsl:value-of select="$number"/>.</a>
-      <xsl:text> </xsl:text>
-    </xsl:if>
-    <a href="#{$anchor-prefix}.authors"><xsl:call-template name="get-authors-section-title"/></a>
-  </h1>
-
-  <xsl:apply-templates select="/rfc/front/author" />
+  <xsl:if test="$number!='suppress'">
+    <xsl:call-template name="insert-conditional-hrule"/>
+    
+    <h1 id="{$anchor-prefix}.authors">
+      <xsl:call-template name="insert-conditional-pagebreak"/>
+      <xsl:if test="$number != ''">
+        <a href="#{$anchor-prefix}.section.{$number}" id="{$anchor-prefix}.section.{$number}"><xsl:value-of select="$number"/>.</a>
+        <xsl:text> </xsl:text>
+      </xsl:if>
+      <a href="#{$anchor-prefix}.authors"><xsl:call-template name="get-authors-section-title"/></a>
+    </h1>
+  
+    <xsl:apply-templates select="/rfc/front/author" />
+  </xsl:if>
 </xsl:template>
 
 
@@ -3669,19 +3671,22 @@ thead th {
 
 <xsl:template match="front" mode="toc">
   
-  <li>
-    <xsl:variable name="authors-title">
-      <xsl:call-template name="get-authors-section-title"/>
-    </xsl:variable>
-    <xsl:variable name="authors-number">
-      <xsl:call-template name="get-authors-section-number"/>
-    </xsl:variable>
-    <xsl:call-template name="insert-toc-line">
-      <xsl:with-param name="target" select="concat($anchor-prefix,'.authors')"/>
-      <xsl:with-param name="title" select="$authors-title"/>
-      <xsl:with-param name="number" select="$authors-number"/>
-    </xsl:call-template>
-  </li>
+  <xsl:variable name="authors-title">
+    <xsl:call-template name="get-authors-section-title"/>
+  </xsl:variable>
+  <xsl:variable name="authors-number">
+    <xsl:call-template name="get-authors-section-number"/>
+  </xsl:variable>
+
+  <xsl:if test="$authors-number!='suppress'">
+    <li>
+      <xsl:call-template name="insert-toc-line">
+        <xsl:with-param name="target" select="concat($anchor-prefix,'.authors')"/>
+        <xsl:with-param name="title" select="$authors-title"/>
+        <xsl:with-param name="number" select="$authors-number"/>
+      </xsl:call-template>
+    </li>
+  </xsl:if>
 
 </xsl:template>
 
@@ -4353,6 +4358,13 @@ thead th {
   <xsl:text>&#x2518;</xsl:text>
 </xsl:template>
 
+<!-- author handling extensions -->
+<xsl:template match="x:author">
+  <xsl:for-each select="/*/front/author[@anchor=current()/@target]">
+    <xsl:apply-templates select="."/>
+  </xsl:for-each>
+</xsl:template>
+
 <!-- experimental annotation support -->
 
 <xsl:template match="ed:issueref">
@@ -4567,7 +4579,9 @@ thead th {
 <xsl:template name="insert-diagnostics">
   
   <!-- check anchor names -->
-  <xsl:variable name="badAnchors" select="//*[starts-with(@anchor,concat($anchor-prefix,'.'))]" />
+  <xsl:variable name="badAnchors"
+    select="//*[starts-with(@anchor,concat($anchor-prefix,'.'))][@anchor!=concat($anchor-prefix,'.authors') and /*/x:assign-section-number[@number='suppress' and @builtin-target='authors']]" />
+  
   <xsl:if test="$badAnchors">
     <xsl:variable name="text">
       The following anchor names may collide with internally generated anchors because of their prefix "<xsl:value-of select="$anchor-prefix" />":
@@ -5102,11 +5116,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.394 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.394 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.395 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.395 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/09/14 13:19:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/14 13:19:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/09/16 16:31:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/16 16:31:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
