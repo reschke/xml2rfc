@@ -1819,17 +1819,19 @@
 
     <xsl:otherwise>
       <a href="#{$target}"><xsl:apply-templates /></a>
-      <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
-        <xsl:text> </xsl:text>
-        <cite title="{normalize-space(front/title)}">
-          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
-            <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-          </xsl:if>
-          <xsl:call-template name="referencename">
-             <xsl:with-param name="node" select="." />
-          </xsl:call-template>
-        </cite>
-      </xsl:for-each>
+      <xsl:if test="not(@format='none')">
+        <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
+          <xsl:text> </xsl:text>
+          <cite title="{normalize-space(front/title)}">
+            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+              <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+            </xsl:if>
+            <xsl:call-template name="referencename">
+               <xsl:with-param name="node" select="." />
+            </xsl:call-template>
+          </cite>
+        </xsl:for-each>
+      </xsl:if>
     </xsl:otherwise>
   </xsl:choose>
 
@@ -5116,11 +5118,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.395 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.395 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.396 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.396 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/09/16 16:31:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/16 16:31:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/09/17 08:43:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/17 08:43:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
