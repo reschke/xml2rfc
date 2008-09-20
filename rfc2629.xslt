@@ -4876,11 +4876,14 @@ thead th {
       </xsl:choose>
     </xsl:variable>
     <table summary="{preamble}" class="{$style}" cellpadding="3" cellspacing="0">
-      <thead>
-        <tr>
-          <xsl:apply-templates select="ttcol" />
-        </tr>
-      </thead>
+      <xsl:if test="ttcol!=''">
+        <!-- skip header when all column titles are empty -->
+        <thead>
+          <tr>
+            <xsl:apply-templates select="ttcol" />
+          </tr>
+        </thead>
+      </xsl:if>
       <tbody>
         <xsl:variable name="columns" select="count(ttcol)" />
         <xsl:variable name="fields" select="c | ed:replace/ed:ins/c | ed:replace/ed:del/c" />
@@ -5118,11 +5121,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.396 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.396 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.397 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.397 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/09/17 08:43:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/17 08:43:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/09/20 10:16:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/20 10:16:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
