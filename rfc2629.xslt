@@ -505,6 +505,7 @@
   </xsl:choose>
   <xsl:call-template name="check-artwork-width">
     <xsl:with-param name="content"><xsl:apply-templates/></xsl:with-param>
+    <xsl:with-param name="indent"><xsl:value-of select="string-length(@x:indent-with)"/></xsl:with-param>
   </xsl:call-template>
 </xsl:template>
 
@@ -524,9 +525,10 @@
 
 <xsl:template name="check-artwork-width">
   <xsl:param name="content"/>
+  <xsl:param name="indent"/>
   <xsl:choose>
     <xsl:when test="not(contains($content,'&#10;'))">
-      <xsl:if test="string-length($content) > 69">
+      <xsl:if test="string-length($content) > 69 + $indent">
         <xsl:call-template name="warning">
           <xsl:with-param name="inline" select="'no'"/>
           <xsl:with-param name="msg">artwork line too long: '<xsl:value-of select="$content"/>' (<xsl:value-of select="string-length($content)"/> characters)</xsl:with-param>
@@ -536,7 +538,7 @@
     <xsl:otherwise>
       <xsl:variable name="start" select="substring-before($content,'&#10;')"/> 
       <xsl:variable name="end" select="substring-after($content,'&#10;')"/> 
-      <xsl:if test="string-length($start) > 69">
+      <xsl:if test="string-length($start) > 69 + $indent">
         <xsl:call-template name="warning">
           <xsl:with-param name="inline" select="'no'"/>
           <xsl:with-param name="msg">artwork line too long: '<xsl:value-of select="$start"/>' (<xsl:value-of select="string-length($start)"/> characters)</xsl:with-param>
@@ -5121,11 +5123,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.397 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.397 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.398 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.398 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/09/20 10:16:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/09/20 10:16:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/10/04 19:19:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/10/04 19:19:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
