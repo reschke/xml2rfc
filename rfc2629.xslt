@@ -4363,7 +4363,7 @@ thead th {
 </xsl:template>
 
 <!-- author handling extensions -->
-<xsl:template match="x:author">
+<xsl:template match="x:include-author">
   <xsl:for-each select="/*/front/author[@anchor=current()/@target]">
     <xsl:apply-templates select="."/>
   </xsl:for-each>
@@ -5123,11 +5123,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.398 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.398 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.399 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.399 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/10/04 19:19:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/10/04 19:19:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/10/05 13:26:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/10/05 13:26:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
