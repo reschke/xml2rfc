@@ -2797,11 +2797,12 @@ li.tocline2 {
 ul p {
   margin-left: 0em;
 }
-ul.ind {
+<xsl:if test="$has-index">ul.ind {
   list-style: none;
   margin-left: 1.5em;
   margin-right: 0em;
   padding-left: 0em;
+  page-break-before: avoid;
 }
 li.indline0 {
   font-weight: bold;
@@ -2815,7 +2816,7 @@ li.indline1 {
   margin-left: 0em;
   margin-right: 0em;
 }
-<xsl:if test="//x:bcp14">.bcp14 {
+</xsl:if><xsl:if test="//x:bcp14">.bcp14 {
   font-style: normal;
   text-transform: lowercase;
   font-variant: small-caps;
@@ -5130,11 +5131,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.400 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.400 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.401 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.401 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/10/10 14:04:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/10/10 14:04:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/10/27 13:05:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/10/27 13:05:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
