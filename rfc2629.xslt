@@ -141,6 +141,14 @@
         'topblock=')"
 />
 
+<!-- Format to the RFC Editor's taste -->
+
+<xsl:param name="xml2rfc-rfcedstyle"
+  select="substring-after(
+      translate(/processing-instruction('rfc')[contains(.,'rfcedstyle=')], concat($quote-chars,' '), ''),
+        'rfcedstyle=')"
+/>
+
 <!-- use symbolic reference names instead of numeric ones unless a processing instruction <?rfc?>
      exists with contents symrefs="no". Can be overriden by an XSLT parameter -->
 
@@ -650,7 +658,10 @@
         </xsl:variable>
         
         <span class="vcardline">
-          <xsl:text>EMail: </xsl:text>
+          <xsl:choose>
+            <xsl:when test="$xml2rfc-rfcedstyle='yes'">Email: </xsl:when>
+            <xsl:otherwise>EMail: </xsl:otherwise>
+          </xsl:choose>
           <a>
             <xsl:if test="$xml2rfc-linkmailto!='no'">
               <xsl:attribute name="href">mailto:<xsl:value-of select="$email" /></xsl:attribute>
@@ -2535,7 +2546,13 @@
   <xsl:choose>
     <xsl:when test="$funding2"/>
     <xsl:when test="$funding1 and /rfc/@number">
-      <section title="Acknowledgement" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+      <section myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+        <xsl:attribute name="title">
+          <xsl:choose>
+            <xsl:when test="$xml2rfc-rfcedstyle='yes'">Acknowledgement</xsl:when>
+            <xsl:otherwise>Acknowledgment</xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
         <t>
           Funding for the RFC Editor function is provided by the IETF
           Administrative Support Activity (IASA).
@@ -3379,7 +3396,13 @@ thead th {
 
 <xsl:template name="insertPreamble" myns:namespaceless-elements="xml2rfc">
 
-  <section title="Status of this Memo" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.status">
+  <section myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.status">
+  <xsl:attribute name="title">
+    <xsl:choose>
+      <xsl:when test="$xml2rfc-rfcedstyle='yes'">Status of This Memo</xsl:when>
+      <xsl:otherwise>Status of this Memo</xsl:otherwise>
+    </xsl:choose>
+  </xsl:attribute>
 
   <xsl:choose>
     <xsl:when test="/rfc/@ipr and not(/rfc/@number)">
@@ -5131,11 +5154,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.401 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.401 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.402 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.402 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/10/27 13:05:51 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/10/27 13:05:51 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/10/31 08:54:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/10/31 08:54:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
