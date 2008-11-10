@@ -2568,7 +2568,13 @@
       </section>
     </xsl:when>
     <xsl:when test="$funding0 and /rfc/@number">
-      <section title="Acknowledgement" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+      <section myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+        <xsl:attribute name="title">
+          <xsl:choose>
+            <xsl:when test="$xml2rfc-rfcedstyle='yes'">Acknowledgement</xsl:when>
+            <xsl:otherwise>Acknowledgment</xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
         <t>
           Funding for the RFC Editor function is currently provided by
           the Internet Society.
@@ -5162,11 +5168,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.403 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.403 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.404 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.404 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/11/06 18:07:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/11/06 18:07:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/11/10 12:39:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/11/10 12:39:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
