@@ -3622,11 +3622,11 @@ thead th {
         </t>
         <t>   
           This document is subject to BCP 78 and the IETF Trust's Legal
-          Provisions Relating to IETF Documents in effect on the date of
-          publication of this document
-          (<eref target="http://trustee.ietf.org/docs/IETF-Trust-License-Policy.pdf"/>).  Please
-          review these documents carefully, as they describe your rights and
-          restrictions with  respect to this document.
+          Provisions Relating to IETF Documents
+          (<eref target="http://trustee.ietf.org/license-info">http://trustee.ietf.org/license-info</eref>) in effect on the date of
+          publication of this document.  Please review these documents
+          carefully, as they describe your rights and restrictions with respect
+          to this document.
         </t>
       </section>
     </xsl:when>
@@ -5217,11 +5217,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.405 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.405 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.406 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.406 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/11/10 21:42:06 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/11/10 21:42:06 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/11/28 14:14:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/11/28 14:14:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
