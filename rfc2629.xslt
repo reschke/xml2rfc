@@ -29,17 +29,17 @@
     POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
                 
-                xmlns:ed="http://greenbytes.de/2002/rfcedit"
                 xmlns:date="http://exslt.org/dates-and-times"
+                xmlns:ed="http://greenbytes.de/2002/rfcedit"
                 xmlns:exslt="http://exslt.org/common"
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
                 xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
                 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-                xmlns:saxon-old="http://icl.com/saxon"
                 xmlns:saxon="http://saxon.sf.net/"
+                xmlns:saxon-old="http://icl.com/saxon"
                 xmlns:x="http://purl.org/net/xml2rfc/ext"
                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
 
@@ -290,9 +290,6 @@
 <!-- character translation tables -->
 <xsl:variable name="lcase" select="'abcdefghijklmnopqrstuvwxyz'" />
 <xsl:variable name="ucase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />       
-
-<xsl:variable name="plain" select="' #/ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
-<xsl:variable name="touri" select="'___abcdefghijklmnopqrstuvwxyz'" />
 
 <!-- build help keys for indices -->
 <xsl:key name="index-first-letter"
@@ -1841,7 +1838,6 @@
     <!-- Section links -->
     <xsl:when test="name($node)='section' or name($node)='appendix'">
       <xsl:apply-templates/>
-      <xsl:variable name="context" select="."/>
       <xsl:text> (</xsl:text>
       <a href="#{@target}">
         <!-- insert id when a backlink to this xref is needed in the index -->
@@ -1880,7 +1876,6 @@
                
 <xsl:template match="xref[not(node())]">
 
-  <xsl:variable name="context" select="." />
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
   <xsl:variable name="node" select="key('anchor-item',$target)" />
@@ -3372,7 +3367,6 @@ thead th {
                               
                               <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
                   
-                                <xsl:variable name="itemsubitem" select="concat(@item,'..',@subitem)"/>
                                 <xsl:variable name="in-artwork2" select="key('index-item-subitem',concat(@item,'..',@subitem))[@primary='true' and ancestor::artwork]" />
                   
                                 <li class="indline1">
@@ -4413,7 +4407,6 @@ thead th {
 <!-- box (center) -->
 <xsl:template match="x:bc">
   <xsl:variable name="first" select="substring(.,1)"/>
-  <xsl:variable name="last" select="substring(.,string-length(.)-1)"/>
   <xsl:variable name="content" select="substring(.,2,string-length(.)-2)"/>
   <xsl:variable name="is-delimiter" select="translate($content,'-','')=''"/>
   
@@ -4657,21 +4650,6 @@ thead th {
     </tbody>
   </table>
   
-</xsl:template>
-
-<xsl:template name="formatTitle">
-  <xsl:if test="@who">
-    <xsl:value-of select="@who" />
-  </xsl:if>
-  <xsl:if test="@datetime">
-    <xsl:value-of select="concat(' (',@datetime,')')" />
-  </xsl:if>
-  <xsl:if test="@reason">
-    <xsl:value-of select="concat(': ',@reason)" />
-  </xsl:if>
-  <xsl:if test="@cite">
-    <xsl:value-of select="concat(' &lt;',@cite,'&gt;')" />
-  </xsl:if>
 </xsl:template>
 
 <xsl:template name="insert-diagnostics">
@@ -5173,13 +5151,6 @@ thead th {
   </xsl:choose>
 </xsl:template>
 
-<xsl:template name="get-authors">
-  <xsl:for-each select="/rfc/front/author">
-    <xsl:value-of select="@fullname" />
-    <xsl:if test="position()!=last()">, </xsl:if>
-  </xsl:for-each>
-</xsl:template>
-
 <xsl:template name="get-category-long">
   <xsl:choose>
     <xsl:when test="$xml2rfc-footer"><xsl:value-of select="$xml2rfc-footer" /></xsl:when>
@@ -5217,11 +5188,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.407 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.407 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.408 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.408 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/12/13 13:04:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/12/13 13:04:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/12/28 13:45:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/12/28 13:45:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -5557,4 +5528,4 @@ thead th {
   </xsl:choose>
 </xsl:param>
 
-</xsl:stylesheet>
+</xsl:transform>
