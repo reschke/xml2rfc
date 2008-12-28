@@ -1810,7 +1810,7 @@
     <!-- x:fmt='none': do not generate any links -->
     <xsl:when test="@x:fmt='none'">
       <xsl:choose>
-        <xsl:when test="name($node)='reference'">
+        <xsl:when test="$node/self::reference">
           <cite title="{normalize-space($node/front/title)}">
             <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
               <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
@@ -1836,7 +1836,7 @@
     </xsl:when>
 
     <!-- Section links -->
-    <xsl:when test="name($node)='section' or name($node)='appendix'">
+    <xsl:when test="$node/self::section or $node/self::appendix">
       <xsl:apply-templates/>
       <xsl:text> (</xsl:text>
       <a href="#{@target}">
@@ -1888,7 +1888,7 @@
   <xsl:choose>
   
     <!-- Section links -->
-    <xsl:when test="name($node)='section' or name($node)='appendix'">
+    <xsl:when test="$node/self::section or $node/self::appendix">
       <a href="#{@target}">
         <!-- insert id when a backlink to this xref is needed in the index -->
         <xsl:if test="key('iref-xanch',$target) | key('iref-xanch','')[../@anchor=$target]">
@@ -1902,7 +1902,7 @@
     </xsl:when>
 
     <!-- Figure links -->
-    <xsl:when test="name($node)='figure'">
+    <xsl:when test="$node/self::figure">
       <a href="#{$target}">
         <xsl:variable name="figcnt">
           <xsl:for-each select="$node">
@@ -1924,7 +1924,7 @@
     </xsl:when>
     
     <!-- Table links -->
-    <xsl:when test="name($node)='texttable'">
+    <xsl:when test="$node/self::texttable">
       <a href="#{$target}">
         <xsl:variable name="tabcnt">
           <xsl:for-each select="$node">
@@ -1946,7 +1946,7 @@
     </xsl:when>
     
     <!-- Reference links -->
-    <xsl:when test="name($node)='reference'">
+    <xsl:when test="$node/self::reference">
 
       <xsl:variable name="href">
         <xsl:call-template name="computed-target">
@@ -4592,7 +4592,7 @@ thead th {
 </xsl:template>
 
 <xsl:template match="*|@*" mode="issuehtml">
-  <xsl:message terminate="yes">Unexpected node in issue HTML: <xsl:value-of select="local-name(.)"/></xsl:message>
+  <xsl:message terminate="yes">Unexpected node in issue HTML: <xsl:value-of select="name(.)"/></xsl:message>
 </xsl:template>
 
 <xsl:template match="xhtml:a|xhtml:b|xhtml:br|xhtml:cite|xhtml:del|xhtml:em|xhtml:i|xhtml:ins|xhtml:q|xhtml:pre|xhtml:tt" mode="issuehtml">
@@ -5188,11 +5188,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.408 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.408 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.409 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.409 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/12/28 13:45:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/12/28 13:45:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2008/12/28 15:18:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/12/28 15:18:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
