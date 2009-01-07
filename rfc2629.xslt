@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2006-2008, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2009, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -825,9 +825,34 @@
     </p>
   </xsl:if>
     
+  <!-- check for conforming ipr attribute -->
+  <xsl:choose>
+    <xsl:when test="not(/rfc/@ipr)" />
+    <xsl:when test="/rfc/@ipr = 'full2026'" />
+    <xsl:when test="/rfc/@ipr = 'noDerivativeWorks'" />
+    <xsl:when test="/rfc/@ipr = 'none'" />
+    <xsl:when test="/rfc/@ipr = 'full3667'" />
+    <xsl:when test="/rfc/@ipr = 'noModification3667'" />
+    <xsl:when test="/rfc/@ipr = 'noDerivatives3667'" />
+    <xsl:when test="/rfc/@ipr = 'full3978'" />
+    <xsl:when test="/rfc/@ipr = 'noModification3978'" />
+    <xsl:when test="/rfc/@ipr = 'noDerivatives3978'" />
+    <xsl:when test="/rfc/@ipr = 'trust200811'" />
+    <xsl:when test="/rfc/@ipr = 'noModificationTrust200811'" />
+    <xsl:when test="/rfc/@ipr = 'noDerivativesTrust200811'" />
+    <xsl:otherwise>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('Unknown value for /rfc/@ipr: ', /rfc/@ipr)"/>
+      </xsl:call-template>
+    </xsl:otherwise>        
+  </xsl:choose>            
+
   <xsl:if test="not($xml2rfc-private)">
+  
     <!-- Get status info formatted as per RFC2629-->
-    <xsl:variable name="preamble"><xsl:call-template name="insertPreamble" /></xsl:variable>
+    <xsl:variable name="preamble">
+      <xsl:call-template name="insertPreamble" />
+    </xsl:variable>
     
     <!-- emit it -->
     <xsl:choose>
@@ -841,7 +866,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
-            
+          
   <xsl:apply-templates select="abstract" />
   <xsl:apply-templates select="note" />
   <!-- show notes inside change tracking as well -->
@@ -3534,7 +3559,9 @@ thead th {
             This document may not be modified, and derivative works of it may
             not be created, and it may not be published except as an Internet-Draft.
           </xsl:when>
-          <xsl:otherwise>CONFORMANCE UNDEFINED.</xsl:otherwise>
+          <xsl:otherwise>
+            CONFORMANCE UNDEFINED.
+          </xsl:otherwise>
         </xsl:choose>
       </t>
       <t>
@@ -5199,11 +5226,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.410 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.410 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.411 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.411 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2008/12/30 11:34:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2008/12/30 11:34:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/01/07 15:38:23 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/01/07 15:38:23 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
