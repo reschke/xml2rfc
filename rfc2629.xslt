@@ -2179,7 +2179,16 @@
   <xsl:param name="mode" />
   <!-- default case -->
   <xsl:if test="not($xml2rfc-private)">
-    <myns:item>Network Working Group</myns:item>
+    <xsl:choose>
+      <xsl:when test="/rfc/front/workgroup">
+        <xsl:for-each select="/rfc/front/workgroup">
+          <myns:item><xsl:value-of select="."/></myns:item>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <myns:item>Network Working Group</myns:item>
+      </xsl:otherwise>
+    </xsl:choose>
     <myns:item>
        <xsl:choose>
         <xsl:when test="/rfc/@ipr and not(/rfc/@number)">Internet Draft</xsl:when>
@@ -5226,11 +5235,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.411 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.411 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.412 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.412 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/01/07 15:38:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/01/07 15:38:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/01/28 15:12:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/01/28 15:12:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
