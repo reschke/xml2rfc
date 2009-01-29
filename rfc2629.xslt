@@ -2443,9 +2443,9 @@
 <xsl:template name="insertCopyright" myns:namespaceless-elements="xml2rfc">
 
   <xsl:if test="not($no-copylong)">
-    <xsl:choose>
-      <xsl:when test="$ipr-rfc3667">
-        <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+    <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+      <xsl:choose>
+        <xsl:when test="$ipr-rfc3667">
           <t>
             <xsl:choose>
               <xsl:when test="$ipr-2007-08"/>
@@ -2473,11 +2473,9 @@
             INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED
             WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
           </t>
-        </section>    
-      </xsl:when>
-      <xsl:otherwise>
-        <!-- <http://tools.ietf.org/html/rfc2026#section-10.4> -->
-        <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+        </xsl:when>
+        <xsl:otherwise>
+          <!-- <http://tools.ietf.org/html/rfc2026#section-10.4> -->
           <t>
             Copyright &#169; The Internet Society (<xsl:value-of select="$xml2rfc-ext-pub-year" />). All Rights Reserved.
           </t>
@@ -2508,10 +2506,10 @@
             HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
             MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
           </t>
-        </section>
-      </xsl:otherwise>
-    </xsl:choose>
-  
+        </xsl:otherwise>
+      </xsl:choose>
+    </section>
+    
     <section title="Intellectual Property" anchor="{$anchor-prefix}.ipr" myns:unnumbered="unnumbered">
       <xsl:choose>
         <xsl:when test="$ipr-rfc3667">
@@ -5220,11 +5218,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.413 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.413 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.414 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.414 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/01/29 13:24:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/01/29 13:24:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/01/29 13:48:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/01/29 13:48:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
