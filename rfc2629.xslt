@@ -2463,30 +2463,15 @@
             retain all their rights.
           </t>
           <t>
-            <xsl:choose>
-              <xsl:when test="$ipr-rfc4748">
-                This document and the information contained herein are provided
-                on an &#8220;AS IS&#8221; basis and THE CONTRIBUTOR,
-                THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY),
-                THE INTERNET SOCIETY, THE IETF TRUST AND THE INTERNET ENGINEERING
-                TASK FORCE DISCLAIM ALL WARRANTIES,
-                EXPRESS OR IMPLIED,
-                INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE
-                INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED
-                WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
-              </xsl:when>
-              <xsl:otherwise>
-                This document and the information contained herein are provided
-                on an &#8220;AS IS&#8221; basis and THE CONTRIBUTOR,
-                THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY),
-                THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM
-                ALL WARRANTIES,
-                EXPRESS OR IMPLIED,
-                INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE
-                INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED
-                WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
-              </xsl:otherwise>
-            </xsl:choose>
+            This document and the information contained herein are provided
+            on an &#8220;AS IS&#8221; basis and THE CONTRIBUTOR,
+            THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY),
+            THE INTERNET SOCIETY<xsl:if test="$ipr-rfc4748">, THE IETF TRUST</xsl:if>
+            AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES,
+            EXPRESS OR IMPLIED,
+            INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE
+            INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED
+            WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
           </t>
         </section>    
       </xsl:when>
@@ -5235,11 +5220,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.412 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.412 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.413 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.413 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/01/28 15:12:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/01/28 15:12:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/01/29 13:24:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/01/29 13:24:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
