@@ -1691,11 +1691,7 @@
   
   <xsl:variable name="elemtype">
     <xsl:choose>
-      <xsl:when test="count(ancestor::section) = 0">h1</xsl:when>
-      <xsl:when test="count(ancestor::section) = 1">h2</xsl:when>
-      <xsl:when test="count(ancestor::section) = 2">h3</xsl:when>
-      <xsl:when test="count(ancestor::section) = 3">h4</xsl:when>
-      <xsl:when test="count(ancestor::section) = 4">h5</xsl:when>
+      <xsl:when test="count(ancestor::section) &lt;= 4">h<xsl:value-of select="1 + count(ancestor::section)"/></xsl:when>
       <xsl:otherwise>h6</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -5208,11 +5204,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.417 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.417 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.418 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.418 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/02/06 18:20:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/02/06 18:20:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/02/06 19:55:47 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/02/06 19:55:47 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
