@@ -1695,7 +1695,8 @@
       <xsl:when test="count(ancestor::section) = 1">h2</xsl:when>
       <xsl:when test="count(ancestor::section) = 2">h3</xsl:when>
       <xsl:when test="count(ancestor::section) = 3">h4</xsl:when>
-      <xsl:otherwise>h5</xsl:otherwise>
+      <xsl:when test="count(ancestor::section) = 4">h5</xsl:when>
+      <xsl:otherwise>h6</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   
@@ -2693,28 +2694,11 @@ h2 {
   line-height: 15pt;
   page-break-after: avoid;
 }
-h2 a {
-  color: black;
-}
-h3 {
+h3, h4, h5, h6 {
   font-size: 10pt;
   page-break-after: avoid;
 }
-h3 a {
-  color: black;
-}
-h4 {
-  font-size: 10pt;
-  page-break-after: avoid;
-}
-h4 a {
-  color: black;
-}
-h5 {
-  font-size: 10pt;
-  page-break-after: avoid;
-}
-h5 a {
+h2 a, h3 a, h4 a, h5 a, h6 a {
   color: black;
 }
 img {
@@ -5224,11 +5208,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.416 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.416 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.417 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.417 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/02/04 20:49:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/02/04 20:49:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/02/06 18:20:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/02/06 18:20:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
