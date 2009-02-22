@@ -3535,45 +3535,31 @@ thead th {
           </xsl:when>
   
           <!-- as of Nov 2008 -->
-          <xsl:when test="/rfc/@ipr = 'trust200811'">
+          <xsl:when test="/rfc/@ipr = 'trust200811'
+                          or /rfc/@ipr = 'noModificationTrust200811'
+                          or  /rfc/@ipr = 'noDerivativesTrust200811'">
             This Internet-Draft is submitted to IETF pursuant to, and in full
             conformance with, the provisions of BCP 78 and BCP 79.
-          </xsl:when>
-          <xsl:when test="/rfc/@ipr = 'noModificationTrust200811'">
-            This Internet-Draft is submitted to IETF pursuant to, and in full
-            conformance with, the provisions of BCP 78 and BCP 79.
-            This document may not be modified, and derivative works of it may
-            not be created, except to format it for publication as an RFC and
-            to translate it into languages other than English.
-          </xsl:when>
-          <xsl:when test="/rfc/@ipr = 'noDerivativesTrust200811'">
-            This Internet-Draft is submitted to IETF pursuant to, and in full
-            conformance with, the provisions of BCP 78 and BCP 79.
-            This document may not be modified, and derivative works of it may
-            not be created, and it may not be published except as an Internet-Draft.
           </xsl:when>
   
           <!-- as of Feb 2009 -->
-          <xsl:when test="/rfc/@ipr = 'trust200902'">
+          <xsl:when test="/rfc/@ipr = 'trust200902'
+                          or /rfc/@ipr = 'noModificationTrust200902'
+                          or /rfc/@ipr = 'noDerivativesTrust200902'
+                          or /rfc/@ipr = 'pre5378Trust200902'">
             This Internet-Draft is submitted to IETF pursuant to, and in full
             conformance with, the provisions of BCP 78 and BCP 79.
           </xsl:when>
           <xsl:when test="/rfc/@ipr = 'noModificationTrust200902'">
-            This Internet-Draft is submitted to IETF pursuant to, and in full
-            conformance with, the provisions of BCP 78 and BCP 79.
             This document may not be modified, and derivative works of it may
             not be created, except to format it for publication as an RFC or
             to translate it into languages other than English.
           </xsl:when>
           <xsl:when test="/rfc/@ipr = 'noDerivativesTrust200902'">
-            This Internet-Draft is submitted to IETF pursuant to, and in full
-            conformance with, the provisions of BCP 78 and BCP 79.
             This document may not be modified, and derivative works of it may
             not be created, and it may not be published except as an Internet-Draft.
           </xsl:when>
           <xsl:when test="/rfc/@ipr = 'pre5378Trust200902'">
-            This Internet-Draft is submitted to IETF pursuant to, and in full
-            conformance with, the provisions of BCP 78 and BCP 79.
             This document may contain material from IETF Documents or IETF Contributions published or
             made publicly available before November 10, 2008. The person(s) controlling the copyright in
             some of this material may not have granted the IETF Trust the right to allow modifications of such
@@ -3587,6 +3573,31 @@ thead th {
           <xsl:otherwise>
             CONFORMANCE UNDEFINED.
           </xsl:otherwise>
+        </xsl:choose>
+        
+        <!-- restrictions -->
+        <xsl:choose>
+          <xsl:when test="/rfc/@ipr = 'noModificationTrust200811'">
+            This document may not be modified, and derivative works of it may
+            not be created, except to format it for publication as an RFC and
+            to translate it into languages other than English.
+          </xsl:when>
+          <xsl:when test="/rfc/@ipr = 'noDerivativesTrust200811'">
+            This document may not be modified, and derivative works of it may
+            not be created, and it may not be published except as an Internet-Draft.
+          </xsl:when>
+
+          <xsl:when test="/rfc/@ipr = 'noModificationTrust200902'">
+            This document may not be modified, and derivative works of it may
+            not be created, except to format it for publication as an RFC or
+            to translate it into languages other than English.
+          </xsl:when>
+          <xsl:when test="/rfc/@ipr = 'noDerivativesTrust200902'">
+            This document may not be modified, and derivative works of it may
+            not be created, and it may not be published except as an Internet-Draft.
+          </xsl:when>
+
+          <xsl:otherwise />
         </xsl:choose>
       </t>
       <t>
@@ -3689,7 +3700,7 @@ thead th {
         </xsl:choose>
         
         <!-- special case: RFC5378 escape applies to RFCs as well -->
-        <xsl:if test="/rfc/@ipr = 'pre5378Trust200902' and /rfc/@number">
+        <xsl:if test="/rfc/@ipr = 'pre5378Trust200902'">
           <t>
             This document may contain material from IETF Documents or IETF Contributions published or
             made publicly available before November 10, 2008. The person(s) controlling the copyright in
@@ -5284,11 +5295,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.421 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.421 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.422 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.422 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/02/20 13:12:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/02/20 13:12:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/02/22 22:47:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/02/22 22:47:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
