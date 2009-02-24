@@ -3596,6 +3596,16 @@ thead th {
             This document may not be modified, and derivative works of it may
             not be created, and it may not be published except as an Internet-Draft.
           </xsl:when>
+          <xsl:when test="/rfc/@ipr = 'pre5378Trust200902'">
+            This document may contain material from IETF Documents or IETF Contributions published or
+            made publicly available before November 10, 2008. The person(s) controlling the copyright in
+            some of this material may not have granted the IETF Trust the right to allow modifications of such
+            material outside the IETF Standards Process. Without obtaining an adequate license from the
+            person(s) controlling the copyright in such materials, this document may not be modified outside
+            the IETF Standards Process, and derivative works of it may not be created outside the IETF
+            Standards Process, except to format it for publication as an RFC or to translate it into languages
+            other than English.
+          </xsl:when>
 
           <xsl:otherwise />
         </xsl:choose>
@@ -3700,7 +3710,7 @@ thead th {
         </xsl:choose>
         
         <!-- special case: RFC5378 escape applies to RFCs as well -->
-        <xsl:if test="/rfc/@ipr = 'pre5378Trust200902'">
+        <!-- <xsl:if test="/rfc/@ipr = 'pre5378Trust200902'">
           <t>
             This document may contain material from IETF Documents or IETF Contributions published or
             made publicly available before November 10, 2008. The person(s) controlling the copyright in
@@ -3711,7 +3721,7 @@ thead th {
             Standards Process, except to format it for publication as an RFC or to translate it into languages
             other than English.
           </t>
-        </xsl:if>
+        </xsl:if> -->
         
       </section>
     </xsl:when>
@@ -5295,11 +5305,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.422 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.422 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.423 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.423 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/02/22 22:47:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/02/22 22:47:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/02/24 10:04:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/02/24 10:04:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
