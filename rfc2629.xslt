@@ -2800,7 +2800,14 @@ table.full th {
 table.headers th {
   border-style: none none inset none;
   border-width: 1px;
-}</xsl:if>
+}
+caption {
+  caption-side: bottom;
+  font-weight: bold;
+  font-size: 9pt;
+  margin-top: .5em;
+}
+</xsl:if>
 table.header {
   width: 95%;
   font-size: 10pt;
@@ -5066,7 +5073,14 @@ thead th {
         <xsl:otherwise>full</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <table summary="{preamble}" class="{$style}" cellpadding="3" cellspacing="0">
+
+      <xsl:if test="(@title!='' or @anchor!='') and not(@suppress-title='true')">
+        <xsl:variable name="n"><xsl:number level="any" count="texttable[(@title!='' or @anchor!='') and not(@suppress-title='true')]" /></xsl:variable>
+        <caption>Table <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></caption>
+      </xsl:if>
+
       <xsl:if test="ttcol!=''">
         <!-- skip header when all column titles are empty -->
         <thead>
@@ -5104,11 +5118,6 @@ thead th {
       </tbody>
     </table>
     <xsl:apply-templates select="postamble" />
-
-    <xsl:if test="(@title!='' or @anchor!='') and not(@suppress-title='true')">
-      <xsl:variable name="n"><xsl:number level="any" count="texttable[(@title!='' or @anchor!='') and not(@suppress-title='true')]" /></xsl:variable>
-      <p class="figure">Table <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></p>
-    </xsl:if>
   </div>
   
 </xsl:template>
@@ -5305,11 +5314,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.423 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.423 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.424 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.424 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/02/24 10:04:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/02/24 10:04:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/02/24 16:15:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/02/24 16:15:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
