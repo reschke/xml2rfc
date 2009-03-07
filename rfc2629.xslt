@@ -1636,7 +1636,7 @@
   </xsl:if>
 </xsl:template>               
 
-<xsl:template mode="t-content2" match="comment()">
+<xsl:template mode="t-content2" match="comment()|processing-instruction()">
   <xsl:apply-templates select="." />
   <xsl:if test="not(following-sibling::node()[1] [self::list or self::figure or self::texttable])">
     <xsl:apply-templates select="following-sibling::node()[1]" mode="t-content2" />
@@ -5314,11 +5314,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.425 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.425 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.426 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.426 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/03/02 15:29:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/03/02 15:29:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/03/07 10:31:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/03/07 10:31:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
