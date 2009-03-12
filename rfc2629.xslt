@@ -5163,27 +5163,32 @@ thead th {
     </xsl:variable>
     
     <span class="comment">
-      <xsl:if test="$xml2rfc-inline!='yes'">
-        <xsl:attribute name="title">
-          <xsl:if test="@source"><xsl:value-of select="@source"/>: </xsl:if>
-          <xsl:apply-templates select="text()|eref"/>
-        </xsl:attribute>
-      </xsl:if>
-      <xsl:text>[</xsl:text>
       <xsl:choose>
         <xsl:when test="$xml2rfc-inline='yes'">
-          <xsl:value-of select="$cid"/>
+          <xsl:attribute name="id">
+            <xsl:value-of select="$cid"/>
+          </xsl:attribute>
+          <xsl:text>[</xsl:text>
+          <a href="#{$cid}" class="smpl">
+            <xsl:value-of select="$cid"/>
+          </a>
           <xsl:text>: </xsl:text>
           <xsl:apply-templates select="text()|eref"/>
           <xsl:if test="@source"> --<xsl:value-of select="@source"/></xsl:if>
+          <xsl:text>]</xsl:text>
         </xsl:when>
         <xsl:otherwise>
+          <xsl:attribute name="title">
+            <xsl:if test="@source"><xsl:value-of select="@source"/>: </xsl:if>
+            <xsl:apply-templates select="text()|eref"/>
+          </xsl:attribute>
+          <xsl:text>[</xsl:text>
           <a href="#{$cid}">
             <xsl:value-of select="$cid"/>
           </a>
+          <xsl:text>]</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:text>]</xsl:text>
     </span>
   </xsl:if>
 </xsl:template>
@@ -5314,11 +5319,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.426 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.426 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.427 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.427 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/03/07 10:31:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/03/07 10:31:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/03/12 09:45:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/03/12 09:45:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
