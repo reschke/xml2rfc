@@ -902,7 +902,7 @@
     <xsl:when test="parent::figure">
       <div id="{$anchor}"/>
     </xsl:when>
-    <xsl:when test="ancestor::t">
+    <xsl:when test="ancestor::t or ancestor::artwork">
       <span id="{$anchor}"/>
     </xsl:when>
     <xsl:otherwise>
@@ -5322,11 +5322,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.428 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.428 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.429 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.429 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/03/13 12:44:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/03/13 12:44:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/03/27 16:37:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/03/27 16:37:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
