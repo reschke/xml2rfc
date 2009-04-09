@@ -1482,7 +1482,14 @@
   </xsl:variable>
 
   <html lang="{$lang}">
-    <head profile="http://www.w3.org/2006/03/hcard">
+    <head>
+      <xsl:attribute name="profile">
+        <xsl:text>http://www.w3.org/2006/03/hcard</xsl:text>
+        <xsl:if test="$xml2rfc-ext-support-rfc2731!='no'">
+          <xsl:text> </xsl:text>
+          <xsl:text>http://dublincore.org/documents/2008/08/04/dc-html/</xsl:text>
+        </xsl:if>
+      </xsl:attribute>
       <title>
         <xsl:apply-templates select="front/title" mode="get-text-content" />
       </title>
@@ -5323,11 +5330,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.431 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.431 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.432 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.432 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/04/08 14:53:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/04/08 14:53:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/04/09 13:16:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/04/09 13:16:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
