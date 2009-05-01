@@ -1998,6 +1998,50 @@
       </a>
     </xsl:when>
     
+    <!-- Paragraph links -->
+    <xsl:when test="$node/self::t">
+      <a href="#{$target}">
+        <xsl:variable name="tcnt">
+          <xsl:for-each select="$node">
+            <xsl:call-template name="get-paragraph-number" />
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="@format='counter'">
+            <xsl:value-of select="$tcnt" />
+          </xsl:when>
+          <xsl:when test="@format='title'">
+            <xsl:value-of select="$node/@title" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="normalize-space(concat('Paragraph&#160;',substring-after($tcnt,'p.')))"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </a>
+    </xsl:when>
+
+    <!-- Comment links -->
+    <xsl:when test="$node/self::cref">
+      <a href="#{$target}">
+        <xsl:variable name="name">
+          <xsl:for-each select="$node">
+            <xsl:call-template name="get-comment-name" />
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="@format='counter'">
+            <xsl:value-of select="$name" />
+          </xsl:when>
+          <xsl:when test="@format='title'">
+            <xsl:value-of select="$node/@title" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="normalize-space(concat('Comment&#160;',$name))"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </a>
+    </xsl:when>
+
     <!-- Reference links -->
     <xsl:when test="$node/self::reference">
 
@@ -5158,19 +5202,23 @@ thead th {
 
 <!-- cref support -->
 
+<xsl:template name="get-comment-name">
+  <xsl:choose>
+    <xsl:when test="@anchor">
+      <xsl:value-of select="@anchor"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$anchor-prefix"/>
+      <xsl:text>.comment.</xsl:text>
+      <xsl:number count="cref[not(@anchor)]" level="any"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="cref">
   <xsl:if test="$xml2rfc-comments!='no'">
     <xsl:variable name="cid">
-      <xsl:choose>
-        <xsl:when test="@anchor">
-          <xsl:value-of select="@anchor"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$anchor-prefix"/>
-          <xsl:text>.comment.</xsl:text>
-          <xsl:number count="cref[not(@anchor)]" level="any"/>
-        </xsl:otherwise>
-      </xsl:choose>
+      <xsl:call-template name="get-comment-name"/>
     </xsl:variable>
     
     <span class="comment">
@@ -5330,11 +5378,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.432 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.432 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.433 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.433 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/04/09 13:16:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/04/09 13:16:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/05/01 17:20:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/05/01 17:20:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
