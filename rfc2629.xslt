@@ -3361,7 +3361,7 @@ thead th {
                           <ul class="ind">  
                             <xsl:for-each select="$rs2">
                               <xsl:sort select="substring-before(concat(@x:sec,'.'),'.')" data-type="number"/>
-                              <xsl:sort select="substring(@x:sec,1+string-length(substring-before(@x:sec,'.')))" data-type="number"/>
+                              <xsl:sort select="substring(@x:sec,2+string-length(substring-before(@x:sec,'.')))" data-type="number"/>
                               <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-sec',concat(@target,'..',@x:sec)))">
                                 <li class="indline1">
                                   <em>
@@ -5106,20 +5106,41 @@ thead th {
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
   <xsl:param name="inline"/>
-  <xsl:if test="$inline!='no'">
-    <div class="error">WARNING: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/></div>
-  </xsl:if>
-  <xsl:message>WARNING: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/><xsl:call-template name="lineno"/></xsl:message>
+  <xsl:call-template name="emit-message">
+    <xsl:with-param name="level">WARNING</xsl:with-param>
+    <xsl:with-param name="msg" select="$msg"/>
+    <xsl:with-param name="msg2" select="$msg2"/>
+    <xsl:with-param name="inline" select="$inline"/>
+  </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="error">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
   <xsl:param name="inline"/>
-  <xsl:if test="$inline!='no'">
-    <div class="error">ERROR: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/></div>
-  </xsl:if>
-  <xsl:message>ERROR: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/><xsl:call-template name="lineno"/></xsl:message>
+  <xsl:call-template name="emit-message">
+    <xsl:with-param name="level">ERROR</xsl:with-param>
+    <xsl:with-param name="msg" select="$msg"/>
+    <xsl:with-param name="msg2" select="$msg2"/>
+    <xsl:with-param name="inline" select="$inline"/>
+  </xsl:call-template>
+</xsl:template>
+
+<xsl:template name="emit-message">
+  <xsl:param name="level"/>
+  <xsl:param name="msg"/>
+  <xsl:param name="msg2"/>
+  <xsl:param name="inline"/>
+  <xsl:variable name="message"><xsl:value-of select="$level"/>: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/><xsl:call-template name="lineno"/></xsl:variable>
+  <xsl:choose>
+    <xsl:when test="$inline!='no'">
+      <div class="error"><xsl:value-of select="$message"/></div>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:comment><xsl:value-of select="$message"/></xsl:comment>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:message><xsl:value-of select="$message"/></xsl:message>
 </xsl:template>
 
 <!-- table formatting -->
@@ -5394,11 +5415,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.436 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.436 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.437 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.437 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/05/21 07:46:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/05/21 07:46:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/05/23 20:33:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/05/23 20:33:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
