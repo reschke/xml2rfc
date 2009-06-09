@@ -5138,7 +5138,8 @@ thead th {
       <div class="error"><xsl:value-of select="$message"/></div>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:comment><xsl:value-of select="$message"/></xsl:comment>
+      <!-- this fails when the message contains characters not encodable in the output encoding -->
+      <!-- <xsl:comment><xsl:value-of select="$message"/></xsl:comment> -->
     </xsl:otherwise>
   </xsl:choose>
   <xsl:message><xsl:value-of select="$message"/></xsl:message>
@@ -5416,11 +5417,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.438 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.438 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.439 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.439 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/05/27 13:34:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/05/27 13:34:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/06/09 18:43:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/06/09 18:43:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
