@@ -382,6 +382,13 @@
     $ipr-2008-11 and ($xml2rfc-ext-pub-year &gt;= 2010 or ($xml2rfc-ext-pub-year &gt;= 2009 and $xml2rfc-ext-pub-month-numeric >= 02))
   )" />
 
+<!-- see http://mailman.rfc-editor.org/pipermail/rfc-interest/2009-June/001373.html -->
+<xsl:variable name="abstract-first" select="(
+    /rfc/@number and (
+      $xml2rfc-ext-pub-year &gt;= 2010 or ($xml2rfc-ext-pub-year &gt;= 2009 and $xml2rfc-ext-pub-month-numeric >= 07)
+    )
+  )" />
+
 <!-- funding switch -->  
 <xsl:variable name="funding0" select="(
   /rfc/@number &gt; 2499) or
@@ -862,24 +869,8 @@
     </xsl:otherwise>        
   </xsl:choose>            
 
-  <xsl:if test="not($xml2rfc-private)">
-  
-    <!-- Get status info formatted as per RFC2629-->
-    <xsl:variable name="preamble">
-      <xsl:call-template name="insertPreamble" />
-    </xsl:variable>
-    
-    <!-- emit it -->
-    <xsl:choose>
-      <xsl:when test="function-available('exslt:node-set')">
-        <xsl:apply-templates select="exslt:node-set($preamble)" />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="error">
-          <xsl:with-param name="msg" select="$node-set-warning"/>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
+  <xsl:if test="not($xml2rfc-private) and not($abstract-first)">
+    <xsl:call-template name="emit-ietf-preamble"/>
   </xsl:if>
  
   <xsl:apply-templates select="x:boilerplate"/>
@@ -888,6 +879,10 @@
   <!-- show notes inside change tracking as well -->
   <xsl:apply-templates select="ed:replace[.//note]" />
     
+  <xsl:if test="not($xml2rfc-private) and $abstract-first">
+    <xsl:call-template name="emit-ietf-preamble"/>
+  </xsl:if>
+
   <xsl:if test="$xml2rfc-toc='yes'">
     <xsl:apply-templates select="/" mode="toc" />
     <xsl:call-template name="insertTocAppendix" />
@@ -895,6 +890,24 @@
 
 </xsl:template>
 
+<xsl:template name="emit-ietf-preamble">
+  <!-- Get status info formatted as per RFC2629-->
+  <xsl:variable name="preamble">
+    <xsl:call-template name="insertPreamble" />
+  </xsl:variable>
+  
+  <!-- emit it -->
+  <xsl:choose>
+    <xsl:when test="function-available('exslt:node-set')">
+      <xsl:apply-templates select="exslt:node-set($preamble)" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="$node-set-warning"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 <xsl:template match="iref">
   <xsl:variable name="anchor"><xsl:call-template name="compute-iref-anchor"/></xsl:variable>
@@ -5417,11 +5430,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.439 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.439 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.440 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.440 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/06/09 18:43:39 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/06/09 18:43:39 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/07/03 06:34:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/07/03 06:34:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
