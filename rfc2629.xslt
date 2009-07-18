@@ -1911,22 +1911,35 @@
         <xsl:with-param name="msg" select="concat('unknown xref/@x:fmt extension: ',@x:fmt)"/>
       </xsl:call-template>
     </xsl:when>
-
+    
     <!-- Section links -->
     <xsl:when test="$node/self::section or $node/self::appendix">
-      <xsl:apply-templates/>
-      <xsl:text> (</xsl:text>
-      <a href="#{@target}">
-        <!-- insert id when a backlink to this xref is needed in the index -->
-        <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]">
-          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-        </xsl:if>
-        <xsl:call-template name="render-section-ref">
-          <xsl:with-param name="from" select="."/>
-          <xsl:with-param name="to" select="$node"/>
-        </xsl:call-template>
-      </a>
-      <xsl:text>)</xsl:text>
+      <xsl:choose>
+        <xsl:when test="@format='none'">
+          <a href="#{@target}">
+            <!-- insert id when a backlink to this xref is needed in the index -->
+            <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]">
+              <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+            </xsl:if>
+            <xsl:apply-templates/>
+          </a>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates/>
+          <xsl:text> (</xsl:text>
+          <a href="#{@target}">
+            <!-- insert id when a backlink to this xref is needed in the index -->
+            <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]">
+              <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+            </xsl:if>
+            <xsl:call-template name="render-section-ref">
+              <xsl:with-param name="from" select="."/>
+              <xsl:with-param name="to" select="$node"/>
+            </xsl:call-template>
+          </a>
+          <xsl:text>)</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:when>
 
     <xsl:otherwise>
@@ -5430,11 +5443,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.441 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.441 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.442 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.442 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/07/08 08:17:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/07/08 08:17:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/07/18 15:33:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/07/18 15:33:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
