@@ -1766,7 +1766,7 @@
     
     <xsl:call-template name="insertInsDelClass" />
         
-    <xsl:if test="$sectionNumber!=''">
+    <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
       <a href="#{$anchor-prefix}.section.{$sectionNumber}">
         <xsl:call-template name="emit-section-number">
           <xsl:with-param name="no" select="$sectionNumber"/>
@@ -3893,7 +3893,7 @@ thead th {
               <xsl:attribute name="class">tocline1</xsl:attribute>
             </xsl:otherwise>
           </xsl:choose>
-          <xsl:if test="$number != ''">
+          <xsl:if test="$number != '' and not(contains($number,'unnumbered-'))">
             <xsl:call-template name="emit-section-number">
               <xsl:with-param name="no" select="$number"/>
             </xsl:call-template>
@@ -5076,9 +5076,16 @@ thead th {
 
 <xsl:template name="sectionnumberAndEdits">
   <xsl:choose>
-    <xsl:when test="ancestor::ed:del">del-<xsl:number count="ed:del//section" level="any"/></xsl:when>
-    <xsl:when test="@x:fixed-section-number">
+    <xsl:when test="ancestor::ed:del">
+      <xsl:text>del-</xsl:text>
+      <xsl:number count="ed:del//section" level="any"/>
+    </xsl:when>
+    <xsl:when test="@x:fixed-section-number and @x:fixed-section-number!=''">
       <xsl:value-of select="@x:fixed-section-number"/>
+    </xsl:when>
+    <xsl:when test="@x:fixed-section-number and @x:fixed-section-number=''">
+      <xsl:text>unnumbered-</xsl:text>
+      <xsl:number count="section[@x:fixed-section-number='']" level="any"/>
     </xsl:when>
     <xsl:when test="self::section and parent::ed:ins and local-name(../..)='replace'">
       <xsl:for-each select="../.."><xsl:call-template name="sectionnumberAndEdits" /></xsl:for-each>
@@ -5359,13 +5366,27 @@ thead th {
 
 <xsl:template match="/*/middle//section[not(myns:unnumbered) and not(ancestor::section)]" mode="links">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
-  <link rel="Chapter" title="{$sectionNumber} {@title}" href="#{$anchor-prefix}.section.{$sectionNumber}" />
+  <xsl:variable name="title">
+    <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
+      <xsl:value-of select="$sectionNumber"/>
+      <xsl:text> </xsl:text>
+    </xsl:if>
+    <xsl:value-of select="@title"/>
+  </xsl:variable>
+  <link rel="Chapter" title="{$title}" href="#{$anchor-prefix}.section.{$sectionNumber}"/>
   <xsl:apply-templates mode="links" />
 </xsl:template>
 
 <xsl:template match="/*/back//section[not(myns:unnumbered) and not(ancestor::section)]" mode="links">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
-  <link rel="Appendix" title="{$sectionNumber} {@title}" href="#{$anchor-prefix}.section.{$sectionNumber}" />
+  <xsl:variable name="title">
+    <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
+      <xsl:value-of select="$sectionNumber"/>
+      <xsl:text> </xsl:text>
+    </xsl:if>
+    <xsl:value-of select="@title"/>
+  </xsl:variable>
+  <link rel="Appendix" title="{$title}" href="#{$anchor-prefix}.section.{$sectionNumber}"/>
   <xsl:apply-templates mode="links" />
 </xsl:template>
 
@@ -5443,11 +5464,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.442 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.442 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.443 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.443 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/07/18 15:33:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/07/18 15:33:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/07/18 17:22:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/07/18 17:22:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -5479,8 +5500,12 @@ thead th {
 <xsl:template name="get-section-number">
   <xsl:variable name="anchor" select="@anchor"/>
   <xsl:choose>
-    <xsl:when test="@x:fixed-section-number">
+    <xsl:when test="@x:fixed-section-number and @x:fixed-section-number!=''">
       <xsl:value-of select="@x:fixed-section-number"/>
+    </xsl:when>
+    <xsl:when test="@x:fixed-section-number and @x:fixed-section-number=''">
+      <xsl:text>unnumbered-</xsl:text>
+      <xsl:number count="section[@x:fixed-section-number='']" level="any"/>
     </xsl:when>
     <xsl:when test="$has-edits or ancestor::*/@x:fixed-section-number">
       <xsl:call-template name="sectionnumberAndEdits" />
