@@ -2455,6 +2455,13 @@
 
 <xsl:template name="expirydate">
   <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-pub-day >= 1">
+      <xsl:call-template name="normalize-date">
+        <xsl:with-param name="year" select="$xml2rfc-ext-pub-year"/>
+        <xsl:with-param name="month" select="$xml2rfc-ext-pub-month-numeric"/>
+        <xsl:with-param name="day" select="$xml2rfc-ext-pub-day + 185"/>
+      </xsl:call-template>
+    </xsl:when>
     <xsl:when test="$xml2rfc-ext-pub-month='January'">July <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
     <xsl:when test="$xml2rfc-ext-pub-month='February'">August <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
     <xsl:when test="$xml2rfc-ext-pub-month='March'">September <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
@@ -2471,6 +2478,51 @@
    </xsl:choose>
 </xsl:template>
 
+<xsl:template name="normalize-date">
+  <xsl:param name="year"/>
+  <xsl:param name="month"/>
+  <xsl:param name="day"/>
+
+  <xsl:variable name="isleap" select="(($year mod 4) = 0 and ($year mod 100 != 0)) or ($year mod 400) = 0" />
+
+  <!--<xsl:message>
+    <xsl:value-of select="concat($year,' ',$month,' ',$day)"/>
+  </xsl:message>-->
+  
+  <xsl:variable name="dim">
+    <xsl:choose>
+      <xsl:when test="$month=1 or $month=3 or $month=5 or $month=7 or $month=8 or $month=10 or $month=12">31</xsl:when>
+      <xsl:when test="$month=2 and $isleap">29</xsl:when>
+      <xsl:when test="$month=2 and not($isleap)">28</xsl:when>
+      <xsl:otherwise>30</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  
+  <xsl:choose>
+    <xsl:when test="$day > $dim and $month=12">
+      <xsl:call-template name="normalize-date">
+        <xsl:with-param name="year" select="$year + 1"/>
+        <xsl:with-param name="month" select="1"/>
+        <xsl:with-param name="day" select="$day - $dim"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="$day > $dim">
+      <xsl:call-template name="normalize-date">
+        <xsl:with-param name="year" select="$year"/>
+        <xsl:with-param name="month" select="$month + 1"/>
+        <xsl:with-param name="day" select="$day - $dim"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="get-month-as-name">
+        <xsl:with-param name="month" select="$month"/>
+      </xsl:call-template>
+      <xsl:value-of select="concat(' ',$day,', ',$year)"/>
+    </xsl:otherwise>
+  </xsl:choose>
+
+</xsl:template>
+  
 <xsl:template name="get-month-as-num">
   <xsl:param name="month" />
   <xsl:choose>
@@ -5464,11 +5516,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.443 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.443 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.444 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.444 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/07/18 17:22:44 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/07/18 17:22:44 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/07/19 14:54:15 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/07/19 14:54:15 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
