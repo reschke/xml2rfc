@@ -712,12 +712,6 @@
 
 <xsl:template match="back">
 
-  <!-- add references section first, no matter where it appears in the
-    source document -->
-  <!-- as of April 2004, process from middle section 
-  <xsl:apply-templates select="references" />
-  -->
-  
   <!-- add editorial comments -->
   <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
     <xsl:call-template name="insertComments" />
@@ -731,6 +725,13 @@
   <!-- add all other top-level sections under <back> -->
   <xsl:apply-templates select="*[not(self::references) and not(self::ed:replace and .//references)]" />
 
+  <!-- insert the index if index entries exist -->
+  <!-- note it always comes before the authors section -->
+  <xsl:if test="$has-index">
+    <xsl:call-template name="insertIndex" />
+  </xsl:if>
+
+  <!-- Authors section is the absolute last thing, except for copyright stuff -->
   <xsl:if test="$xml2rfc-ext-authors-section='end'">
     <xsl:call-template name="insertAuthors" />
   </xsl:if>
@@ -752,11 +753,6 @@
     </xsl:choose>
   </xsl:if>
   
-  <!-- insert the index if index entries exist -->
-  <xsl:if test="$has-index">
-    <xsl:call-template name="insertIndex" />
-  </xsl:if>
-
 </xsl:template>
 
 <xsl:template match="eref[node()]">
@@ -1754,7 +1750,7 @@
       <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$sectionNumber"/></xsl:attribute>
     </xsl:if>
     <xsl:choose>
-      <xsl:when test="$sectionNumber='1'">
+      <xsl:when test="$sectionNumber='1' or $sectionNumber='A'">
         <!-- pagebreak, this the first section -->
         <xsl:attribute name="class">np</xsl:attribute>
       </xsl:when>
@@ -2584,16 +2580,18 @@
   <xsl:if test="$number!='suppress'">
     <xsl:call-template name="insert-conditional-hrule"/>
     
-    <h1 id="{$anchor-prefix}.authors">
-      <xsl:call-template name="insert-conditional-pagebreak"/>
-      <xsl:if test="$number != ''">
-        <a href="#{$anchor-prefix}.section.{$number}" id="{$anchor-prefix}.section.{$number}"><xsl:value-of select="$number"/>.</a>
-        <xsl:text> </xsl:text>
-      </xsl:if>
-      <a href="#{$anchor-prefix}.authors"><xsl:call-template name="get-authors-section-title"/></a>
-    </h1>
-  
-    <xsl:apply-templates select="/rfc/front/author" />
+    <div class="avoidbreak">
+      <h1 id="{$anchor-prefix}.authors">
+        <xsl:call-template name="insert-conditional-pagebreak"/>
+        <xsl:if test="$number != ''">
+          <a href="#{$anchor-prefix}.section.{$number}" id="{$anchor-prefix}.section.{$number}"><xsl:value-of select="$number"/>.</a>
+          <xsl:text> </xsl:text>
+        </xsl:if>
+        <a href="#{$anchor-prefix}.authors"><xsl:call-template name="get-authors-section-title"/></a>
+      </h1>
+    
+      <xsl:apply-templates select="/rfc/front/author" />
+    </div>
   </xsl:if>
 </xsl:template>
 
@@ -3022,6 +3020,9 @@ li.indline1 {
   line-height: 150%;
   margin-left: 0em;
   margin-right: 0em;
+}
+.avoidbreak {
+  page-break-inside: avoid;
 }
 </xsl:if><xsl:if test="//x:bcp14">.bcp14 {
   font-style: normal;
@@ -3970,8 +3971,6 @@ thead th {
 
 <xsl:template match="back" mode="toc">
 
-  <!-- <xsl:apply-templates select="references" mode="toc" /> -->
-
   <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
     <li>
       <xsl:call-template name="insert-toc-line">
@@ -3985,6 +3984,16 @@ thead th {
     <xsl:apply-templates select="/rfc/front" mode="toc" />
   </xsl:if>
   <xsl:apply-templates select="*[not(self::references)]" mode="toc" />
+
+  <!-- insert the index if index entries exist -->
+  <xsl:if test="$has-index">
+    <li>
+      <xsl:call-template name="insert-toc-line">
+        <xsl:with-param name="target" select="concat($anchor-prefix,'.index')"/>
+        <xsl:with-param name="title" select="'Index'"/>
+      </xsl:call-template>
+    </li>
+  </xsl:if>
 
   <xsl:if test="$xml2rfc-ext-authors-section='end'">
     <xsl:apply-templates select="/rfc/front" mode="toc" />
@@ -4000,16 +4009,6 @@ thead th {
     </li>
   </xsl:if>
   
-  <!-- insert the index if index entries exist -->
-  <xsl:if test="//iref">
-    <li>
-      <xsl:call-template name="insert-toc-line">
-        <xsl:with-param name="target" select="concat($anchor-prefix,'.index')"/>
-        <xsl:with-param name="title" select="'Index'"/>
-      </xsl:call-template>
-    </li>
-  </xsl:if>
-
 </xsl:template>
 
 <xsl:template match="front" mode="toc">
@@ -5516,11 +5515,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.444 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.444 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.445 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.445 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/07/19 14:54:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/07/19 14:54:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/08/01 14:05:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/08/01 14:05:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
