@@ -1577,7 +1577,14 @@
             </xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
-          <meta name="DC.Date.Issued" scheme="ISO8601" content="{$xml2rfc-ext-pub-year}-{$xml2rfc-ext-pub-month-numeric}" />
+          <meta name="DC.Date.Issued" scheme="ISO8601">
+            <xsl:attribute name="content">
+              <xsl:value-of select="concat($xml2rfc-ext-pub-year,'-',$xml2rfc-ext-pub-month-numeric)"/>
+              <xsl:if test="$xml2rfc-ext-pub-day != '' and not(/rfc/@number)">
+                <xsl:value-of select="concat('-',format-number($xml2rfc-ext-pub-day,'00'))"/>
+              </xsl:if>
+            </xsl:attribute>
+          </meta>
   
           <xsl:if test="/rfc/@obsoletes!=''">
             <xsl:call-template name="rfclist-for-dcmeta">
@@ -2941,6 +2948,16 @@ table.full th {
 table.headers th {
   border-style: none none inset none;
   border-width: 1px;
+}
+table.left {
+  margin-right: auto;
+}
+table.right {
+  margin-left: auto;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
 }
 caption {
   caption-side: bottom;
@@ -5238,6 +5255,7 @@ thead th {
   </xsl:variable>
 
   <div id="{$anch}">
+
     <xsl:if test="@anchor!=''">
       <div id="{@anchor}"/>
     </xsl:if>
@@ -5250,10 +5268,16 @@ thead th {
         </xsl:when>
         <xsl:otherwise>full</xsl:otherwise>
       </xsl:choose>
+      <xsl:choose>
+        <xsl:when test="@align='left'"> left</xsl:when>
+        <xsl:when test="@align='right'"> right</xsl:when>
+        <xsl:when test="@align='center' or not(@align) or @align=''"> center</xsl:when>
+        <xsl:otherwise/>
+      </xsl:choose>
+
     </xsl:variable>
 
     <table class="{$style}" cellpadding="3" cellspacing="0">
-
       <xsl:if test="(@title!='' or @anchor!='') and not(@suppress-title='true')">
         <xsl:variable name="n"><xsl:number level="any" count="texttable[(@title!='' or @anchor!='') and not(@suppress-title='true')]" /></xsl:variable>
         <caption>Table <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></caption>
@@ -5515,11 +5539,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.445 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.445 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.446 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.446 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/08/01 14:05:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/08/01 14:05:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/08/01 21:23:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/08/01 21:23:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
