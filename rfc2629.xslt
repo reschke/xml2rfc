@@ -3878,7 +3878,8 @@ thead th {
         </xsl:choose>
         
         <!-- special case: RFC5378 escape applies to RFCs as well -->
-        <!-- <xsl:if test="/rfc/@ipr = 'pre5378Trust200902'">
+        <!-- currently only applied to RFCs, need to discuss for IDs -->
+        <xsl:if test="/rfc/@number and /rfc/@ipr = 'pre5378Trust200902'">
           <t>
             This document may contain material from IETF Documents or IETF Contributions published or
             made publicly available before November 10, 2008. The person(s) controlling the copyright in
@@ -3889,7 +3890,7 @@ thead th {
             Standards Process, except to format it for publication as an RFC or to translate it into languages
             other than English.
           </t>
-        </xsl:if> -->
+        </xsl:if>
         
       </section>
     </xsl:when>
@@ -5539,11 +5540,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.446 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.446 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.447 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.447 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/08/01 21:23:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/08/01 21:23:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/08/04 19:54:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/08/04 19:54:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
