@@ -1598,10 +1598,16 @@
         </xsl:if>      
 
         <xsl:if test="/rfc/@number">
-          <meta name="DC.isPartOf" content="urn:ISSN:2070-1721" />
+          <meta name="DC.isPartOf" content="urn:issn:2070-1721" />
         </xsl:if>      
 
-      </xsl:if>      
+      </xsl:if>
+      
+      <!-- this replicates dc.description.abstract, but is used by Google & friends -->
+      <xsl:if test="/rfc/front/abstract">
+        <meta name="description" content="{normalize-space(/rfc/front/abstract)}" />
+      </xsl:if>
+      
     </head>
     <body>
       <!-- insert diagnostics -->
@@ -5558,11 +5564,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.448 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.448 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.449 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.449 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/08/13 15:38:30 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/08/13 15:38:30 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/08/18 12:19:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/08/18 12:19:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
