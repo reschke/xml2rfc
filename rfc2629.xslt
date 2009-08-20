@@ -1525,19 +1525,19 @@
         <link rel="Index" href="#{$anchor-prefix}.index" />
       </xsl:if>
       <xsl:apply-templates select="/" mode="links" />
-      <xsl:for-each select="/rfc/x:link">
+      <xsl:for-each select="x:link">
         <link><xsl:copy-of select="@*" /></link>
       </xsl:for-each>
-      <xsl:if test="/rfc/@number">
+      <xsl:if test="@number">
         <xsl:variable name="number">
           <xsl:choose>
-            <xsl:when test="string-length(/rfc/@number) &lt; 2">000<xsl:value-of select="/rfc/@number"/></xsl:when>
-            <xsl:when test="string-length(/rfc/@number) &lt; 3">00<xsl:value-of select="/rfc/@number"/></xsl:when>
-            <xsl:when test="string-length(/rfc/@number) &lt; 4">0<xsl:value-of select="/rfc/@number"/></xsl:when>
-            <xsl:otherwise><xsl:value-of select="/rfc/@number"/></xsl:otherwise>
+            <xsl:when test="string-length(@number) &lt; 2">000<xsl:value-of select="@number"/></xsl:when>
+            <xsl:when test="string-length(@number) &lt; 3">00<xsl:value-of select="@number"/></xsl:when>
+            <xsl:when test="string-length(@number) &lt; 4">0<xsl:value-of select="@number"/></xsl:when>
+            <xsl:otherwise><xsl:value-of select="@number"/></xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
-        <link rel="Alternate" title="Authorative ASCII Version" href="http://www.ietf.org/rfc/rfc{/rfc/@number}.txt" />
+        <link rel="Alternate" title="Authorative ASCII Version" href="http://www.ietf.org/rfc/rfc{@number}.txt" />
         <link rel="Help" title="Additional Information on tools.ietf.org" href="http://tools.ietf.org/html/rfc{$number}" />
       </xsl:if>
 
@@ -1560,7 +1560,7 @@
         <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
               
         <!-- DC creator, see RFC2731 -->
-        <xsl:for-each select="/rfc/front/author">
+        <xsl:for-each select="front/author">
           <xsl:variable name="initials">
             <xsl:call-template name="format-initials"/>
           </xsl:variable>
@@ -1569,43 +1569,43 @@
         
         <xsl:if test="not($xml2rfc-private)">
           <xsl:choose>
-            <xsl:when test="/rfc/@number">
-              <meta name="DC.Identifier" content="urn:ietf:rfc:{/rfc/@number}" />
+            <xsl:when test="@number">
+              <meta name="DC.Identifier" content="urn:ietf:rfc:{@number}" />
             </xsl:when>
-            <xsl:when test="/rfc/@docName">
-              <meta name="DC.Identifier" content="urn:ietf:id:{/rfc/@docName}" />
+            <xsl:when test="@docName">
+              <meta name="DC.Identifier" content="urn:ietf:id:{@docName}" />
             </xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
           <meta name="DC.Date.Issued" scheme="ISO8601">
             <xsl:attribute name="content">
               <xsl:value-of select="concat($xml2rfc-ext-pub-year,'-',$xml2rfc-ext-pub-month-numeric)"/>
-              <xsl:if test="$xml2rfc-ext-pub-day != '' and not(/rfc/@number)">
+              <xsl:if test="$xml2rfc-ext-pub-day != '' and not(@number)">
                 <xsl:value-of select="concat('-',format-number($xml2rfc-ext-pub-day,'00'))"/>
               </xsl:if>
             </xsl:attribute>
           </meta>
   
-          <xsl:if test="/rfc/@obsoletes!=''">
+          <xsl:if test="@obsoletes!=''">
             <xsl:call-template name="rfclist-for-dcmeta">
-              <xsl:with-param name="list" select="/rfc/@obsoletes"/>
+              <xsl:with-param name="list" select="@obsoletes"/>
             </xsl:call-template>
           </xsl:if>
         </xsl:if>
   
-        <xsl:if test="/rfc/front/abstract">
-          <meta name="DC.Description.Abstract" content="{normalize-space(/rfc/front/abstract)}" />
+        <xsl:if test="front/abstract">
+          <meta name="DC.Description.Abstract" content="{normalize-space(front/abstract)}" />
         </xsl:if>      
 
-        <xsl:if test="/rfc/@number">
+        <xsl:if test="@number">
           <meta name="DC.isPartOf" content="urn:issn:2070-1721" />
         </xsl:if>      
 
       </xsl:if>
       
       <!-- this replicates dc.description.abstract, but is used by Google & friends -->
-      <xsl:if test="/rfc/front/abstract">
-        <meta name="description" content="{normalize-space(/rfc/front/abstract)}" />
+      <xsl:if test="front/abstract">
+        <meta name="description" content="{normalize-space(front/abstract)}" />
       </xsl:if>
       
     </head>
@@ -5564,11 +5564,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.449 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.449 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.450 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.450 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/08/18 12:19:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/08/18 12:19:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/08/20 11:20:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/08/20 11:20:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -5580,13 +5580,16 @@ thead th {
 </xsl:template>
 
 <xsl:template name="get-keywords">
-  <xsl:variable name="keyw">
-    <xsl:for-each select="/rfc/front/keyword">
-      <xsl:value-of select="translate(.,',',' ')" />
-      <xsl:if test="position()!=last()">, </xsl:if>
-    </xsl:for-each>
-  </xsl:variable>
-  <xsl:value-of select="normalize-space($keyw)" />
+  <xsl:for-each select="/rfc/front/keyword">
+    <xsl:if test="contains(.,',')">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="inline" select="'no'"/>
+        <xsl:with-param name="msg">keyword element appears to contain a comma-separated list, split into multiple elements instead.</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:value-of select="normalize-space(.)" />
+    <xsl:if test="position()!=last()">, </xsl:if>
+  </xsl:for-each>
 </xsl:template>
 
 <!-- get language from context node. nearest ancestor or return the default of "en" -->
