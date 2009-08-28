@@ -588,6 +588,15 @@
 <xsl:template match="artwork[@src and starts-with(@type,'image/')]">
   <p>
     <xsl:choose>
+      <xsl:when test="@align='center'">
+        <xsl:attribute name="style">text-align: center</xsl:attribute>
+      </xsl:when>
+      <xsl:when test="@align='right'">
+        <xsl:attribute name="style">text-align: right</xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+    <xsl:choose>
       <xsl:when test="@type='image/svg+xml'">
         <object data="{@src}" type="image/svg+xml">
           <xsl:choose>
@@ -610,7 +619,12 @@
       </xsl:when>
       <xsl:otherwise>
         <img src="{@src}" alt="{.}">
-          <xsl:copy-of select="@width|@height"/>
+          <xsl:if test="@width and @width!=''">
+            <xsl:copy-of select="@width"/>
+          </xsl:if>
+          <xsl:if test="@height and @height!=''">
+            <xsl:copy-of select="@height"/>
+          </xsl:if>
         </img>
       </xsl:otherwise>
     </xsl:choose>
@@ -5564,11 +5578,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.450 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.450 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.451 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.451 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/08/20 11:20:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/08/20 11:20:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/08/28 12:08:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/08/28 12:08:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
