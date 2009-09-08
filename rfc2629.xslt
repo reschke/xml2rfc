@@ -1976,8 +1976,10 @@
 
     <xsl:otherwise>
       <a href="#{$target}">
-        <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
-          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+        <xsl:if test="@format='none'">
+          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+            <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+          </xsl:if>
         </xsl:if>
         <xsl:apply-templates />
       </a>
@@ -5612,11 +5614,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.456 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.456 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.457 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.457 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/08 18:09:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/08 18:09:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/08 20:23:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/08 20:23:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
