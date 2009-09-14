@@ -50,76 +50,74 @@
                 
 <xsl:output method="html" encoding="iso-8859-1" version="4.0" doctype-public="-//W3C//DTD HTML 4.01//EN" indent="no"/>
 
-<!-- process some of the processing instructions supported by Marshall T. Rose's
-     xml2rfc sofware, see <http://xml.resource.org/> -->
-
-<!-- delimiters in PIs -->
-<xsl:variable name="quote-chars">"'</xsl:variable>     
-     
 <!-- rfc comments PI -->
 
-<xsl:param name="xml2rfc-comments"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'comments=')], concat($quote-chars,' '), ''),
-        'comments=')"
-/>
+<xsl:param name="xml2rfc-comments">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'comments'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- rfc compact PI -->
 
-<xsl:param name="xml2rfc-compact"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'compact=')], concat($quote-chars,' '), ''),
-        'compact=')"
-/>
+<xsl:param name="xml2rfc-compact">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'compact'"/>
+    <xsl:with-param name="default" select="$xml2rfc-rfcedstyle"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- rfc footer PI -->
 
-<xsl:param name="xml2rfc-footer"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'footer=')], concat($quote-chars,' '), ''),
-        'footer=')"
-/>
+<xsl:param name="xml2rfc-footer">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'footer'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- rfc header PI -->
 
-<xsl:param name="xml2rfc-header"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'header=')], concat($quote-chars,' '), ''),
-        'header=')"
-/>
+<xsl:param name="xml2rfc-header">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'header'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- rfc inline PI -->
 
-<xsl:param name="xml2rfc-inline"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'inline=')], concat($quote-chars,' '), ''),
-        'inline=')"
-/>
-
-<!-- rfc strict PI -->
-
-<xsl:param name="xml2rfc-strict"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'strict=')], concat($quote-chars,' '), ''),
-        'strict=')"
-/>
+<xsl:param name="xml2rfc-inline">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'inline'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- include a table of contents if a processing instruction <?rfc?>
      exists with contents toc="yes". Can be overriden by an XSLT parameter -->
 
-<xsl:param name="xml2rfc-toc"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'toc=')], concat($quote-chars,' '), ''),
-        'toc=')"
-/>
+<xsl:param name="xml2rfc-toc">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'toc'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- optional tocdepth-->
 
-<xsl:param name="xml2rfc-tocdepth"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'tocdepth=')], concat($quote-chars,' '), ''),
-        'tocdepth=')"
-/>
+<xsl:param name="xml2rfc-tocdepth">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'tocdepth'"/>
+    <xsl:with-param name="default" select="'3'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <xsl:variable name="parsedTocDepth">
   <xsl:choose>
@@ -135,135 +133,162 @@
 <!-- suppress top block if a processing instruction <?rfc?>
      exists with contents tocblock="no". Can be overriden by an XSLT parameter -->
 
-<xsl:param name="xml2rfc-topblock"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'topblock=')], concat($quote-chars,' '), ''),
-        'topblock=')"
-/>
+<xsl:param name="xml2rfc-topblock">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'topblock'"/>
+    <xsl:with-param name="default" select="'yes'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- Format to the RFC Editor's taste -->
 
-<xsl:param name="xml2rfc-rfcedstyle"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'rfcedstyle=')], concat($quote-chars,' '), ''),
-        'rfcedstyle=')"
-/>
+<xsl:param name="xml2rfc-rfcedstyle">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'rfcedstyle'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- use symbolic reference names instead of numeric ones unless a processing instruction <?rfc?>
      exists with contents symrefs="no". Can be overriden by an XSLT parameter -->
 
-<xsl:param name="xml2rfc-symrefs"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'symrefs=')], concat($quote-chars,' '), ''),
-        'symrefs=')"
-/>
+<xsl:param name="xml2rfc-symrefs">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'symrefs'"/>
+    <xsl:with-param name="default" select="'yes'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- sort references if a processing instruction <?rfc?>
      exists with contents sortrefs="yes". Can be overriden by an XSLT parameter -->
 
-<xsl:param name="xml2rfc-sortrefs"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'sortrefs=')], concat($quote-chars,' '), ''),
-        'sortrefs=')"
-/>
+<xsl:param name="xml2rfc-sortrefs">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'sortrefs'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- insert editing marks if a processing instruction <?rfc?>
      exists with contents editing="yes". Can be overriden by an XSLT parameter -->
 
-<xsl:param name="xml2rfc-editing"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'editing=')], concat($quote-chars,' '), ''),
-        'editing=')"
-/>
+<xsl:param name="xml2rfc-editing">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'editing'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- make it a private paper -->
 
-<xsl:param name="xml2rfc-private"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'private=')], $quote-chars, ''),
-        'private=')"
-/>
+<xsl:param name="xml2rfc-private">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'private'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- background image? -->
 
-<xsl:param name="xml2rfc-background"
-  select="substring-after(
-      translate(/processing-instruction('rfc')[contains(.,'background=')], $quote-chars, ''),
-        'background=')"
-/>
+<xsl:param name="xml2rfc-background">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'background'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- extension for XML parsing in artwork -->
 
-<xsl:param name="xml2rfc-ext-parse-xml-in-artwork"
-  select="substring-after(
-      translate(/processing-instruction('rfc-ext')[contains(.,'parse-xml-in-artwork=')], concat($quote-chars,' '), ''),
-        'parse-xml-in-artwork=')"
-/>
+<xsl:param name="xml2rfc-ext-parse-xml-in-artwork">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'parse-xml-in-artwork'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- extension for excluding DCMI properties in meta tag (RFC2731) -->
 
-<xsl:param name="xml2rfc-ext-support-rfc2731"
-  select="substring-after(
-      translate(/processing-instruction('rfc-ext')[contains(.,'support-rfc2731=')], concat($quote-chars,' '), ''),
-        'support-rfc2731=')"
-/>
+<xsl:param name="xml2rfc-ext-support-rfc2731">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'support-rfc2731'"/>
+    <xsl:with-param name="default" select="'yes'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- extension for allowing markup inside artwork -->
 
-<xsl:param name="xml2rfc-ext-allow-markup-in-artwork"
-  select="substring-after(
-      translate(/processing-instruction('rfc-ext')[contains(.,'allow-markup-in-artwork=')], concat($quote-chars,' '), ''),
-        'allow-markup-in-artwork=')"
-/>
+<xsl:param name="xml2rfc-ext-allow-markup-in-artwork">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'allow-markup-in-artwork'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- extension for including references into index -->
 
-<xsl:param name="xml2rfc-ext-include-references-in-index"
-  select="substring-after(
-      translate(/processing-instruction('rfc-ext')[contains(.,'include-references-in-index=')], concat($quote-chars,' '), ''),
-        'include-references-in-index=')"
-/>
+<xsl:param name="xml2rfc-ext-include-references-in-index">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'include-references-in-index'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- position of author's section -->
 
-<xsl:param name="xml2rfc-ext-authors-section"
-  select="substring-after(
-      translate(/processing-instruction('rfc-ext')[contains(.,'authors-section=')], concat($quote-chars,' '), ''),
-        'authors-section=')"
-/>
+<xsl:param name="xml2rfc-ext-authors-section">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'authors-section'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- justification? -->
 
-<xsl:param name="xml2rfc-ext-justification"
-  select="substring-after(
-      translate(/processing-instruction('rfc-ext')[contains(.,'justification=')], concat($quote-chars,' '), ''),
-        'justification=')"
-/>
+<xsl:param name="xml2rfc-ext-justification">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'justification'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- trailing dots in section numbers -->
 
-<xsl:param name="xml2rfc-ext-sec-no-trailing-dots"
-  select="substring-after(
-      translate(/processing-instruction('rfc-ext')[contains(.,'sec-no-trailing-dots=')], concat($quote-chars,' '), ''),
-        'sec-no-trailing-dots=')"
-/>
+<xsl:param name="xml2rfc-ext-sec-no-trailing-dots">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'sec-no-trailing-dots'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- choose whether or not to do mailto links --> 
   
-<xsl:param name="xml2rfc-linkmailto" 
-  select="substring-after( 
-      translate(/processing-instruction('rfc')[contains(.,'linkmailto=')], concat($quote-chars,' '), ''), 
-        'linkmailto=')" 
-/> 
-
+<xsl:param name="xml2rfc-linkmailto">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'linkmailto'"/>
+    <xsl:with-param name="default" select="'yes'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- iprnotified switch --> 
   
-<xsl:param name="xml2rfc-iprnotified" 
-  select="substring-after( 
-      translate(/processing-instruction('rfc')[contains(.,'iprnotified=')], concat($quote-chars,' '), ''), 
-        'iprnotified=')" 
-/> 
+<xsl:param name="xml2rfc-iprnotified">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'iprnotified'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- URL templates for RFCs and Internet Drafts. -->
 
@@ -759,7 +784,7 @@
     <xsl:call-template name="insertAuthors" />
   </xsl:if>
 
-  <xsl:if test="not($xml2rfc-private)">
+  <xsl:if test="$xml2rfc-private=''">
     <!-- copyright statements -->
     <xsl:variable name="copyright"><xsl:call-template name="insertCopyright" /></xsl:variable>
   
@@ -888,7 +913,7 @@
     </xsl:otherwise>        
   </xsl:choose>            
 
-  <xsl:if test="not($xml2rfc-private) and not($abstract-first)">
+  <xsl:if test="$xml2rfc-private='' and not($abstract-first)">
     <xsl:call-template name="emit-ietf-preamble"/>
   </xsl:if>
  
@@ -898,7 +923,7 @@
   <!-- show notes inside change tracking as well -->
   <xsl:apply-templates select="ed:replace[.//note]" />
     
-  <xsl:if test="not($xml2rfc-private) and $abstract-first">
+  <xsl:if test="$xml2rfc-private='' and $abstract-first">
     <xsl:call-template name="emit-ietf-preamble"/>
   </xsl:if>
 
@@ -1515,6 +1540,13 @@
     </xsl:call-template>
   </xsl:if>
   
+  <xsl:variable name="ignored">
+    <xsl:call-template name="parse-pis">
+      <xsl:with-param name="nodes" select="//processing-instruction('rfc-ext')"/>
+      <xsl:with-param name="attr" select="'SANITYCHECK'"/>
+    </xsl:call-template>
+  </xsl:variable>
+
   <xsl:variable name="lang">
     <xsl:call-template name="get-lang" />
   </xsl:variable>
@@ -1539,7 +1571,7 @@
         <link rel="Contents" href="#{$anchor-prefix}.toc" />
       </xsl:if>
       <link rel="Author" href="#{$anchor-prefix}.authors" />
-      <xsl:if test="not($xml2rfc-private)">
+      <xsl:if test="$xml2rfc-private=''">
         <link rel="Copyright" href="#{$anchor-prefix}.copyright" />
       </xsl:if>
       <xsl:if test="$has-index">
@@ -1588,7 +1620,7 @@
           <meta name="DC.Creator" content="{concat(@surname,', ',$initials)}" />
         </xsl:for-each>
         
-        <xsl:if test="not($xml2rfc-private)">
+        <xsl:if test="$xml2rfc-private=''">
           <xsl:choose>
             <xsl:when test="@number">
               <meta name="DC.Identifier" content="urn:ietf:rfc:{@number}" />
@@ -2324,7 +2356,7 @@
 <xsl:template name="collectLeftHeaderColumn">
   <xsl:param name="mode" />
   <!-- default case -->
-  <xsl:if test="not($xml2rfc-private)">
+  <xsl:if test="$xml2rfc-private=''">
     <xsl:choose>
       <xsl:when test="/rfc/front/workgroup">
         <xsl:for-each select="/rfc/front/workgroup">
@@ -2393,7 +2425,7 @@
   </xsl:if>
     
   <!-- private case -->
-  <xsl:if test="$xml2rfc-private">
+  <xsl:if test="$xml2rfc-private!=''">
     <myns:item><xsl:value-of select="$xml2rfc-private" /></myns:item>
   </xsl:if>
 </xsl:template>
@@ -4071,7 +4103,7 @@ thead th {
   </xsl:if>
 
   <!-- copyright statements -->
-  <xsl:if test="not($xml2rfc-private) and not($no-copylong)">
+  <xsl:if test="$xml2rfc-private='' and not($no-copylong)">
     <li>
       <xsl:call-template name="insert-toc-line">
         <xsl:with-param name="target" select="concat($anchor-prefix,'.ipr')"/>
@@ -5579,8 +5611,8 @@ thead th {
 
 <xsl:template name="get-category-long">
   <xsl:choose>
-    <xsl:when test="$xml2rfc-footer"><xsl:value-of select="$xml2rfc-footer" /></xsl:when>
-    <xsl:when test="$xml2rfc-private"/> <!-- private draft, footer not set -->
+    <xsl:when test="$xml2rfc-footer!=''"><xsl:value-of select="$xml2rfc-footer" /></xsl:when>
+    <xsl:when test="$xml2rfc-private!=''"/> <!-- private draft, footer not set -->
     <xsl:when test="/rfc/@category='bcp'">Best Current Practice</xsl:when>
     <xsl:when test="/rfc/@category='historic'">Historic</xsl:when>
     <xsl:when test="/rfc/@category='info' or not(/rfc/@category)">Informational</xsl:when>
@@ -5603,8 +5635,8 @@ thead th {
 
 <xsl:template name="get-header-left">
   <xsl:choose>
-    <xsl:when test="$xml2rfc-header"><xsl:value-of select="$xml2rfc-header" /></xsl:when>
-    <xsl:when test="$xml2rfc-private"/> <!-- private draft, header not set -->
+    <xsl:when test="$xml2rfc-header!=''"><xsl:value-of select="$xml2rfc-header" /></xsl:when>
+    <xsl:when test="$xml2rfc-private!=''"/> <!-- private draft, header not set -->
     <xsl:when test="/rfc/@ipr and not(/rfc/@number)">INTERNET DRAFT</xsl:when>
     <xsl:otherwise>RFC <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
   </xsl:choose>
@@ -5614,11 +5646,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.458 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.458 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.459 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.459 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/09 15:00:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/09 15:00:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/14 00:22:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/14 00:22:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -5822,6 +5854,209 @@ thead th {
 </xsl:template>
 
 <xsl:template match="ed:del" mode="get-text-content">
+</xsl:template>
+
+<!-- parsing of processing instructions -->
+<xsl:template name="parse-pis">
+  <xsl:param name="nodes"/>
+  <xsl:param name="attr"/>
+  <xsl:param name="sep"/>
+  <xsl:param name="ret"/>
+  <xsl:param name="default"/>
+  
+  <xsl:choose>
+    <xsl:when test="count($nodes)=0">
+      <xsl:choose>
+        <xsl:when test="$ret!=''">
+          <xsl:value-of select="$ret"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$default"/>
+        </xsl:otherwise>    
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="ret2">
+        <xsl:for-each select="$nodes[1]">
+          <xsl:call-template name="parse-one-pi">
+            <xsl:with-param name="str" select="."/>
+            <xsl:with-param name="attr" select="$attr"/>
+            <xsl:with-param name="sep" select="$sep"/>
+            <xsl:with-param name="ret" select="$ret"/>
+          </xsl:call-template>
+        </xsl:for-each>
+      </xsl:variable>
+      
+      <xsl:call-template name="parse-pis">
+        <xsl:with-param name="nodes" select="$nodes[position()!=1]"/>
+        <xsl:with-param name="attr" select="$attr"/>
+        <xsl:with-param name="sep" select="$sep"/>
+        <xsl:with-param name="ret" select="$ret2"/>
+        <xsl:with-param name="default" select="$default"/>
+      </xsl:call-template>
+      
+    </xsl:otherwise>
+  </xsl:choose>
+
+</xsl:template>
+
+<xsl:template name="parse-one-pi">
+  <xsl:param name="str"/>
+  <xsl:param name="attr"/>
+  <xsl:param name="sep"/>
+  <xsl:param name="ret"/>
+
+  <xsl:variable name="str2">
+    <xsl:call-template name="eat-leading-whitespace">
+      <xsl:with-param name="str" select="$str"/>
+    </xsl:call-template>
+  </xsl:variable>
+  
+  <xsl:choose>
+    <xsl:when test="$str2=''">
+      <!-- done -->
+      <xsl:value-of select="$ret"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="attrname" select="substring-before($str2,'=')"/>
+      
+      <xsl:choose>
+        <xsl:when test="$attrname=''">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">bad PI syntax: <xsl:value-of select="$str2"/></xsl:with-param>
+            <xsl:with-param name="inline" select="'no'"/>
+          </xsl:call-template>
+          <xsl:value-of select="$ret"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:variable name="remainder" select="substring($str2,2+string-length($attrname))"/>
+          <xsl:choose>
+            <xsl:when test="string-length($remainder) &lt; 2">
+              <xsl:call-template name="warning">
+                <xsl:with-param name="msg">bad PI value syntax: <xsl:value-of select="$remainder"/></xsl:with-param>
+                <xsl:with-param name="inline" select="'no'"/>
+              </xsl:call-template>
+              <xsl:value-of select="$ret"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:variable name="rem">
+                <xsl:call-template name="eat-leading-whitespace">
+                  <xsl:with-param name="str" select="$remainder"/>
+                </xsl:call-template>
+              </xsl:variable>
+              <xsl:variable name="qchars">&apos;&quot;</xsl:variable>
+              <xsl:variable name="qchar" select="substring($rem,1,1)"/>
+              <xsl:variable name="rem2" select="substring($rem,2)"/>
+              <xsl:choose>
+                <xsl:when test="not(contains($qchars,$qchar))">
+                  <xsl:call-template name="warning">
+                    <xsl:with-param name="msg">pseudo-attribute value needs to be quoted: <xsl:value-of select="$rem"/></xsl:with-param>
+                    <xsl:with-param name="inline" select="'no'"/>
+                  </xsl:call-template>
+                  <xsl:value-of select="$ret"/>
+                </xsl:when>
+                <xsl:when test="not(contains($rem2,$qchar))">
+                  <xsl:call-template name="warning">
+                    <xsl:with-param name="msg">unmatched quote in: <xsl:value-of select="$rem2"/></xsl:with-param>
+                    <xsl:with-param name="inline" select="'no'"/>
+                  </xsl:call-template>
+                  <xsl:value-of select="$ret"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:variable name="value" select="substring-before($rem2,$qchar)"/>
+
+                  <!-- check pseudo-attribute names -->
+                  <xsl:if test="name()='rfc-ext' and $attr='SANITYCHECK'">
+                    <xsl:choose>
+                      <xsl:when test="$attrname='allow-markup-in-artwork'"/>
+                      <xsl:when test="$attrname='authors-section'"/>
+                      <xsl:when test="$attrname='duplex'"/>
+                      <xsl:when test="$attrname='include-references-in-index'"/>
+                      <xsl:when test="$attrname='justification'"/>
+                      <xsl:when test="$attrname='parse-xml-in-artwork'"/>
+                      <xsl:when test="$attrname='sec-no-trailing-dots'"/>
+                      <xsl:otherwise>
+                        <xsl:call-template name="warning">
+                          <xsl:with-param name="msg">unsupported rfc-ext pseudo-attribute '<xsl:value-of select="$attrname"/>'</xsl:with-param>
+                          <xsl:with-param name="inline" select="'no'"/>
+                        </xsl:call-template>
+                      </xsl:otherwise>
+                    </xsl:choose>
+                  </xsl:if>
+                  
+                  <xsl:choose>
+                    <xsl:when test="$attrname != $attr">
+                      <!-- pseudo-attr does not match, continue -->
+                      <xsl:call-template name="parse-one-pi">
+                        <xsl:with-param name="str" select="substring($rem2, 2 + string-length($value))"/>
+                        <xsl:with-param name="attr" select="$attr"/>
+                        <xsl:with-param name="sep" select="$sep"/>
+                        <xsl:with-param name="ret" select="$ret"/>
+                      </xsl:call-template>
+                    </xsl:when>
+                    <xsl:when test="$sep='' and $ret!=''">
+                      <!-- pseudo-attr does match, but we only want one value -->
+                      <xsl:if test="$ret != $value">
+                        <xsl:call-template name="warning">
+                          <xsl:with-param name="msg">duplicate pseudo-attribute <xsl:value-of select="$attr"/>, overwriting value <xsl:value-of select="$ret"/></xsl:with-param>
+                          <xsl:with-param name="inline" select="'no'"/>
+                        </xsl:call-template>
+                      </xsl:if>
+                      <xsl:call-template name="parse-one-pi">
+                        <xsl:with-param name="str" select="substring($rem2, 2 + string-length($value))"/>
+                        <xsl:with-param name="attr" select="$attr"/>
+                        <xsl:with-param name="sep" select="$sep"/>
+                        <xsl:with-param name="ret" select="$value"/>
+                      </xsl:call-template>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <!-- pseudo-attr does match -->
+                      <xsl:call-template name="parse-one-pi">
+                        <xsl:with-param name="str" select="substring($rem2, 2 + string-length($value))"/>
+                        <xsl:with-param name="attr" select="$attr"/>
+                        <xsl:with-param name="sep" select="$sep"/>
+                        <xsl:with-param name="ret">
+                          <xsl:choose>  
+                            <xsl:when test="$ret!=''">
+                              <xsl:value-of select="concat($ret,$sep,$value)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="$value"/>
+                            </xsl:otherwise>
+                          </xsl:choose>
+                        </xsl:with-param>
+                      </xsl:call-template>
+                    </xsl:otherwise>                  
+                  
+                  </xsl:choose>
+                  
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
+  
+</xsl:template>
+
+<xsl:template name="eat-leading-whitespace">
+  <xsl:param name="str"/>
+
+  <xsl:choose>
+    <xsl:when test="$str=''">
+    </xsl:when>
+    <xsl:when test="translate(substring($str,1,1),' &#10;&#13;&#9;',' ')=' '">
+      <xsl:call-template name="eat-leading-whitespace">
+        <xsl:with-param name="str" select="substring($str,2)"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$str"/>
+    </xsl:otherwise>
+  </xsl:choose>
+  
 </xsl:template>
 
 <!-- diag support -->
