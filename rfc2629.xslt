@@ -3770,20 +3770,15 @@ thead th {
             <xref target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
           </xsl:when>
   
-          <!-- as of Nov 2008 and Feb 2009 -->
+          <!-- as of Nov 2008, Feb 2009 and Sep 2009 -->
           <xsl:when test="/rfc/@ipr = 'trust200811'
                           or /rfc/@ipr = 'noModificationTrust200811'
                           or /rfc/@ipr = 'noDerivativesTrust200811'
                           or /rfc/@ipr = 'trust200902'
                           or /rfc/@ipr = 'noModificationTrust200902'
                           or /rfc/@ipr = 'noDerivativesTrust200902'
-                          or /rfc/@ipr = 'pre5378Trust200902'">
-            This Internet-Draft is submitted to IETF pursuant to, and in full
-            conformance with, the provisions of BCP 78 and BCP 79.
-          </xsl:when>
-  
-          <!-- as of Sep 2009 -->
-          <xsl:when test="/rfc/@ipr = 'trust200909'
+                          or /rfc/@ipr = 'pre5378Trust200902'
+                          or /rfc/@ipr = 'trust200909'
                           or /rfc/@ipr = 'noModificationTrust200909'
                           or /rfc/@ipr = 'noDerivativesTrust200909'
                           or /rfc/@ipr = 'pre5378Trust200909'">
@@ -5646,11 +5641,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.459 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.459 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.460 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.460 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/14 00:22:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/14 00:22:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/20 15:10:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/20 15:10:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
