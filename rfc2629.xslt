@@ -3734,7 +3734,7 @@ thead th {
             it may not be created, except to publish it as an RFC and to
             translate it into languages other than English<xsl:if test="/rfc/@iprExtract">,
             other than to extract <xref target="{/rfc/@iprExtract}"/> as-is
-            for separate use.</xsl:if>.
+            for separate use</xsl:if>.
           </xsl:when>
           <xsl:when test="/rfc/@ipr = 'noDerivatives3667'">
             This document is an Internet-Draft and is subject to all provisions
@@ -3745,7 +3745,7 @@ thead th {
             become aware will be disclosed, in accordance with RFC 3668.  This
             document may not be modified, and derivative works of it may
             not be created<xsl:if test="/rfc/@iprExtract">, other than to extract
-            <xref target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
+            <xref target="{/rfc/@iprExtract}"/> as-is for separate use</xsl:if>.
           </xsl:when>
           
           <!-- RFC3978 -->
@@ -3765,7 +3765,7 @@ thead th {
             it may not be created, except to publish it as an RFC and to
             translate it into languages other than English<xsl:if test="/rfc/@iprExtract">,
             other than to extract <xref target="{/rfc/@iprExtract}"/> as-is
-            for separate use.</xsl:if>.
+            for separate use</xsl:if>.
           </xsl:when>
           <xsl:when test="/rfc/@ipr = 'noDerivatives3978'">
             By submitting this Internet-Draft, each author represents 
@@ -3774,7 +3774,7 @@ thead th {
             becomes aware will be disclosed, in accordance with Section 6 of BCP 79.  This
             document may not be modified, and derivative works of it may
             not be created<xsl:if test="/rfc/@iprExtract">, other than to extract
-            <xref target="{/rfc/@iprExtract}"/> as-is for separate use.</xsl:if>.
+            <xref target="{/rfc/@iprExtract}"/> as-is for separate use</xsl:if>.
           </xsl:when>
   
           <!-- as of Nov 2008, Feb 2009 and Sep 2009 -->
@@ -3813,7 +3813,8 @@ thead th {
             This document may not be modified, and derivative works of it may
             not be created, and it may not be published except as an Internet-Draft.
           </xsl:when>
-          <xsl:when test="/rfc/@ipr = 'pre5378Trust200902'">
+          <!-- escape clause moved to Copyright Notice as of 2009-12 -->
+          <xsl:when test="/rfc/@ipr = 'pre5378Trust200902' and $pub-yearmonth &lt; 200912">
             <xsl:value-of select="$escapeclause"/>
           </xsl:when>
 
@@ -3932,8 +3933,8 @@ thead th {
         </xsl:choose>
         
         <!-- special case: RFC5378 escape applies to RFCs as well -->
-        <!-- currently only applied to RFCs, need to discuss for IDs -->
-        <xsl:if test="/rfc/@number and /rfc/@ipr = 'pre5378Trust200902'">
+        <!-- for IDs historically in Status Of This Memo, over here starting 2009-12 -->
+        <xsl:if test="(/rfc/@number or $pub-yearmonth >= 200912) and /rfc/@ipr = 'pre5378Trust200902'">
           <t>
             <xsl:value-of select="$escapeclause"/>
           </t>
@@ -5608,11 +5609,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.465 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.465 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.466 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.466 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/21 15:47:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/21 15:47:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/21 20:46:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/21 20:46:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
