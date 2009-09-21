@@ -1920,10 +1920,10 @@
     <xsl:value-of select="$to/@title" />
   </xsl:attribute>
   <xsl:choose>
-    <xsl:when test="@format='counter'">
+    <xsl:when test="$from/@format='counter'">
       <xsl:value-of select="$refnum"/>
     </xsl:when>
-    <xsl:when test="@format='title'">
+    <xsl:when test="$from/@format='title'">
       <xsl:value-of select="$to/@title"/>
     </xsl:when>
     <xsl:otherwise>
@@ -2029,306 +2029,311 @@
                
 <xsl:template match="xref[not(node())]">
 
-  <xsl:variable name="target" select="@target" />
-  <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
-  <xsl:variable name="node" select="key('anchor-item',$target)" />
-  <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
-    <xsl:call-template name="error">
-      <xsl:with-param name="msg" select="concat('Undefined target: ',@target)"/>
-    </xsl:call-template>
-  </xsl:if>
+  <xsl:variable name="xref" select="."/>
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="$xref/@target"/>.<xsl:number level="any" count="xref[@target=$xref/@target]"/></xsl:variable>
 
-  <xsl:choose>
+  <!-- ensure we have the right context, this <xref> may be processed from within the boilerplate -->
+  <xsl:for-each select="$src">
+
+    <xsl:variable name="node" select="key('anchor-item',$xref/@target)" />
+    <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('Undefined target: ',$xref/@target)"/>
+      </xsl:call-template>
+    </xsl:if>
   
-    <!-- Section links -->
-    <xsl:when test="$node/self::section or $node/self::appendix">
-      <a href="#{@target}">
-        <!-- insert id when a backlink to this xref is needed in the index -->
-        <xsl:if test="key('iref-xanch',$target) | key('iref-xanch','')[../@anchor=$target]">
-          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-        </xsl:if>
-        <xsl:call-template name="render-section-ref">
-          <xsl:with-param name="from" select="."/>
-          <xsl:with-param name="to" select="$node"/>
-        </xsl:call-template>
-      </a>
-    </xsl:when>
-
-    <!-- Figure links -->
-    <xsl:when test="$node/self::figure">
-      <a href="#{$target}">
-        <xsl:variable name="figcnt">
-          <xsl:for-each select="$node">
-            <xsl:number level="any" count="figure[(@title!='' or @anchor!='') and not(@suppress-title='true')]" />
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:choose>
-          <xsl:when test="@format='counter'">
-            <xsl:value-of select="$figcnt" />
-          </xsl:when>
-          <xsl:when test="@format='title'">
-            <xsl:value-of select="$node/@title" />
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </a>
-    </xsl:when>
+    <xsl:choose>
     
-    <!-- Table links -->
-    <xsl:when test="$node/self::texttable">
-      <a href="#{$target}">
-        <xsl:variable name="tabcnt">
-          <xsl:for-each select="$node">
-            <xsl:number level="any" count="texttable[(@title!='' or @anchor!='') and not(@suppress-title='true')]" />
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:choose>
-          <xsl:when test="@format='counter'">
-            <xsl:value-of select="$tabcnt" />
-          </xsl:when>
-          <xsl:when test="@format='title'">
-            <xsl:value-of select="$node/@title" />
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="normalize-space(concat('Table&#160;',$tabcnt))"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </a>
-    </xsl:when>
-    
-    <!-- Paragraph links -->
-    <xsl:when test="$node/self::t">
-      <a href="#{$target}">
-        <xsl:variable name="tcnt">
-          <xsl:for-each select="$node">
-            <xsl:call-template name="get-paragraph-number" />
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:choose>
-          <xsl:when test="@format='counter'">
-            <xsl:value-of select="$tcnt" />
-          </xsl:when>
-          <xsl:when test="@format='title'">
-            <xsl:value-of select="$node/@title" />
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="normalize-space(concat('Paragraph&#160;',substring-after($tcnt,'p.')))"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </a>
-    </xsl:when>
-
-    <!-- Comment links -->
-    <xsl:when test="$node/self::cref">
-      <a href="#{$target}">
-        <xsl:variable name="name">
-          <xsl:for-each select="$node">
-            <xsl:call-template name="get-comment-name" />
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:choose>
-          <xsl:when test="@format='counter'">
-            <xsl:value-of select="$name" />
-          </xsl:when>
-          <xsl:when test="@format='title'">
-            <xsl:value-of select="$node/@title" />
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="normalize-space(concat('Comment&#160;',$name))"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </a>
-    </xsl:when>
-
-    <!-- Reference links -->
-    <xsl:when test="$node/self::reference">
-
-      <xsl:variable name="href">
-        <xsl:call-template name="computed-target">
-          <xsl:with-param name="bib" select="$node"/>
-          <xsl:with-param name="ref" select="."/>
-        </xsl:call-template>
-      </xsl:variable>
-      
-      <xsl:variable name="sec">
-        <xsl:choose>
-          <xsl:when test="starts-with(@x:rel,'#') and not(@x:sec) and $node/x:source/@href">
-            <xsl:variable name="extdoc" select="document($node/x:source/@href)"/>
-            <xsl:variable name="nodes" select="$extdoc//*[@anchor=substring-after(current()/@x:rel,'#')]"/>
-            <xsl:if test="not($nodes)">
-              <xsl:call-template name="error">
-                <xsl:with-param name="msg">Anchor '<xsl:value-of select="substring-after(current()/@x:rel,'#')"/>' not found in <xsl:value-of select="$node/x:source/@href"/>.</xsl:with-param>
-              </xsl:call-template>
-            </xsl:if>
-            <xsl:for-each select="$nodes">
-              <xsl:call-template name="get-section-number"/>
-            </xsl:for-each>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="@x:sec"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:variable>
-      
-      <xsl:variable name="secterm">
-        <xsl:choose>
-          <!-- starts with letter? -->
-          <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">Appendix</xsl:when>
-          <xsl:otherwise>Section</xsl:otherwise>
-        </xsl:choose>
-      </xsl:variable>
-
-      <xsl:variable name="fmt">
-        <xsl:choose>
-          <xsl:when test="@x:fmt!=''"><xsl:value-of select="@x:fmt"/></xsl:when>
-          <xsl:when test="ancestor::artwork">,</xsl:when>
-          <xsl:otherwise>of</xsl:otherwise>
-        </xsl:choose>
-      </xsl:variable>
-
-      <xsl:variable name="title">
-        <xsl:choose>
-          <xsl:when test="starts-with(@x:rel,'#') and not(@x:sec) and $node/x:source/@href">
-            <xsl:variable name="extdoc" select="document($node/x:source/@href)"/>
-            <xsl:variable name="nodes" select="$extdoc//*[@anchor=substring-after(current()/@x:rel,'#')]"/>
-            <xsl:if test="not($nodes)">
-              <xsl:call-template name="error">
-                <xsl:with-param name="msg">Anchor '<xsl:value-of select="substring-after(current()/@x:rel,'#')"/>' not found in <xsl:value-of select="$node/x:source/@href"/>.</xsl:with-param>
-              </xsl:call-template>
-            </xsl:if>
-            <xsl:for-each select="$nodes">
-              <xsl:value-of select="@title"/>
-            </xsl:for-each>
-          </xsl:when>
-          <xsl:otherwise />
-        </xsl:choose>
-      </xsl:variable>
-
-      <!--
-      Formats:
-      
-        ()      [XXXX] (Section SS)
-        ,       [XXXX], Section SS
-        of      Section SS of [XXXX]
-        sec     Section SS
-        number  SS
-      -->
-      
-      <xsl:if test="$fmt and not($fmt='()' or $fmt=',' or $fmt='of' or $fmt='sec' or $fmt='anchor' or $fmt='number')">
-        <xsl:call-template name="error">
-          <xsl:with-param name="msg" select="concat('unknown xref/@x:fmt extension: ',$fmt)"/>
-        </xsl:call-template>
-      </xsl:if>
-
-      <xsl:if test="$sec!=''">
-              
-        <xsl:choose>
-          <xsl:when test="$fmt='of' or $fmt='sec'">
-            <xsl:choose>
-              <xsl:when test="$href!=''">
-                <a href="{$href}">
-                  <xsl:if test="$title!=''">
-                    <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
-                  </xsl:if>
-                  <xsl:if test="$fmt='sec' and $xml2rfc-ext-include-references-in-index='yes'">
-                    <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-                  </xsl:if>
-                  <xsl:value-of select="$secterm"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$sec"/>
-                </a>
-              </xsl:when>
-              <xsl:otherwise><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></xsl:otherwise>
-            </xsl:choose>
-            <xsl:if test="$fmt='of'">
-              <xsl:text> of </xsl:text>
-            </xsl:if>
-          </xsl:when>
-          <xsl:when test="$fmt='number'">
-            <xsl:choose>
-              <xsl:when test="$href!=''">
-                <a href="{$href}">
-                  <xsl:if test="$title!=''">
-                    <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
-                  </xsl:if>
-                  <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
-                    <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-                  </xsl:if>
-                  <xsl:value-of select="$sec"/>
-                </a>
-              </xsl:when>
-              <xsl:otherwise><xsl:value-of select="$sec"/></xsl:otherwise>
-            </xsl:choose>
-          </xsl:when>
-          <xsl:otherwise />
-        </xsl:choose>
-      </xsl:if>
-
-      <xsl:if test="$sec='' or ($fmt!='sec' and $fmt!='number')">
-        <a href="#{$target}">
-          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+      <!-- Section links -->
+      <xsl:when test="$node/self::section or $node/self::appendix">
+        <a href="#{$xref/@target}">
+          <!-- insert id when a backlink to this xref is needed in the index -->
+          <xsl:if test="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]">
             <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
           </xsl:if>
-          <cite title="{normalize-space($node/front/title)}">
-            <xsl:variable name="val">
-              <xsl:call-template name="referencename">
-                <xsl:with-param name="node" select="$node" />
-              </xsl:call-template>
-            </xsl:variable>
-            <xsl:choose>
-              <xsl:when test="$fmt='anchor'">
-                <!-- remove brackets -->
-                <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="$val"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </cite>
+          <xsl:call-template name="render-section-ref">
+            <xsl:with-param name="from" select="$xref"/>
+            <xsl:with-param name="to" select="$node"/>
+          </xsl:call-template>
         </a>
-      </xsl:if>
+      </xsl:when>
+  
+      <!-- Figure links -->
+      <xsl:when test="$node/self::figure">
+        <a href="#{$xref/@target}">
+          <xsl:variable name="figcnt">
+            <xsl:for-each select="$node">
+              <xsl:number level="any" count="figure[(@title!='' or @anchor!='') and not(@suppress-title='true')]" />
+            </xsl:for-each>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="$xref/@format='counter'">
+              <xsl:value-of select="$figcnt" />
+            </xsl:when>
+            <xsl:when test="$xref/@format='title'">
+              <xsl:value-of select="$node/@title" />
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </a>
+      </xsl:when>
       
-      <xsl:if test="$sec!=''">
-        <xsl:choose>
-          <xsl:when test="$fmt='()'">
-            <xsl:text> (</xsl:text>
-            <xsl:choose>
-              <xsl:when test="$href!=''">
-                <a href="{$href}"><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></a>
-              </xsl:when>
-              <xsl:otherwise><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></xsl:otherwise>
-            </xsl:choose>
-            <xsl:text>)</xsl:text>
-          </xsl:when>
-          <xsl:when test="$fmt=','">
-            <xsl:text>, </xsl:text>
-            <xsl:choose>
-              <xsl:when test="$href!=''">
-                <a href="{$href}">
-                  <xsl:if test="$title!=''">
-                    <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
-                  </xsl:if>
-                  <xsl:value-of select="$secterm"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$sec"/>
-                </a>
-              </xsl:when>
-              <xsl:otherwise><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></xsl:otherwise>
-            </xsl:choose>
-          </xsl:when>
-          <xsl:otherwise/>
-        </xsl:choose>
-      </xsl:if>
-    </xsl:when>
-    
-    <xsl:otherwise>
-      <xsl:call-template name="error">
-        <xsl:with-param name="msg" select="concat('xref to unknown element: ',name($node))"/>
-      </xsl:call-template>
-    </xsl:otherwise>
-  </xsl:choose>
+      <!-- Table links -->
+      <xsl:when test="$node/self::texttable">
+        <a href="#{$xref/@target}">
+          <xsl:variable name="tabcnt">
+            <xsl:for-each select="$node">
+              <xsl:number level="any" count="texttable[(@title!='' or @anchor!='') and not(@suppress-title='true')]" />
+            </xsl:for-each>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="$xref/@format='counter'">
+              <xsl:value-of select="$tabcnt" />
+            </xsl:when>
+            <xsl:when test="$xref/@format='title'">
+              <xsl:value-of select="$node/@title" />
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="normalize-space(concat('Table&#160;',$tabcnt))"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </a>
+      </xsl:when>
+      
+      <!-- Paragraph links -->
+      <xsl:when test="$node/self::t">
+        <a href="#{$xref/@target}">
+          <xsl:variable name="tcnt">
+            <xsl:for-each select="$node">
+              <xsl:call-template name="get-paragraph-number" />
+            </xsl:for-each>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="$xref/@format='counter'">
+              <xsl:value-of select="$tcnt" />
+            </xsl:when>
+            <xsl:when test="$xref/@format='title'">
+              <xsl:value-of select="$node/@title" />
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="normalize-space(concat('Paragraph&#160;',substring-after($tcnt,'p.')))"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </a>
+      </xsl:when>
+  
+      <!-- Comment links -->
+      <xsl:when test="$node/self::cref">
+        <a href="#{$xref/@target}">
+          <xsl:variable name="name">
+            <xsl:for-each select="$node">
+              <xsl:call-template name="get-comment-name" />
+            </xsl:for-each>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="$xref/@format='counter'">
+              <xsl:value-of select="$name" />
+            </xsl:when>
+            <xsl:when test="$xref/@format='title'">
+              <xsl:value-of select="$node/@title" />
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="normalize-space(concat('Comment&#160;',$name))"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </a>
+      </xsl:when>
+  
+      <!-- Reference links -->
+      <xsl:when test="$node/self::reference">
+  
+        <xsl:variable name="href">
+          <xsl:call-template name="computed-target">
+            <xsl:with-param name="bib" select="$node"/>
+            <xsl:with-param name="ref" select="$xref"/>
+          </xsl:call-template>
+        </xsl:variable>
+        
+        <xsl:variable name="sec">
+          <xsl:choose>
+            <xsl:when test="starts-with($xref/@x:rel,'#') and not($xref/@x:sec) and $node/x:source/@href">
+              <xsl:variable name="extdoc" select="document($node/x:source/@href)"/>
+              <xsl:variable name="nodes" select="$extdoc//*[@anchor=substring-after($xref/@x:rel,'#')]"/>
+              <xsl:if test="not($nodes)">
+                <xsl:call-template name="error">
+                  <xsl:with-param name="msg">Anchor '<xsl:value-of select="substring-after($xref/@x:rel,'#')"/>' not found in <xsl:value-of select="$node/x:source/@href"/>.</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+              <xsl:for-each select="$nodes">
+                <xsl:call-template name="get-section-number"/>
+              </xsl:for-each>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$xref/@x:sec"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        
+        <xsl:variable name="secterm">
+          <xsl:choose>
+            <!-- starts with letter? -->
+            <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">Appendix</xsl:when>
+            <xsl:otherwise>Section</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+  
+        <xsl:variable name="fmt">
+          <xsl:choose>
+            <xsl:when test="$xref/@x:fmt!=''"><xsl:value-of select="$xref/@x:fmt"/></xsl:when>
+            <xsl:when test="$xref/ancestor::artwork">,</xsl:when>
+            <xsl:otherwise>of</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+  
+        <xsl:variable name="title">
+          <xsl:choose>
+            <xsl:when test="starts-with($xref/@x:rel,'#') and not($xref/@x:sec) and $node/x:source/@href">
+              <xsl:variable name="extdoc" select="document($node/x:source/@href)"/>
+              <xsl:variable name="nodes" select="$extdoc//*[@anchor=substring-after($xref//@x:rel,'#')]"/>
+              <xsl:if test="not($nodes)">
+                <xsl:call-template name="error">
+                  <xsl:with-param name="msg">Anchor '<xsl:value-of select="substring-after($xref//@x:rel,'#')"/>' not found in <xsl:value-of select="$node/x:source/@href"/>.</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+              <xsl:for-each select="$nodes">
+                <xsl:value-of select="@title"/>
+              </xsl:for-each>
+            </xsl:when>
+            <xsl:otherwise />
+          </xsl:choose>
+        </xsl:variable>
+  
+        <!--
+        Formats:
+        
+          ()      [XXXX] (Section SS)
+          ,       [XXXX], Section SS
+          of      Section SS of [XXXX]
+          sec     Section SS
+          number  SS
+        -->
+        
+        <xsl:if test="$fmt and not($fmt='()' or $fmt=',' or $fmt='of' or $fmt='sec' or $fmt='anchor' or $fmt='number')">
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg" select="concat('unknown xref/@x:fmt extension: ',$fmt)"/>
+          </xsl:call-template>
+        </xsl:if>
+  
+        <xsl:if test="$sec!=''">
+                
+          <xsl:choose>
+            <xsl:when test="$fmt='of' or $fmt='sec'">
+              <xsl:choose>
+                <xsl:when test="$href!=''">
+                  <a href="{$href}">
+                    <xsl:if test="$title!=''">
+                      <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="$fmt='sec' and $xml2rfc-ext-include-references-in-index='yes'">
+                      <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+                    </xsl:if>
+                    <xsl:value-of select="$secterm"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$sec"/>
+                  </a>
+                </xsl:when>
+                <xsl:otherwise><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></xsl:otherwise>
+              </xsl:choose>
+              <xsl:if test="$fmt='of'">
+                <xsl:text> of </xsl:text>
+              </xsl:if>
+            </xsl:when>
+            <xsl:when test="$fmt='number'">
+              <xsl:choose>
+                <xsl:when test="$href!=''">
+                  <a href="{$href}">
+                    <xsl:if test="$title!=''">
+                      <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+                      <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+                    </xsl:if>
+                    <xsl:value-of select="$sec"/>
+                  </a>
+                </xsl:when>
+                <xsl:otherwise><xsl:value-of select="$sec"/></xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise />
+          </xsl:choose>
+        </xsl:if>
+  
+        <xsl:if test="$sec='' or ($fmt!='sec' and $fmt!='number')">
+          <a href="#{$xref/@target}">
+            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+              <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+            </xsl:if>
+            <cite title="{normalize-space($node/front/title)}">
+              <xsl:variable name="val">
+                <xsl:call-template name="referencename">
+                  <xsl:with-param name="node" select="$node" />
+                </xsl:call-template>
+              </xsl:variable>
+              <xsl:choose>
+                <xsl:when test="$fmt='anchor'">
+                  <!-- remove brackets -->
+                  <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$val"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </cite>
+          </a>
+        </xsl:if>
+        
+        <xsl:if test="$sec!=''">
+          <xsl:choose>
+            <xsl:when test="$fmt='()'">
+              <xsl:text> (</xsl:text>
+              <xsl:choose>
+                <xsl:when test="$href!=''">
+                  <a href="{$href}"><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></a>
+                </xsl:when>
+                <xsl:otherwise><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></xsl:otherwise>
+              </xsl:choose>
+              <xsl:text>)</xsl:text>
+            </xsl:when>
+            <xsl:when test="$fmt=','">
+              <xsl:text>, </xsl:text>
+              <xsl:choose>
+                <xsl:when test="$href!=''">
+                  <a href="{$href}">
+                    <xsl:if test="$title!=''">
+                      <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+                    </xsl:if>
+                    <xsl:value-of select="$secterm"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$sec"/>
+                  </a>
+                </xsl:when>
+                <xsl:otherwise><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise/>
+          </xsl:choose>
+        </xsl:if>
+      </xsl:when>
+      
+      <xsl:otherwise>
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg" select="concat('xref to unknown element: ',name($node))"/>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:for-each>
 </xsl:template>
 
 
@@ -5603,11 +5608,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.464 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.464 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.465 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.465 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/21 15:07:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/21 15:07:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/21 15:47:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/21 15:47:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
