@@ -404,14 +404,17 @@
     $ipr-2008-11 and $pub-yearmonth >= 200902
   )" />
 
-<!-- this makes the Sep 2009 TLP text depend on the publication date to be after Oct 2009. Not sure whether this is ok -->
+<!-- this makes the Sep 2009 TLP text depend on the publication date to be >= 2009-12 -->
 <xsl:variable name="ipr-2009-09" select="(
-    $ipr-2008-11 and $pub-yearmonth >= 200910
+    $ipr-2008-11 and $pub-yearmonth >= 200912
   )" />
 
 <!-- see http://mailman.rfc-editor.org/pipermail/rfc-interest/2009-June/001373.html -->
+<!-- for IDs, implement the change as 2009-12 -->
 <xsl:variable name="abstract-first" select="(
-    /rfc/@number and $pub-yearmonth >= 200907
+    (/rfc/@number and $pub-yearmonth >= 200907)
+		or
+    (not(/rfc/@number) and $pub-yearmonth >= 200912)
   )" />
 
 <!-- funding switch -->  
@@ -3904,16 +3907,6 @@ thead th {
           as the document authors.  All rights reserved.
         </t>
         <xsl:choose>
-          <xsl:when test="$ipr-2009-02">
-            <t>
-              This document is subject to BCP 78 and the IETF Trust's Legal
-              Provisions Relating to IETF Documents in effect on the date of
-              publication of this document
-              (<eref target="http://trustee.ietf.org/license-info">http://trustee.ietf.org/license-info</eref>).
-              Please review these documents carefully, as they describe your rights and restrictions with
-              respect to this document.
-            </t>
-          </xsl:when>
           <xsl:when test="$ipr-2009-09">
             <t>
               This document is subject to BCP 78 and the IETF Trust's Legal
@@ -3924,6 +3917,16 @@ thead th {
               extracted from this document must include Simplified BSD License
               text as described in Section 4.e of the Trust Legal Provisions
               and are provided without warranty as described in the BSD License.
+            </t>
+          </xsl:when>
+          <xsl:when test="$ipr-2009-02">
+            <t>
+              This document is subject to BCP 78 and the IETF Trust's Legal
+              Provisions Relating to IETF Documents in effect on the date of
+              publication of this document
+              (<eref target="http://trustee.ietf.org/license-info">http://trustee.ietf.org/license-info</eref>).
+              Please review these documents carefully, as they describe your rights and restrictions with
+              respect to this document.
             </t>
           </xsl:when>
           <xsl:otherwise>
@@ -5615,11 +5618,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.462 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.462 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.463 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.463 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/21 10:28:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/21 10:28:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/21 14:28:30 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/21 14:28:30 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
