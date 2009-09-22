@@ -151,6 +151,16 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- the name of an automatically inserted references section -->
+
+<xsl:param name="xml2rfc-refparent">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'refparent'"/>
+    <xsl:with-param name="default" select="'References'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- use symbolic reference names instead of numeric ones unless a processing instruction <?rfc?>
      exists with contents symrefs="no". Can be overriden by an XSLT parameter -->
 
@@ -413,7 +423,7 @@
 <!-- for IDs, implement the change as 2009-12 -->
 <xsl:variable name="abstract-first" select="(
     (/rfc/@number and $pub-yearmonth >= 200907)
-		or
+    or
     (not(/rfc/@number) and $pub-yearmonth >= 200912)
   )" />
 
@@ -1468,7 +1478,8 @@
           <xsl:with-param name="no" select="$sectionNumber"/>
         </xsl:call-template>
       </a>
-      <xsl:text> References</xsl:text>
+      <xsl:text> </xsl:text>
+      <xsl:value-of select="$xml2rfc-refparent"/>
     </h1>
   </xsl:if>
   
@@ -1481,7 +1492,7 @@
   
   <xsl:variable name="title">
     <xsl:choose>
-      <xsl:when test="not(@title) or @title=''">References</xsl:when>
+      <xsl:when test="not(@title) or @title=''"><xsl:value-of select="$xml2rfc-refparent"/></xsl:when>
       <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -4115,7 +4126,7 @@ thead th {
         <xsl:variable name="title">
           <xsl:choose>
             <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
-            <xsl:otherwise>References</xsl:otherwise>
+            <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
       
@@ -4138,7 +4149,7 @@ thead th {
             <xsl:call-template name="get-references-section-number"/>
           </xsl:with-param>
           <xsl:with-param name="target" select="concat($anchor-prefix,'.references')"/>
-          <xsl:with-param name="title" select="'References'"/>
+          <xsl:with-param name="title" select="$xml2rfc-refparent"/>
         </xsl:call-template>
   
         <ul class="toc">
@@ -4147,7 +4158,7 @@ thead th {
             <xsl:variable name="title">
               <xsl:choose>
                 <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
-                <xsl:otherwise>References</xsl:otherwise>
+                <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
               </xsl:choose>
             </xsl:variable>
           
@@ -4625,7 +4636,7 @@ thead th {
 <xsl:template match="text()" mode="cleanup-edits"><xsl:copy/></xsl:template>
 
 <xsl:template match="/" mode="cleanup-edits">
-	<xsl:copy><xsl:apply-templates select="node()" mode="cleanup-edits" /></xsl:copy>
+  <xsl:copy><xsl:apply-templates select="node()" mode="cleanup-edits" /></xsl:copy>
 </xsl:template>
 
 <xsl:template match="ed:del" mode="cleanup-edits"/>
@@ -5549,7 +5560,8 @@ thead th {
       <xsl:otherwise>
         <xsl:attribute name="title">
           <xsl:call-template name="get-references-section-number"/>
-          <xsl:text> References</xsl:text>
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="$xml2rfc-refparent"/>
         </xsl:attribute>
       </xsl:otherwise>
     </xsl:choose>
@@ -5609,11 +5621,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.466 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.466 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.467 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.467 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/21 20:46:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/21 20:46:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/22 13:55:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/22 13:55:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
