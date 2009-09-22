@@ -374,23 +374,27 @@
     not(/rfc/@ipr)
   )" />
 
+<xsl:variable name="rfcno" select="/rfc/@number"/>  
+  
 <xsl:variable name="ipr-rfc4748" select="(
   $ipr-rfc3667 and
-    (
-      /rfc/@number > 4671 or $pub-yearmonth >= 200611
-    )
+    ( $rfcno &gt;= 4715 and ( $rfcno != 4718 and $rfcno != 4735 and $rfcno != 4749 ))
+    or
+    ( $rfcno=4578 or $rfcno=4582 or $rfcno=4583 or $rfcno=4628 or $rfcno=4629 or $rfcno=4639 or $rfcno=4651 or $rfcno=4682 or $rfcno=4684 or $rfcno=4695 or $rfcno=4696 )
+    or
+    ( not(/rfc/@number) and $pub-yearmonth >= 200611)
   )" />
 
 <xsl:variable name="ipr-2007-08" select="(
   $ipr-rfc4748 and
     (
-      (/rfc/@number &gt; 5000
-        and /rfc/@number != 5020
-        and /rfc/@number != 5021
-        and /rfc/@number != 5034
-        and /rfc/@number != 5052
-        and /rfc/@number != 5065
-        and /rfc/@number != 5094) or
+      ($rfcno &gt; 5000
+        and $rfcno != 5020
+        and $rfcno != 5021
+        and $rfcno != 5034
+        and $rfcno != 5052
+        and $rfcno != 5065
+        and $rfcno != 5094) or
       ($xml2rfc-ext-pub-year >= 2008) or
       (not(/rfc/@number) and $pub-yearmonth >= 200709)
     )
@@ -429,12 +433,12 @@
 
 <!-- funding switch -->  
 <xsl:variable name="funding0" select="(
-  /rfc/@number &gt; 2499) or
+  $rfcno &gt; 2499) or
   (not(/rfc/@number) and /rfc/@docName and $xml2rfc-ext-pub-year &gt;= 1999
   )" />
   
 <xsl:variable name="funding1" select="(
-  /rfc/@number &gt; 4320) or
+  $rfcno &gt; 4320) or
   (not(/rfc/@number) and /rfc/@docName and $xml2rfc-ext-pub-year &gt;= 2006
   )" />
 
@@ -5621,11 +5625,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.467 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.467 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.468 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.468 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/22 13:55:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/22 13:55:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/22 16:18:50 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/22 16:18:50 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
