@@ -418,9 +418,15 @@
     $ipr-2008-11 and $pub-yearmonth >= 200902
   )" />
 
-<!-- this makes the Sep 2009 TLP text depend on the publication date to be >= 2009-12 -->
+<!-- this makes the Sep 2009 TLP text depend on the publication date to be >= 2009-12 
+     for IDs, and around 2009-09 for RFCs-->
 <xsl:variable name="ipr-2009-09" select="(
-    $ipr-2008-11 and $pub-yearmonth >= 200912
+    ( not(/rfc/@number) and $pub-yearmonth >= 200912 )
+    or
+    (
+      /rfc/@number and $pub-yearmonth >= 200909 and
+      $rfcno!=5582 and $rfcno!=5621 and $rfcno!=5632 and $rfcno!=5645 and $rfcno!=5646 and $rfcno!=5681 
+    )
   )" />
 
 <!-- see http://mailman.rfc-editor.org/pipermail/rfc-interest/2009-June/001373.html -->
@@ -5625,11 +5631,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.468 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.468 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.469 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.469 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/22 16:18:50 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/22 16:18:50 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/22 16:59:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/22 16:59:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
