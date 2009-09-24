@@ -532,13 +532,13 @@
 
 <xsl:template name="insert-begin-code">
   <xsl:if test="@x:isCodeComponent='yes'">
-    <pre class="ccmarker cct"><small>&lt;CODE BEGINS></small></pre>
+    <pre class="ccmarker cct"><span>&lt;CODE BEGINS></span></pre>
   </xsl:if>
 </xsl:template>
 
 <xsl:template name="insert-end-code">
   <xsl:if test="@x:isCodeComponent='yes'">
-    <pre class="ccmarker ccb"><small>&lt;CODE ENDS></small></pre>
+    <pre class="ccmarker ccb"><span>&lt;CODE ENDS></span></pre>
   </xsl:if>
 </xsl:template>
 
@@ -3005,6 +3005,9 @@ pre {
 pre.ccmarker {
   background-color: white;
   color: gray;
+}
+pre.ccmarker > span {
+  font-size: small;
 }
 pre.cct {
   margin-bottom: -1em;
@@ -5709,11 +5712,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.472 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.472 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.473 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.473 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/24 13:30:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/24 13:30:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/24 16:05:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/24 16:05:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
