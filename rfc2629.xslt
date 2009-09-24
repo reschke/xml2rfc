@@ -271,6 +271,16 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- switch for doublesided layout -->
+
+<xsl:param name="xml2rfc-ext-duplex">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'duplex'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- trailing dots in section numbers -->
 
 <xsl:param name="xml2rfc-ext-sec-no-trailing-dots">
@@ -3296,7 +3306,48 @@ thead th {
     text-align: justify;
   }
 </xsl:if>}
-
+<xsl:choose><xsl:when test="$xml2rfc-ext-duplex='yes'">
+@page:right {
+  @top-left {
+       content: "<xsl:call-template name="get-header-left"/>"; 
+  } 
+  @top-right {
+       content: "<xsl:call-template name="get-header-right"/>"; 
+  } 
+  @top-center {
+       content: "<xsl:call-template name="get-header-center"/>"; 
+  } 
+  @bottom-left {
+       content: "<xsl:call-template name="get-author-summary"/>"; 
+  } 
+  @bottom-center {
+       content: "<xsl:call-template name="get-category-long"/>"; 
+  } 
+  @bottom-right {
+       content: "[Page " counter(page) "]"; 
+  } 
+}
+@page:left {
+  @top-left {
+       content: "<xsl:call-template name="get-header-right"/>"; 
+  } 
+  @top-right {
+       content: "<xsl:call-template name="get-header-left"/>"; 
+  } 
+  @top-center {
+       content: "<xsl:call-template name="get-header-center"/>"; 
+  } 
+  @bottom-left {
+       content: "[Page " counter(page) "]"; 
+  } 
+  @bottom-center {
+       content: "<xsl:call-template name="get-category-long"/>"; 
+  } 
+  @bottom-right {
+       content: "<xsl:call-template name="get-author-summary"/>"; 
+  } 
+}
+</xsl:when><xsl:otherwise>
 @page {
   @top-left {
        content: "<xsl:call-template name="get-header-left"/>"; 
@@ -3317,7 +3368,7 @@ thead th {
        content: "[Page " counter(page) "]"; 
   } 
 }
-
+</xsl:otherwise></xsl:choose>
 @page:first { 
     @top-left {
       content: normal;
@@ -5630,11 +5681,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.470 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.470 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.471 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.471 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/22 21:35:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/22 21:35:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/24 11:05:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/24 11:05:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
