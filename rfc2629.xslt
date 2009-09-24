@@ -530,6 +530,18 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="insert-begin-code">
+  <xsl:if test="@x:isCodeComponent='yes'">
+    <pre class="ccmarker cct"><small>&lt;CODE BEGINS></small></pre>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="insert-end-code">
+  <xsl:if test="@x:isCodeComponent='yes'">
+    <pre class="ccmarker ccb"><small>&lt;CODE ENDS></small></pre>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template match="artwork">
   <xsl:if test="not(ancestor::ed:del) and $xml2rfc-ext-parse-xml-in-artwork='yes' and function-available('myns:parseXml')">
     <xsl:if test="contains(.,'&lt;?xml')">
@@ -571,28 +583,34 @@
   <xsl:choose>
     <xsl:when test="@align='right'">
       <div style="display:table; margin-left: auto; margin-right: 0pt;">
+        <xsl:call-template name="insert-begin-code"/>
         <pre style="margin-left: 0em;">
           <xsl:call-template name="add-artwork-class"/>
           <xsl:call-template name="insertInsDelClass"/>
           <xsl:copy-of select="$display"/>
         </pre>          
+        <xsl:call-template name="insert-end-code"/>
       </div>
     </xsl:when>
     <xsl:when test="@align='center'">
       <div style="display:table; margin-left: auto; margin-right: auto;">
+        <xsl:call-template name="insert-begin-code"/>
         <pre style="margin-left: 0em;">
           <xsl:call-template name="add-artwork-class"/>
           <xsl:call-template name="insertInsDelClass"/>
           <xsl:copy-of select="$display"/>
         </pre>          
+        <xsl:call-template name="insert-end-code"/>
       </div>
     </xsl:when>
     <xsl:otherwise>
+      <xsl:call-template name="insert-begin-code"/>
       <pre>
         <xsl:call-template name="add-artwork-class"/>
         <xsl:call-template name="insertInsDelClass"/>
         <xsl:copy-of select="$display"/>
       </pre>
+      <xsl:call-template name="insert-end-code"/>
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="check-artwork-width">
@@ -2983,7 +3001,17 @@ pre {
   margin-left: 3em;
   background-color: lightyellow;
   padding: .25em;
+}<xsl:if test="//artwork[@x:isCodeComponent='yes']"><!-- support "<CODE BEGINS>" and "<CODE ENDS>" markers-->
+pre.ccmarker {
+  background-color: white;
+  color: gray;
 }
+pre.cct {
+  margin-bottom: -1em;
+}
+pre.ccb {
+  margin-top: -1em;
+}</xsl:if>
 pre.text2 {
   border-style: dotted;
   border-width: 1px;
@@ -5681,11 +5709,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.471 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.471 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.472 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.472 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/09/24 11:05:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/24 11:05:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/09/24 13:30:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/09/24 13:30:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
