@@ -428,10 +428,10 @@
     $ipr-2008-11 and $pub-yearmonth >= 200902
   )" />
 
-<!-- this makes the Sep 2009 TLP text depend on the publication date to be >= 2009-12 
+<!-- this makes the Sep 2009 TLP text depend on the publication date to be >= 2009-11 
      for IDs, and around 2009-09 for RFCs-->
 <xsl:variable name="ipr-2009-09" select="(
-    ( not(/rfc/@number) and $pub-yearmonth >= 200912 )
+    ( not(/rfc/@number) and $pub-yearmonth >= 200911 )
     or
     (
       /rfc/@number and $pub-yearmonth >= 200909 and
@@ -440,11 +440,11 @@
   )" />
 
 <!-- see http://mailman.rfc-editor.org/pipermail/rfc-interest/2009-June/001373.html -->
-<!-- for IDs, implement the change as 2009-12 -->
+<!-- for IDs, implement the change as 2009-11 -->
 <xsl:variable name="abstract-first" select="(
     (/rfc/@number and $pub-yearmonth >= 200907)
     or
-    (not(/rfc/@number) and $pub-yearmonth >= 200912)
+    (not(/rfc/@number) and $pub-yearmonth >= 200911)
   )" />
 
 <!-- funding switch -->  
@@ -3946,8 +3946,8 @@ thead th {
             This document may not be modified, and derivative works of it may
             not be created, and it may not be published except as an Internet-Draft.
           </xsl:when>
-          <!-- escape clause moved to Copyright Notice as of 2009-12 -->
-          <xsl:when test="/rfc/@ipr = 'pre5378Trust200902' and $pub-yearmonth &lt; 200912">
+          <!-- escape clause moved to Copyright Notice as of 2009-11 -->
+          <xsl:when test="/rfc/@ipr = 'pre5378Trust200902' and $pub-yearmonth &lt; 200911">
             <xsl:value-of select="$escapeclause"/>
           </xsl:when>
 
@@ -4066,8 +4066,8 @@ thead th {
         </xsl:choose>
         
         <!-- special case: RFC5378 escape applies to RFCs as well -->
-        <!-- for IDs historically in Status Of This Memo, over here starting 2009-12 -->
-        <xsl:if test="(/rfc/@number or $pub-yearmonth >= 200912) and /rfc/@ipr = 'pre5378Trust200902'">
+        <!-- for IDs historically in Status Of This Memo, over here starting 2009-11 -->
+        <xsl:if test="(/rfc/@number or $pub-yearmonth >= 200911) and /rfc/@ipr = 'pre5378Trust200902'">
           <t>
             <xsl:value-of select="$escapeclause"/>
           </t>
@@ -5743,11 +5743,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.475 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.475 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.476 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.476 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/10/02 10:40:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/10/02 10:40:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/10/06 20:18:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/10/06 20:18:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
