@@ -1619,6 +1619,10 @@
       <xsl:with-param name="nodes" select="//processing-instruction('rfc-ext')"/>
       <xsl:with-param name="attr" select="'SANITYCHECK'"/>
     </xsl:call-template>
+    <xsl:call-template name="parse-pis">
+      <xsl:with-param name="nodes" select="//processing-instruction('rfc')"/>
+      <xsl:with-param name="attr" select="'SANITYCHECK'"/>
+    </xsl:call-template>
   </xsl:variable>
 
   <xsl:variable name="lang">
@@ -2420,7 +2424,10 @@
 <!-- mark unmatched elements red -->
 
 <xsl:template match="*">
-  <xsl:message>ERROR: no XSLT template for element: &lt;<xsl:value-of select="name()"/>&gt;</xsl:message>    
+  <xsl:call-template name="error">
+    <xsl:with-param name="inline" select="'no'"/>
+    <xsl:with-param name="msg">no XSLT template for element '<xsl:value-of select="name()"/>'</xsl:with-param>
+  </xsl:call-template>
   <tt class="error">&lt;<xsl:value-of select="name()" />&gt;</tt>
   <xsl:copy><xsl:apply-templates select="node()|@*" /></xsl:copy>
   <tt class="error">&lt;/<xsl:value-of select="name()" />&gt;</tt>
@@ -5743,11 +5750,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.476 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.476 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.477 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.477 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/10/06 20:18:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/10/06 20:18:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/10/09 21:33:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/10/09 21:33:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6094,6 +6101,18 @@ thead th {
                     </xsl:choose>
                   </xsl:if>
                   
+                  <xsl:if test="name()='rfc' and $attr='SANITYCHECK'">
+                    <xsl:choose>
+                      <xsl:when test="$attrname='include'">
+                        <xsl:call-template name="warning">
+                          <xsl:with-param name="msg">the rfc include pseudo-attribute is not supported by this processor, see http://greenbytes.de/tech/webdav/rfc2629xslt/rfc2629xslt.html#examples.internalsubset for help.</xsl:with-param>
+                          <xsl:with-param name="inline" select="'no'"/>
+                        </xsl:call-template>
+                      </xsl:when>
+                      <xsl:otherwise/>
+                    </xsl:choose>
+                  </xsl:if>
+
                   <xsl:choose>
                     <xsl:when test="$attrname != $attr">
                       <!-- pseudo-attr does not match, continue -->
