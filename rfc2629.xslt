@@ -222,6 +222,14 @@
   </xsl:call-template>
 </xsl:param>
 
+<xsl:param name="xml2rfc-ext-trace-parse-xml">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'trace-parse-xml'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- extension for excluding DCMI properties in meta tag (RFC2731) -->
 
 <xsl:param name="xml2rfc-ext-support-rfc2731">
@@ -4734,6 +4742,11 @@ thead th {
     <xsl:variable name="cleaned">
       <xsl:apply-templates mode="cleanup-edits"/>
     </xsl:variable>
+    <xsl:if test="$xml2rfc-ext-trace-parse-xml='yes'">
+      <xsl:call-template name="trace">
+        <xsl:with-param name="msg" select="concat('Parsing XML: ', $cleaned)"/>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="function-available('myns:parseXml')">
         <xsl:if test="myns:parseXml(concat($cleaned,''))!=''">
@@ -5411,6 +5424,18 @@ thead th {
 
 <!-- utilities for warnings -->
 
+<xsl:template name="trace">
+  <xsl:param name="msg"/>
+  <xsl:param name="msg2"/>
+  <xsl:param name="inline"/>
+  <xsl:call-template name="emit-message">
+    <xsl:with-param name="level">TRACE</xsl:with-param>
+    <xsl:with-param name="msg" select="$msg"/>
+    <xsl:with-param name="msg2" select="$msg2"/>
+    <xsl:with-param name="inline" select="$inline"/>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template name="warning">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
@@ -5750,11 +5775,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.477 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.477 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.478 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.478 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/10/09 21:33:42 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/10/09 21:33:42 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/10/16 14:30:15 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/10/16 14:30:15 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6092,6 +6117,7 @@ thead th {
                       <xsl:when test="$attrname='justification'"/>
                       <xsl:when test="$attrname='parse-xml-in-artwork'"/>
                       <xsl:when test="$attrname='sec-no-trailing-dots'"/>
+                      <xsl:when test="$attrname='trace-parse-xml'"/>
                       <xsl:otherwise>
                         <xsl:call-template name="warning">
                           <xsl:with-param name="msg">unsupported rfc-ext pseudo-attribute '<xsl:value-of select="$attrname"/>'</xsl:with-param>
