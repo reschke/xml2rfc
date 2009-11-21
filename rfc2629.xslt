@@ -289,6 +289,16 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- experimental support for http://tools.ietf.org/html/draft-iab-streams-headers-boilerplates-08, work in progress -->
+
+<xsl:param name="xml2rfc-ext-hab">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'h-a-b'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- trailing dots in section numbers -->
 
 <xsl:param name="xml2rfc-ext-sec-no-trailing-dots">
@@ -2452,7 +2462,19 @@
   <!-- default case -->
   <xsl:if test="$xml2rfc-private=''">
     <xsl:choose>
-      <xsl:when test="/rfc/front/workgroup">
+      <xsl:when test="$xml2rfc-ext-hab='yes' and /rfc/@submissionType='independent'">
+        <myns:item>Independent<!-- Stream--></myns:item>
+      </xsl:when>
+      <xsl:when test="$xml2rfc-ext-hab='yes' and /rfc/@submissionType='IETF'">
+        <myns:item>Internet Engineering Task Force</myns:item>
+      </xsl:when>
+      <xsl:when test="$xml2rfc-ext-hab='yes' and /rfc/@submissionType='IRTF'">
+        <myns:item>Internet Research Task Force</myns:item>
+      </xsl:when>
+      <xsl:when test="$xml2rfc-ext-hab='yes' and /rfc/@submissionType='IAB'">
+        <myns:item>Internet Architecture Board</myns:item>
+      </xsl:when>
+      <xsl:when test="/rfc/front/workgroup and (not(/rfc/@number) or /rfc/@number='')">
         <xsl:for-each select="/rfc/front/workgroup">
           <myns:item><xsl:value-of select="."/></myns:item>
         </xsl:for-each>
@@ -3994,11 +4016,22 @@ thead th {
       </t>
     </xsl:when>
 
+    <xsl:when test="/rfc/@category='bcp' and $xml2rfc-ext-hab='yes'">
+      <t>
+        This memo documents an Internet Best Current Practice.
+      </t>
+    </xsl:when>
     <xsl:when test="/rfc/@category='bcp'">
       <t>
         This document specifies an Internet Best Current Practices for the Internet
         Community, and requests discussion and suggestions for improvements.
         Distribution of this memo is unlimited.
+      </t>
+    </xsl:when>
+    <xsl:when test="/rfc/@category='exp' and $xml2rfc-ext-hab='yes'">
+      <t>
+        This document is not an Internet Standards Track specification; it is
+        published for examination, experimental implementation, and evaluation.
       </t>
     </xsl:when>
     <xsl:when test="/rfc/@category='exp'">
@@ -4009,6 +4042,12 @@ thead th {
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
+    <xsl:when test="/rfc/@category='historic' and $xml2rfc-ext-hab='yes'">
+      <t>
+        This document is not an Internet Standards Track specification; it is
+        published for the historical record.
+      </t>
+    </xsl:when>
     <xsl:when test="/rfc/@category='historic'">
       <t>
         This memo describes a historic protocol for the Internet community.
@@ -4016,11 +4055,9 @@ thead th {
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
-    <xsl:when test="/rfc/@category='info' or not(/rfc/@category)">
+    <xsl:when test="/rfc/@category='std' and $xml2rfc-ext-hab='yes'">
       <t>
-        This memo provides information for the Internet community.
-        It does not specify an Internet standard of any kind.
-        Distribution of this memo is unlimited.
+        This is an Internet Standards Track document.
       </t>
     </xsl:when>
     <xsl:when test="/rfc/@category='std'">
@@ -4032,10 +4069,149 @@ thead th {
         protocol. Distribution of this memo is unlimited.
       </t>
     </xsl:when>
+    <xsl:when test="(/rfc/@category='info' or not(/rfc/@category)) and $xml2rfc-ext-hab='yes'">
+      <t>
+        This document is not an Internet Standards Track specification; it is
+        published for informational purposes.
+      </t>
+    </xsl:when>
+    <xsl:when test="/rfc/@category='info' or not(/rfc/@category)">
+      <t>
+        This memo provides information for the Internet community.
+        It does not specify an Internet standard of any kind.
+        Distribution of this memo is unlimited.
+      </t>
+    </xsl:when>
     <xsl:otherwise>
-      <t>UNSUPPORTED CATEGORY.</t>
+      <t>
+        UNSUPPORTED CATEGORY.
+      </t>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('Unsupported value for /rfc/@category: ', /rfc/@category)"/>
+        <xsl:with-param name="inline" select="'no'"/>
+      </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
+    
+  <!-- TODO: define a way to specify this -->
+  <xsl:variable name="consensus">yes</xsl:variable>
+  
+  <!-- 2nd and 3rd paragraph -->
+  <xsl:if test="$xml2rfc-ext-hab='yes'">
+    <t>
+      <xsl:if test="/rfc/@category='exp'">
+        This document defines an Experimental Protocol for the Internet
+        community.
+      </xsl:if>
+      <xsl:if test="/rfc/@category='historic'">
+        This document defines a Historic Document for the Internet community.
+      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="/rfc/@submissionType='IETF' or /rfc/@submissionType='' or not(/rfc/@submissionType)">
+          This document is a product of the Internet Engineering Task Force
+          (IETF).
+          <xsl:choose>
+            <xsl:when test="$consensus='yes'">
+              It represents the consensus of the IETF community.  It has
+              received public review and has been approved for publication by
+              the Internet Engineering Steering Group (IESG).
+            </xsl:when>
+            <xsl:otherwise>
+              It has been approved for publication by the Internet Engineering
+              Steering Group (IESG).
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:when test="/rfc/@submissionType='IAB'">
+          This document is a product of the Internet Architecture Board (IAB),
+          and represents information that the IAB has deemed valuable to
+          provide for permanent record.
+        </xsl:when>
+        <xsl:when test="/rfc/@submissionType='IRTF'">
+          <xsl:variable name="wg">
+            <xsl:choose>
+              <xsl:when test="/rfc/front/workgroup">
+                <xsl:value-of select="/rfc/front/workgroup"/>
+              </xsl:when>
+              <xsl:otherwise>
+                WORKGROUP INFO MISSING
+                <xsl:call-template name="error">
+                  <xsl:with-param name="msg" select="concat('Missing value for /rfc/front/workgroup: ', /rfc/front/workgroup)"/>
+                  <xsl:with-param name="inline" select="'no'"/>
+                </xsl:call-template>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+          
+          This document is a product of the Internet Research Task Force (IRTF).
+          The IRTF publishes the results of Internet-related research and
+          development activities.  These results might not be suitable for
+          deployment.
+          <xsl:choose>
+            <xsl:when test="$consensus='yes'">
+              This RFC represents the consensus of the
+              <xsl:value-of select="$wg"/> Research Group of the Internet
+              Research Task Force (IRTF).
+            </xsl:when>
+            <xsl:otherwise>
+              This RFC represents the individual opinion(s) of one or more
+              members of the <xsl:value-of select="$wg"/> Research Group of the
+              Internet Research Task Force (IRTF).
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:when test="/rfc/@submissionType='independent'">
+          This is a contribution to the RFC Series, independently of any other
+          RFC stream.  The RFC Editor has chosen to publish this document at
+          its discretion and makes no statement about its value for
+          implementation or deployment.
+        </xsl:when>
+        <xsl:otherwise>
+          UNSUPPORTED SUBMISSION TYPE.
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg" select="concat('Unsupported value for /rfc/@submissionType: ', /rfc/@submissionType)"/>
+            <xsl:with-param name="inline" select="'no'"/>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:choose>
+        <xsl:when test="/rfc/@submissionType='IETF' or /rfc/@submissionType='' or not(/rfc/@submissionType)">
+          <xsl:choose>
+            <xsl:when test="/rfc/@category='bcp'">
+              Further information on BCPs is available in Section 2 of RFC XXXX.
+            </xsl:when>
+            <xsl:when test="/rfc/@category='std'">
+              Further information on Internet Standards is available in Section
+              2 of RFC XXXX.
+            </xsl:when>
+            <xsl:otherwise>
+              Not all documents approved by the IESG are candidate for any 
+              level of Internet Standards; see Section 2 of RFC XXXX.
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:variable name="approver">
+            <xsl:choose>
+              <xsl:when test="/rfc/submissionType='IAB'">IAB</xsl:when>
+              <xsl:when test="/rfc/submissionType='IRTF'">IRSG</xsl:when>
+              <xsl:otherwise>RFC Editor</xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+        
+          Documents approved for publication by the
+          <xsl:value-of select="$approver"/> are not a candidate for any level
+          of Internet Standard; see Section 2 of RFC XXXX.
+        </xsl:otherwise>
+      </xsl:choose>
+    </t>
+    <t>
+      Information about the current status of this document, any errata, and
+      how to provide feedback on it may be obtained at
+      <eref>http://www.rfc-editor.org/&lt;static-path>/rfc<xsl:value-of select="/rfc/@number"/>.html</eref>.
+    </t>
+  </xsl:if>
+    
   </section>
   
   <xsl:choose>
@@ -5775,11 +5951,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.478 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.478 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.479 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.479 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/10/16 14:30:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/10/16 14:30:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/11/21 17:18:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/11/21 17:18:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
