@@ -298,6 +298,13 @@
     <xsl:with-param name="default" select="'no'"/>
   </xsl:call-template>
 </xsl:param>
+<xsl:param name="xml2rfc-ext-consensus">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'consensus'"/>
+    <xsl:with-param name="default" select="'yes'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- trailing dots in section numbers -->
 
@@ -403,7 +410,23 @@
   )" />
 
 <xsl:variable name="rfcno" select="/rfc/@number"/>  
-  
+
+<xsl:variable name="submissionType">
+  <xsl:choose>
+    <xsl:when test="/rfc/@submissionType='IETF' or not(/rfc/@submissionType) or /rfc/submissionType=''">IETF</xsl:when>
+    <xsl:when test="/rfc/@submissionType='IAB' or /rfc/@submissionType='IRTF' or /rfc/@submissionType='independent'">
+      <xsl:value-of select="/rfc/@submissionType"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="concat('(UNSUPPORTED SUBMISSION TYPE: ',/rfc/@submissionType,')')"/>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('Unsupported value for /rfc/@submissionType: ', /rfc/@submissionType)"/>
+        <xsl:with-param name="inline" select="'no'"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:variable>
+
 <xsl:variable name="ipr-rfc4748" select="(
   $ipr-rfc3667 and
     ( $rfcno &gt;= 4715 and ( $rfcno != 4718 and $rfcno != 4735 and $rfcno != 4749 ))
@@ -2462,16 +2485,16 @@
   <!-- default case -->
   <xsl:if test="$xml2rfc-private=''">
     <xsl:choose>
-      <xsl:when test="$xml2rfc-ext-hab='yes' and /rfc/@submissionType='independent'">
+      <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='independent'">
         <myns:item>Independent<!-- Stream--></myns:item>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-hab='yes' and /rfc/@submissionType='IETF'">
+      <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='IETF'">
         <myns:item>Internet Engineering Task Force</myns:item>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-hab='yes' and /rfc/@submissionType='IRTF'">
+      <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='IRTF'">
         <myns:item>Internet Research Task Force</myns:item>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-hab='yes' and /rfc/@submissionType='IAB'">
+      <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='IAB'">
         <myns:item>Internet Architecture Board</myns:item>
       </xsl:when>
       <xsl:when test="/rfc/front/workgroup and (not(/rfc/@number) or /rfc/@number='')">
@@ -2806,7 +2829,7 @@
           </t>
           <t>
             This document is subject to the rights, licenses and restrictions
-            contained in BCP 78<xsl:if test="/rfc/@submissionType='independent'"> and at <eref target="http://www.rfc-editor.org/copyright.html"/></xsl:if>, and except as set forth therein, the authors
+            contained in BCP 78<xsl:if test="$submissionType='independent'"> and at <eref target="http://www.rfc-editor.org/copyright.html"/></xsl:if>, and except as set forth therein, the authors
             retain all their rights.
           </t>
           <t>
@@ -4093,9 +4116,6 @@ thead th {
     </xsl:otherwise>
   </xsl:choose>
     
-  <!-- TODO: define a way to specify this -->
-  <xsl:variable name="consensus">yes</xsl:variable>
-  
   <!-- 2nd and 3rd paragraph -->
   <xsl:if test="$xml2rfc-ext-hab='yes'">
     <t>
@@ -4107,11 +4127,11 @@ thead th {
         This document defines a Historic Document for the Internet community.
       </xsl:if>
       <xsl:choose>
-        <xsl:when test="/rfc/@submissionType='IETF' or /rfc/@submissionType='' or not(/rfc/@submissionType)">
+        <xsl:when test="$submissionType='IETF'">
           This document is a product of the Internet Engineering Task Force
           (IETF).
           <xsl:choose>
-            <xsl:when test="$consensus='yes'">
+            <xsl:when test="$xml2rfc-ext-consensus='yes'">
               It represents the consensus of the IETF community.  It has
               received public review and has been approved for publication by
               the Internet Engineering Steering Group (IESG).
@@ -4122,12 +4142,12 @@ thead th {
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
-        <xsl:when test="/rfc/@submissionType='IAB'">
+        <xsl:when test="$submissionType='IAB'">
           This document is a product of the Internet Architecture Board (IAB),
           and represents information that the IAB has deemed valuable to
           provide for permanent record.
         </xsl:when>
-        <xsl:when test="/rfc/@submissionType='IRTF'">
+        <xsl:when test="$submissionType='IRTF'">
           <xsl:variable name="wg">
             <xsl:choose>
               <xsl:when test="/rfc/front/workgroup">
@@ -4148,7 +4168,7 @@ thead th {
           development activities.  These results might not be suitable for
           deployment.
           <xsl:choose>
-            <xsl:when test="$consensus='yes'">
+            <xsl:when test="$xml2rfc-ext-consensus='yes'">
               This RFC represents the consensus of the
               <xsl:value-of select="$wg"/> Research Group of the Internet
               Research Task Force (IRTF).
@@ -4160,22 +4180,19 @@ thead th {
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
-        <xsl:when test="/rfc/@submissionType='independent'">
+        <xsl:when test="$submissionType='independent'">
           This is a contribution to the RFC Series, independently of any other
           RFC stream.  The RFC Editor has chosen to publish this document at
           its discretion and makes no statement about its value for
           implementation or deployment.
         </xsl:when>
         <xsl:otherwise>
-          UNSUPPORTED SUBMISSION TYPE.
-          <xsl:call-template name="error">
-            <xsl:with-param name="msg" select="concat('Unsupported value for /rfc/@submissionType: ', /rfc/@submissionType)"/>
-            <xsl:with-param name="inline" select="'no'"/>
-          </xsl:call-template>
+          <!-- will contain error message already -->
+          <xsl:value-of select="$submissionType"/>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:choose>
-        <xsl:when test="/rfc/@submissionType='IETF' or /rfc/@submissionType='' or not(/rfc/@submissionType)">
+        <xsl:when test="$submissionType='IETF'">
           <xsl:choose>
             <xsl:when test="/rfc/@category='bcp'">
               Further information on BCPs is available in Section 2 of RFC XXXX.
@@ -5951,11 +5968,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.479 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.479 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.480 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.480 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/11/21 17:18:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/11/21 17:18:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/11/23 09:19:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/11/23 09:19:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
