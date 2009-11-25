@@ -4210,8 +4210,8 @@ thead th {
         <xsl:otherwise>
           <xsl:variable name="approver">
             <xsl:choose>
-              <xsl:when test="/rfc/submissionType='IAB'">IAB</xsl:when>
-              <xsl:when test="/rfc/submissionType='IRTF'">IRSG</xsl:when>
+              <xsl:when test="/rfc/@submissionType='IAB'">IAB</xsl:when>
+              <xsl:when test="/rfc/@submissionType='IRTF'">IRSG</xsl:when>
               <xsl:otherwise>RFC Editor</xsl:otherwise>
             </xsl:choose>
           </xsl:variable>
@@ -5968,11 +5968,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.481 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.481 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.482 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.482 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/11/25 15:38:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/11/25 15:38:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/11/25 20:23:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/11/25 20:23:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
