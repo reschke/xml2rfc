@@ -1647,14 +1647,6 @@
 
 <xsl:template match="rfc">
   
-  <!-- conformance checks -->
-  <xsl:if test="$xml2rfc-symrefs!='no' and $xml2rfc-symrefs!='yes' and //reference">
-    <xsl:call-template name="warning">
-      <xsl:with-param name="inline" select="'no'"/>
-      <xsl:with-param name="msg">symrefs PI not specified; default has changed from 'no' to 'yes'.</xsl:with-param>
-    </xsl:call-template>
-  </xsl:if>
-  
   <xsl:variable name="ignored">
     <xsl:call-template name="parse-pis">
       <xsl:with-param name="nodes" select="//processing-instruction('rfc-ext')"/>
@@ -5968,11 +5960,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.482 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.482 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.483 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.483 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/11/25 20:23:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/11/25 20:23:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/11/27 11:46:47 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/11/27 11:46:47 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
