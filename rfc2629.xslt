@@ -959,7 +959,7 @@
     </xsl:variable>
       
     <!-- insert the collected information -->
-    <table class="header" border="0" cellpadding="1" cellspacing="1">
+    <table class="header">
       <xsl:choose>
         <xsl:when test="function-available('exslt:node-set')">
           <xsl:call-template name="emitheader">
@@ -2615,15 +2615,17 @@
   <xsl:param name="lc" />
   <xsl:param name="rc" />
 
-  <xsl:for-each select="$lc/myns:item | $rc/myns:item">
-    <xsl:variable name="pos" select="position()" />
-    <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1"> 
-      <tr>
-        <td class="header left"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
-        <td class="header right"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
-      </tr>
-    </xsl:if>
-  </xsl:for-each>
+  <tbody>
+    <xsl:for-each select="$lc/myns:item | $rc/myns:item">
+      <xsl:variable name="pos" select="position()" />
+      <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1"> 
+        <tr>
+          <td class="left"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
+          <td class="right"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
+        </tr>
+      </xsl:if>
+    </xsl:for-each>
+  </tbody>
 </xsl:template>
 
 <!-- convenience template that avoids copying namespace nodes we don't want -->
@@ -3180,6 +3182,7 @@ caption {
 }
 </xsl:if>
 table.header {
+  border-spacing: 1px;
   width: 95%;
   font-size: 10pt;
   color: white;
@@ -3191,11 +3194,11 @@ td.topnowrap {
   vertical-align: top;
   white-space: nowrap; 
 }
-td.header {
+table.header td {
   background-color: gray;
   width: 50%;
 }<xsl:if test="/rfc/@obsoletes | /rfc/@updates">
-td.header a {
+table.header a {
   color: white;
 }</xsl:if>
 td.reference {
@@ -5963,11 +5966,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.484 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.484 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.485 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.485 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/11/27 16:01:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/11/27 16:01:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/11/28 15:36:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/11/28 15:36:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
