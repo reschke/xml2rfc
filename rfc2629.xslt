@@ -2504,11 +2504,12 @@
         <xsl:otherwise>Request for Comments: <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
       </xsl:choose>
     </myns:item>
-    <xsl:if test="/rfc/@docName and $mode!='nroff'">
+    <!-- TODO: why was this in?
+    <xsl:if test="/rfc/@docName">
       <myns:item>
         &lt;<xsl:value-of select="/rfc/@docName" />&gt;
       </myns:item>
-    </xsl:if>
+    </xsl:if>-->
     <xsl:if test="/rfc/@obsoletes and /rfc/@obsoletes!=''">
       <myns:item>
         <xsl:text>Obsoletes: </xsl:text>
@@ -2537,19 +2538,17 @@
           <xsl:if test="not(/rfc/@number)"> (if approved)</xsl:if>
       </myns:item>
     </xsl:if>
-    <xsl:if test="$mode!='nroff'">
-      <myns:item>
-        <xsl:choose>
-          <xsl:when test="/rfc/@number">
-            <xsl:text>Category: </xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>Intended status: </xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
-        <xsl:call-template name="get-category-long" />
-      </myns:item>
-    </xsl:if>
+    <myns:item>
+      <xsl:choose>
+        <xsl:when test="/rfc/@number">
+          <xsl:text>Category: </xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>Intended status: </xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:call-template name="get-category-long" />
+    </myns:item>
     <xsl:if test="/rfc/@ipr and not(/rfc/@number)">
        <myns:item>Expires: <xsl:call-template name="expirydate" /></myns:item>
     </xsl:if>
@@ -5966,11 +5965,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.485 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.485 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.486 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.486 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/11/28 15:36:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/11/28 15:36:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/12/01 10:30:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/01 10:30:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
