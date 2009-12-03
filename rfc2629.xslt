@@ -298,13 +298,6 @@
     <xsl:with-param name="default" select="'no'"/>
   </xsl:call-template>
 </xsl:param>
-<xsl:param name="xml2rfc-ext-consensus">
-  <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
-    <xsl:with-param name="attr" select="'consensus'"/>
-    <xsl:with-param name="default" select="'yes'"/>
-  </xsl:call-template>
-</xsl:param>
 
 <!-- trailing dots in section numbers -->
 
@@ -4128,7 +4121,7 @@ thead th {
           This document is a product of the Internet Engineering Task Force
           (IETF).
           <xsl:choose>
-            <xsl:when test="$xml2rfc-ext-consensus='yes'">
+            <xsl:when test="not(/rfc/@consensus) or /rfc/@consensus='yes'">
               It represents the consensus of the IETF community.  It has
               received public review and has been approved for publication by
               the Internet Engineering Steering Group (IESG).
@@ -4165,7 +4158,7 @@ thead th {
           development activities.  These results might not be suitable for
           deployment.
           <xsl:choose>
-            <xsl:when test="$xml2rfc-ext-consensus='yes'">
+            <xsl:when test="not(/rfc/@consensus) or /rfc/@consensus='yes'">
               This RFC represents the consensus of the
               <xsl:value-of select="$wg"/> Research Group of the Internet
               Research Task Force (IRTF).
@@ -5965,11 +5958,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.486 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.486 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.487 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.487 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/12/01 10:30:22 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/01 10:30:22 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/12/03 14:48:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/03 14:48:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
