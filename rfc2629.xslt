@@ -289,7 +289,7 @@
   </xsl:call-template>
 </xsl:param>
 
-<!-- experimental support for http://tools.ietf.org/html/draft-iab-streams-headers-boilerplates-08, work in progress -->
+<!-- experimental support for RFC 5741-to-be, as of 2009-12-17, work in progress -->
 
 <xsl:param name="xml2rfc-ext-hab">
   <xsl:call-template name="parse-pis">
@@ -2471,16 +2471,16 @@
   <xsl:if test="$xml2rfc-private=''">
     <xsl:choose>
       <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='independent'">
-        <myns:item>Independent<!-- Stream--></myns:item>
+        <myns:item>Independent Submission</myns:item>
       </xsl:when>
       <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='IETF'">
-        <myns:item>Internet Engineering Task Force</myns:item>
+        <myns:item>Internet Engineering Task Force (IETF)</myns:item>
       </xsl:when>
       <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='IRTF'">
-        <myns:item>Internet Research Task Force</myns:item>
+        <myns:item>Internet Research Task Force (IRTF)</myns:item>
       </xsl:when>
       <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='IAB'">
-        <myns:item>Internet Architecture Board</myns:item>
+        <myns:item>Internet Architecture Board (IAB)</myns:item>
       </xsl:when>
       <xsl:when test="/rfc/front/workgroup and (not(/rfc/@number) or /rfc/@number='')">
         <xsl:for-each select="/rfc/front/workgroup">
@@ -4185,15 +4185,15 @@ thead th {
         <xsl:when test="$submissionType='IETF'">
           <xsl:choose>
             <xsl:when test="/rfc/@category='bcp'">
-              Further information on BCPs is available in Section 2 of RFC XXXX.
+              Further information on BCPs is available in Section 2 of RFC 5741.
             </xsl:when>
             <xsl:when test="/rfc/@category='std'">
               Further information on Internet Standards is available in Section
-              2 of RFC XXXX.
+              2 of RFC 5741.
             </xsl:when>
             <xsl:otherwise>
               Not all documents approved by the IESG are candidate for any 
-              level of Internet Standards; see Section 2 of RFC XXXX.
+              level of Internet Standards; see Section 2 of RFC 5741.
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
@@ -4208,7 +4208,7 @@ thead th {
         
           Documents approved for publication by the
           <xsl:value-of select="$approver"/> are not a candidate for any level
-          of Internet Standard; see Section 2 of RFC XXXX.
+          of Internet Standard; see Section 2 of RFC 5741.
         </xsl:otherwise>
       </xsl:choose>
     </t>
@@ -5958,11 +5958,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.487 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.487 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.488 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.488 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/12/03 14:48:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/03 14:48:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/12/17 11:22:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/17 11:22:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
