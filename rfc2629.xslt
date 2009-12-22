@@ -4192,8 +4192,8 @@ thead th {
               2 of RFC 5741.
             </xsl:when>
             <xsl:otherwise>
-              Not all documents approved by the IESG are candidate for any 
-              level of Internet Standards; see Section 2 of RFC 5741.
+              Not all documents approved by the IESG are a candidate for any 
+              level of Internet Standard; see Section 2 of RFC 5741.
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
@@ -5958,11 +5958,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.488 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.488 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.489 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.489 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/12/17 11:22:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/17 11:22:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/12/22 10:29:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/22 10:29:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
