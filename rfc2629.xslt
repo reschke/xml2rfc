@@ -298,6 +298,7 @@
     <xsl:with-param name="default" select="'no'"/>
   </xsl:call-template>
 </xsl:param>
+<xsl:param name="xml2rfc-ext-hab-2010" select="$xml2rfc-ext-hab='yes' and $pub-yearmonth >= 201001"/>
 
 <!-- trailing dots in section numbers -->
 
@@ -4109,17 +4110,48 @@ thead th {
   <!-- 2nd and 3rd paragraph -->
   <xsl:if test="$xml2rfc-ext-hab='yes'">
     <t>
-      <xsl:if test="/rfc/@category='exp'">
-        This document defines an Experimental Protocol for the Internet
-        community.
-      </xsl:if>
-      <xsl:if test="/rfc/@category='historic'">
-        This document defines a Historic Document for the Internet community.
-      </xsl:if>
+      <xsl:variable name="sent-end">
+        <xsl:choose>
+          <xsl:when test="$xml2rfc-ext-hab-2010!='yes'">
+            <xsl:text>.</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text> </xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+
+      <xsl:variable name="sent1">
+        <xsl:if test="/rfc/@category='exp'">
+          This document defines an Experimental Protocol for the Internet
+          community<xsl:value-of select="$sent-end"/>
+        </xsl:if>
+        <xsl:if test="/rfc/@category='historic'">
+          This document defines a Historic Document for the Internet community<xsl:value-of select="$sent-end"/>
+        </xsl:if>
+        <xsl:if test="(/rfc/@category='info' or not(/rfc/@category)) and $xml2rfc-ext-hab-2010='yes'">
+          This document defines an Informational Document for the Internet
+          Community<xsl:value-of select="$sent-end"/>
+        </xsl:if>
+      </xsl:variable>
+ 
+      <xsl:value-of select="$sent1"/>
+ 
+      <xsl:variable name="sent-cont">
+        <xsl:choose>
+          <xsl:when test="$xml2rfc-ext-hab-2010='yes' and $sent1!=''">
+            <xsl:text>and</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>This document</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+
       <xsl:choose>
         <xsl:when test="$submissionType='IETF'">
-          This document is a product of the Internet Engineering Task Force
-          (IETF).
+          <xsl:value-of select="$sent-cont"/>
+          is a product of the Internet Engineering Task Force (IETF).
           <xsl:choose>
             <xsl:when test="not(/rfc/@consensus) or /rfc/@consensus='yes'">
               It represents the consensus of the IETF community.  It has
@@ -4133,9 +4165,10 @@ thead th {
           </xsl:choose>
         </xsl:when>
         <xsl:when test="$submissionType='IAB'">
-          This document is a product of the Internet Architecture Board (IAB),
-          and represents information that the IAB has deemed valuable to
-          provide for permanent record.
+          <xsl:value-of select="$sent-cont"/>
+          is a product of the Internet Architecture Board (IAB), and represents
+          information that the IAB has deemed valuable to provide for permanent
+          record.
         </xsl:when>
         <xsl:when test="$submissionType='IRTF'">
           <xsl:variable name="wg">
@@ -4153,7 +4186,8 @@ thead th {
             </xsl:choose>
           </xsl:variable>
           
-          This document is a product of the Internet Research Task Force (IRTF).
+          <xsl:value-of select="$sent-cont"/>
+          is a product of the Internet Research Task Force (IRTF).
           The IRTF publishes the results of Internet-related research and
           development activities.  These results might not be suitable for
           deployment.
@@ -4171,7 +4205,8 @@ thead th {
           </xsl:choose>
         </xsl:when>
         <xsl:when test="$submissionType='independent'">
-          This is a contribution to the RFC Series, independently of any other
+          <xsl:value-of select="$sent-cont"/>
+          is a contribution to the RFC Series, independently of any other
           RFC stream.  The RFC Editor has chosen to publish this document at
           its discretion and makes no statement about its value for
           implementation or deployment.
@@ -5958,11 +5993,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.489 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.489 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.490 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.490 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/12/22 10:29:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/22 10:29:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/12/24 12:58:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/24 12:58:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
