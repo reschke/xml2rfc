@@ -298,7 +298,6 @@
     <xsl:with-param name="default" select="'no'"/>
   </xsl:call-template>
 </xsl:param>
-<xsl:param name="xml2rfc-ext-hab-2010" select="$xml2rfc-ext-hab='yes' and $pub-yearmonth >= 201001"/>
 
 <!-- trailing dots in section numbers -->
 
@@ -4110,48 +4109,17 @@ thead th {
   <!-- 2nd and 3rd paragraph -->
   <xsl:if test="$xml2rfc-ext-hab='yes'">
     <t>
-      <xsl:variable name="sent-end">
-        <xsl:choose>
-          <xsl:when test="$xml2rfc-ext-hab-2010!='yes'">
-            <xsl:text>.</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text> </xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:variable>
-
-      <xsl:variable name="sent1">
-        <xsl:if test="/rfc/@category='exp'">
-          This document defines an Experimental Protocol for the Internet
-          community<xsl:value-of select="$sent-end"/>
-        </xsl:if>
-        <xsl:if test="/rfc/@category='historic'">
-          This document defines a Historic Document for the Internet community<xsl:value-of select="$sent-end"/>
-        </xsl:if>
-        <xsl:if test="(/rfc/@category='info' or not(/rfc/@category)) and $xml2rfc-ext-hab-2010='yes'">
-          This document defines an Informational Document for the Internet
-          Community<xsl:value-of select="$sent-end"/>
-        </xsl:if>
-      </xsl:variable>
- 
-      <xsl:value-of select="$sent1"/>
- 
-      <xsl:variable name="sent-cont">
-        <xsl:choose>
-          <xsl:when test="$xml2rfc-ext-hab-2010='yes' and $sent1!=''">
-            <xsl:text>and</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>This document</xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:variable>
-
+      <xsl:if test="/rfc/@category='exp'">
+        This document defines an Experimental Protocol for the Internet
+        community.
+      </xsl:if>
+      <xsl:if test="/rfc/@category='historic'">
+        This document defines a Historic Document for the Internet community.
+      </xsl:if>
       <xsl:choose>
         <xsl:when test="$submissionType='IETF'">
-          <xsl:value-of select="$sent-cont"/>
-          is a product of the Internet Engineering Task Force (IETF).
+          This document is a product of the Internet Engineering Task Force
+          (IETF).
           <xsl:choose>
             <xsl:when test="not(/rfc/@consensus) or /rfc/@consensus='yes'">
               It represents the consensus of the IETF community.  It has
@@ -4165,10 +4133,9 @@ thead th {
           </xsl:choose>
         </xsl:when>
         <xsl:when test="$submissionType='IAB'">
-          <xsl:value-of select="$sent-cont"/>
-          is a product of the Internet Architecture Board (IAB), and represents
-          information that the IAB has deemed valuable to provide for permanent
-          record.
+          This document is a product of the Internet Architecture Board (IAB)
+          and represents information that the IAB has deemed valuable to
+          provide for permanent record.
         </xsl:when>
         <xsl:when test="$submissionType='IRTF'">
           <xsl:variable name="wg">
@@ -4186,27 +4153,28 @@ thead th {
             </xsl:choose>
           </xsl:variable>
           
-          <xsl:value-of select="$sent-cont"/>
-          is a product of the Internet Research Task Force (IRTF).
+          This document is a product of the Internet Research Task Force (IRTF).
           The IRTF publishes the results of Internet-related research and
           development activities.  These results might not be suitable for
           deployment.
           <xsl:choose>
-            <xsl:when test="not(/rfc/@consensus) or /rfc/@consensus='yes'">
+            <xsl:when test="(not(/rfc/@consensus) or /rfc/@consensus='yes') and /rfc/front/workgroup!=''">
               This RFC represents the consensus of the
-              <xsl:value-of select="$wg"/> Research Group of the Internet
+              <xsl:value-of select="/rfc/front/workgroup"/> Research Group of the Internet
               Research Task Force (IRTF).
             </xsl:when>
-            <xsl:otherwise>
+            <xsl:when test="/rfc/@consensus='no' and /rfc/front/workgroup!=''">
               This RFC represents the individual opinion(s) of one or more
-              members of the <xsl:value-of select="$wg"/> Research Group of the
+              members of the <xsl:value-of select="/rfc/front/workgroup"/> Research Group of the
               Internet Research Task Force (IRTF).
+            </xsl:when>
+            <xsl:otherwise>
+              <!-- no research group -->
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
         <xsl:when test="$submissionType='independent'">
-          <xsl:value-of select="$sent-cont"/>
-          is a contribution to the RFC Series, independently of any other
+          This is a contribution to the RFC Series, independently of any other
           RFC stream.  The RFC Editor has chosen to publish this document at
           its discretion and makes no statement about its value for
           implementation or deployment.
@@ -5993,11 +5961,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.490 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.490 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.491 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.491 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/12/24 12:58:11 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/24 12:58:11 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/12/26 17:43:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/26 17:43:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
