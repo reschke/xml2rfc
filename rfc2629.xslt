@@ -2551,6 +2551,10 @@
   <xsl:if test="$xml2rfc-private!=''">
     <myns:item><xsl:value-of select="$xml2rfc-private" /></myns:item>
   </xsl:if>
+  
+  <xsl:if test="$xml2rfc-ext-hab='yes' and /rfc/@number">
+    <myns:item>ISSN: 2070-1721</myns:item>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template name="collectRightHeaderColumn">
@@ -5961,11 +5965,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.491 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.491 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.492 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.492 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/12/26 17:43:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/26 17:43:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/12/28 10:44:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/28 10:44:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
