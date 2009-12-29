@@ -4142,21 +4142,6 @@ thead th {
           provide for permanent record.
         </xsl:when>
         <xsl:when test="$submissionType='IRTF'">
-          <xsl:variable name="wg">
-            <xsl:choose>
-              <xsl:when test="/rfc/front/workgroup">
-                <xsl:value-of select="/rfc/front/workgroup"/>
-              </xsl:when>
-              <xsl:otherwise>
-                WORKGROUP INFO MISSING
-                <xsl:call-template name="error">
-                  <xsl:with-param name="msg" select="concat('Missing value for /rfc/front/workgroup: ', /rfc/front/workgroup)"/>
-                  <xsl:with-param name="inline" select="'no'"/>
-                </xsl:call-template>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:variable>
-          
           This document is a product of the Internet Research Task Force (IRTF).
           The IRTF publishes the results of Internet-related research and
           development activities.  These results might not be suitable for
@@ -5965,11 +5950,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.492 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.492 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.493 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.493 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/12/28 10:44:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/28 10:44:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/12/29 13:21:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/29 13:21:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
