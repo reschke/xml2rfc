@@ -289,7 +289,7 @@
   </xsl:call-template>
 </xsl:param>
 
-<!-- experimental support for RFC 5741-to-be, as of 2009-12-17, work in progress -->
+<!-- experimental support for RFC 5741, work in progress -->
 
 <xsl:param name="xml2rfc-ext-hab">
   <xsl:call-template name="parse-pis">
@@ -418,6 +418,16 @@
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
+</xsl:variable>
+
+<!-- Header format as defined in RFC 5741, and deployed end of Dec 2009 -->
+<xsl:variable name="header-format">
+  <xsl:choose>
+    <xsl:when test="$pub-yearmonth >= 201001 or
+      ($rfcno=5741 or $rfcno=5742 or $rfcno=5743)"
+      >2010</xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>   
 </xsl:variable>
 
 <xsl:variable name="ipr-rfc4748" select="(
@@ -2470,16 +2480,16 @@
   <!-- default case -->
   <xsl:if test="$xml2rfc-private=''">
     <xsl:choose>
-      <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='independent'">
+      <xsl:when test="$header-format='2010' and $submissionType='independent'">
         <myns:item>Independent Submission</myns:item>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='IETF'">
+      <xsl:when test="$header-format='2010' and $submissionType='IETF'">
         <myns:item>Internet Engineering Task Force (IETF)</myns:item>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='IRTF'">
+      <xsl:when test="$header-format='2010' and $submissionType='IRTF'">
         <myns:item>Internet Research Task Force (IRTF)</myns:item>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-hab='yes' and $submissionType='IAB'">
+      <xsl:when test="$header-format='2010' and $submissionType='IAB'">
         <myns:item>Internet Architecture Board (IAB)</myns:item>
       </xsl:when>
       <xsl:when test="/rfc/front/workgroup and (not(/rfc/@number) or /rfc/@number='')">
@@ -2497,12 +2507,6 @@
         <xsl:otherwise>Request for Comments: <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
       </xsl:choose>
     </myns:item>
-    <!-- TODO: why was this in?
-    <xsl:if test="/rfc/@docName">
-      <myns:item>
-        &lt;<xsl:value-of select="/rfc/@docName" />&gt;
-      </myns:item>
-    </xsl:if>-->
     <xsl:if test="/rfc/@obsoletes and /rfc/@obsoletes!=''">
       <myns:item>
         <xsl:text>Obsoletes: </xsl:text>
@@ -2552,7 +2556,7 @@
     <myns:item><xsl:value-of select="$xml2rfc-private" /></myns:item>
   </xsl:if>
   
-  <xsl:if test="$xml2rfc-ext-hab='yes' and /rfc/@number">
+  <xsl:if test="$header-format='2010' and /rfc/@number">
     <myns:item>ISSN: 2070-1721</myns:item>
   </xsl:if>
 </xsl:template>
@@ -5950,11 +5954,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.493 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.493 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.494 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.494 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/12/29 13:21:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/29 13:21:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/12/29 15:00:36 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/29 15:00:36 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
