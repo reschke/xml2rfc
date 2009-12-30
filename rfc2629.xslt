@@ -299,6 +299,16 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- experimental support for TLP 4.0, work in progress -->
+
+<xsl:param name="xml2rfc-ext-tlp">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'tlp'"/>
+    <xsl:with-param name="default" select="''"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- trailing dots in section numbers -->
 
 <xsl:param name="xml2rfc-ext-sec-no-trailing-dots">
@@ -2480,16 +2490,16 @@
   <!-- default case -->
   <xsl:if test="$xml2rfc-private=''">
     <xsl:choose>
-      <xsl:when test="$header-format='2010' and $submissionType='independent'">
+      <xsl:when test="/rfc/@number and $header-format='2010' and $submissionType='independent'">
         <myns:item>Independent Submission</myns:item>
       </xsl:when>
-      <xsl:when test="$header-format='2010' and $submissionType='IETF'">
+      <xsl:when test="/rfc/@number and $header-format='2010' and $submissionType='IETF'">
         <myns:item>Internet Engineering Task Force (IETF)</myns:item>
       </xsl:when>
-      <xsl:when test="$header-format='2010' and $submissionType='IRTF'">
+      <xsl:when test="/rfc/@number and $header-format='2010' and $submissionType='IRTF'">
         <myns:item>Internet Research Task Force (IRTF)</myns:item>
       </xsl:when>
-      <xsl:when test="$header-format='2010' and $submissionType='IAB'">
+      <xsl:when test="/rfc/@number and $header-format='2010' and $submissionType='IAB'">
         <myns:item>Internet Architecture Board (IAB)</myns:item>
       </xsl:when>
       <xsl:when test="/rfc/front/workgroup and (not(/rfc/@number) or /rfc/@number='')">
@@ -3976,7 +3986,7 @@ thead th {
                           or /rfc/@ipr = 'noModificationTrust200902'
                           or /rfc/@ipr = 'noDerivativesTrust200902'
                           or /rfc/@ipr = 'pre5378Trust200902'">
-            This Internet-Draft is submitted to IETF in full conformance with
+            This Internet-Draft is submitted <xsl:if test="$xml2rfc-ext-tlp=''">to IETF </xsl:if>in full conformance with
             the provisions of BCP 78 and BCP 79.
           </xsl:when>
           <xsl:otherwise>
@@ -4196,8 +4206,8 @@ thead th {
         <xsl:otherwise>
           <xsl:variable name="approver">
             <xsl:choose>
-              <xsl:when test="/rfc/@submissionType='IAB'">IAB</xsl:when>
-              <xsl:when test="/rfc/@submissionType='IRTF'">IRSG</xsl:when>
+              <xsl:when test="$submissionType='IAB'">IAB</xsl:when>
+              <xsl:when test="$submissionType='IRTF'">IRSG</xsl:when>
               <xsl:otherwise>RFC Editor</xsl:otherwise>
             </xsl:choose>
           </xsl:variable>
@@ -4225,6 +4235,21 @@ thead th {
           as the document authors.  All rights reserved.
         </t>
         <xsl:choose>
+          <xsl:when test="$ipr-2009-09 and $xml2rfc-ext-tlp='4'">
+            <t>
+              This document is subject to BCP 78 and the IETF Trust's Legal
+              Provisions Relating to IETF Documents (<eref target="http://trustee.ietf.org/license-info">http://trustee.ietf.org/license-info</eref>)
+              in effect on the date of publication of this document. Please
+              review these documents carefully, as they describe your rights
+              and restrictions with respect to this document.
+              <xsl:if test="$submissionType='IETF'">
+                Code Components extracted from this document must include
+                Simplified BSD License text as described in Section 4.e of the
+                Trust Legal Provisions and are provided without warranty as
+                described in the Simplified BSD License.
+              </xsl:if>
+            </t>
+          </xsl:when>
           <xsl:when test="$ipr-2009-09">
             <t>
               This document is subject to BCP 78 and the IETF Trust's Legal
@@ -5954,11 +5979,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.494 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.494 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.495 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.495 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/12/29 15:00:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/29 15:00:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2009/12/30 01:22:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/30 01:22:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
