@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2006-2009, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2010, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1696,7 +1696,14 @@
       </xsl:if>
       <link rel="Author" href="#{$anchor-prefix}.authors" />
       <xsl:if test="$xml2rfc-private=''">
-        <link rel="Copyright" href="#{$anchor-prefix}.copyright" />
+        <xsl:choose>
+          <xsl:when test="$no-copylong">
+            <link rel="Copyright" href="#{$anchor-prefix}.copyrightnotice" />
+          </xsl:when>
+          <xsl:otherwise>
+            <link rel="Copyright" href="#{$anchor-prefix}.copyright" />
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:if>
       <xsl:if test="$has-index">
         <link rel="Index" href="#{$anchor-prefix}.index" />
@@ -2508,6 +2515,12 @@
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:if test="starts-with(/rfc/@docName,'draft-ietf-') and not(/rfc/front/workgroup)">
+          <xsl:call-template name="info">
+            <xsl:with-param name="inline" select="'no'"/>
+            <xsl:with-param name="msg">WG submissions should include a /rfc/front/workgroup element</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
         <myns:item>Network Working Group</myns:item>
       </xsl:otherwise>
     </xsl:choose>
@@ -5661,6 +5674,18 @@ thead th {
   </xsl:call-template>
 </xsl:template>
 
+<xsl:template name="info">
+  <xsl:param name="msg"/>
+  <xsl:param name="msg2"/>
+  <xsl:param name="inline"/>
+  <xsl:call-template name="emit-message">
+    <xsl:with-param name="level">INFO</xsl:with-param>
+    <xsl:with-param name="msg" select="$msg"/>
+    <xsl:with-param name="msg2" select="$msg2"/>
+    <xsl:with-param name="inline" select="$inline"/>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template name="error">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
@@ -5988,11 +6013,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.497 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.497 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.498 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.498 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2009/12/30 19:57:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2009/12/30 19:57:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/01/01 21:04:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/01 21:04:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
