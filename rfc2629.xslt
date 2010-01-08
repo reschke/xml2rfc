@@ -289,16 +289,6 @@
   </xsl:call-template>
 </xsl:param>
 
-<!-- experimental support for RFC 5741, work in progress -->
-
-<xsl:param name="xml2rfc-ext-hab">
-  <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
-    <xsl:with-param name="attr" select="'h-a-b'"/>
-    <xsl:with-param name="default" select="'no'"/>
-  </xsl:call-template>
-</xsl:param>
-
 <!-- experimental support for TLP 4.0, work in progress -->
 
 <xsl:param name="xml2rfc-ext-tlp">
@@ -440,6 +430,17 @@
   </xsl:choose>   
 </xsl:variable>
 
+<!-- Boilerplate as defined in RFC 5741, and deployed end of Dec 2009 -->
+<xsl:variable name="boilerplate">
+  <xsl:choose>
+    <xsl:when test="$pub-yearmonth >= 201001 or
+      ($rfcno=5741 or $rfcno=5742 or $rfcno=5743)"
+      >2010</xsl:when>
+    <xsl:when test="$xml2rfc-ext-tlp='4'">2010</xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>   
+</xsl:variable>
+
 <xsl:variable name="ipr-rfc4748" select="(
   $ipr-rfc3667 and
     ( $rfcno &gt;= 4715 and ( $rfcno != 4718 and $rfcno != 4735 and $rfcno != 4749 ))
@@ -490,6 +491,17 @@
     (
       /rfc/@number and $pub-yearmonth >= 200909 and
       $rfcno!=5582 and $rfcno!=5621 and $rfcno!=5632 and $rfcno!=5645 and $rfcno!=5646 and $rfcno!=5681 
+    )
+  )" />
+
+<!-- this makes the Jan 2010 TLP text depend on the tlp ext PI
+     for IDs, and around 2010-01 for RFCs-->
+<xsl:variable name="ipr-2010-01" select="(
+    ( not(/rfc/@number) and $xml2rfc-ext-tlp='4' )
+    or
+    (
+      /rfc/@number and ($pub-yearmonth >= 201001 or
+      $rfcno=5741 or $rfcno=5742 or $rfcno=5743) 
     )
   )" />
 
@@ -3991,8 +4003,8 @@ thead th {
             <xref target="{/rfc/@iprExtract}"/> as-is for separate use</xsl:if>.
           </xsl:when>
   
-          <!-- as of Feb 2010 -->
-          <xsl:when test="$xml2rfc-ext-tlp='4' and (/rfc/@ipr = 'trust200902'
+          <!-- as of Jan 2010, TLP 4.0 -->
+          <xsl:when test="$ipr-2010-01 and (/rfc/@ipr = 'trust200902'
                           or /rfc/@ipr = 'noModificationTrust200902'
                           or /rfc/@ipr = 'noDerivativesTrust200902'
                           or /rfc/@ipr = 'pre5378Trust200902')">
@@ -4069,7 +4081,7 @@ thead th {
       </t>
     </xsl:when>
 
-    <xsl:when test="/rfc/@category='bcp' and $xml2rfc-ext-hab='yes'">
+    <xsl:when test="/rfc/@category='bcp' and $boilerplate='2010'">
       <t>
         This memo documents an Internet Best Current Practice.
       </t>
@@ -4081,7 +4093,7 @@ thead th {
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
-    <xsl:when test="/rfc/@category='exp' and $xml2rfc-ext-hab='yes'">
+    <xsl:when test="/rfc/@category='exp' and $boilerplate='2010'">
       <t>
         This document is not an Internet Standards Track specification; it is
         published for examination, experimental implementation, and evaluation.
@@ -4095,7 +4107,7 @@ thead th {
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
-    <xsl:when test="/rfc/@category='historic' and $xml2rfc-ext-hab='yes'">
+    <xsl:when test="/rfc/@category='historic' and $boilerplate='2010'">
       <t>
         This document is not an Internet Standards Track specification; it is
         published for the historical record.
@@ -4108,7 +4120,7 @@ thead th {
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
-    <xsl:when test="/rfc/@category='std' and $xml2rfc-ext-hab='yes'">
+    <xsl:when test="/rfc/@category='std' and $boilerplate='2010'">
       <t>
         This is an Internet Standards Track document.
       </t>
@@ -4122,7 +4134,7 @@ thead th {
         protocol. Distribution of this memo is unlimited.
       </t>
     </xsl:when>
-    <xsl:when test="(/rfc/@category='info' or not(/rfc/@category)) and $xml2rfc-ext-hab='yes'">
+    <xsl:when test="(/rfc/@category='info' or not(/rfc/@category)) and $boilerplate='2010'">
       <t>
         This document is not an Internet Standards Track specification; it is
         published for informational purposes.
@@ -4147,7 +4159,7 @@ thead th {
   </xsl:choose>
     
   <!-- 2nd and 3rd paragraph -->
-  <xsl:if test="$xml2rfc-ext-hab='yes'">
+  <xsl:if test="$boilerplate='2010' and /rfc/@number">
     <t>
       <xsl:if test="/rfc/@category='exp'">
         This document defines an Experimental Protocol for the Internet
@@ -4257,7 +4269,7 @@ thead th {
           as the document authors.  All rights reserved.
         </t>
         <xsl:choose>
-          <xsl:when test="$ipr-2009-09 and $xml2rfc-ext-tlp='4'">
+          <xsl:when test="$ipr-2010-01">
             <t>
               This document is subject to BCP 78 and the IETF Trust's Legal
               Provisions Relating to IETF Documents (<eref target="http://trustee.ietf.org/license-info">http://trustee.ietf.org/license-info</eref>)
@@ -6013,11 +6025,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.498 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.498 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.499 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.499 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/01/01 21:04:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/01 21:04:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/01/08 14:09:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/08 14:09:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
