@@ -1753,27 +1753,27 @@
 
       <xsl:if test="$xml2rfc-ext-support-rfc2731!='no'">
         <!-- Dublin Core Metadata -->
-        <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+        <link rel="schema.dct" href="http://purl.org/dc/terms/" />
               
         <!-- DC creator, see RFC2731 -->
         <xsl:for-each select="front/author">
           <xsl:variable name="initials">
             <xsl:call-template name="format-initials"/>
           </xsl:variable>
-          <meta name="DC.Creator" content="{concat(@surname,', ',$initials)}" />
+          <meta name="dct.creator" content="{concat(@surname,', ',$initials)}" />
         </xsl:for-each>
         
         <xsl:if test="$xml2rfc-private=''">
           <xsl:choose>
             <xsl:when test="@number">
-              <meta name="DC.Identifier" content="urn:ietf:rfc:{@number}" />
+              <meta name="dct.identifier" content="urn:ietf:rfc:{@number}" />
             </xsl:when>
             <xsl:when test="@docName">
-              <meta name="DC.Identifier" content="urn:ietf:id:{@docName}" />
+              <meta name="dct.identifier" content="urn:ietf:id:{@docName}" />
             </xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
-          <meta name="DC.Date.Issued" scheme="ISO8601">
+          <meta name="dct.issued" scheme="ISO8601">
             <xsl:attribute name="content">
               <xsl:value-of select="concat($xml2rfc-ext-pub-year,'-',$pub-month-numeric)"/>
               <xsl:if test="$xml2rfc-ext-pub-day != '' and not(@number)">
@@ -1790,16 +1790,16 @@
         </xsl:if>
   
         <xsl:if test="front/abstract">
-          <meta name="DC.Description.Abstract" content="{normalize-space(front/abstract)}" />
+          <meta name="dct.abstract" content="{normalize-space(front/abstract)}" />
         </xsl:if>      
 
         <xsl:if test="@number">
-          <meta name="DC.isPartOf" content="urn:issn:2070-1721" />
+          <meta name="dct.isPartOf" content="urn:issn:2070-1721" />
         </xsl:if>      
 
       </xsl:if>
       
-      <!-- this replicates dc.description.abstract, but is used by Google & friends -->
+      <!-- this replicates dct.abstract, but is used by Google & friends -->
       <xsl:if test="front/abstract">
         <meta name="description" content="{normalize-space(front/abstract)}" />
       </xsl:if>
@@ -4797,14 +4797,14 @@ thead th {
   <xsl:choose>
     <xsl:when test="contains($list,',')">
       <xsl:variable name="rfcNo" select="substring-before($list,',')" />
-      <meta name="DC.Relation.Replaces" content="urn:ietf:rfc:{$rfcNo}" />
+      <meta name="dct.replaces" content="urn:ietf:rfc:{$rfcNo}" />
       <xsl:call-template name="rfclist-for-dcmeta">
         <xsl:with-param name="list" select="normalize-space(substring-after($list,','))" />
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="rfcNo" select="$list" />
-      <meta name="DC.Relation.Replaces" content="urn:ietf:rfc:{$rfcNo}" />
+      <meta name="dct.replaces" content="urn:ietf:rfc:{$rfcNo}" />
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -6025,11 +6025,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.499 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.499 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.500 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.500 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/01/08 14:09:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/08 14:09:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/01/14 17:11:45 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/14 17:11:45 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
