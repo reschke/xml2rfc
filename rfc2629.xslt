@@ -430,13 +430,22 @@
   </xsl:choose>   
 </xsl:variable>
 
-<!-- Boilerplate as defined in RFC 5741, and deployed end of Dec 2009 -->
-<xsl:variable name="boilerplate">
+<xsl:variable name="rfc-boilerplate">
   <xsl:choose>
+    <!-- RFC boilerplate as defined in RFC 5741, and deployed end of Dec 2009 -->
     <xsl:when test="$pub-yearmonth >= 201001 or
       ($rfcno=5741 or $rfcno=5742 or $rfcno=5743)"
       >2010</xsl:when>
     <xsl:when test="$xml2rfc-ext-tlp='4'">2010</xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>   
+</xsl:variable>
+
+<xsl:variable name="id-boilerplate">
+  <xsl:choose>
+    <!-- ID boilerplate approved by IESG on Jan 14 2010-->
+    <xsl:when test="$pub-yearmonth >= 201004"
+      >2010</xsl:when>
     <xsl:otherwise/>
   </xsl:choose>   
 </xsl:variable>
@@ -4056,32 +4065,46 @@ thead th {
           <xsl:otherwise />
         </xsl:choose>
       </t>
-      <t>
-        Internet-Drafts are working documents of the Internet Engineering
-        Task Force (IETF), its areas, and its working groups.
-        Note that other groups may also distribute working documents as
-        Internet-Drafts.
-      </t>
+      <xsl:choose>
+        <xsl:when test="$id-boilerplate='2010'">
+          <t>
+            Internet-Drafts are working documents of the Internet Engineering
+            Task Force (IETF). Note that other groups may also distribute
+            working documents as Internet-Drafts. The list of current
+            Internet-Drafts is at <eref target='http://datatracker.ietf.org/drafts/current/'/>.
+          </t>
+        </xsl:when>
+        <xsl:otherwise>
+          <t>
+            Internet-Drafts are working documents of the Internet Engineering
+            Task Force (IETF), its areas, and its working groups.
+            Note that other groups may also distribute working documents as
+            Internet-Drafts.
+          </t>
+        </xsl:otherwise>
+      </xsl:choose>
       <t>
         Internet-Drafts are draft documents valid for a maximum of six months
         and may be updated, replaced, or obsoleted by other documents at any time.
         It is inappropriate to use Internet-Drafts as reference material or to cite
         them other than as &#8220;work in progress&#8221;.
       </t>
-      <t>
-        The list of current Internet-Drafts can be accessed at
-        <eref target='http://www.ietf.org/ietf/1id-abstracts.txt'/>.
-      </t>
-      <t>
-        The list of Internet-Draft Shadow Directories can be accessed at
-        <eref target='http://www.ietf.org/shadow.html'/>.
-      </t>
+      <xsl:if test="$id-boilerplate=''">
+        <t>
+          The list of current Internet-Drafts can be accessed at
+          <eref target='http://www.ietf.org/ietf/1id-abstracts.txt'/>.
+        </t>
+        <t>
+          The list of Internet-Draft Shadow Directories can be accessed at
+          <eref target='http://www.ietf.org/shadow.html'/>.
+        </t>
+      </xsl:if>
       <t>
         This Internet-Draft will expire in <xsl:call-template name="expirydate" />.
       </t>
     </xsl:when>
 
-    <xsl:when test="/rfc/@category='bcp' and $boilerplate='2010'">
+    <xsl:when test="/rfc/@category='bcp' and $rfc-boilerplate='2010'">
       <t>
         This memo documents an Internet Best Current Practice.
       </t>
@@ -4093,7 +4116,7 @@ thead th {
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
-    <xsl:when test="/rfc/@category='exp' and $boilerplate='2010'">
+    <xsl:when test="/rfc/@category='exp' and $rfc-boilerplate='2010'">
       <t>
         This document is not an Internet Standards Track specification; it is
         published for examination, experimental implementation, and evaluation.
@@ -4107,7 +4130,7 @@ thead th {
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
-    <xsl:when test="/rfc/@category='historic' and $boilerplate='2010'">
+    <xsl:when test="/rfc/@category='historic' and $rfc-boilerplate='2010'">
       <t>
         This document is not an Internet Standards Track specification; it is
         published for the historical record.
@@ -4120,7 +4143,7 @@ thead th {
         Distribution of this memo is unlimited.
       </t>
     </xsl:when>
-    <xsl:when test="/rfc/@category='std' and $boilerplate='2010'">
+    <xsl:when test="/rfc/@category='std' and $rfc-boilerplate='2010'">
       <t>
         This is an Internet Standards Track document.
       </t>
@@ -4134,7 +4157,7 @@ thead th {
         protocol. Distribution of this memo is unlimited.
       </t>
     </xsl:when>
-    <xsl:when test="(/rfc/@category='info' or not(/rfc/@category)) and $boilerplate='2010'">
+    <xsl:when test="(/rfc/@category='info' or not(/rfc/@category)) and $rfc-boilerplate='2010'">
       <t>
         This document is not an Internet Standards Track specification; it is
         published for informational purposes.
@@ -4159,7 +4182,7 @@ thead th {
   </xsl:choose>
     
   <!-- 2nd and 3rd paragraph -->
-  <xsl:if test="$boilerplate='2010' and /rfc/@number">
+  <xsl:if test="$rfc-boilerplate='2010' and /rfc/@number">
     <t>
       <xsl:if test="/rfc/@category='exp'">
         This document defines an Experimental Protocol for the Internet
@@ -6025,11 +6048,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.500 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.500 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.501 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.501 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/01/14 17:11:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/14 17:11:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/01/15 14:08:30 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/15 14:08:30 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
