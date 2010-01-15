@@ -2867,7 +2867,7 @@
           </t>
           <t>
             This document is subject to the rights, licenses and restrictions
-            contained in BCP 78<xsl:if test="$submissionType='independent'"> and at <eref target="http://www.rfc-editor.org/copyright.html"/></xsl:if>, and except as set forth therein, the authors
+            contained in BCP 78<xsl:if test="$submissionType='independent'"> and at <eref target="http://www.rfc-editor.org/copyright.html">http://www.rfc-editor.org/copyright.html</eref></xsl:if>, and except as set forth therein, the authors
             retain all their rights.
           </t>
           <t>
@@ -2937,7 +2937,7 @@
             attempt made to obtain a general license or permission for the use
             of such proprietary rights by implementers or users of this
             specification can be obtained from the IETF on-line IPR repository 
-            at <eref target="http://www.ietf.org/ipr"/>.
+            at <eref target="http://www.ietf.org/ipr">http://www.ietf.org/ipr</eref>.
           </t>       
           <t>
             The IETF invites any interested party to bring to its attention any
@@ -4071,7 +4071,7 @@ thead th {
             Internet-Drafts are working documents of the Internet Engineering
             Task Force (IETF). Note that other groups may also distribute
             working documents as Internet-Drafts. The list of current
-            Internet-Drafts is at <eref target='http://datatracker.ietf.org/drafts/current/'/>.
+            Internet-Drafts is at <eref target='http://datatracker.ietf.org/drafts/current/'>http://datatracker.ietf.org/drafts/current/</eref>.
           </t>
         </xsl:when>
         <xsl:otherwise>
@@ -4092,11 +4092,11 @@ thead th {
       <xsl:if test="$id-boilerplate=''">
         <t>
           The list of current Internet-Drafts can be accessed at
-          <eref target='http://www.ietf.org/ietf/1id-abstracts.txt'/>.
+          <eref target='http://www.ietf.org/ietf/1id-abstracts.txt'>http://www.ietf.org/ietf/1id-abstracts.txt</eref>.
         </t>
         <t>
           The list of Internet-Draft Shadow Directories can be accessed at
-          <eref target='http://www.ietf.org/shadow.html'/>.
+          <eref target='http://www.ietf.org/shadow.html'>http://www.ietf.org/shadow.html</eref>.
         </t>
       </xsl:if>
       <t>
@@ -6048,11 +6048,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.501 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.501 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.502 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.502 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/01/15 14:08:30 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/15 14:08:30 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/01/15 15:14:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/15 15:14:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
