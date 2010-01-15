@@ -2547,7 +2547,7 @@
     </xsl:choose>
     <myns:item>
        <xsl:choose>
-        <xsl:when test="/rfc/@ipr and not(/rfc/@number)">Internet Draft</xsl:when>
+        <xsl:when test="/rfc/@ipr and not(/rfc/@number)">Internet-Draft</xsl:when>
         <xsl:otherwise>Request for Comments: <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
       </xsl:choose>
     </myns:item>
@@ -6039,7 +6039,7 @@ thead th {
   <xsl:choose>
     <xsl:when test="$xml2rfc-header!=''"><xsl:value-of select="$xml2rfc-header" /></xsl:when>
     <xsl:when test="$xml2rfc-private!=''"/> <!-- private draft, header not set -->
-    <xsl:when test="/rfc/@ipr and not(/rfc/@number)">INTERNET DRAFT</xsl:when>
+    <xsl:when test="/rfc/@ipr and not(/rfc/@number)">Internet-Draft</xsl:when>
     <xsl:otherwise>RFC <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -6048,11 +6048,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.502 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.502 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.503 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.503 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/01/15 15:14:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/15 15:14:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/01/15 16:28:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/15 16:28:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
