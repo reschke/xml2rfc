@@ -906,7 +906,8 @@
 
 </xsl:template>
 
-<xsl:template match="back">
+<!-- this is a named template because <back> may be absent -->
+<xsl:template name="back">
 
   <!-- add editorial comments -->
   <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
@@ -919,7 +920,7 @@
   </xsl:if>
      
   <!-- add all other top-level sections under <back> -->
-  <xsl:apply-templates select="*[not(self::references) and not(self::ed:replace and .//references)]" />
+  <xsl:apply-templates select="back/*[not(self::references) and not(self::ed:replace and .//references)]" />
 
   <!-- insert the index if index entries exist -->
   <!-- note it always comes before the authors section -->
@@ -1820,7 +1821,7 @@
 
       <xsl:apply-templates select="front" />
       <xsl:apply-templates select="middle" />
-      <xsl:apply-templates select="back" />
+      <xsl:call-template name="back" />
     </body>
   </html>
 </xsl:template>               
@@ -4444,7 +4445,7 @@ thead th {
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="back" mode="toc">
+<xsl:template name="back-toc">
 
   <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
     <li>
@@ -4458,7 +4459,7 @@ thead th {
   <xsl:if test="$xml2rfc-ext-authors-section!='end'">
     <xsl:apply-templates select="/rfc/front" mode="toc" />
   </xsl:if>
-  <xsl:apply-templates select="*[not(self::references)]" mode="toc" />
+  <xsl:apply-templates select="back/*[not(self::references)]" mode="toc" />
 
   <!-- insert the index if index entries exist -->
   <xsl:if test="$has-index">
@@ -4646,7 +4647,8 @@ thead th {
 </xsl:template>
 
 <xsl:template match="rfc" mode="toc">
-  <xsl:apply-templates select="middle|back" mode="toc" />
+  <xsl:apply-templates select="middle" mode="toc" />
+  <xsl:call-template name="back-toc" />
 </xsl:template>
 
 <xsl:template match="ed:del|ed:ins|ed:replace" mode="toc">
@@ -6048,11 +6050,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.503 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.503 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.504 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.504 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/01/15 16:28:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/15 16:28:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/01/17 17:16:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/17 17:16:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
