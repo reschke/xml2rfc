@@ -542,12 +542,11 @@
           
 <!-- does the document contain edits? -->
 <xsl:variable name="has-edits" select="//ed:ins | //ed:del | //ed:replace" />
-
-<!-- Templates for the various elements of rfc2629.dtd -->
               
 <xsl:template match="text()[not(ancestor::artwork)]">
-  <xsl:variable name="starts-with-ws" select="translate(substring(.,1,1),'&#9;&#10;&#13;&#32;','')"/>
-  <xsl:variable name="ends-with-ws" select="translate(substring(.,string-length(.),1),'&#9;&#10;&#13;&#32;','')"/>
+  <xsl:variable name="ws" select="'&#9;&#10;&#13;&#32;'"/>
+  <xsl:variable name="starts-with-ws" select="translate(substring(.,1,1),$ws,'')"/>
+  <xsl:variable name="ends-with-ws" select="translate(substring(.,string-length(.),1),$ws,'')"/>
   <!--<xsl:message> Orig: "<xsl:value-of select="."/>"</xsl:message>
   <xsl:message>Start: "<xsl:value-of select="$starts-with-ws"/>"</xsl:message>
   <xsl:message>  End: "<xsl:value-of select="$ends-with-ws"/>"</xsl:message> -->
@@ -6050,11 +6049,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.505 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.505 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.506 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.506 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/01/18 08:41:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/18 08:41:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/01/18 13:19:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/18 13:19:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
