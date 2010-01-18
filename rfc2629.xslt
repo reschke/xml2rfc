@@ -2905,7 +2905,7 @@
           </t>
           <t>
             The limited permissions granted above are perpetual and will not be
-            revoked by the Internet Society or its successors or assignees.
+            revoked by the Internet Society or its successors or assigns.
           </t>
           <t>
             This document and the information contained herein is provided on an
@@ -6050,11 +6050,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.504 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.504 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.505 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.505 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/01/17 17:16:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/17 17:16:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/01/18 08:41:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/18 08:41:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
