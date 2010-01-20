@@ -2551,7 +2551,7 @@
         <xsl:otherwise>Request for Comments: <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
       </xsl:choose>
     </myns:item>
-    <xsl:if test="/rfc/@obsoletes and /rfc/@obsoletes!=''">
+    <xsl:if test="/rfc/@obsoletes!=''">
       <myns:item>
         <xsl:text>Obsoletes: </xsl:text>
         <xsl:call-template name="rfclist">
@@ -2570,7 +2570,7 @@
         </xsl:choose>
       </myns:item>
     </xsl:if>
-    <xsl:if test="/rfc/@updates and /rfc/@updates!=''">
+    <xsl:if test="/rfc/@updates!=''">
       <myns:item>
         <xsl:text>Updates: </xsl:text>
           <xsl:call-template name="rfclist">
@@ -4733,22 +4733,28 @@ thead th {
 
 <xsl:template name="rfc-or-id-link">
   <xsl:param name="name" />
-  <xsl:call-template name="check-front-matter-ref">
-    <xsl:with-param name="name" select="$name"/>
-  </xsl:call-template>
-  <a>
-    <xsl:attribute name="href">
-      <xsl:choose>
-        <xsl:when test="starts-with($name,'draft-')">
-          <xsl:value-of select="concat($internetDraftUrlPrefix,$name,$internetDraftUrlPostfix)"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="concat($rfcUrlPrefix,$name,$rfcUrlPostfix)"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:attribute>
-    <xsl:value-of select="$name" />
-  </a>
+  
+  <xsl:choose>
+    <xsl:when test="starts-with($name,'draft-')">
+      <a href="{concat($internetDraftUrlPrefix,$name,$internetDraftUrlPostfix)}"><xsl:value-of select="$name"/></a>
+      <xsl:call-template name="check-front-matter-ref">
+        <xsl:with-param name="name" select="$name"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="number($name)=$name">
+      <a href="{concat($rfcUrlPrefix,$name,$rfcUrlPostfix)}"><xsl:value-of select="$name"/></a>
+      <xsl:call-template name="check-front-matter-ref">
+        <xsl:with-param name="name" select="$name"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$name"/>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="inline" select="'no'"/>
+        <xsl:with-param name="msg" select="concat('In metadata obsoletes/updates, RFC number of draft name is expected - found: ',$name)"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="rfclist">
@@ -6049,11 +6055,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.506 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.506 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.507 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.507 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/01/18 13:19:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/18 13:19:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/01/20 13:22:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/01/20 13:22:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
