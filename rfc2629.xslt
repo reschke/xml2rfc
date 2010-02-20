@@ -2184,6 +2184,7 @@
         <xsl:variable name="r-is-normative" select="$t-r-is-normative/@x:nrm='true'"/>
         <xsl:if test="not($r-is-normative)">
           <xsl:call-template name="warning">
+            <xsl:with-param name="inline" select="'no'"/>
             <xsl:with-param name="msg" select="concat('Potentially normative reference to ',@target,' not referenced normatively')"/>
           </xsl:call-template>
         </xsl:if>
@@ -2350,6 +2351,7 @@
           <xsl:if test="not($r-is-normative)">
             <xsl:for-each select="$xref">
               <xsl:call-template name="warning">
+                <xsl:with-param name="inline" select="'no'"/>
                 <xsl:with-param name="msg" select="concat('Potentially normative reference to ',$xref/@target,' not referenced normatively')"/>
               </xsl:call-template>
             </xsl:for-each>
@@ -6111,11 +6113,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.509 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.509 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.510 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.510 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/02/20 17:02:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/02/20 17:02:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/02/20 17:14:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/02/20 17:14:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
