@@ -444,7 +444,7 @@
 <xsl:variable name="id-boilerplate">
   <xsl:choose>
     <!-- ID boilerplate approved by IESG on Jan 14 2010-->
-    <xsl:when test="$pub-yearmonth >= 201004"
+    <xsl:when test="$pub-yearmonth >= 201006"
       >2010</xsl:when>
     <xsl:otherwise/>
   </xsl:choose>   
@@ -6122,11 +6122,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.511 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.511 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.512 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.512 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/03/04 12:47:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/03/04 12:47:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/03/08 12:37:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/03/08 12:37:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
