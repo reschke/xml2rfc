@@ -436,7 +436,6 @@
     <xsl:when test="$pub-yearmonth >= 201001 or
       ($rfcno=5741 or $rfcno=5742 or $rfcno=5743)"
       >2010</xsl:when>
-    <xsl:when test="$xml2rfc-ext-tlp='4'">2010</xsl:when>
     <xsl:otherwise/>
   </xsl:choose>   
 </xsl:variable>
@@ -6128,11 +6127,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.514 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.514 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.515 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.515 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/03/11 14:52:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/03/11 14:52:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/03/31 14:40:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/03/31 14:40:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
