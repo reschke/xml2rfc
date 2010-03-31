@@ -289,16 +289,6 @@
   </xsl:call-template>
 </xsl:param>
 
-<!-- experimental support for TLP 4.0, work in progress -->
-
-<xsl:param name="xml2rfc-ext-tlp">
-  <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
-    <xsl:with-param name="attr" select="'tlp'"/>
-    <xsl:with-param name="default" select="''"/>
-  </xsl:call-template>
-</xsl:param>
-
 <!-- trailing dots in section numbers -->
 
 <xsl:param name="xml2rfc-ext-sec-no-trailing-dots">
@@ -502,10 +492,10 @@
     )
   )" />
 
-<!-- this makes the Jan 2010 TLP text depend on the tlp ext PI
+<!-- this makes the Jan 2010 TLP text depend on the publication date to be >= 2010-06
      for IDs, and around 2010-01 for RFCs-->
 <xsl:variable name="ipr-2010-01" select="(
-    ( not(/rfc/@number) and $xml2rfc-ext-tlp='4' )
+    ( not(/rfc/@number) and $pub-yearmonth >= 201006 )
     or
     (
       /rfc/@number and ($pub-yearmonth >= 201001 or
@@ -6127,11 +6117,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.515 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.515 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.516 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.516 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/03/31 14:40:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/03/31 14:40:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/03/31 15:18:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/03/31 15:18:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
