@@ -433,7 +433,7 @@
 <xsl:variable name="id-boilerplate">
   <xsl:choose>
     <!-- ID boilerplate approved by IESG on Jan 14 2010-->
-    <xsl:when test="$pub-yearmonth >= 201006"
+    <xsl:when test="$pub-yearmonth >= 201004"
       >2010</xsl:when>
     <xsl:otherwise/>
   </xsl:choose>   
@@ -492,10 +492,10 @@
     )
   )" />
 
-<!-- this makes the Jan 2010 TLP text depend on the publication date to be >= 2010-06
+<!-- this makes the Jan 2010 TLP text depend on the publication date to be >= 2010-04
      for IDs, and around 2010-01 for RFCs-->
 <xsl:variable name="ipr-2010-01" select="(
-    ( not(/rfc/@number) and $pub-yearmonth >= 201006 )
+    ( not(/rfc/@number) and $pub-yearmonth >= 201004 )
     or
     (
       /rfc/@number and ($pub-yearmonth >= 201001 or
@@ -6117,11 +6117,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.516 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.516 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.517 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.517 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/03/31 15:18:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/03/31 15:18:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/03/31 18:24:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/03/31 18:24:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
