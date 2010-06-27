@@ -1490,6 +1490,7 @@
         <xsl:variable name="initials">
           <xsl:call-template name="format-initials"/>
         </xsl:variable>
+        <xsl:variable name="truncated-initials" select="concat(substring-before($initials,'.'),'.')"/>
       
         <xsl:choose>
           <xsl:when test="@surname and @surname!=''">
@@ -1497,10 +1498,10 @@
               <!-- surname/initials is reversed for last author except when it's the only one -->
               <xsl:choose>
                 <xsl:when test="position()=last() and position()!=1">
-                  <xsl:value-of select="concat($initials,' ',@surname)" />
+                  <xsl:value-of select="concat($truncated-initials,' ',@surname)" />
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:value-of select="concat(@surname,', ',$initials)" />
+                  <xsl:value-of select="concat(@surname,', ',$truncated-initials)" />
                 </xsl:otherwise>
               </xsl:choose>
               <xsl:if test="@role='editor'">
@@ -2659,9 +2660,10 @@
     <xsl:variable name="initials">
       <xsl:call-template name="format-initials"/>
     </xsl:variable>
+    <xsl:variable name="truncated-initials" select="concat(substring-before($initials,'.'),'.')"/>
     <xsl:if test="@surname">
       <myns:item>
-        <xsl:value-of select="concat($initials,' ',@surname)" />
+        <xsl:value-of select="concat($truncated-initials,' ',@surname)" />
         <xsl:if test="@role">
           <xsl:choose>
             <xsl:when test="@role='editor'">
@@ -6117,11 +6119,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.517 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.517 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.518 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.518 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/03/31 18:24:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/03/31 18:24:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/06/27 12:07:31 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/06/27 12:07:31 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6251,14 +6253,72 @@ thead th {
 
 <!-- reformat contents of author/@initials -->
 <xsl:template name="format-initials">
+  <xsl:variable name="r">
+    <xsl:call-template name="t-format-initials">
+      <xsl:with-param name="remainder" select="normalize-space(@initials)"/>
+    </xsl:call-template>
+  </xsl:variable>
+  
+  <xsl:if test="$r!=@initials">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="inline" select="'no'"/>
+      <xsl:with-param name="msg">@initials '<xsl:value-of select="@initials"/>': did you mean '<xsl:value-of select="$r"/>'?</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  
+  <xsl:value-of select="$r"/>
+</xsl:template>
+
+<xsl:template name="t-format-initials">
+  <xsl:param name="have"/>
+  <xsl:param name="remainder"/>
+  
+  <xsl:variable name="first" select="substring($remainder,1,1)"/>
+  <xsl:variable name="prev" select="substring($have,string-length($have))"/>
+
+<!--<xsl:message>
+have: <xsl:value-of select="$have"/>
+remainder: <xsl:value-of select="$remainder"/>
+first: <xsl:value-of select="$first"/>
+prev: <xsl:value-of select="$prev"/>
+</xsl:message>-->
+
   <xsl:choose>
-    <xsl:when test="string-length(@initials)=1">
-      <xsl:value-of select="concat(@initials,'.')"/>
+    <xsl:when test="$remainder='' and $prev!='.'">
+      <xsl:value-of select="concat($have,'.')"/>
     </xsl:when>
+    <xsl:when test="$remainder=''">
+      <xsl:value-of select="$have"/>
+    </xsl:when>
+    <xsl:when test="$prev='.' and $first='.'">
+      <!-- repeating dots -->
+      <xsl:call-template name="t-format-initials">
+        <xsl:with-param name="have" select="$have"/>
+        <xsl:with-param name="remainder" select="substring($remainder,2)"/>
+      </xsl:call-template>
+    </xsl:when>
+    <!-- missing dot before '-' -->
+<!--    <xsl:when test="$prev!='.' and $first='-'">
+      <xsl:call-template name="t-format-initials">
+        <xsl:with-param name="have" select="concat($have,'.-')"/>
+        <xsl:with-param name="remainder" select="substring($remainder,2)"/>
+      </xsl:call-template>
+    </xsl:when>-->
+    <!-- missing space after '.' -->
+<!--    <xsl:when test="$prev='.' and $first!=' '">
+      <xsl:call-template name="t-format-initials">
+        <xsl:with-param name="have" select="concat($have,' ',$first)"/>
+        <xsl:with-param name="remainder" select="substring($remainder,2)"/>
+      </xsl:call-template>
+    </xsl:when>-->
     <xsl:otherwise>
-      <xsl:value-of select="@initials"/>
+      <xsl:call-template name="t-format-initials">
+        <xsl:with-param name="have" select="concat($have,$first)"/>
+        <xsl:with-param name="remainder" select="substring($remainder,2)"/>
+      </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
+  
 </xsl:template>
 
 <xsl:template name="extract-normalized">
