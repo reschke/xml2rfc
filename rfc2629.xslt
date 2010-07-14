@@ -2817,28 +2817,39 @@
 
 
 <xsl:template name="expirydate">
+  <xsl:param name="in-prose"/>
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-pub-day >= 1">
+      <xsl:if test="$in-prose">
+        <xsl:text>on </xsl:text>
+      </xsl:if>
       <xsl:call-template name="normalize-date">
         <xsl:with-param name="year" select="$xml2rfc-ext-pub-year"/>
         <xsl:with-param name="month" select="$pub-month-numeric"/>
         <xsl:with-param name="day" select="$xml2rfc-ext-pub-day + 185"/>
       </xsl:call-template>
     </xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='January'">July <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='February'">August <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='March'">September <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='April'">October <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='May'">November <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='June'">December <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='July'">January <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='August'">February <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='September'">March <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='October'">April <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='November'">May <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
-    <xsl:when test="$xml2rfc-ext-pub-month='December'">June <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
-      <xsl:otherwise>WRONG SYNTAX FOR MONTH</xsl:otherwise>
-   </xsl:choose>
+    <xsl:otherwise>
+      <xsl:if test="$in-prose">
+        <xsl:text>in </xsl:text>
+      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="$xml2rfc-ext-pub-month='January'">July <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+        <xsl:when test="$xml2rfc-ext-pub-month='February'">August <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+        <xsl:when test="$xml2rfc-ext-pub-month='March'">September <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+        <xsl:when test="$xml2rfc-ext-pub-month='April'">October <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+        <xsl:when test="$xml2rfc-ext-pub-month='May'">November <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+        <xsl:when test="$xml2rfc-ext-pub-month='June'">December <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
+        <xsl:when test="$xml2rfc-ext-pub-month='July'">January <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+        <xsl:when test="$xml2rfc-ext-pub-month='August'">February <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+        <xsl:when test="$xml2rfc-ext-pub-month='September'">March <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+        <xsl:when test="$xml2rfc-ext-pub-month='October'">April <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+        <xsl:when test="$xml2rfc-ext-pub-month='November'">May <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+        <xsl:when test="$xml2rfc-ext-pub-month='December'">June <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+        <xsl:otherwise>WRONG SYNTAX FOR MONTH</xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="normalize-date">
@@ -4217,7 +4228,7 @@ thead th {
         </t>
       </xsl:if>
       <t>
-        This Internet-Draft will expire in <xsl:call-template name="expirydate" />.
+        This Internet-Draft will expire <xsl:call-template name="expirydate"><xsl:with-param name="in-prose" select="true()"/></xsl:call-template>.
       </t>
     </xsl:when>
 
@@ -6179,11 +6190,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.519 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.519 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.520 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.520 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/07/01 13:21:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/07/01 13:21:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/07/14 12:36:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/07/14 12:36:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
