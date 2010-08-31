@@ -1642,6 +1642,12 @@
         </xsl:choose>
       </xsl:for-each>
       
+      <!-- avoid hacks using seriesInfo when it's not really series information -->
+      <xsl:for-each select="x:prose">
+        <xsl:text>, </xsl:text>
+        <xsl:value-of select="."/>
+      </xsl:for-each>
+
       <xsl:if test="front/date/@year != ''">
         <xsl:if test="string(number(front/date/@year)) = 'NaN'">
           <xsl:call-template name="warning">
@@ -6188,11 +6194,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.521 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.521 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.522 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.522 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/08/14 13:21:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/08/14 13:21:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/08/31 15:02:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/08/31 15:02:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
