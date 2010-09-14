@@ -1640,6 +1640,15 @@
             <xsl:if test="translate(@name,$ucase,$lcase)='internet-draft'"> (work in progress)</xsl:if>
           </xsl:otherwise>
         </xsl:choose>
+        
+        <!-- check that BCP FYI STD RFC are in the right order -->
+        <xsl:if test="(@name='BCP' or @name='FYI' or @name='STD') and preceding-sibling::seriesInfo[@name='RFC']">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="inline" select="'no'"/>
+            <xsl:with-param name="msg">RFC number preceding <xsl:value-of select="@name"/> number in reference '<xsl:value-of select="../@anchor"/>'</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+        
       </xsl:for-each>
       
       <!-- avoid hacks using seriesInfo when it's not really series information -->
@@ -6194,11 +6203,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.523 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.523 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.524 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.524 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/09/09 15:27:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/09/09 15:27:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/09/14 12:37:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/09/14 12:37:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
