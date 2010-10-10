@@ -6203,11 +6203,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.524 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.524 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.525 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.525 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/09/14 12:37:11 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/09/14 12:37:11 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/10/10 14:47:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/10/10 14:47:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6728,37 +6728,67 @@ prev: <xsl:value-of select="$prev"/>
 <!-- date handling -->
 
 <msxsl:script language="JScript" implements-prefix="date">
-  this['year'] = function (x) {
-    if (x) {throw "not supported"};
-    return (new Date()).getFullYear();
+  function twodigits(s) {
+    return s &lt; 10 ? "0" + s : s;
   }
 
-  this['month-in-year'] = function (x) {
-    if (x) {throw "not supported"};
-    return 1 + (new Date()).getMonth();
-  }
-
-  this['day-in-month'] = function (x) {
-    if (x) {throw "not supported"};
-    return (new Date()).getDate();
+  this['date-time'] = function (x) {
+    var now = new Date();
+    var offs = now.getTimezoneOffset();
+    return now.getFullYear() + "-"
+      + twodigits(1 + now.getMonth()) + "-"
+      + twodigits(now.getDate()) + "T"
+      + twodigits(now.getHours()) + ":"
+      + twodigits(now.getMinutes()) + ":"
+      + twodigits(now.getSeconds())
+      + (offs >= 0 ? "-" : "+")
+      + twodigits(Math.abs(offs) / 60) + ":"
+      + twodigits(Math.abs(offs) % 60);
   }
 </msxsl:script>
 
+<xsl:variable name="current-year">
+  <xsl:choose>
+    <xsl:when test="function-available('date:date-time')">
+      <xsl:value-of select="substring-before(date:date-time(),'-')"/>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+</xsl:variable>
+
+<xsl:variable name="current-month">
+  <xsl:choose>
+    <xsl:when test="function-available('date:date-time')">
+      <xsl:value-of select="substring-before(substring-after(date:date-time(),'-'),'-')"/>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+</xsl:variable>
+
+<xsl:variable name="current-day">
+  <xsl:choose>
+    <xsl:when test="function-available('date:date-time')">
+      <xsl:value-of select="substring-after(substring-after(substring-before(date:date-time(),'T'),'-'),'-')"/>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+</xsl:variable>
+
 <xsl:variable name="may-default-dates">
   <xsl:choose>
-    <xsl:when test="function-available('date:year') and function-available('date:month-in-year') and function-available('date:day-in-month')">
+    <xsl:when test="$current-year!='' and $current-month!='' and $current-day!=''">
       <xsl:variable name="year-specified" select="/rfc/front/date/@year and /rfc/front/date/@year!=''"/>
       <xsl:variable name="month-specified" select="/rfc/front/date/@month and /rfc/front/date/@month!=''"/>
       <xsl:variable name="day-specified" select="/rfc/front/date/@day and /rfc/front/date/@day!=''"/>
       <xsl:variable name="system-month">
         <xsl:call-template name="get-month-as-name">
-          <xsl:with-param name="month" select="date:month-in-year()"/>
+          <xsl:with-param name="month" select="$current-month"/>
         </xsl:call-template>
       </xsl:variable>
       <xsl:choose>
-        <xsl:when test="$year-specified and /rfc/front/date/@year!=date:year()">Specified year <xsl:value-of select="/rfc/front/date/@year"/> does not match system date (<xsl:value-of select="date:year()"/>)</xsl:when>
+        <xsl:when test="$year-specified and /rfc/front/date/@year!=$current-year">Specified year <xsl:value-of select="/rfc/front/date/@year"/> does not match system date (<xsl:value-of select="$current-year"/>)</xsl:when>
         <xsl:when test="$month-specified and /rfc/front/date/@month!=$system-month">Specified month <xsl:value-of select="/rfc/front/date/@month"/> does not match system date (<xsl:value-of select="$system-month"/>)</xsl:when>
-        <xsl:when test="$day-specified and /rfc/front/date/@day!=date:day-in-month()">Specified day does not match system date</xsl:when>
+        <xsl:when test="$day-specified and /rfc/front/date/@day!=$current-day">Specified day does not match system date</xsl:when>
         <xsl:when test="not($year-specified) and ($month-specified or $day-specified)">Can't default year when month or day is specified</xsl:when>
         <xsl:when test="not($month-specified) and $day-specified">Can't default month when day is specified</xsl:when>
         <xsl:otherwise>yes</xsl:otherwise>
@@ -6774,10 +6804,10 @@ prev: <xsl:value-of select="$prev"/>
     <xsl:when test="/rfc/front/date/@year and /rfc/front/date/@year!=''">
       <xsl:value-of select="/rfc/front/date/@year"/>
     </xsl:when>
-    <xsl:when test="function-available('date:year') and $may-default-dates='yes'">
-      <xsl:value-of select="date:year()"/>
+    <xsl:when test="$current-year!='' and $may-default-dates='yes'">
+      <xsl:value-of select="$current-year"/>
     </xsl:when>
-    <xsl:when test="function-available('date:year') and $may-default-dates!='yes'">
+    <xsl:when test="$current-year!='' and $may-default-dates!='yes'">
       <xsl:call-template name="warning">
         <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg" select="$may-default-dates"/>
@@ -6796,12 +6826,12 @@ prev: <xsl:value-of select="$prev"/>
     <xsl:when test="/rfc/front/date/@month and /rfc/front/date/@month!=''">
       <xsl:value-of select="/rfc/front/date/@month"/>
     </xsl:when>
-    <xsl:when test="function-available('date:month-in-year') and $may-default-dates='yes'">
+    <xsl:when test="$current-month!='' and $may-default-dates='yes'">
       <xsl:call-template name="get-month-as-name">
-        <xsl:with-param name="month" select="date:month-in-year()"/>
+        <xsl:with-param name="month" select="$current-month"/>
       </xsl:call-template>
     </xsl:when>
-    <xsl:when test="function-available('date:month-in-year') and $may-default-dates!='yes'">
+    <xsl:when test="$current-month!='' and $may-default-dates!='yes'">
       <xsl:call-template name="warning">
         <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg" select="$may-default-dates"/>
@@ -6826,8 +6856,8 @@ prev: <xsl:value-of select="$prev"/>
     <xsl:when test="/rfc/front/date/@day and /rfc/front/date/@day!=''">
       <xsl:value-of select="/rfc/front/date/@day"/>
     </xsl:when>
-    <xsl:when test="function-available('date:day-in-month') and $may-default-dates='yes'">
-      <xsl:value-of select="date:day-in-month()"/>
+    <xsl:when test="$current-day!='' and $may-default-dates='yes'">
+      <xsl:value-of select="$current-day"/>
     </xsl:when>
     <xsl:otherwise /> <!-- harmless, we just don't have it -->
   </xsl:choose>
