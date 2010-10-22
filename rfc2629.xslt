@@ -3400,21 +3400,21 @@ ul.toc {
   margin-right: 0em;
   padding-left: 0em;
 }
-li.tocline0 {
+ul.toc li {
   line-height: 150%;
   font-weight: bold;
   font-size: 10pt;
   margin-left: 0em;
   margin-right: 0em;
 }
-li.tocline1 {
+ul.toc li li {
   line-height: normal;
   font-weight: normal;
   font-size: 9pt;
   margin-left: 0em;
   margin-right: 0em;
 }
-li.tocline2 {
+li.excluded {
   font-size: 0pt;
 }
 ul p {
@@ -4539,11 +4539,11 @@ thead th {
   <xsl:choose>
     <xsl:when test="($tocparam='' or $tocparam='default') and string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.')) &gt;= $parsedTocDepth">
       <!-- dropped entry because excluded -->
-      <xsl:attribute name="class">tocline2</xsl:attribute>
+      <xsl:attribute name="class">excluded</xsl:attribute>
     </xsl:when>
     <xsl:when test="$tocparam='exclude'">
       <!-- dropped entry because excluded -->
-      <xsl:attribute name="class">tocline2</xsl:attribute>
+      <xsl:attribute name="class">excluded</xsl:attribute>
     </xsl:when>
     <xsl:otherwise>
       <xsl:choose>
@@ -4554,14 +4554,6 @@ thead th {
           </del>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:choose>
-            <xsl:when test="not(contains($number,'.'))">
-              <xsl:attribute name="class">tocline0</xsl:attribute>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:attribute name="class">tocline1</xsl:attribute>
-            </xsl:otherwise>
-          </xsl:choose>
           <xsl:if test="$number != '' and not(contains($number,'unnumbered-'))">
             <xsl:call-template name="emit-section-number">
               <xsl:with-param name="no" select="$number"/>
@@ -6203,11 +6195,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.525 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.525 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.526 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.526 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/10/10 14:47:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/10/10 14:47:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/10/22 15:38:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/10/22 15:38:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
