@@ -2050,7 +2050,7 @@
     </xsl:choose>
   </xsl:variable>
   
-  <!-- process irefs immediadetely following the section so that their anchor
+  <!-- process irefs immediately following the section so that their anchor
   actually is the section heading -->
   <xsl:apply-templates select="iref[count(preceding-sibling::*[not(self::iref)])=0]"/>
 
@@ -6195,11 +6195,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.526 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.526 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.527 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.527 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/10/22 15:38:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/10/22 15:38:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/10/27 12:04:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/10/27 12:04:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
