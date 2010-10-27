@@ -3394,7 +3394,7 @@ td.reference {
 thead {
   display:table-header-group;
 }
-ul.toc {
+ul.toc, ul.toc ul {
   list-style: none;
   margin-left: 1.5em;
   margin-right: 0em;
@@ -3427,13 +3427,13 @@ ul p {
   padding-left: 0em;
   page-break-before: avoid;
 }
-li.indline0 {
+ul.ind li {
   font-weight: bold;
   line-height: 200%;
   margin-left: 0em;
   margin-right: 0em;
 }
-li.indline1 {
+ul.ind li li {
   font-weight: normal;
   line-height: 150%;
   margin-left: 0em;
@@ -3591,7 +3591,7 @@ thead th {
     content: leader('.') target-counter(attr(href), page);
   }
   
-  a.iref {
+  ul.ind li li a {<!-- links in the leaf nodes of the index should go to page numbers -->
     content: target-counter(attr(href), page);
   }
   
@@ -3745,7 +3745,7 @@ thead th {
           </xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
-      <a class="iref" href="{$backlink}">
+      <a href="{$backlink}">
         <xsl:call-template name="insertInsDelClass"/>
         <xsl:choose>
           <xsl:when test="@primary='true'"><b><xsl:value-of select="$n"/></b></xsl:when>
@@ -3771,7 +3771,7 @@ thead th {
   </xsl:variable>
   <xsl:choose>
     <xsl:when test="self::reference">
-      <a class="iref" href="#{@anchor}">
+      <a href="#{@anchor}">
         <xsl:call-template name="insertInsDelClass"/>
         <b><xsl:value-of select="$n"/></b>
       </a>
@@ -3779,7 +3779,7 @@ thead th {
     <xsl:otherwise>
       <xsl:variable name="target" select="@target"/>
       <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="$target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
-      <a class="iref" href="{$backlink}">
+      <a href="{$backlink}">
         <xsl:call-template name="insertInsDelClass"/>
         <xsl:value-of select="$n"/>
       </a>
@@ -3860,7 +3860,7 @@ thead th {
       </xsl:variable>
 
       <xsl:if test="$showit='yes'">
-        <li class="indline0">
+        <li>
           
           <!-- make letters and digits stand out -->
           <xsl:choose>
@@ -3874,7 +3874,7 @@ thead th {
             </xsl:otherwise>
           </xsl:choose>
         
-          <ul class="ind">  
+          <ul>  
             <xsl:for-each select="key('index-first-letter',translate(substring(concat(@item,@anchor),1,1),$lcase,$ucase))">
         
               <xsl:sort select="translate(concat(@item,@anchor),$lcase,$ucase)" />
@@ -3882,7 +3882,7 @@ thead th {
                 <xsl:choose>
                   <xsl:when test="self::reference">
                     <xsl:if test="$xml2rfc-ext-include-references-in-index='yes' and not(starts-with(@anchor,'deleted-'))">
-                      <li class="indline1">
+                      <li>
                         <em>
                           <xsl:value-of select="@anchor"/>
                         </em>
@@ -3897,12 +3897,12 @@ thead th {
                         <xsl:variable name="rs2" select="$rs[@x:sec]"/>
 
                         <xsl:if test="$rs2">
-                          <ul class="ind">  
+                          <ul>  
                             <xsl:for-each select="$rs2">
                               <xsl:sort select="substring-before(concat(@x:sec,'.'),'.')" data-type="number"/>
                               <xsl:sort select="substring(@x:sec,2+string-length(substring-before(@x:sec,'.')))" data-type="number"/>
                               <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-sec',concat(@target,'..',@x:sec)))">
-                                <li class="indline1">
+                                <li>
                                   <em>
                                     <xsl:choose>
                                       <xsl:when test="translate(substring(@x:sec,1,1),$ucase,'')=''">
@@ -3928,11 +3928,11 @@ thead th {
                           <xsl:variable name="rs3" select="$rs[not(@x:sec) and @x:rel]"/>
                           <xsl:variable name="doc" select="document(current()/x:source/@href)"/>
                           <xsl:if test="$rs3">
-                            <ul class="ind">  
+                            <ul>  
                               <xsl:for-each select="$rs3">
                                 <xsl:sort select="count($doc//*[@anchor and following::*/@anchor=substring-after(current()/@x:rel,'#')])" order="ascending" data-type="number"/>
                                 <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-anchor',concat(@target,'..',@x:rel)))">
-                                  <li class="indline1">
+                                  <li>
                                     <em>
                                       <xsl:variable name="sec">
                                         <xsl:for-each select="$doc//*[@anchor=substring-after(current()/@x:rel,'#')]">
@@ -3968,7 +3968,7 @@ thead th {
                       <xsl:variable name="item" select="@item"/>
                       <xsl:variable name="in-artwork" select="key('index-item',$item)[@primary='true' and ancestor::artwork]"/>
                           
-                      <li class="indline1">
+                      <li>
                         <xsl:choose>
                           <xsl:when test="$in-artwork">
                             <tt><xsl:value-of select="@item" /></tt>
@@ -3990,7 +3990,7 @@ thead th {
           
                         <xsl:variable name="s2" select="key('index-item',@item)[@subitem and @subitem!='']"/>
                         <xsl:if test="$s2">
-                          <ul class="ind">  
+                          <ul>  
                             <xsl:for-each select="$s2">
                               <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
                               
@@ -3998,7 +3998,7 @@ thead th {
                   
                                 <xsl:variable name="in-artwork2" select="key('index-item-subitem',concat(@item,'..',@subitem))[@primary='true' and ancestor::artwork]" />
                   
-                                <li class="indline1">
+                                <li>
               
                                   <xsl:choose>
                                     <xsl:when test="$in-artwork2">
@@ -4683,7 +4683,7 @@ thead th {
           <xsl:with-param name="title" select="$xml2rfc-refparent"/>
         </xsl:call-template>
   
-        <ul class="toc">
+        <ul>
           <!-- ...with subsections... -->    
           <xsl:for-each select="$refsecs">
             <xsl:variable name="title">
@@ -4739,7 +4739,7 @@ thead th {
         <xsl:with-param name="waschanged" select="@ed:resolves"/>
       </xsl:call-template>
     
-      <ul class="toc">
+      <ul>
         <xsl:apply-templates mode="toc" />
       </ul>
     </li>
@@ -4758,14 +4758,14 @@ thead th {
     
       <!-- obtain nested content, just to check whether we need to recurse at all -->
       <xsl:variable name="nested-content">
-        <ul class="toc">
+        <ul>
           <xsl:apply-templates mode="toc" />
         </ul>
       </xsl:variable>
       
       <!-- only recurse if we need to (do not produce useless list container) -->      
       <xsl:if test="$nested-content!=''">
-        <ul class="toc">
+        <ul>
           <xsl:apply-templates mode="toc" />
         </ul>
       </xsl:if>
@@ -4793,7 +4793,7 @@ thead th {
 <xsl:template name="insertTocAppendix">
   
   <xsl:if test="//figure[@title!='' or @anchor!='']">
-    <ul class="toc">
+    <ul>
       <xsl:for-each select="//figure[@title!='' or @anchor!='']">
         <xsl:variable name="title">Figure <xsl:value-of select="position()"/><xsl:if test="@title">: <xsl:value-of select="@title"/></xsl:if>
         </xsl:variable>
@@ -6195,11 +6195,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.527 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.527 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.528 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.528 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/10/27 12:04:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/10/27 12:04:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/10/27 13:09:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/10/27 13:09:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
