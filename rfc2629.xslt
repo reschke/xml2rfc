@@ -3811,20 +3811,9 @@ thead th {
       <!-- character? -->
       <xsl:if test="translate($letter,concat($lcase,$ucase,'0123456789'),'')=''">
       
-        <xsl:variable name="showit">
-          <xsl:choose>
-            <xsl:when test="$xml2rfc-ext-include-references-in-index!='yes'">
-              <xsl:if test="$irefs[starts-with(translate(@item,$lcase,$ucase),$letter)]">
-                <xsl:text>yes</xsl:text>
-              </xsl:if>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>yes</xsl:text>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
+        <xsl:variable name="showit" select="$xml2rfc-ext-include-references-in-index='yes' or $irefs[starts-with(translate(@item,$lcase,$ucase),$letter)]"/>
         
-        <xsl:if test="$showit='yes'">
+        <xsl:if test="$showit">
           <a href="#{$anchor-prefix}.index.{$letter}">
             <xsl:value-of select="$letter" />
           </a>
@@ -3846,20 +3835,9 @@ thead th {
       <xsl:sort select="translate(concat(@item,@anchor),$lcase,$ucase)" />
       <xsl:variable name="letter" select="translate(substring(concat(@item,@anchor),1,1),$lcase,$ucase)"/>
             
-      <xsl:variable name="showit">
-        <xsl:choose>
-          <xsl:when test="$xml2rfc-ext-include-references-in-index!='yes'">
-            <xsl:if test="$irefs2[starts-with(translate(@item,$lcase,$ucase),$letter)]">
-              <xsl:text>yes</xsl:text>
-            </xsl:if>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>yes</xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:variable>
+      <xsl:variable name="showit" select="$xml2rfc-ext-include-references-in-index='yes' or $irefs2[starts-with(translate(@item,$lcase,$ucase),$letter)]"/>
 
-      <xsl:if test="$showit='yes'">
+      <xsl:if test="$showit">
         <li>
           
           <!-- make letters and digits stand out -->
@@ -6195,11 +6173,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.528 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.528 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.529 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.529 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/10/27 13:09:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/10/27 13:09:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/10/27 15:21:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/10/27 15:21:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
