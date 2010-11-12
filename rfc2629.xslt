@@ -6166,11 +6166,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.531 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.531 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.532 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.532 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/10/31 21:50:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/10/31 21:50:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/11/12 22:01:27 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/11/12 22:01:27 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6669,6 +6669,17 @@ prev: <xsl:value-of select="$prev"/>
     <xsl:if test="saxon-old:line-number() > 0">
       <xsl:text> (at line </xsl:text>
       <xsl:value-of select="saxon-old:line-number()"/>
+      <xsl:if test="function-available('saxon-old:systemId')">
+        <xsl:variable name="rootsys">
+          <xsl:for-each select="/*">
+            <xsl:value-of select="saxon-old:systemId()"/>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:if test="$rootsys != saxon-old:systemId()">
+          <xsl:text> of </xsl:text>
+          <xsl:value-of select="saxon-old:systemId()"/>
+        </xsl:if>
+      </xsl:if>
       <xsl:text>)</xsl:text>
     </xsl:if>
   </xsl:if>
@@ -6676,6 +6687,17 @@ prev: <xsl:value-of select="$prev"/>
     <xsl:if test="saxon:line-number() > 0">
       <xsl:text> (at line </xsl:text>
       <xsl:value-of select="saxon:line-number()"/>
+      <xsl:if test="function-available('saxon:systemId')">
+        <xsl:variable name="rootsys">
+          <xsl:for-each select="/*">
+            <xsl:value-of select="saxon:systemId()"/>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:if test="$rootsys != saxon:systemId()">
+          <xsl:text> of </xsl:text>
+          <xsl:value-of select="saxon:systemId()"/>
+        </xsl:if>
+      </xsl:if>
       <xsl:text>)</xsl:text>
     </xsl:if>
   </xsl:if>
