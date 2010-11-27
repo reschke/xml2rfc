@@ -409,6 +409,14 @@
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
+  
+  <!-- sanity check on @consensus -->
+  <xsl:if test="/rfc/@consensus and (/rfc/@submissionType='IAB' or /rfc/@submissionType='independent')">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg" select="concat('/rfc/@consensus meaningless with a /rfc/@submissionType value of ', /rfc/@submissionType)"/>
+      <xsl:with-param name="inline" select="'no'"/>
+    </xsl:call-template>
+  </xsl:if>
 </xsl:variable>
 
 <xsl:variable name="consensus">
@@ -6180,11 +6188,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.533 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.533 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.534 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.534 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/11/26 15:14:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/11/26 15:14:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/11/27 16:47:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/11/27 16:47:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
