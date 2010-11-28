@@ -4338,6 +4338,13 @@ thead th {
             <xsl:otherwise>
               It has been approved for publication by the Internet Engineering
               Steering Group (IESG).
+              <!-- sanity check of $consensus -->
+              <xsl:if test="/rfc/@category='std' or /rfc/@category='bcp'">
+                <xsl:call-template name="error">
+                  <xsl:with-param name="msg" select="'IETF BCPs and Standards Track documents require IETF consensus, check values of @category and @consensus!'"/>
+                  <xsl:with-param name="inline" select="'no'"/>
+                </xsl:call-template>
+              </xsl:if>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
@@ -6188,11 +6195,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.534 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.534 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.535 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.535 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/11/27 16:47:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/11/27 16:47:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/11/28 16:53:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/11/28 16:53:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
