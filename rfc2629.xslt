@@ -240,6 +240,16 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- extension for specifying the value for <vspace> after which it's taken as a page break -->
+
+<xsl:param name="xml2rfc-ext-vspace-pagebreak">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'vspace-pagebreak'"/>
+    <xsl:with-param name="default" select="'100'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- extension for allowing markup inside artwork -->
 
 <xsl:param name="xml2rfc-ext-allow-markup-in-artwork">
@@ -2138,6 +2148,10 @@
 <xsl:template name="insert-blank-lines">
   <xsl:param name="no"/>
   <xsl:choose>
+    <xsl:when test="$no >= $xml2rfc-ext-vspace-pagebreak">
+      <br/>
+      <!-- done; this probably was an attempt to generate a pagebreak -->
+    </xsl:when>
     <xsl:when test="$no &lt;= 0">
       <br/>
       <!-- done -->
@@ -6195,11 +6209,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.536 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.536 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.537 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.537 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/11/29 12:56:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/11/29 12:56:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2010/12/30 14:21:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/12/30 14:21:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6596,6 +6610,7 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='parse-xml-in-artwork'"/>
                       <xsl:when test="$attrname='sec-no-trailing-dots'"/>
                       <xsl:when test="$attrname='trace-parse-xml'"/>
+                      <xsl:when test="$attrname='vspace-pagebreak'"/>
                       <xsl:otherwise>
                         <xsl:call-template name="warning">
                           <xsl:with-param name="msg">unsupported rfc-ext pseudo-attribute '<xsl:value-of select="$attrname"/>'</xsl:with-param>
