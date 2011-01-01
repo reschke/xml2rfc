@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2006-2010, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2011, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -3655,7 +3655,7 @@ thead th {
        content: "<xsl:call-template name="get-author-summary"/>"; 
   } 
   @bottom-center {
-       content: "<xsl:call-template name="get-category-long"/>"; 
+       content: "<xsl:call-template name="get-bottom-center"/>"; 
   } 
   @bottom-right {
        content: "[Page " counter(page) "]"; 
@@ -3675,7 +3675,7 @@ thead th {
        content: "[Page " counter(page) "]"; 
   } 
   @bottom-center {
-       content: "<xsl:call-template name="get-category-long"/>"; 
+       content: "<xsl:call-template name="get-bottom-center"/>"; 
   } 
   @bottom-right {
        content: "<xsl:call-template name="get-author-summary"/>"; 
@@ -3696,7 +3696,7 @@ thead th {
        content: "<xsl:call-template name="get-author-summary"/>"; 
   } 
   @bottom-center {
-       content: "<xsl:call-template name="get-category-long"/>"; 
+       content: "<xsl:call-template name="get-bottom-center"/>"; 
   } 
   @bottom-right {
        content: "[Page " counter(page) "]"; 
@@ -6172,6 +6172,18 @@ thead th {
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="get-bottom-center">
+  <xsl:choose>
+    <xsl:when test="/rfc/@docName">
+      <!-- for IDs, use the expiry date -->
+      <xsl:text>Expires </xsl:text><xsl:call-template name="expirydate" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="get-category-long"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="get-category-long">
   <xsl:choose>
     <xsl:when test="$xml2rfc-footer!=''"><xsl:value-of select="$xml2rfc-footer" /></xsl:when>
@@ -6209,11 +6221,11 @@ thead th {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.537 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.537 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.538 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.538 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2010/12/30 14:21:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2010/12/30 14:21:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/01/01 19:30:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/01/01 19:30:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
