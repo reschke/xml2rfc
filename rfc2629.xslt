@@ -4515,6 +4515,22 @@ dd, li, p {
           </t>
         </xsl:if>
         
+        <!-- add warning for incpmpatible IPR attribute on RFCs -->
+        <xsl:variable name="rfc-compatible-ipr"
+                      select="/rfc/@ipr='pre5378Trust200902' or /rfc/@ipr='trust200902' or /rfc/@ipr='trust200811' or /rfc/@ipr='full3978' or /rfc/@ipr='full3667' or /rfc/@ipr='full2026'"/>
+        
+        <xsl:if test="/rfc/@number and /rfc/@ipr and not($rfc-compatible-ipr)">
+          <xsl:variable name="msg" select="concat('The /rfc/@ipr attribute value of ',/rfc/@ipr,' is not allowed on RFCs.')"/>
+          
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg" select="$msg"/>
+            <xsl:with-param name="inline" select="'no'"/>
+          </xsl:call-template>
+          <t>
+            <spanx>ERROR: <xsl:value-of select="$msg"/></spanx>
+          </t>
+        </xsl:if>
+        
       </section>
     </xsl:when>
     <xsl:when test="$ipr-2007-08">
@@ -6235,11 +6251,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.544 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.544 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.545 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.545 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/04/03 14:28:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/04/03 14:28:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/04/16 11:14:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/04/16 11:14:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
