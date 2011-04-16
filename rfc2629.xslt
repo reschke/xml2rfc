@@ -4507,29 +4507,79 @@ dd, li, p {
           </xsl:otherwise>
         </xsl:choose>
         
-        <!-- special case: RFC5378 escape applies to RFCs as well -->
-        <!-- for IDs historically in Status Of This Memo, over here starting 2009-11 -->
-        <xsl:if test="(/rfc/@number or $pub-yearmonth >= 200911) and /rfc/@ipr = 'pre5378Trust200902'">
-          <t>
-            <xsl:value-of select="$escapeclause"/>
-          </t>
-        </xsl:if>
-        
         <!-- add warning for incpmpatible IPR attribute on RFCs -->
-        <xsl:variable name="rfc-compatible-ipr"
+        <xsl:variable name="stds-rfc-compatible-ipr"
                       select="/rfc/@ipr='pre5378Trust200902' or /rfc/@ipr='trust200902' or /rfc/@ipr='trust200811' or /rfc/@ipr='full3978' or /rfc/@ipr='full3667' or /rfc/@ipr='full2026'"/>
         
-        <xsl:if test="/rfc/@number and /rfc/@ipr and not($rfc-compatible-ipr)">
-          <xsl:variable name="msg" select="concat('The /rfc/@ipr attribute value of ',/rfc/@ipr,' is not allowed on RFCs.')"/>
-          
-          <xsl:call-template name="error">
-            <xsl:with-param name="msg" select="$msg"/>
-            <xsl:with-param name="inline" select="'no'"/>
-          </xsl:call-template>
-          <t>
-            <spanx>ERROR: <xsl:value-of select="$msg"/></spanx>
-          </t>
-        </xsl:if>
+        <xsl:variable name="rfc-compatible-ipr"
+                      select="$stds-rfc-compatible-ipr or /rfc/@ipr='noModificationTrust200902' or /rfc/@ipr='noDerivativesTrust200902' or /rfc/@ipr='noModificationTrust200811' or /rfc/@ipr='noDerivativesTrust200811'"/>
+                      <!-- TODO: may want to add more historic variants -->
+                      
+        <xsl:variable name="is-stds-track"
+                      select="$submissionType='IETF' and /rfc/@category='std'"/>
+        
+        <xsl:variable name="status-diags">
+          <xsl:choose>
+            <xsl:when test="$is-stds-track and /rfc/@number and /rfc/@ipr and not($stds-rfc-compatible-ipr)">
+              <xsl:value-of select="concat('The /rfc/@ipr attribute value of ',/rfc/@ipr,' is not allowed on standards-track RFCs.')"/>
+            </xsl:when>
+            <xsl:when test="/rfc/@number and /rfc/@ipr and not($rfc-compatible-ipr)">
+              <xsl:value-of select="concat('The /rfc/@ipr attribute value of ',/rfc/@ipr,' is not allowed on RFCs.')"/>
+            </xsl:when>
+            <xsl:otherwise/>
+          </xsl:choose>
+        </xsl:variable>
+
+        <xsl:choose>
+          <xsl:when test="$status-diags!=''">
+            <t>
+              <spanx><xsl:value-of select="$status-diags"/></spanx>
+            </t>
+            <xsl:call-template name="error">
+              <xsl:with-param name="msg" select="$status-diags"/>
+              <xsl:with-param name="inline" select="'no'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="(/rfc/@number or $pub-yearmonth >= 200911) and /rfc/@ipr = 'pre5378Trust200902'">
+          <!-- special case: RFC5378 escape applies to RFCs as well -->
+          <!-- for IDs historically in Status Of This Memo, over here starting 2009-11 -->
+            <t>
+              <xsl:value-of select="$escapeclause"/>
+            </t>
+          </xsl:when>
+          <xsl:when test="not(/rfc/@number)">
+            <!-- not an RFC, handled elsewhere -->
+          </xsl:when>
+          <xsl:when test="not(/rfc/@ipr)">
+            <!-- no IPR value; done -->
+          </xsl:when>
+          <xsl:when test="/rfc/@ipr='trust200902' or /rfc/@ipr='trust200811' or /rfc/@ipr='full3978' or /rfc/@ipr='full3667' or /rfc/@ipr='full2026'">
+            <!-- default IPR, allowed here -->
+          </xsl:when>
+          <xsl:when test="/rfc/@ipr='noModificationTrust200902' or /rfc/@ipr='noModificationTrust200811'">
+            <t>
+              This document may not be modified, and derivative works of it may
+              not be created, except to format it for publication as an RFC or
+              to translate it into languages other than English.
+            </t>
+          </xsl:when>
+          <xsl:when test="/rfc/@ipr='noDerivativesTrust200902' or /rfc/@ipr='noDerivativesTrust200811'">
+            <t>
+              This document may not be modified, and derivative works of it may
+              not be created, and it may not be published except as an Internet-Draft.
+            </t>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:variable name="msg" select="concat('unexpected value of /rfc/@ipr for this type of document: ',/rfc/@ipr)"/>
+            <t>
+              <spanx><xsl:value-of select="$msg"/></spanx>
+            </t>
+            <xsl:call-template name="error">
+              <xsl:with-param name="msg" select="$msg"/>
+              <xsl:with-param name="inline" select="'no'"/>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
         
       </section>
     </xsl:when>
@@ -6251,11 +6301,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.545 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.545 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.546 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.546 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/04/16 11:14:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/04/16 11:14:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/04/16 18:56:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/04/16 18:56:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
