@@ -424,7 +424,6 @@
   <xsl:if test="/rfc/@consensus and (/rfc/@submissionType='IAB' or /rfc/@submissionType='independent')">
     <xsl:call-template name="warning">
       <xsl:with-param name="msg" select="concat('/rfc/@consensus meaningless with a /rfc/@submissionType value of ', /rfc/@submissionType)"/>
-      <xsl:with-param name="inline" select="'no'"/>
     </xsl:call-template>
   </xsl:if>
 </xsl:variable>
@@ -736,7 +735,6 @@
     <xsl:when test="not(contains($content,'&#10;'))">
       <xsl:if test="string-length($content) > 69 + $indent">
         <xsl:call-template name="warning">
-          <xsl:with-param name="inline" select="'no'"/>
           <xsl:with-param name="msg">artwork line too long: '<xsl:value-of select="$content"/>' (<xsl:value-of select="string-length($content)"/> characters)</xsl:with-param>
         </xsl:call-template>
       </xsl:if>
@@ -752,7 +750,6 @@
       </xsl:variable>
       <xsl:if test="string-length($start) > $max">
         <xsl:call-template name="warning">
-          <xsl:with-param name="inline" select="'no'"/>
           <xsl:with-param name="msg">artwork line too long: '<xsl:value-of select="$start"/>' (<xsl:value-of select="string-length($start)"/> characters)</xsl:with-param>
         </xsl:call-template>
       </xsl:if>
@@ -1062,7 +1059,6 @@
           <xsl:when test="contains($docname,'.')">
             <xsl:call-template name="warning">
               <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should contain the base name, not the filename (thus no file extension).</xsl:with-param>
-              <xsl:with-param name="inline" select="'no'"/>
             </xsl:call-template>
             <xsl:value-of select="substring-before($docname,'.')"/>
           </xsl:when>
@@ -1077,7 +1073,6 @@
       <xsl:if test="$offending != ''">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should not contain the character '<xsl:value-of select="substring($offending,1,1)"/>'.</xsl:with-param>
-          <xsl:with-param name="inline" select="'no'"/>
         </xsl:call-template>
       </xsl:if>
       
@@ -1085,14 +1080,12 @@
       <xsl:if test="contains($docname,'--')">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should not contain the character sequence '--'.</xsl:with-param>
-          <xsl:with-param name="inline" select="'no'"/>
         </xsl:call-template>
       </xsl:if>
 
       <xsl:if test="not(starts-with($docname,'draft-'))">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should start with 'draft-'.</xsl:with-param>
-          <xsl:with-param name="inline" select="'no'"/>
         </xsl:call-template>
       </xsl:if>
       
@@ -1108,14 +1101,12 @@
       <xsl:if test="$seq='' or ($seq!='latest' and translate($seq,$digits,'')!='')">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should end with a two-digit sequence number or 'latest'.</xsl:with-param>
-          <xsl:with-param name="inline" select="'no'"/>
         </xsl:call-template>
       </xsl:if>
 
       <xsl:if test="string-length($docname)-string-length($seq) > 50">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>', excluding sequence number, should have less than 50 characters.</xsl:with-param>
-          <xsl:with-param name="inline" select="'no'"/>
         </xsl:call-template>
       </xsl:if>
       
@@ -1529,7 +1520,6 @@
   <xsl:variable name="anchor" select="@anchor"/>
   <xsl:if test="not(ancestor::ed:del) and not(key('xref-item',$anchor))">
     <xsl:call-template name="warning">
-      <xsl:with-param name="inline" select="'no'"/>
       <xsl:with-param name="msg">unused reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
@@ -1547,7 +1537,6 @@
     </xsl:variable>
     <xsl:if test="$tst=''">
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg">all references to the normative reference '<xsl:value-of select="@anchor"/>' appear to be informative</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
@@ -1684,7 +1673,6 @@
         <!-- check that BCP FYI STD RFC are in the right order -->
         <xsl:if test="(@name='BCP' or @name='FYI' or @name='STD') and preceding-sibling::seriesInfo[@name='RFC']">
           <xsl:call-template name="warning">
-            <xsl:with-param name="inline" select="'no'"/>
             <xsl:with-param name="msg">RFC number preceding <xsl:value-of select="@name"/> number in reference '<xsl:value-of select="../@anchor"/>'</xsl:with-param>
           </xsl:call-template>
         </xsl:if>
@@ -1700,7 +1688,6 @@
       <xsl:if test="front/date/@year != ''">
         <xsl:if test="string(number(front/date/@year)) = 'NaN'">
           <xsl:call-template name="warning">
-            <xsl:with-param name="inline" select="'no'"/>
             <xsl:with-param name="msg">date/@year should be a number: '<xsl:value-of select="front/date/@year"/>' in reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
           </xsl:call-template>
         </xsl:if>
@@ -1952,7 +1939,7 @@
 
 <xsl:template match="t">
   <xsl:if test="preceding-sibling::section or preceding-sibling::appendix">
-    <xsl:call-template name="warning">
+    <xsl:call-template name="inline-warning">
       <xsl:with-param name="msg">The paragraph below is misplaced; maybe a section is closed in the wrong place: </xsl:with-param>
       <xsl:with-param name="msg2"><xsl:value-of select="."/></xsl:with-param>
     </xsl:call-template>
@@ -2018,14 +2005,12 @@
 <xsl:template match="title">
   <xsl:if test="@abbrev and string-length(@abbrev) > 40">
     <xsl:call-template name="warning">
-      <xsl:with-param name="inline" select="'no'"/>
       <xsl:with-param name="msg">title/@abbrev too long (max 40 characters)</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
 
   <xsl:if test="string-length(.) > 40 and (not(@abbrev) or @abbrev='')">
     <xsl:call-template name="warning">
-      <xsl:with-param name="inline" select="'no'"/>
       <xsl:with-param name="msg">title too long, should supply title/@abbrev attribute with less than 40 characters</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
@@ -2059,7 +2044,6 @@
 
   <xsl:if test="self::appendix">
     <xsl:call-template name="warning">
-      <xsl:with-param name="inline" select="'no'"/>
       <xsl:with-param name="msg">The "appendix" element is deprecated, use "section" inside "back" instead.</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
@@ -2293,7 +2277,6 @@
         <xsl:variable name="r-is-normative" select="$t-r-is-normative/@x:nrm='true'"/>
         <xsl:if test="not($r-is-normative)">
           <xsl:call-template name="warning">
-            <xsl:with-param name="inline" select="'no'"/>
             <xsl:with-param name="msg" select="concat('Potentially normative reference to ',@target,' not referenced normatively')"/>
           </xsl:call-template>
         </xsl:if>
@@ -2460,7 +2443,6 @@
           <xsl:if test="not($r-is-normative)">
             <xsl:for-each select="$xref">
               <xsl:call-template name="warning">
-                <xsl:with-param name="inline" select="'no'"/>
                 <xsl:with-param name="msg" select="concat('Potentially normative reference to ',$xref/@target,' not referenced normatively')"/>
               </xsl:call-template>
             </xsl:for-each>
@@ -2668,6 +2650,7 @@
 </xsl:template>
 
 <xsl:template match="/">
+  <xsl:apply-templates select="*" mode="validate"/>
   <xsl:apply-templates select="*" />
 </xsl:template>
 
@@ -2813,7 +2796,6 @@
     <xsl:if test="$xml2rfc-ext-pub-day='' and /rfc/@docName and not(substring(/rfc/@docName, string-length(/rfc/@docName) - string-length('-latest') + 1) = '-latest')">
       <xsl:call-template name="warning">
         <xsl:with-param name="msg" select="concat('/rfc/front/date/@day appears to be missing for a historic draft dated ', $pub-yearmonth)"/>
-        <xsl:with-param name="inline" select="'no'"/>
       </xsl:call-template>
     </xsl:if>
     <xsl:value-of select="concat(' ',$xml2rfc-ext-pub-year)" />
@@ -4991,7 +4973,6 @@ dd, li, p {
     <xsl:otherwise>
       <xsl:value-of select="$name"/>
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg" select="concat('In metadata obsoletes/updates, RFC number of draft name is expected - found: ',$name)"/>
       </xsl:call-template>
     </xsl:otherwise>
@@ -5026,7 +5007,6 @@ dd, li, p {
     <xsl:when test="starts-with($name,'draft-')">
       <xsl:if test="not(//references//reference/seriesInfo[@name='Internet-Draft' and @value=$name])">
         <xsl:call-template name="warning">
-          <xsl:with-param name="inline" select="'no'"/>
           <xsl:with-param name="msg" select="concat('front matter mentions I-D ',$name,' for which there is no reference element')"/>
         </xsl:call-template>
       </xsl:if>
@@ -5034,7 +5014,6 @@ dd, li, p {
     <xsl:otherwise>
       <xsl:if test="not(//references//reference/seriesInfo[@name='RFC' and @value=$name])">
         <xsl:call-template name="warning">
-          <xsl:with-param name="inline" select="'no'"/>
           <xsl:with-param name="msg" select="concat('front matter mentions RFC ',$name,' for which there is no reference element')"/>
         </xsl:call-template>
       </xsl:if>
@@ -5114,7 +5093,6 @@ dd, li, p {
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg">internal link target for '<xsl:value-of select="."/>' does not exist.</xsl:with-param>
       </xsl:call-template>
       <xsl:value-of select="."/>
@@ -5700,7 +5678,6 @@ dd, li, p {
   <xsl:if test="//artwork[@type='abnf2616']">
     <xsl:if test="not(//reference/seriesInfo[@name='RFC' and (@value='2068' or @value='2616')])">
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline">no</xsl:with-param>
         <xsl:with-param name="msg">document uses HTTP-style ABNF syntax, but doesn't reference RFC 2068 or 2616.</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
@@ -5708,7 +5685,6 @@ dd, li, p {
   <xsl:if test="//artwork[@type='abnf']">
     <xsl:if test="not(//reference/seriesInfo[@name='RFC' and (@value='2234' or @value='4234' or @value='5234')])">
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline">no</xsl:with-param>
         <xsl:with-param name="msg">document uses ABNF syntax, but doesn't reference RFC 2234, 4234 or 5234.</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
@@ -5952,6 +5928,17 @@ dd, li, p {
   </xsl:call-template>
 </xsl:template>
 
+<xsl:template name="inline-warning">
+  <xsl:param name="msg"/>
+  <xsl:param name="msg2"/>
+  <xsl:call-template name="emit-message">
+    <xsl:with-param name="level">WARNING</xsl:with-param>
+    <xsl:with-param name="msg" select="$msg"/>
+    <xsl:with-param name="msg2" select="$msg2"/>
+    <xsl:with-param name="inline" select="'yes'"/>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template name="warning">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
@@ -5960,7 +5947,7 @@ dd, li, p {
     <xsl:with-param name="level">WARNING</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
     <xsl:with-param name="msg2" select="$msg2"/>
-    <xsl:with-param name="inline" select="$inline"/>
+    <xsl:with-param name="inline" select="'no'"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -6070,7 +6057,6 @@ dd, li, p {
                   </xsl:when>
                   <xsl:otherwise>
                     <xsl:call-template name="warning">
-                      <xsl:with-param name="inline" select="'no'"/>
                       <xsl:with-param name="msg">Unknown align attribute on ttcol: <xsl:value-of select="$col/@align"/></xsl:with-param>                      
                     </xsl:call-template>
                   </xsl:otherwise>
@@ -6318,11 +6304,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.547 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.547 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.548 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.548 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/04/17 09:42:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/04/17 09:42:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/05/02 07:25:24 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/05/02 07:25:24 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6337,7 +6323,6 @@ dd, li, p {
   <xsl:for-each select="/rfc/front/keyword">
     <xsl:if test="contains(.,',')">
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg">keyword element appears to contain a comma-separated list, split into multiple elements instead.</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
@@ -6460,7 +6445,6 @@ dd, li, p {
   
   <xsl:if test="$r!=@initials">
     <xsl:call-template name="warning">
-      <xsl:with-param name="inline" select="'no'"/>
       <xsl:with-param name="msg">@initials '<xsl:value-of select="@initials"/>': did you mean '<xsl:value-of select="$r"/>'?</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
@@ -6526,7 +6510,6 @@ prev: <xsl:value-of select="$prev"/>
   <xsl:variable name="text" select="normalize-space($node)"/>
   <xsl:if test="string-length($node) != string-length($text)">
     <xsl:call-template name="warning">
-      <xsl:with-param name="inline" select="'no'"/>
       <xsl:with-param name="msg">excessive whitespace in <xsl:value-of select="$name"/>: '<xsl:value-of select="$node"/>'</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
@@ -6538,7 +6521,6 @@ prev: <xsl:value-of select="$prev"/>
   <xsl:variable name="email" select="normalize-space(.)"/>
   <xsl:if test="string-length(.) != string-length($email) or contains($email,' ')">
     <xsl:call-template name="warning">
-      <xsl:with-param name="inline" select="'no'"/>
       <xsl:with-param name="msg">excessive whitespace in email address: '<xsl:value-of select="."/>'</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
@@ -6547,7 +6529,6 @@ prev: <xsl:value-of select="$prev"/>
     <xsl:choose>
       <xsl:when test="starts-with($email,'mailto:')">
         <xsl:call-template name="warning">
-          <xsl:with-param name="inline" select="'no'"/>
           <xsl:with-param name="msg">email should not include URI scheme: '<xsl:value-of select="."/>'</xsl:with-param>
         </xsl:call-template>
         <xsl:value-of select="substring($email, 1 + string-length('mailto:'))"/>
@@ -6566,7 +6547,6 @@ prev: <xsl:value-of select="$prev"/>
   <xsl:variable name="uri" select="normalize-space(.)"/>
   <xsl:if test="string-length(.) != string-length($uri) or contains($uri,' ')">
     <xsl:call-template name="warning">
-      <xsl:with-param name="inline" select="'no'"/>
       <xsl:with-param name="msg">excessive whitespace in URI: '<xsl:value-of select="."/>'</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
@@ -6667,7 +6647,6 @@ prev: <xsl:value-of select="$prev"/>
         <xsl:when test="$attrname=''">
           <xsl:call-template name="warning">
             <xsl:with-param name="msg">bad PI syntax: <xsl:value-of select="$str2"/></xsl:with-param>
-            <xsl:with-param name="inline" select="'no'"/>
           </xsl:call-template>
           <xsl:value-of select="$ret"/>
         </xsl:when>
@@ -6677,7 +6656,6 @@ prev: <xsl:value-of select="$prev"/>
             <xsl:when test="string-length($remainder) &lt; 2">
               <xsl:call-template name="warning">
                 <xsl:with-param name="msg">bad PI value syntax: <xsl:value-of select="$remainder"/></xsl:with-param>
-                <xsl:with-param name="inline" select="'no'"/>
               </xsl:call-template>
               <xsl:value-of select="$ret"/>
             </xsl:when>
@@ -6694,14 +6672,12 @@ prev: <xsl:value-of select="$prev"/>
                 <xsl:when test="not(contains($qchars,$qchar))">
                   <xsl:call-template name="warning">
                     <xsl:with-param name="msg">pseudo-attribute value needs to be quoted: <xsl:value-of select="$rem"/></xsl:with-param>
-                    <xsl:with-param name="inline" select="'no'"/>
                   </xsl:call-template>
                   <xsl:value-of select="$ret"/>
                 </xsl:when>
                 <xsl:when test="not(contains($rem2,$qchar))">
                   <xsl:call-template name="warning">
                     <xsl:with-param name="msg">unmatched quote in: <xsl:value-of select="$rem2"/></xsl:with-param>
-                    <xsl:with-param name="inline" select="'no'"/>
                   </xsl:call-template>
                   <xsl:value-of select="$ret"/>
                 </xsl:when>
@@ -6723,7 +6699,6 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:otherwise>
                         <xsl:call-template name="warning">
                           <xsl:with-param name="msg">unsupported rfc-ext pseudo-attribute '<xsl:value-of select="$attrname"/>'</xsl:with-param>
-                          <xsl:with-param name="inline" select="'no'"/>
                         </xsl:call-template>
                       </xsl:otherwise>
                     </xsl:choose>
@@ -6734,7 +6709,6 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='include'">
                         <xsl:call-template name="warning">
                           <xsl:with-param name="msg">the rfc include pseudo-attribute is not supported by this processor, see http://greenbytes.de/tech/webdav/rfc2629xslt/rfc2629xslt.html#examples.internalsubset for help.</xsl:with-param>
-                          <xsl:with-param name="inline" select="'no'"/>
                         </xsl:call-template>
                       </xsl:when>
                       <xsl:otherwise/>
@@ -6756,7 +6730,6 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:if test="$ret != $value">
                         <xsl:call-template name="warning">
                           <xsl:with-param name="msg">duplicate pseudo-attribute <xsl:value-of select="$attr"/>, overwriting value <xsl:value-of select="$ret"/></xsl:with-param>
-                          <xsl:with-param name="inline" select="'no'"/>
                         </xsl:call-template>
                       </xsl:if>
                       <xsl:call-template name="parse-one-pi">
@@ -6947,7 +6920,6 @@ prev: <xsl:value-of select="$prev"/>
     </xsl:when>
     <xsl:when test="$current-year!='' and $may-default-dates!='yes'">
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg" select="$may-default-dates"/>
       </xsl:call-template>
     </xsl:when>
@@ -6971,7 +6943,6 @@ prev: <xsl:value-of select="$prev"/>
     </xsl:when>
     <xsl:when test="$current-month!='' and $may-default-dates!='yes'">
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg" select="$may-default-dates"/>
       </xsl:call-template>
     </xsl:when>
@@ -7016,7 +6987,37 @@ prev: <xsl:value-of select="$prev"/>
     </xsl:when>
     <xsl:otherwise>00</xsl:otherwise>
   </xsl:choose>
-
 </xsl:param>
+
+<!-- simple validation support -->
+
+<xsl:template match="*" mode="validate">
+  <xsl:apply-templates select="@*|*" mode="validate"/>
+</xsl:template>
+<xsl:template match="@*" mode="validate"/>
+
+<xsl:template name="warninvalid">
+  <xsl:call-template name="warning">
+    <xsl:with-param name="msg" select="concat(local-name(.),' not allowed inside ',local-name(..))"/>
+  </xsl:call-template>
+</xsl:template>
+
+<!-- figure element -->
+<xsl:template match="figure/artwork | figure/ed:replace/ed:*/artwork" mode="validate" priority="9">
+  <xsl:apply-templates select="@*|*" mode="validate"/>
+</xsl:template>
+<xsl:template match="artwork" mode="validate">
+  <xsl:call-template name="warninvalid"/>
+  <xsl:apply-templates select="@*|*" mode="validate"/>
+</xsl:template>
+
+<!-- list element -->
+<xsl:template match="t/list | t/ed:replace/ed:*/list" mode="validate" priority="9">
+  <xsl:apply-templates select="@*|*" mode="validate"/>
+</xsl:template>
+<xsl:template match="list" mode="validate">
+  <xsl:call-template name="warninvalid"/>
+  <xsl:apply-templates select="@*|*" mode="validate"/>
+</xsl:template>
 
 </xsl:transform>
