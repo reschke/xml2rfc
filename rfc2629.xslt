@@ -6304,11 +6304,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.548 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.548 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.549 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.549 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/05/02 07:25:24 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/05/02 07:25:24 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/05/14 15:20:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/05/14 15:20:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6997,8 +6997,20 @@ prev: <xsl:value-of select="$prev"/>
 <xsl:template match="@*" mode="validate"/>
 
 <xsl:template name="warninvalid">
+  <xsl:variable name="pname">
+    <xsl:if test="namespace-uri(..)!=''">
+      <xsl:value-of select="concat('{',namespace-uri(..),'}')"/>
+    </xsl:if>
+    <xsl:value-of select="local-name(..)"/>
+  </xsl:variable>
+  <xsl:variable name="cname">
+    <xsl:if test="namespace-uri(.)!=''">
+      <xsl:value-of select="concat('{',namespace-uri(.),'}')"/>
+    </xsl:if>
+    <xsl:value-of select="local-name(.)"/>
+  </xsl:variable>
   <xsl:call-template name="warning">
-    <xsl:with-param name="msg" select="concat(local-name(.),' not allowed inside ',local-name(..))"/>
+    <xsl:with-param name="msg" select="concat($cname,' not allowed inside ',$pname)"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -7016,6 +7028,21 @@ prev: <xsl:value-of select="$prev"/>
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
 <xsl:template match="list" mode="validate">
+  <xsl:call-template name="warninvalid"/>
+  <xsl:apply-templates select="@*|*" mode="validate"/>
+</xsl:template>
+
+<!-- t element -->
+<xsl:template match="abstract/t | abstract/ed:replace/ed:*/t |
+                     list/t | list/ed:replace/ed:*/t |
+                     note/t | note/ed:replace/ed:*/t |
+                     section/t | section/ed:replace/ed:*/t |
+                     x:blockquote/t | x:blockquote/ed:replace/ed:*/t |
+                     x:note/t | x:note/ed:replace/ed:*/t |
+                     x:lt/t | x:lt/ed:replace/ed:*/t" mode="validate" priority="9">
+  <xsl:apply-templates select="@*|*" mode="validate"/>
+</xsl:template>
+<xsl:template match="t" mode="validate">
   <xsl:call-template name="warninvalid"/>
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
