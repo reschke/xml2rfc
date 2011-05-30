@@ -230,6 +230,16 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- extension for excluding the index -->
+
+<xsl:param name="xml2rfc-ext-include-index">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'include-index'"/>
+    <xsl:with-param name="default" select="'yes'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- extension for excluding DCMI properties in meta tag (RFC2731) -->
 
 <xsl:param name="xml2rfc-ext-support-rfc2731">
@@ -559,7 +569,7 @@
 <xsl:variable name="no-copylong" select="$ipr-2008-11"/>
 
 <!-- will document have an index -->
-<xsl:variable name="has-index" select="//iref or (//xref and $xml2rfc-ext-include-references-in-index='yes')" />
+<xsl:variable name="has-index" select="(//iref or (//xref and $xml2rfc-ext-include-references-in-index='yes')) and $xml2rfc-ext-include-index!='no'" />
           
 <!-- does the document contain edits? -->
 <xsl:variable name="has-edits" select="//ed:ins | //ed:del | //ed:replace" />
@@ -6304,11 +6314,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.549 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.549 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.550 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.550 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/05/14 15:20:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/05/14 15:20:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/05/30 14:02:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/05/30 14:02:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6690,6 +6700,7 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='allow-markup-in-artwork'"/>
                       <xsl:when test="$attrname='authors-section'"/>
                       <xsl:when test="$attrname='duplex'"/>
+                      <xsl:when test="$attrname='include-index'"/>
                       <xsl:when test="$attrname='include-references-in-index'"/>
                       <xsl:when test="$attrname='justification'"/>
                       <xsl:when test="$attrname='parse-xml-in-artwork'"/>
