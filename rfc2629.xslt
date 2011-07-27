@@ -4213,6 +4213,13 @@ dd, li, p {
           </xsl:otherwise>
         </xsl:choose>
         
+        <!-- warn about iprExtract without effect -->
+        <xsl:if test="/rfc/@iprExtract and (/rfc/@ipr != 'noModification3667' and /rfc/@ipr != 'noDerivatives3667' and /rfc/@ipr != 'noModification3978' and /rfc/@ipr != 'noDerivatives3978')">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg" select="concat('/rfc/@iprExtract does not have any effect for /rfc/@ipr=',/rfc/@ipr)"/>
+          </xsl:call-template>
+        </xsl:if>
+        
         <!-- restrictions -->
         <xsl:choose>
           <xsl:when test="/rfc/@ipr = 'noModificationTrust200811'">
@@ -6321,11 +6328,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.552 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.552 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.553 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.553 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/07/20 22:01:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/07/20 22:01:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/07/27 17:45:31 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/07/27 17:45:31 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
