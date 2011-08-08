@@ -5718,9 +5718,14 @@ dd, li, p {
   <xsl:variable name="badTargets" select="//xref[not(@target=//@anchor) and not(ancestor::ed:del)]" />
   <xsl:if test="$badTargets">
     <xsl:variable name="text">
-      The following target names do not exist:
+      <xsl:text>The following target names do not exist: </xsl:text>
       <xsl:for-each select="$badTargets">
-        <xsl:value-of select="@target"/><xsl:if test="position()!=last()">, </xsl:if>
+        <xsl:value-of select="@target"/>
+        <xsl:if test="not(@target)">(@target attribute missing)</xsl:if>
+        <xsl:call-template name="lineno"/>
+        <xsl:if test="position()!=last()">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
       </xsl:for-each>
     </xsl:variable>
     <xsl:call-template name="warning">
@@ -6328,11 +6333,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.553 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.553 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.554 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.554 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/07/27 17:45:31 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/07/27 17:45:31 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/08/08 16:18:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/08/08 16:18:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
