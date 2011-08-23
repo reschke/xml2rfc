@@ -2690,6 +2690,12 @@
         <myns:item>Internet Architecture Board (IAB)</myns:item>
       </xsl:when>
       <xsl:when test="/rfc/front/workgroup and (not(/rfc/@number) or /rfc/@number='')">
+        <xsl:if test="not(starts-with(/rfc/@docName,'draft-ietf-')) and $submissionType='IETF'">
+          <xsl:call-template name="info">
+            <xsl:with-param name="inline" select="'no'"/>
+            <xsl:with-param name="msg">The /rfc/front/workgroup should only be used for Working Group drafts</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
         <xsl:for-each select="/rfc/front/workgroup">
           <myns:item><xsl:value-of select="."/></myns:item>
         </xsl:for-each>
@@ -6333,11 +6339,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.554 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.554 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.555 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.555 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/08/08 16:18:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/08/08 16:18:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/08/23 07:46:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/08/23 07:46:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
