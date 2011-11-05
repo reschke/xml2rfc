@@ -353,6 +353,9 @@
 <xsl:param name="internetDraftUrlPostfix" select="''" />
 <xsl:param name="internetDraftUrlFrag" select="'section-'" />
 
+<!-- the format we're producing -->
+<xsl:param name="outputExtension" select="'html'"/>
+
 <!-- warning re: absent node-set ext. function -->
 <xsl:variable name="node-set-warning">
   This stylesheet requires either an XSLT-1.0 processor with node-set()
@@ -1464,12 +1467,11 @@
 
   <xsl:choose>
     <xsl:when test="$ref and $bib/x:source/@href and $bib/x:source/@basename and $ref/@x:rel">
-      <xsl:value-of select="concat($bib/x:source/@basename,'.html',$ref/@x:rel)" />
+      <xsl:value-of select="concat($bib/x:source/@basename,'.',$outputExtension,$ref/@x:rel)" />
     </xsl:when>
     <!-- tools.ietf.org won't have the "-latest" draft -->
     <xsl:when test="$bib/seriesInfo/@name='Internet-Draft' and $bib/x:source/@href and $bib/x:source/@basename and substring($bib/x:source/@basename, (string-length($bib/x:source/@basename) - string-length('-latest')) + 1)='-latest'">
-      <!-- TODO: should produce the right extension based on the format we're producing -->
-      <xsl:value-of select="concat($bib/x:source/@basename,'.html')" />
+      <xsl:value-of select="concat($bib/x:source/@basename,'.',$outputExtension)" />
     </xsl:when>
     <xsl:when test="$bib/seriesInfo/@name='RFC'">
       <xsl:variable name="sec">
@@ -6345,11 +6347,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.556 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.556 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.557 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.557 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/08/28 20:30:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/08/28 20:30:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/11/05 12:56:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/11/05 12:56:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
