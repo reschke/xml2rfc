@@ -1866,7 +1866,19 @@
       </xsl:if>
       <xsl:apply-templates select="/" mode="links" />
       <xsl:for-each select="x:link">
-        <link><xsl:copy-of select="@*" /></link>
+        <link>
+          <xsl:choose>
+            <xsl:when test="@basename">
+              <xsl:attribute name="href">
+                <xsl:value-of select="concat(@basename,'.',$outputExtension)"/>
+              </xsl:attribute>
+              <xsl:copy-of select="@rel|@title" />
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:copy-of select="@*" />
+            </xsl:otherwise>
+          </xsl:choose>
+        </link>
       </xsl:for-each>
       <xsl:if test="@number">
         <link rel="Alternate" title="Authorative ASCII Version" href="http://www.ietf.org/rfc/rfc{@number}.txt" />
@@ -6347,11 +6359,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.557 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.557 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.558 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.558 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/11/05 12:56:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/11/05 12:56:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/11/05 16:48:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/11/05 16:48:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
