@@ -318,6 +318,16 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- check artwork width? -->
+
+<xsl:param name="xml2rfc-ext-check-artwork-width">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'check-artwork-width'"/>
+    <xsl:with-param name="default" select="'yes'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- choose whether or not to do mailto links --> 
   
 <xsl:param name="xml2rfc-linkmailto">
@@ -745,6 +755,9 @@
   <xsl:param name="content"/>
   <xsl:param name="indent"/>
   <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-check-artwork-width='no'">
+      <!-- skip check -->
+    </xsl:when>
     <xsl:when test="not(contains($content,'&#10;'))">
       <xsl:if test="string-length($content) > 69 + $indent">
         <xsl:call-template name="warning">
@@ -6401,11 +6414,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.559 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.559 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.560 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.560 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/12/16 12:37:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/12/16 12:37:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/12/17 13:39:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/12/17 13:39:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6796,6 +6809,7 @@ prev: <xsl:value-of select="$prev"/>
                     <xsl:choose>
                       <xsl:when test="$attrname='allow-markup-in-artwork'"/>
                       <xsl:when test="$attrname='authors-section'"/>
+                      <xsl:when test="$attrname='check-artwork-width'"/>
                       <xsl:when test="$attrname='duplex'"/>
                       <xsl:when test="$attrname='include-index'"/>
                       <xsl:when test="$attrname='include-references-in-index'"/>
