@@ -3714,8 +3714,7 @@ dd, li, p {
   
   .print2col {
     column-count: 2;
-    -moz-column-count: 2;<!-- for Firefox -->
-    column-fill: auto;<!-- for PrinceXML -->
+    column-fill: auto;
   }
 <xsl:if test="$xml2rfc-ext-justification='print'">
   dd, li, p {
@@ -6414,11 +6413,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.560 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.560 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.561 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.561 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2011/12/17 13:39:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/12/17 13:39:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2011/12/24 13:06:50 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2011/12/24 13:06:50 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
