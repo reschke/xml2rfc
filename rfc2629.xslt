@@ -3310,7 +3310,11 @@ function toggleButton(node) {
   if (! buttonsAdded) {
   
     // docname
-    var template = "<xsl:value-of select="/rfc/x:feedback/@template"/>";
+    var template = "<xsl:call-template name="replace-substring">
+  <xsl:with-param name="string" select="/rfc/x:feedback/@template"/>
+  <xsl:with-param name="replace">"</xsl:with-param>
+  <xsl:with-param name="by">\"</xsl:with-param>
+</xsl:call-template>";
 
     var id = node.getAttribute("id");
     // better id available?
@@ -5142,7 +5146,6 @@ dd, li, p {
 
 
 <xsl:template name="replace-substring">
-
   <xsl:param name="string" />
   <xsl:param name="replace" />
   <xsl:param name="by" />
@@ -6522,11 +6525,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.563 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.563 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.564 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.564 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/01/28 10:32:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/01/28 10:32:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/01/28 14:56:56 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/01/28 14:56:56 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
