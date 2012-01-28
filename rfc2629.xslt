@@ -1897,90 +1897,7 @@
       <title>
         <xsl:apply-templates select="front/title" mode="get-text-content" />
       </title>
-<xsl:if test="/rfc/x:feedback">
-      <script>
-var buttonsAdded = false;
-
-function init() {
-  var fb = document.createElement("div");
-  fb.setAttribute("class", "feedback");
-  fb.setAttribute("onclick", "feedback();");
-  fb.appendChild(document.createTextNode("FEEDBACK?"));
-
-  var bodyl = document.getElementsByTagName("body");
-  bodyl.item(0).appendChild(fb);
-}
-
-function feedback() {
-  toggleButtonsToElementsByName("h1");
-  toggleButtonsToElementsByName("h2");
-  toggleButtonsToElementsByName("h3");
-  toggleButtonsToElementsByName("h4");
-  
-  buttonsAdded = !buttonsAdded;
-}
-
-function toggleButtonsToElementsByName(name) {
-  var list = document.getElementsByTagName(name);
-  for (var i = 0; i &lt; list.length; i++) {
-    toggleButton(list.item(i));
-  }
-}
-
-function toggleButton(node) {
-  if (! buttonsAdded) {
-  
-    // docname
-    var template = "<xsl:value-of select="/rfc/x:feedback/@template"/>";
-
-    var id = node.getAttribute("id");
-    // better id available?
-    var titlelinks = node.getElementsByTagName("a");
-    for (var i = 0; i &lt; titlelinks.length; i++) {
-      var tl = titlelinks.item(i);
-      if (tl.getAttribute("id")) {
-        id = tl.getAttribute("id");
-      }
-    }
-
-    // ref
-    var ref = window.location.toString();
-    var hash = ref.indexOf("#");
-    if (hash != -1) {
-      ref = ref.substring(0, hash);
-    }
-    if (id != "") {
-      ref += "#" + id;
-    }
-    
-    // docname
-    var docname = "<xsl:value-of select="/rfc/@docName"/>";
-
-    // section
-    var section = node.textContent;
-    
-    // build URI from template
-    var uri = template.replace("{docname}", encodeURIComponent(docname));
-    uri = uri.replace("{section}", encodeURIComponent(section));
-    uri = uri.replace("{ref}", encodeURIComponent(ref));
-  
-    var button = document.createElement("a");
-    button.setAttribute("class", "fbbutton");
-    button.setAttribute("href", uri);
-    button.appendChild(document.createTextNode("send feedback"));
-    node.appendChild(button);
-  }
-  else {
-    var buttons = node.getElementsByTagName("a");
-    for (var i = 0; i &lt; buttons.length; i++) {
-      var b = buttons.item(i);
-      if (b.getAttribute("class") == "fbbutton") {
-        node.removeChild(b);
-      }
-    }
-  }
-}</script>
-</xsl:if>
+      <xsl:call-template name="insertScript" />
       <xsl:call-template name="insertCss" />
       <!-- <link rel="alternate stylesheet" type="text/css" media="screen" title="Plain (typewriter)" href="rfc2629tty.css" /> -->
             
@@ -3357,6 +3274,93 @@ function toggleButton(node) {
 
 </xsl:template>
 
+<!-- optional scripts -->
+<xsl:template name="insertScript">
+<xsl:if test="/rfc/x:feedback">
+<script>
+var buttonsAdded = false;
+
+function init() {
+  var fb = document.createElement("div");
+  fb.setAttribute("class", "feedback");
+  fb.setAttribute("onclick", "feedback();");
+  fb.appendChild(document.createTextNode("feedback"));
+
+  var bodyl = document.getElementsByTagName("body");
+  bodyl.item(0).appendChild(fb);
+}
+
+function feedback() {
+  toggleButtonsToElementsByName("h1");
+  toggleButtonsToElementsByName("h2");
+  toggleButtonsToElementsByName("h3");
+  toggleButtonsToElementsByName("h4");
+  
+  buttonsAdded = !buttonsAdded;
+}
+
+function toggleButtonsToElementsByName(name) {
+  var list = document.getElementsByTagName(name);
+  for (var i = 0; i &lt; list.length; i++) {
+    toggleButton(list.item(i));
+  }
+}
+
+function toggleButton(node) {
+  if (! buttonsAdded) {
+  
+    // docname
+    var template = "<xsl:value-of select="/rfc/x:feedback/@template"/>";
+
+    var id = node.getAttribute("id");
+    // better id available?
+    var titlelinks = node.getElementsByTagName("a");
+    for (var i = 0; i &lt; titlelinks.length; i++) {
+      var tl = titlelinks.item(i);
+      if (tl.getAttribute("id")) {
+        id = tl.getAttribute("id");
+      }
+    }
+
+    // ref
+    var ref = window.location.toString();
+    var hash = ref.indexOf("#");
+    if (hash != -1) {
+      ref = ref.substring(0, hash);
+    }
+    if (id != "") {
+      ref += "#" + id;
+    }
+    
+    // docname
+    var docname = "<xsl:value-of select="/rfc/@docName"/>";
+
+    // section
+    var section = node.textContent;
+    
+    // build URI from template
+    var uri = template.replace("{docname}", encodeURIComponent(docname));
+    uri = uri.replace("{section}", encodeURIComponent(section));
+    uri = uri.replace("{ref}", encodeURIComponent(ref));
+  
+    var button = document.createElement("a");
+    button.setAttribute("class", "fbbutton");
+    button.setAttribute("href", uri);
+    button.appendChild(document.createTextNode("send feedback"));
+    node.appendChild(button);
+  }
+  else {
+    var buttons = node.getElementsByTagName("a");
+    for (var i = 0; i &lt; buttons.length; i++) {
+      var b = buttons.item(i);
+      if (b.getAttribute("class") == "fbbutton") {
+        node.removeChild(b);
+      }
+    }
+  }
+}</script>
+</xsl:if>
+</xsl:template>
 
 <!-- insert CSS style info -->
 
@@ -3767,16 +3771,21 @@ thead th {
   position: fixed;
   bottom: 1%;
   right: 1%;
-  padding:3px; 
-  background: silver;
-  border: 1px dotted black;
+  padding: 3px 5px;
+  color: white;
+  border-radius: 5px;
+  background: #a00000;
+  border: 1px solid silver;
 }
-a.fbbutton {
+.fbbutton {
   margin-left: 1em;
-  color: black;
+  color: #303030;
   font-size: small;
   font-weight: normal;
-  background: yellow;
+  background: #d0d000;
+  padding: 1px 4px;
+  border: 1px solid silver;
+  border-radius: 5px;
 }</xsl:if><xsl:if test="$xml2rfc-ext-justification='always'">
 dd, li, p {
   text-align: justify;
@@ -6513,11 +6522,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.562 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.562 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.563 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.563 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/01/27 17:32:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/01/27 17:32:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/01/28 10:32:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/01/28 10:32:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
