@@ -3282,7 +3282,7 @@ var buttonsAdded = false;
 
 function init() {
   var fb = document.createElement("div");
-  fb.setAttribute("class", "feedback");
+  fb.className = "feedback noprint";
   fb.setAttribute("onclick", "feedback();");
   fb.appendChild(document.createTextNode("feedback"));
 
@@ -3348,7 +3348,7 @@ function toggleButton(node) {
     uri = uri.replace("{ref}", encodeURIComponent(ref));
   
     var button = document.createElement("a");
-    button.setAttribute("class", "fbbutton");
+    button.className = "fbbutton noprint";
     button.setAttribute("href", uri);
     button.appendChild(document.createTextNode("send feedback"));
     node.appendChild(button);
@@ -3357,7 +3357,7 @@ function toggleButton(node) {
     var buttons = node.getElementsByTagName("a");
     for (var i = 0; i &lt; buttons.length; i++) {
       var b = buttons.item(i);
-      if (b.getAttribute("class") == "fbbutton") {
+      if (b.className == "fbbutton noprint") {
         node.removeChild(b);
       }
     }
@@ -6526,11 +6526,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.565 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.565 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.566 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.566 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/02/05 19:50:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/02/05 19:50:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/02/06 13:03:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/02/06 13:03:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
