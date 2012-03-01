@@ -4024,8 +4024,8 @@ dd, li, p {
   
   <!-- generate navigation links to index subsections -->
   <p class="noprint">
-    <xsl:variable name="irefs" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]"/>
-    <xsl:variable name="xrefs" select="//reference[not(starts-with(@anchor,'deleted-'))][generate-id(.) = generate-id(key('index-first-letter',translate(substring(@anchor,1,1),$lcase,$ucase)))]"/>
+    <xsl:variable name="irefs" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))[1])]"/>
+    <xsl:variable name="xrefs" select="//reference[not(starts-with(@anchor,'deleted-'))][generate-id(.) = generate-id(key('index-first-letter',translate(substring(@anchor,1,1),$lcase,$ucase))[1])]"/>
   
     <xsl:for-each select="$irefs | $xrefs">
     
@@ -4053,8 +4053,8 @@ dd, li, p {
   <!-- for each index subsection -->
   <div class="print2col">
   <ul class="ind">
-    <xsl:variable name="irefs2" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]"/>
-    <xsl:variable name="xrefs2" select="//reference[not(starts-with(@anchor,'deleted-'))][generate-id(.) = generate-id(key('index-first-letter',translate(substring(@anchor,1,1),$lcase,$ucase)))]"/>
+    <xsl:variable name="irefs2" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))[1])]"/>
+    <xsl:variable name="xrefs2" select="//reference[not(starts-with(@anchor,'deleted-'))][generate-id(.) = generate-id(key('index-first-letter',translate(substring(@anchor,1,1),$lcase,$ucase))[1])]"/>
   
     <xsl:for-each select="$irefs2 | $xrefs2">
       <xsl:sort select="translate(concat(@item,@anchor),$lcase,$ucase)" />
@@ -4104,7 +4104,7 @@ dd, li, p {
                             <xsl:for-each select="$rs2">
                               <xsl:sort select="substring-before(concat(@x:sec,'.'),'.')" data-type="number"/>
                               <xsl:sort select="substring(@x:sec,2+string-length(substring-before(@x:sec,'.')))" data-type="number"/>
-                              <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-sec',concat(@target,'..',@x:sec)))">
+                              <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-sec',concat(@target,'..',@x:sec))[1])">
                                 <li>
                                   <em>
                                     <xsl:choose>
@@ -4134,7 +4134,7 @@ dd, li, p {
                             <ul>  
                               <xsl:for-each select="$rs3">
                                 <xsl:sort select="count($doc//*[@anchor and following::*/@anchor=substring-after(current()/@x:rel,'#')])" order="ascending" data-type="number"/>
-                                <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-anchor',concat(@target,'..',@x:rel)))">
+                                <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-anchor',concat(@target,'..',@x:rel))[1])">
                                   <li>
                                     <em>
                                       <xsl:variable name="sec">
@@ -4167,7 +4167,7 @@ dd, li, p {
                   </xsl:when>
                   <xsl:otherwise>
                     <!-- regular iref -->
-                    <xsl:if test="generate-id(.) = generate-id(key('index-item',concat(@item,@anchor)))">
+                    <xsl:if test="generate-id(.) = generate-id(key('index-item',concat(@item,@anchor))[1])">
                       <xsl:variable name="item" select="@item"/>
                       <xsl:variable name="in-artwork" select="key('index-item',$item)[@primary='true' and ancestor::artwork]"/>
                           
@@ -6532,11 +6532,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.570 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.570 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.571 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.571 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/02/13 19:17:35 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/02/13 19:17:35 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/03/01 16:01:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/03/01 16:01:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
