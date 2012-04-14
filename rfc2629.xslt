@@ -30,7 +30,7 @@
 -->
 
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="1.0"
+                version="2.0"
                 
                 xmlns:date="http://exslt.org/dates-and-times"
                 xmlns:ed="http://greenbytes.de/2002/rfcedit"
@@ -661,7 +661,7 @@
 </xsl:template>
 
 <xsl:template match="artwork">
-  <xsl:if test="not(ancestor::ed:del) and $xml2rfc-ext-parse-xml-in-artwork='yes' and function-available('myns:parseXml')">
+  <xsl:if test="not(ancestor::ed:del) and $xml2rfc-ext-parse-xml-in-artwork='yes' and function-available('myns:parseXml')" use-when="function-available('myns:parseXml')">
     <xsl:if test="contains(.,'&lt;?xml')">
       <xsl:variable name="body" select="substring-after(substring-after(.,'&lt;?xml'),'?>')" /> 
       <xsl:if test="$body!='' and myns:parseXml($body)!=''">
@@ -5454,19 +5454,20 @@ dd, li, p {
       </xsl:call-template>
     </xsl:if>
     <xsl:choose>
-      <xsl:when test="function-available('myns:parseXml')">
+      <xsl:when test="function-available('myns:parseXml')" use-when="function-available('myns:parseXml')">
         <xsl:if test="myns:parseXml(concat($cleaned,''))!=''">
           <xsl:call-template name="error">
             <xsl:with-param name="msg" select="concat('Parse error in XML: ', myns:parseXml(concat($cleaned,'')))"/>
           </xsl:call-template>
         </xsl:if>
       </xsl:when>
-      <xsl:when test="function-available('saxon:parse')">
+      <xsl:when test="function-available('saxon:parse')" use-when="function-available('saxon:parse')">
         <xsl:variable name="parsed" select="saxon:parse(concat($cleaned,''))"/>
         <xsl:if test="$parsed='foo'">
           <xsl:comment>should not get here</xsl:comment>
         </xsl:if>
       </xsl:when>
+      <xsl:when test="false()"></xsl:when>
       <xsl:otherwise></xsl:otherwise>
     </xsl:choose>
   </xsl:if>
@@ -6532,11 +6533,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.572 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.572 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.573 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.573 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/03/19 14:26:22 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/03/19 14:26:22 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/04/14 07:57:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/04/14 07:57:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -7031,7 +7032,7 @@ prev: <xsl:value-of select="$prev"/>
 
 <!-- diag support -->
 <xsl:template name="lineno">
-  <xsl:if test="function-available('saxon-old:line-number')">
+  <xsl:if test="function-available('saxon-old:line-number')" use-when="function-available('saxon-old:line-number')">
     <xsl:if test="saxon-old:line-number() > 0">
       <xsl:text> (at line </xsl:text>
       <xsl:value-of select="saxon-old:line-number()"/>
@@ -7049,7 +7050,7 @@ prev: <xsl:value-of select="$prev"/>
       <xsl:text>)</xsl:text>
     </xsl:if>
   </xsl:if>
-  <xsl:if test="function-available('saxon:line-number')">
+  <xsl:if test="function-available('saxon:line-number')" use-when="function-available('saxon:line-number')">
     <xsl:if test="saxon:line-number() > 0">
       <xsl:text> (at line </xsl:text>
       <xsl:value-of select="saxon:line-number()"/>
@@ -7100,8 +7101,11 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:variable name="current-year">
   <xsl:choose>
-    <xsl:when test="function-available('date:date-time')">
+    <xsl:when test="function-available('date:date-time')" use-when="function-available('date:date-time')">
       <xsl:value-of select="substring-before(date:date-time(),'-')"/>
+    </xsl:when>
+    <xsl:when test="function-available('current-date')">
+      <xsl:value-of select="substring-before(string(current-date()),'-')"/>
     </xsl:when>
     <xsl:otherwise/>
   </xsl:choose>
@@ -7109,8 +7113,11 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:variable name="current-month">
   <xsl:choose>
-    <xsl:when test="function-available('date:date-time')">
+    <xsl:when test="function-available('date:date-time')" use-when="function-available('date:date-time')">
       <xsl:value-of select="substring-before(substring-after(date:date-time(),'-'),'-')"/>
+    </xsl:when>
+    <xsl:when test="function-available('current-date')">
+      <xsl:value-of select="substring-before(substring-after(string(current-date()),'-'),'-')"/>
     </xsl:when>
     <xsl:otherwise/>
   </xsl:choose>
@@ -7118,8 +7125,11 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:variable name="current-day">
   <xsl:choose>
-    <xsl:when test="function-available('date:date-time')">
+    <xsl:when test="function-available('date:date-time')" use-when="function-available('date:date-time')">
       <xsl:value-of select="substring-after(substring-after(substring-before(date:date-time(),'T'),'-'),'-')"/>
+    </xsl:when>
+    <xsl:when test="function-available('current-dateTime')">
+      <xsl:value-of select="substring-after(substring-after(substring-before(string(current-dateTime()),'T'),'-'),'-')"/>
     </xsl:when>
     <xsl:otherwise/>
   </xsl:choose>
@@ -7286,5 +7296,10 @@ prev: <xsl:value-of select="$prev"/>
   <xsl:call-template name="warninvalid"/>
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
+
+<xsl:function name="exslt:node-set">
+  <xsl:param name="node"/>
+  <xsl:copy-of select="$node"/>
+</xsl:function>
 
 </xsl:transform>
