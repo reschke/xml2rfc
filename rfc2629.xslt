@@ -4197,7 +4197,7 @@ dd, li, p {
                             <xsl:for-each select="$s2">
                               <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
                               
-                              <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
+                              <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem))[1])">
                   
                                 <xsl:variable name="in-artwork2" select="key('index-item-subitem',concat(@item,'..',@subitem))[@primary='true' and ancestor::artwork]" />
                   
@@ -6533,11 +6533,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.573 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.573 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.574 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.574 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/04/14 07:57:20 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/04/14 07:57:20 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/05/01 10:58:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/05/01 10:58:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
