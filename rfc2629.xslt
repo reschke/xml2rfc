@@ -3952,10 +3952,14 @@ dd, li, p {
         <xsl:choose>
           <xsl:when test="self::xref">
             <xsl:variable name="target" select="@target"/>
+            <xsl:comment>workaround for Saxon 9.1 bug; force evalutation of: <xsl:value-of select="$target"/></xsl:comment>
+            <xsl:variable name="no"><xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
             <xsl:text>#</xsl:text>
             <xsl:value-of select="$anchor-prefix"/>
             <xsl:text>.xref.</xsl:text>
-            <xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/>
+            <xsl:value-of select="@target"/>
+            <xsl:text>.</xsl:text>
+            <xsl:value-of select="$no"/>
           </xsl:when>
           <xsl:when test="self::iref">
             <xsl:text>#</xsl:text>
@@ -6533,11 +6537,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.575 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.575 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.576 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.576 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/05/02 09:43:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/05/02 09:43:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/05/02 14:26:45 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/05/02 14:26:45 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
