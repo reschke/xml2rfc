@@ -700,7 +700,7 @@
   </xsl:variable>  
   <xsl:choose>
     <xsl:when test="@align='right'">
-      <div style="display:table; margin-left: auto; margin-right: 0pt;">
+      <div style="display:table; margin-left: auto; margin-right: 0em;">
         <xsl:call-template name="insert-begin-code"/>
         <pre style="margin-left: 0em;">
           <xsl:call-template name="add-artwork-class"/>
@@ -3400,6 +3400,7 @@ body {<xsl:if test="$xml2rfc-background!=''">
   color: black;
   font-family: verdana, helvetica, arial, sans-serif;
   font-size: 10pt;
+  margin-right: 2em;
 }<xsl:if test="//xhtml:p">
 br.p {
   line-height: 150%;
@@ -3410,9 +3411,6 @@ cite {
 div.note {
   margin-left: 2em;
 }</xsl:if>
-dd {
-  margin-right: 2em;
-}
 dl {
   margin-left: 2em;
 }
@@ -3457,11 +3455,9 @@ img {
 }
 li {
   margin-left: 2em;
-  margin-right: 2em;
 }
 ol {
   margin-left: 2em;
-  margin-right: 2em;
 }
 ol.la {
   list-style-type: lower-alpha;
@@ -3477,7 +3473,6 @@ q {
 }</xsl:if>
 p {
   margin-left: 2em;
-  margin-right: 2em;
 }
 pre {
   margin-left: 3em;
@@ -3606,7 +3601,6 @@ thead {
 ul.toc, ul.toc ul {
   list-style: none;
   margin-left: 1.5em;
-  margin-right: 0em;
   padding-left: 0em;
 }
 ul.toc li {
@@ -3614,14 +3608,12 @@ ul.toc li {
   font-weight: bold;
   font-size: 10pt;
   margin-left: 0em;
-  margin-right: 0em;
 }
 ul.toc li li {
   line-height: normal;
   font-weight: normal;
   font-size: 9pt;
   margin-left: 0em;
-  margin-right: 0em;
 }
 li.excluded {
   font-size: 0pt;
@@ -3632,7 +3624,6 @@ ul p {
 <xsl:if test="$has-index">ul.ind, ul.ind ul {
   list-style: none;
   margin-left: 1.5em;
-  margin-right: 0em;
   padding-left: 0em;
   page-break-before: avoid;
 }
@@ -3640,13 +3631,11 @@ ul.ind li {
   font-weight: bold;
   line-height: 200%;
   margin-left: 0em;
-  margin-right: 0em;
 }
 ul.ind li li {
   font-weight: normal;
   line-height: 150%;
   margin-left: 0em;
-  margin-right: 0em;
 }
 .avoidbreak {
   page-break-inside: avoid;
@@ -5100,17 +5089,21 @@ dd, li, p {
 <xsl:template name="insertTocAppendix">
   
   <xsl:if test="//figure[@title!='' or @anchor!='']">
-    <ul>
-      <xsl:for-each select="//figure[@title!='' or @anchor!='']">
-        <xsl:variable name="title">Figure <xsl:value-of select="position()"/><xsl:if test="@title">: <xsl:value-of select="@title"/></xsl:if>
-        </xsl:variable>
-        <li>
-          <xsl:call-template name="insert-toc-line">
-            <xsl:with-param name="target" select="concat($anchor-prefix,'.figure.',position())" />
-            <xsl:with-param name="title" select="$title" />
-          </xsl:call-template>
-        </li>
-      </xsl:for-each>
+    <ul class="toc">
+      <li>Figures
+        <ul>
+          <xsl:for-each select="//figure[@title!='' or @anchor!='']">
+            <xsl:variable name="title">Figure <xsl:value-of select="position()"/><xsl:if test="@title">: <xsl:value-of select="@title"/></xsl:if>
+            </xsl:variable>
+            <li>
+              <xsl:call-template name="insert-toc-line">
+                <xsl:with-param name="target" select="concat($anchor-prefix,'.figure.',position())" />
+                <xsl:with-param name="title" select="$title" />
+              </xsl:call-template>
+            </li>
+          </xsl:for-each>
+        </ul>
+      </li>
     </ul>
   </xsl:if>
   
@@ -6537,11 +6530,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.576 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.576 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.577 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.577 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/05/02 14:26:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/05/02 14:26:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/05/17 13:50:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/05/17 13:50:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
