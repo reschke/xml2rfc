@@ -5233,15 +5233,51 @@ dd, li, p {
 <xsl:template name="check-anchor">
   <xsl:if test="@anchor and @anchor!=''">
     <!-- check validity of anchor name -->
-    <xsl:variable name="test">
-      <xsl:element name="{@anchor}"/>
-    </xsl:variable>
-    <xsl:if test="count(exslt:node-set($test)//*) = 0">
+    <xsl:variable name="t" select="@anchor"/>
+    <xsl:variable name="tstart" select="substring($t,1,1)"/>
+
+    <!-- we only check for disallowed ASCII characters for now -->
+    <xsl:variable name="not-namestartchars">&#9;&#10;&#13;&#32;!"#$%&amp;'()*+,-./0123456789;&lt;=&gt;?@[\]^`[|}~</xsl:variable>
+
+    <xsl:if test="$tstart!=translate($tstart,$not-namestartchars,'')">
       <xsl:call-template name="error">
-        <xsl:with-param name="msg" select="concat('&quot;',@anchor,'&quot; is not a valid XML name')"/>
+        <xsl:with-param name="msg" select="concat('anchor &quot;',$t,'&quot; can not start with character &quot;',$tstart,'&quot;')"/>
       </xsl:call-template>
     </xsl:if>
+    <xsl:call-template name="check-anchor-non-start">
+      <xsl:with-param name="f" select="$t"/>
+      <xsl:with-param name="t" select="$t"/>
+    </xsl:call-template>
   </xsl:if>
+</xsl:template>
+
+<xsl:template name="check-anchor-non-start">
+  <xsl:param name="f"/>
+  <xsl:param name="t"/>
+
+  <xsl:variable name="not-namechars">&#9;&#10;&#13;&#32;!"#$%&amp;'()*+,/;&lt;=&gt;?@[\]^`[|}~</xsl:variable>
+
+  <xsl:choose>
+    <xsl:when test="$t=''">
+      <!-- Done -->
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="s" select="substring($t,1,1)"/>
+      <xsl:choose>
+        <xsl:when test="$s!=translate($s,$not-namechars,'')">
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg" select="concat('anchor &quot;',$f,'&quot; contains invalid character &quot;',$s,'&quot; at position ',string-length($f) - string-length($t))"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="check-anchor-non-start">
+            <xsl:with-param name="f" select="$f"/>
+            <xsl:with-param name="t" select="substring($t,2)"/>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="copy-anchor">
@@ -6530,11 +6566,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.579 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.579 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.580 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.580 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/05/24 20:24:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/05/24 20:24:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/06/03 11:18:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/06/03 11:18:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
