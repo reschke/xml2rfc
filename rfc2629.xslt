@@ -6566,11 +6566,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.580 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.580 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.581 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.581 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/06/03 11:18:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/06/03 11:18:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/06/11 22:45:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/06/11 22:45:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -7330,9 +7330,10 @@ prev: <xsl:value-of select="$prev"/>
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
 
+<!-- disabled for now because of https://bugzilla.gnome.org/show_bug.cgi?id=677901
 <xsl:function name="exslt:node-set">
   <xsl:param name="node"/>
   <xsl:copy-of select="$node"/>
-</xsl:function>
+</xsl:function>-->
 
 </xsl:transform>
