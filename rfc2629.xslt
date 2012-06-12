@@ -1527,7 +1527,15 @@
     <xsl:when test="$bib/seriesInfo/@name='Internet-Draft' and $bib/x:source/@href and $bib/x:source/@basename and substring($bib/x:source/@basename, (string-length($bib/x:source/@basename) - string-length('-latest')) + 1)='-latest'">
       <xsl:value-of select="concat($bib/x:source/@basename,'.',$outputExtension)" />
     </xsl:when>
+    <!-- TODO: this should handle the case where there's one BCP entry but
+    multiple RFC entries in a more useful way-->
     <xsl:when test="$bib/seriesInfo/@name='RFC'">
+      <xsl:variable name="rfcEntries" select="$bib/seriesInfo[@name='RFC']"/>
+      <xsl:if test="count($rfcEntries)!=1">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg" select="concat('seriesInfo/@name=RFC encountered multiple times for reference ',$bib/@anchor,', will generate link to first entry only')"/>
+        </xsl:call-template>
+      </xsl:if>
       <xsl:variable name="sec">
         <xsl:choose>
           <xsl:when test="$ref and starts-with($ref/@x:rel,'#') and not($ref/@x:sec)">
@@ -1542,7 +1550,7 @@
           <xsl:otherwise/>
         </xsl:choose>
       </xsl:variable>
-      <xsl:value-of select="concat($rfcUrlPrefix,$bib/seriesInfo[@name='RFC']/@value,$rfcUrlPostfix)" />
+      <xsl:value-of select="concat($rfcUrlPrefix,$rfcEntries[1]/@value,$rfcUrlPostfix)" />
       <xsl:if test="$ref and $sec!='' and $rfcUrlFragSection and $rfcUrlFragAppendix">
         <xsl:choose>
           <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
@@ -6566,11 +6574,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.581 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.581 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.582 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.582 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/06/11 22:45:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/06/11 22:45:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/06/12 08:49:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/06/12 08:49:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
