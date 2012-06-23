@@ -1523,6 +1523,9 @@
     <xsl:when test="$ref and $bib/x:source/@href and $bib/x:source/@basename and $ref/@x:rel">
       <xsl:value-of select="concat($bib/x:source/@basename,'.',$outputExtension,$ref/@x:rel)" />
     </xsl:when>
+    <xsl:when test="$ref and $bib/x:source/@href and $bib/x:source/@basename and $ref/@anchor">
+      <xsl:value-of select="concat($bib/x:source/@basename,'.',$outputExtension,'#',$ref/@anchor)" />
+    </xsl:when>
     <!-- tools.ietf.org won't have the "-latest" draft -->
     <xsl:when test="$bib/seriesInfo/@name='Internet-Draft' and $bib/x:source/@href and $bib/x:source/@basename and substring($bib/x:source/@basename, (string-length($bib/x:source/@basename) - string-length('-latest')) + 1)='-latest'">
       <xsl:value-of select="concat($bib/x:source/@basename,'.',$outputExtension)" />
@@ -5330,17 +5333,39 @@ dd, li, p {
 
 <xsl:template match="x:ref">
   <xsl:variable name="val" select="."/>
-<!--  <xsl:variable name="target" select="//*[(@anchor and x:anchor-alias/@value=$val) or (@anchor and ed:replace/ed:ins/x:anchor-alias/@value=$val) or (@anchor=$val)]"/> -->
-  <xsl:variable name="target" select="key('anchor-item',$val) | key('anchor-item-alias',$val)"/>
+  <xsl:variable name="target" select="key('anchor-item',$val) | key('anchor-item-alias',$val) | //reference/x:source[x:defines=$val]"/>
   <xsl:variable name="irefs" select="//iref[@x:for-anchor=$val]"/>
+  <xsl:if test="count($target)>1">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">internal link target for '<xsl:value-of select="."/>' is ambiguous; picking first.</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
   <xsl:choose>
-    <xsl:when test="$target">
+    <xsl:when test="$target[1]/@anchor">
       <a href="#{$target[1]/@anchor}" class="smpl">
         <xsl:call-template name="copy-anchor"/>
         <!-- to be indexed? -->
         <xsl:if test="$irefs">
           <xsl:attribute name="id"><xsl:call-template name="compute-extref-anchor"/></xsl:attribute>
         </xsl:if>
+        <xsl:value-of select="."/>
+      </a>
+    </xsl:when>
+    <xsl:when test="$target[1]/self::x:source">
+      <xsl:variable name="extdoc" select="document($target[1]/@href)"/>
+      <xsl:variable name="nodes" select="$extdoc//*[@anchor and (x:anchor-alias/@value=$val)]"/>
+      <xsl:if test="not($nodes)">
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg">Anchor '<xsl:value-of select="$val"/>' not found in source file '<xsl:value-of select="$target[1]/@href"/>'.</xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:variable name="t">
+        <xsl:call-template name="computed-auto-target">
+          <xsl:with-param name="bib" select="$target[1]/.."/>
+          <xsl:with-param name="ref" select="$nodes[1]"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <a href="{$t}" class="smpl">
         <xsl:value-of select="."/>
       </a>
     </xsl:when>
@@ -6574,11 +6599,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.582 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.582 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.583 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.583 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/06/12 08:49:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/06/12 08:49:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/06/23 15:29:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/06/23 15:29:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
