@@ -5332,7 +5332,7 @@ dd, li, p {
 <xsl:key name="anchor-item-alias" match="//*[@anchor and (x:anchor-alias/@value or ed:replace/ed:ins/x:anchor-alias)]" use="x:anchor-alias/@value | ed:replace/ed:ins/x:anchor-alias/@value"/>
 
 <xsl:template match="x:ref">
-  <xsl:variable name="val" select="."/>
+  <xsl:variable name="val" select="normalize-space(.)"/>
   <xsl:variable name="target" select="key('anchor-item',$val) | key('anchor-item-alias',$val) | //reference/x:source[x:defines=$val]"/>
   <xsl:variable name="irefs" select="//iref[@x:for-anchor=$val]"/>
   <xsl:if test="count($target)>1">
@@ -6599,11 +6599,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.583 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.583 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.584 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.584 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/06/23 15:29:44 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/06/23 15:29:44 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2012/06/24 15:59:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/06/24 15:59:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
