@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2006-2012, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2013, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -444,7 +444,7 @@
   </xsl:choose>
   
   <!-- sanity check on @consensus -->
-  <xsl:if test="/rfc/@consensus and (/rfc/@submissionType='IAB' or /rfc/@submissionType='independent')">
+  <xsl:if test="/rfc/@consensus and /rfc/@submissionType='independent'">
     <xsl:call-template name="warning">
       <xsl:with-param name="msg" select="concat('/rfc/@consensus meaningless with a /rfc/@submissionType value of ', /rfc/@submissionType)"/>
     </xsl:call-template>
@@ -4603,6 +4603,9 @@ dd, li, p {
           This document is a product of the Internet Architecture Board (IAB)
           and represents information that the IAB has deemed valuable to
           provide for permanent record.
+          <xsl:if test="$consensus='yes'">
+            It represents the consensus of the Internet Architecture Board (IAB).
+          </xsl:if>
         </xsl:when>
         <xsl:when test="$submissionType='IRTF'">
           This document is a product of the Internet Research Task Force (IRTF).
@@ -6616,11 +6619,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.589 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.589 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.590 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.590 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2012/11/30 14:23:31 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2012/11/30 14:23:31 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2013/01/23 17:59:36 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/01/23 17:59:36 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
