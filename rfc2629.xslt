@@ -2539,9 +2539,46 @@
               <xsl:call-template name="get-paragraph-number" />
             </xsl:for-each>
           </xsl:variable>
+          <xsl:variable name="pparent" select="$node/.."/>
+          <xsl:variable name="listtype">
+            <xsl:choose>
+              <xsl:when test="$pparent/self::list">
+                <xsl:value-of select="$pparent/@style"/>
+              </xsl:when>
+              <xsl:otherwise></xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+          <xsl:variable name="listindex">
+            <xsl:choose>
+              <xsl:when test="$listtype='numbers'">
+                <xsl:for-each select="$node">
+                  <xsl:number/>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:when test="$listtype='letters'">
+                <xsl:for-each select="$node">
+                  <xsl:number format="a"/>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:otherwise/>
+            </xsl:choose>
+          </xsl:variable>
           <xsl:choose>
             <xsl:when test="$xref/@format='counter'">
-              <xsl:value-of select="$tcnt" />
+              <xsl:choose>
+                <xsl:when test="$listtype!='' and $listindex!=''">
+                  <xsl:value-of select="$listindex"/>
+                </xsl:when>
+                <xsl:when test="$listtype!='' and $listindex=''">
+                  <xsl:call-template name="warning">
+                    <xsl:with-param name="msg" select="concat('Use of format=counter for unsupported list type ',$listtype)"/>
+                  </xsl:call-template>
+                  <xsl:value-of select="$tcnt"/>              
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$tcnt"/>              
+                </xsl:otherwise>
+              </xsl:choose>
             </xsl:when>
             <xsl:when test="$xref/@format='title'">
               <xsl:value-of select="$node/@title" />
@@ -6655,11 +6692,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.595 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.595 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.596 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.596 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2013/05/02 15:44:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/05/02 15:44:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2013/05/16 08:38:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/05/16 08:38:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
