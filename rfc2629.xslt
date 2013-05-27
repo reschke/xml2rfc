@@ -212,6 +212,16 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- initials handling? -->
+
+<xsl:param name="xml2rfc-multiple-initials">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="attr" select="'multiple-initials'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- extension for XML parsing in artwork -->
 
 <xsl:param name="xml2rfc-ext-parse-xml-in-artwork">
@@ -1690,7 +1700,11 @@
         <xsl:variable name="initials">
           <xsl:call-template name="format-initials"/>
         </xsl:variable>
-        <xsl:variable name="truncated-initials" select="concat(substring-before($initials,'.'),'.')"/>
+        <xsl:variable name="truncated-initials">
+          <xsl:call-template name="truncate-initials">
+            <xsl:with-param name="initials" select="$initials"/>
+          </xsl:call-template>
+        </xsl:variable>
 
         <xsl:choose>
           <xsl:when test="@surname and @surname!=''">
@@ -2946,7 +2960,11 @@
     <xsl:variable name="initials">
       <xsl:call-template name="format-initials"/>
     </xsl:variable>
-    <xsl:variable name="truncated-initials" select="concat(substring-before($initials,'.'),'.')"/>
+    <xsl:variable name="truncated-initials">
+      <xsl:call-template name="truncate-initials">
+        <xsl:with-param name="initials" select="$initials"/>
+      </xsl:call-template>
+    </xsl:variable>
     <xsl:if test="@surname">
       <myns:item>
         <xsl:value-of select="concat($truncated-initials,' ',@surname)" />
@@ -6692,11 +6710,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.596 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.596 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.597 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.597 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2013/05/16 08:38:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/05/16 08:38:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2013/05/27 06:39:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/05/27 06:39:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6890,6 +6908,18 @@ prev: <xsl:value-of select="$prev"/>
     </xsl:otherwise>
   </xsl:choose>
 
+</xsl:template>
+
+<xsl:template name="truncate-initials">
+  <xsl:param name="initials"/>
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-multiple-initials='yes'">
+      <xsl:value-of select="$initials"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="concat(substring-before($initials,'.'),'.')"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="extract-normalized">
