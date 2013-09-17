@@ -2192,53 +2192,60 @@
     </xsl:choose>
   </xsl:variable>
 
-  <!-- process irefs immediately following the section so that their anchor
-  actually is the section heading -->
-  <xsl:apply-templates select="iref[count(preceding-sibling::*[not(self::iref)])=0]"/>
-
-  <xsl:element name="{$elemtype}">
-    <xsl:if test="$sectionNumber!=''">
-      <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$sectionNumber"/></xsl:attribute>
-    </xsl:if>
-    <xsl:choose>
-      <xsl:when test="$sectionNumber='1' or $sectionNumber='A'">
-        <!-- pagebreak, this the first section -->
-        <xsl:attribute name="class">np</xsl:attribute>
-      </xsl:when>
-      <xsl:when test="not(ancestor::section) and not(@myns:notoclink)">
-        <xsl:call-template name="insert-conditional-pagebreak"/>
-      </xsl:when>
-      <xsl:otherwise/>
-    </xsl:choose>
-
-    <xsl:call-template name="insertInsDelClass" />
-
-    <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
-      <a href="#{$anchor-prefix}.section.{$sectionNumber}">
-        <xsl:call-template name="emit-section-number">
-          <xsl:with-param name="no" select="$sectionNumber"/>
-        </xsl:call-template>
-      </a>
-      <xsl:text>&#0160;</xsl:text>
+  <div>
+    <xsl:if test="@anchor">
+      <xsl:call-template name="check-anchor"/>
+      <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
     </xsl:if>
 
-    <!-- issue tracking? -->
-    <xsl:if test="@ed:resolves">
-      <xsl:call-template name="insert-issue-pointer"/>
-    </xsl:if>
+    <!-- process irefs immediately following the section so that their anchor
+    actually is the section heading -->
+    <xsl:apply-templates select="iref[count(preceding-sibling::*[not(self::iref)])=0]"/>
 
-    <xsl:choose>
-      <xsl:when test="@anchor">
-        <xsl:call-template name="check-anchor"/>
-        <a id="{@anchor}" href="#{@anchor}"><xsl:call-template name="insertTitle"/></a>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="insertTitle"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:element>
-  <!-- continue with all child elements but the irefs processed above -->
-  <xsl:apply-templates select="*[not(self::iref)]|iref[count(preceding-sibling::*[not(self::iref)])!=0]" />
+    <xsl:element name="{$elemtype}">
+      <xsl:if test="$sectionNumber!=''">
+        <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$sectionNumber"/></xsl:attribute>
+      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="$sectionNumber='1' or $sectionNumber='A'">
+          <!-- pagebreak, this the first section -->
+          <xsl:attribute name="class">np</xsl:attribute>
+        </xsl:when>
+        <xsl:when test="not(ancestor::section) and not(@myns:notoclink)">
+          <xsl:call-template name="insert-conditional-pagebreak"/>
+        </xsl:when>
+        <xsl:otherwise/>
+      </xsl:choose>
+  
+      <xsl:call-template name="insertInsDelClass" />
+  
+      <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
+        <a href="#{$anchor-prefix}.section.{$sectionNumber}">
+          <xsl:call-template name="emit-section-number">
+            <xsl:with-param name="no" select="$sectionNumber"/>
+          </xsl:call-template>
+        </a>
+        <xsl:text>&#0160;</xsl:text>
+      </xsl:if>
+  
+      <!-- issue tracking? -->
+      <xsl:if test="@ed:resolves">
+        <xsl:call-template name="insert-issue-pointer"/>
+      </xsl:if>
+  
+      <xsl:choose>
+        <xsl:when test="@anchor">
+          <xsl:call-template name="check-anchor"/>
+          <a href="#{@anchor}"><xsl:call-template name="insertTitle"/></a>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="insertTitle"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:element>
+    <!-- continue with all child elements but the irefs processed above -->
+    <xsl:apply-templates select="*[not(self::iref)]|iref[count(preceding-sibling::*[not(self::iref)])!=0]" />
+  </div>
 </xsl:template>
 
 <xsl:template match="spanx[@style='emph' or not(@style)]">
@@ -6671,11 +6678,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.600 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.600 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.601 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.601 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2013/09/02 19:33:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/09/02 19:33:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2013/09/17 16:39:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/09/17 16:39:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
