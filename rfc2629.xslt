@@ -3488,8 +3488,8 @@ blockquote {
 body {<xsl:if test="$xml2rfc-background!=''">
   background: url(<xsl:value-of select="$xml2rfc-background" />) #ffffff left top;</xsl:if>
   color: black;
-  font-family: verdana, helvetica, arial, sans-serif;
-  font-size: 10pt;
+  font-family: cambria, helvetica, arial, sans-serif;
+  font-size: 11pt;
   margin-right: 2em;
 }<xsl:if test="//xhtml:p">
 br.p {
@@ -3517,26 +3517,23 @@ dt {
   margin-top: .5em;
 }
 h1 {
-  font-size: 14pt;
+  font-size: 130%;
   line-height: 21pt;
   page-break-after: avoid;
 }
 h1.np {
   page-break-before: always;
 }
-h1 a {
-  color: #333333;
-}
 h2 {
-  font-size: 12pt;
+  font-size: 120%;
   line-height: 15pt;
   page-break-after: avoid;
 }
 h3, h4, h5, h6 {
-  font-size: 10pt;
+  font-size: 110%;
   page-break-after: avoid;
 }
-h2 a, h3 a, h4 a, h5 a, h6 a {
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
   color: black;
 }
 img {
@@ -3656,14 +3653,14 @@ table.center {
 caption {
   caption-side: bottom;
   font-weight: bold;
-  font-size: 9pt;
+  font-size: 10pt;
   margin-top: .5em;
 }
 </xsl:if>
 table.header {
   border-spacing: 1px;
   width: 95%;
-  font-size: 10pt;
+  font-size: 11pt;
   color: white;
 }
 td.top {
@@ -3696,13 +3693,12 @@ ul.toc, ul.toc ul {
 ul.toc li {
   line-height: 150%;
   font-weight: bold;
-  font-size: 10pt;
   margin-left: 0em;
 }
 ul.toc li li {
   line-height: normal;
   font-weight: normal;
-  font-size: 9pt;
+  font-size: 10pt;
   margin-left: 0em;
 }
 li.excluded {
@@ -3710,6 +3706,12 @@ li.excluded {
 }
 ul p {
   margin-left: 0em;
+}
+.title, .filename, h1, h2, h3, h4 {
+  font-family: candara, helvetica, arial, sans-serif;
+}
+samp, tt, code, pre {
+  font: consolas, monospace;
 }
 <xsl:if test="$has-index">ul.ind, ul.ind ul {
   list-style: none;
@@ -3755,12 +3757,12 @@ blockquote > * .bcp14 {
 .figure {
   font-weight: bold;
   text-align: center;
-  font-size: 9pt;
+  font-size: 10pt;
 }
 .filename {
   color: #333333;
   font-weight: bold;
-  font-size: 12pt;
+  font-size: 110%;
   line-height: 21pt;
   text-align: center;
 }
@@ -3775,14 +3777,14 @@ blockquote > * .bcp14 {
 }
 .title {
   color: #990000;
-  font-size: 18pt;
+  font-size: 150%;
   line-height: 18pt;
   font-weight: bold;
   text-align: center;
   margin-top: 36pt;
 }
 .warning {
-  font-size: 14pt;
+  font-size: 130%;
   background-color: yellow;
 }
 <xsl:if test="$has-edits">del {
@@ -3823,7 +3825,7 @@ thead th {
 .bg-issue {
   border: solid;
   border-width: 1px;
-  font-size: 7pt;
+  font-size: 8pt;
 }
 .closed-issue {
   border: solid;
@@ -3888,7 +3890,7 @@ dd, li, p {
     color: black;
     background-color: white;
     vertical-align: top;
-    font-size: 12pt;
+    font-size: 110%;
   }
 
   ul.toc a:nth-child(2)::after {
@@ -6678,11 +6680,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.601 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.601 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.602 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.602 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2013/09/17 16:39:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/09/17 16:39:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2013/09/18 15:39:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/09/18 15:39:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
