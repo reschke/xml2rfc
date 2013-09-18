@@ -3761,8 +3761,8 @@ blockquote > * .bcp14 {
 }
 .filename {
   color: #333333;
+  font-size: 75%;
   font-weight: bold;
-  font-size: 110%;
   line-height: 21pt;
   text-align: center;
 }
@@ -3776,7 +3776,7 @@ blockquote > * .bcp14 {
   text-align: right;
 }
 .title {
-  color: #990000;
+  color: green;
   font-size: 150%;
   line-height: 18pt;
   font-weight: bold;
@@ -6680,11 +6680,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.602 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.602 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.603 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.603 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2013/09/18 15:39:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/09/18 15:39:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2013/09/18 20:22:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/09/18 20:22:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
