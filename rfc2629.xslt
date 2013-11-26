@@ -831,7 +831,20 @@
         </object>
       </xsl:when>
       <xsl:otherwise>
-        <img src="{@src}" alt="{.}">
+        <xsl:variable name="alt">
+          <xsl:choose>
+            <xsl:when test="@alt!=''">
+              <xsl:value-of select="@alt"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <img src="{@src}">
+          <xsl:if test="normalize-space($alt)!=''">
+            <xsl:attribute name="alt"><xsl:value-of select="$alt"/></xsl:attribute>
+          </xsl:if>
           <xsl:if test="@width and @width!=''">
             <xsl:copy-of select="@width"/>
           </xsl:if>
@@ -6704,11 +6717,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.609 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.609 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.610 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.610 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2013/11/25 15:00:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/11/25 15:00:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2013/11/26 07:44:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/11/26 07:44:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
