@@ -1061,6 +1061,14 @@
 
 <xsl:template match="figure">
   <xsl:call-template name="check-no-text-content"/>
+  <!-- warn about the attributes that we do not support -->
+  <xsl:for-each select="@*[local-name()!='title' and local-name()!='suppress-title' and local-name()!='anchor' and normalize-space(.)!='']">
+    <xsl:if test="local-name(.)!='align' or normalize-space(.)!='left'">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg" select="concat('unsupported attribute ',local-name(.),' on figure element')"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:for-each>
   <xsl:if test="@anchor!=''">
     <xsl:call-template name="check-anchor"/>
     <div id="{@anchor}"/>
@@ -6717,11 +6725,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.610 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.610 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.611 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.611 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2013/11/26 07:44:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/11/26 07:44:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2013/11/27 12:23:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/11/27 12:23:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
