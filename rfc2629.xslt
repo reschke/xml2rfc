@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2006-2013, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2014, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1477,7 +1477,7 @@
   </xsl:if>
 </xsl:template>
 
-<xsl:template match="list[starts-with(@style,'format ') and (contains(@style,'%c') or contains(@style,'%C') or contains(@style,'%d') or contains(@style,'%i') or contains(@style,'%I'))]/t">
+<xsl:template match="list[starts-with(@style,'format ')]/t">
   <xsl:variable name="list" select=".." />
   <xsl:variable name="format" select="substring-after(../@style,'format ')" />
   <xsl:variable name="pos">
@@ -1492,33 +1492,52 @@
   </xsl:variable>
   <dt>
     <xsl:call-template name="copy-anchor"/>
-    <xsl:choose>
-      <xsl:when test="contains($format,'%c')">
-        <xsl:value-of select="substring-before($format,'%c')"/><xsl:number value="$pos" format="a" /><xsl:value-of select="substring-after($format,'%c')"/>
-      </xsl:when>
-      <xsl:when test="contains($format,'%C')">
-        <xsl:value-of select="substring-before($format,'%C')"/><xsl:number value="$pos" format="A" /><xsl:value-of select="substring-after($format,'%C')"/>
-      </xsl:when>
-      <xsl:when test="contains($format,'%d')">
-        <xsl:value-of select="substring-before($format,'%d')"/><xsl:number value="$pos" /><xsl:value-of select="substring-after($format,'%d')"/>
-      </xsl:when>
-      <xsl:when test="contains($format,'%i')">
-        <xsl:value-of select="substring-before($format,'%i')"/><xsl:number value="$pos" format="i" /><xsl:value-of select="substring-after($format,'%i')"/>
-      </xsl:when>
-      <xsl:when test="contains($format,'%I')">
-        <xsl:value-of select="substring-before($format,'%I')"/><xsl:number value="$pos" format="I" /><xsl:value-of select="substring-after($format,'%I')"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$format"/>
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg" select="concat('@format string ',$format,' not understood')"/>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="expand-format-percent">
+      <xsl:with-param name="format" select="$format"/>
+      <xsl:with-param name="pos" select="$pos"/>
+    </xsl:call-template>
   </dt>
   <dd>
     <xsl:apply-templates />
   </dd>
+</xsl:template>
+
+<xsl:template name="expand-format-percent">
+  <xsl:param name="format"/>
+  <xsl:param name="pos"/>
+  
+  <xsl:choose>
+    <xsl:when test="$format=''"><!-- done--></xsl:when>
+    <xsl:when test="substring($format,1,1)!='%' or string-length($format)=1">
+      <xsl:value-of select="substring($format,1,1)"/>
+      <xsl:call-template name="expand-format-percent">
+        <xsl:with-param name="format" select="substring($format,2)"/>
+        <xsl:with-param name="pos" select="$pos"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="f" select="substring($format,2,1)"/>
+      <xsl:choose>
+        <xsl:when test="$f='%'">%</xsl:when>
+        <xsl:when test="$f='c'"><xsl:number value="$pos" format="a"/></xsl:when>
+        <xsl:when test="$f='C'"><xsl:number value="$pos" format="A"/></xsl:when>
+        <xsl:when test="$f='d'"><xsl:number value="$pos"/></xsl:when>
+        <xsl:when test="$f='i'"><xsl:number value="$pos" format="i"/></xsl:when>
+        <xsl:when test="$f='I'"><xsl:number value="$pos" format="I"/></xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg" select="concat('Unsupported % format: ', $f)"/>
+            <xsl:with-param name="inline" select="'no'"/>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:call-template name="expand-format-percent">
+        <xsl:with-param name="format" select="substring($format,3)"/>
+        <xsl:with-param name="pos" select="$pos"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+  
 </xsl:template>
 
 <xsl:template match="middle">
@@ -6725,11 +6744,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.611 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.611 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.612 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.612 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2013/11/27 12:23:51 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2013/11/27 12:23:51 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/01/25 16:16:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/01/25 16:16:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
