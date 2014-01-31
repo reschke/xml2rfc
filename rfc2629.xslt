@@ -2950,7 +2950,7 @@
           <xsl:if test="contains($tmp,' research group') or contains($tmp,' working group')">
             <xsl:call-template name="info">
               <xsl:with-param name="inline" select="'no'"/>
-              <xsl:with-param name="msg">No need to include 'Working Group' or 'Research Group' postfix in  /rfc/front/workgroup value '<xsl:value-of select="$v"/>'</xsl:with-param>
+              <xsl:with-param name="msg">No need to include 'Working Group' or 'Research Group' postfix in /rfc/front/workgroup value '<xsl:value-of select="$v"/>'</xsl:with-param>
             </xsl:call-template>
           </xsl:if>
           <xsl:variable name="h">
@@ -6837,11 +6837,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.618 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.618 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.619 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.619 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/01/31 15:40:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/01/31 15:40:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/01/31 15:52:15 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/01/31 15:52:15 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
