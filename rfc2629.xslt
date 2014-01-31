@@ -2934,14 +2934,42 @@
         <myns:item>Internet Architecture Board (IAB)</myns:item>
       </xsl:when>
       <xsl:when test="/rfc/front/workgroup and (not(/rfc/@number) or /rfc/@number='')">
-        <xsl:if test="not(starts-with(/rfc/@docName,'draft-ietf-')) and $submissionType='IETF'">
-          <xsl:call-template name="info">
-            <xsl:with-param name="inline" select="'no'"/>
-            <xsl:with-param name="msg">The /rfc/front/workgroup should only be used for Working Group drafts</xsl:with-param>
-          </xsl:call-template>
-        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="starts-with(/rfc/@docName,'draft-ietf-') and $submissionType='IETF'"/>
+          <xsl:when test="starts-with(/rfc/@docName,'draft-irft-') and $submissionType='IRTF'"/>
+          <xsl:otherwise>
+            <xsl:call-template name="info">
+              <xsl:with-param name="inline" select="'no'"/>
+              <xsl:with-param name="msg">The /rfc/front/workgroup should only be used for Working/Research Group drafts</xsl:with-param>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:for-each select="/rfc/front/workgroup">
-          <myns:item><xsl:value-of select="."/></myns:item>
+          <xsl:variable name="v" select="normalize-space(.)"/>
+          <xsl:variable name="tmp" select="translate($v, $ucase, $lcase)"/>
+          <xsl:if test="contains($tmp,' research group') or contains($tmp,' working group')">
+            <xsl:call-template name="info">
+              <xsl:with-param name="inline" select="'no'"/>
+              <xsl:with-param name="msg">No need to include 'Working Group' or 'Research Group' postfix in  /rfc/front/workgroup value '<xsl:value-of select="$v"/>'</xsl:with-param>
+            </xsl:call-template>
+          </xsl:if>
+          <xsl:variable name="h">
+            <!-- when a single name, append WG/RG postfix automatically -->
+            <xsl:choose>
+              <xsl:when test="not(contains($v, ' ')) and starts-with(/rfc/@docName,'draft-ietf-') and $submissionType='IETF'">
+                <xsl:value-of select="concat($v, ' Working Group')"/>
+              </xsl:when>
+              <xsl:when test="not(contains($v, ' ')) and starts-with(/rfc/@docName,'draft-irtf-') and $submissionType='IRTF'">
+                <xsl:value-of select="concat($v, ' Research Group')"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$v"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+          <myns:item>
+            <xsl:value-of select="$h"/>
+          </myns:item>
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
@@ -2958,23 +2986,31 @@
     <xsl:for-each select="/rfc/front/area">
       <xsl:variable name="area" select="normalize-space(.)"/>
       <xsl:variable name="allowed">
-        <v>Applications</v><v>app</v>
-        <v>General</v><v>gen</v>
-        <v>Internet</v><v>int</v>
-        <v>Operations and Management</v><v>ops</v>
-        <v>Real-time Applications and Infrastructure</v><v>rai</v>
-        <v>Routing</v><v>rtg</v>
-        <v>Security</v><v>sec</v>
-        <v>Transport</v><v>tsv</v>
+        <ed:v>Applications</ed:v>
+        <ed:v>app</ed:v>
+        <ed:v>General</ed:v>
+        <ed:v>gen</ed:v>
+        <ed:v>Internet</ed:v>
+        <ed:v>int</ed:v>
+        <ed:v>Operations and Management</ed:v>
+        <ed:v>ops</ed:v>
+        <ed:v>Real-time Applications and Infrastructure</ed:v>
+        <ed:v>rai</ed:v>
+        <ed:v>Routing</ed:v>
+        <ed:v>rtg</ed:v>
+        <ed:v>Security</ed:v>
+        <ed:v>sec</ed:v>
+        <ed:v>Transport</ed:v>
+        <ed:v>tsv</ed:v>
       </xsl:variable>
       <xsl:choose>
-        <xsl:when test="$area=$allowed/v">
+        <xsl:when test="$allowed/ed:v=$area">
           <!-- ok -->
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="warning">
             <xsl:with-param name="inline" select="'no'"/>
-            <xsl:with-param name="msg">Unknown IETF area: '<xsl:value-of select="$area"/>' - should be one of: <xsl:for-each select="$allowed/v">
+            <xsl:with-param name="msg">Unknown IETF area: "<xsl:value-of select="$area"/>" - should be one of: <xsl:for-each select="$allowed/ed:v">
               <xsl:text>"</xsl:text>
               <xsl:value-of select="."/>
               <xsl:text>"</xsl:text>
@@ -6801,11 +6837,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.617 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.617 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.618 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.618 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/01/31 12:32:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/01/31 12:32:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/01/31 15:40:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/01/31 15:40:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
