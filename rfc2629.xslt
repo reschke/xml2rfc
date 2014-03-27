@@ -6212,9 +6212,9 @@ dd, li, p {
 
   <!-- check ABNF syntax references -->
   <xsl:if test="//artwork[@type='abnf2616']">
-    <xsl:if test="not(//reference/seriesInfo[@name='RFC' and (@value='2068' or @value='2616')])">
+    <xsl:if test="not(//reference/seriesInfo[@name='RFC' and (@value='2068' or @value='2616')]) and not(//reference/seriesInfo[@name='Internet-Draft' and (starts-with(@value, 'draft-ietf-httpbis-p1-messaging-'))])">
       <xsl:call-template name="warning">
-        <xsl:with-param name="msg">document uses HTTP-style ABNF syntax, but doesn't reference RFC 2068 or 2616.</xsl:with-param>
+        <xsl:with-param name="msg">document uses HTTP-style ABNF syntax, but doesn't reference RFC 2068, RFC 2616, or draft-ietf-httpbis-p1-messaging.</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
   </xsl:if>
@@ -6852,11 +6852,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.622 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.622 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.623 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.623 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/03/23 18:47:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/03/23 18:47:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/03/27 11:20:15 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/03/27 11:20:15 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
