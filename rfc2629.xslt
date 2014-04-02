@@ -1078,9 +1078,18 @@
   </xsl:variable>
   <div id="{$anch}" />
   <xsl:apply-templates />
-  <xsl:if test="(@title!='' or @anchor!='') and not(@suppress-title='true')">
+  <xsl:if test="(@title!='') or (@anchor!='' and not(@suppress-title='true'))">
     <xsl:variable name="n"><xsl:call-template name="get-figure-number"/></xsl:variable>
-    <p class="figure">Figure <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></p>
+    <p class="figure">
+      <xsl:if test="not(starts-with($n,'u'))">
+        <xsl:text>Figure </xsl:text>
+        <xsl:value-of select="$n"/>
+        <xsl:if test="@title!=''">: </xsl:if>
+      </xsl:if>
+      <xsl:if test="@title!=''">
+        <xsl:value-of select="@title" />
+      </xsl:if>
+    </p>
   </xsl:if>
 </xsl:template>
 
@@ -6599,9 +6608,18 @@ dd, li, p {
     </xsl:variable>
 
     <table class="{$style}" cellpadding="3" cellspacing="0">
-      <xsl:if test="(@title!='' or @anchor!='') and not(@suppress-title='true')">
+      <xsl:if test="(@title!='') or (@anchor!='' and not(@suppress-title='true'))">
         <xsl:variable name="n"><xsl:call-template name="get-table-number"/></xsl:variable>
-        <caption>Table <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></caption>
+        <caption>
+          <xsl:if test="not(starts-with($n,'u'))">
+            <xsl:text>Table </xsl:text>
+            <xsl:value-of select="$n"/>
+            <xsl:if test="@title!=''">: </xsl:if>
+          </xsl:if>
+          <xsl:if test="@title!=''">
+            <xsl:value-of select="@title" />
+          </xsl:if>
+        </caption>
       </xsl:if>
 
       <xsl:if test="ttcol!=''">
@@ -6884,11 +6902,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.624 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.624 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.625 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.625 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/03/28 12:53:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/03/28 12:53:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/04/02 00:13:49 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/04/02 00:13:49 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -6989,12 +7007,12 @@ dd, li, p {
 
 <xsl:template name="get-table-number">
   <xsl:choose>
-    <xsl:when test="@title!='' or @anchor!=''">
-      <xsl:number level="any" count="texttable[@title!='' or @anchor!='']" />
+    <xsl:when test="@anchor!=''">
+      <xsl:number level="any" count="texttable[@anchor!='']" />
     </xsl:when>
     <xsl:otherwise>
       <xsl:text>u.</xsl:text>
-      <xsl:number level="any" count="texttable[not(@title!='' or @anchor!='')]" />
+      <xsl:number level="any" count="texttable[not(@anchor) or @anchor='']" />
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -7007,12 +7025,12 @@ dd, li, p {
 
 <xsl:template name="get-figure-number">
   <xsl:choose>
-    <xsl:when test="@title!='' or @anchor!=''">
-      <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
+    <xsl:when test="@anchor!=''">
+      <xsl:number level="any" count="figure[@anchor!='']" />
     </xsl:when>
     <xsl:otherwise>
       <xsl:text>u.</xsl:text>
-      <xsl:number level="any" count="figure[not(@title!='' or @anchor!='')]" />
+      <xsl:number level="any" count="figure[not(@anchor) or @anchor='']" />
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
