@@ -250,6 +250,16 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- extension for inserting RFC metadata -->
+
+<xsl:param name="xml2rfc-ext-insert-metadata">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'insert-metadata'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- extension for excluding DCMI properties in meta tag (RFC2731) -->
 
 <xsl:param name="xml2rfc-ext-support-rfc2731">
@@ -2040,7 +2050,7 @@
       <title>
         <xsl:apply-templates select="front/title" mode="get-text-content" />
       </title>
-      <xsl:call-template name="insertScript" />
+      <xsl:call-template name="insertScripts" />
       <xsl:call-template name="insertCss" />
       <!-- <link rel="alternate stylesheet" type="text/css" media="screen" title="Plain (typewriter)" href="rfc2629tty.css" /> -->
 
@@ -2153,8 +2163,11 @@
 
     </head>
     <body>
-      <xsl:if test="/rfc/x:feedback">
-        <xsl:attribute name="onload">init();</xsl:attribute>
+      <xsl:if test="/rfc/x:feedback or ($xml2rfc-ext-insert-metadata='yes' and /rfc/@number)">
+        <xsl:attribute name="onload">
+          <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@number">getMeta(<xsl:value-of select="/rfc/@number"/>,"rfc.meta");</xsl:if>
+          <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
+        </xsl:attribute>
       </xsl:if>
 
       <!-- insert diagnostics -->
@@ -2299,6 +2312,9 @@
     </xsl:choose>
   </xsl:variable>
 
+  <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!='' and @anchor='rfc.status'">
+    <div id="rfc.meta" style="float: right; border: 1px solid black; margin: 2em; padding: 1em; display: none;"></div>
+  </xsl:if>
   <div>
     <xsl:if test="@anchor">
       <xsl:call-template name="check-anchor"/>
@@ -3560,12 +3576,12 @@
 </xsl:template>
 
 <!-- optional scripts -->
-<xsl:template name="insertScript">
+<xsl:template name="insertScripts">
 <xsl:if test="/rfc/x:feedback">
 <script>
 var buttonsAdded = false;
 
-function init() {
+function initFeedback() {
   var fb = document.createElement("div");
   fb.className = "feedback noprint";
   fb.setAttribute("onclick", "feedback();");
@@ -3649,6 +3665,90 @@ function toggleButton(node) {
     }
   }
 }</script>
+</xsl:if>
+<xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!=''">
+<script>
+function getMeta(rfcno, container) {
+
+var xhr = new XMLHttpRequest();
+xhr.open("GET", "http://tools.ietf.org/draft/rfc" + rfcno + "/state.xml", true);
+xhr.onload = function (e) {
+  if (xhr.readyState === 4) {
+    if (xhr.status === 200) {
+      var doc = xhr.responseXML;
+      var info = getChildByName(doc.documentElement, "info");
+
+      var cont = document.getElementById(container);
+      // empty the container
+      while (cont.firstChild) {
+        cont.removeChild(myNode.firstChild);
+      }      
+
+      var c = getChildByName(info, "stdstatus");
+      if (c !== null) {
+        var bld = document.createElement("b");
+        bld.appendChild(document.createTextNode(c.textContent));
+        cont.appendChild(bld);
+      }
+
+      c = getChildByName(info, "updatedby");
+      if (c !== null) {
+        cont.appendChild(document.createElement("br"));
+        cont.appendChild(document.createTextNode("Updated by: "));
+        appendRfcLinks(cont, c.textContent);
+      }
+
+      c = getChildByName(info, "obsoletedby");
+      if (c !== null) {
+        cont.appendChild(document.createElement("br"));
+        cont.appendChild(document.createTextNode("Obsoleted by: "));
+        appendRfcLinks(cont, c.textContent);
+      }
+
+      cont.style.display = "block";
+    } else {
+      console.error(xhr.statusText);
+    }
+  }
+};
+xhr.onerror = function (e) {
+  console.error(xhr.status + " " + xhr.statusText);
+};
+xhr.send(null);
+}
+
+function getChildByName(parent, name) {
+  if (parent === null) {
+    return null;
+  }
+  else {
+    for (var c = parent.firstChild; c !== null; c = c.nextSibling) {
+      if (name == c.nodeName) {
+        return c;
+      }
+    }
+    return null;
+  }
+}
+
+function appendRfcLinks(parent, text) {
+  var updates = text.split(",");
+  for (var i = 0; i &lt; updates.length; i++) {
+    var rfc = updates[i].trim();
+    if (rfc.substring(0, 3) == "rfc") {
+      var link = document.createElement("a");
+      link.setAttribute("href", "http://tools.ietf.org/html/" + rfc);
+      link.appendChild(document.createTextNode(rfc.substring(3)));
+      parent.appendChild(link);
+    } else {
+      parent.appendChild(document.createTextNode(rfc));
+    }
+    if (i != updates.length - 1) {
+      parent.appendChild(document.createTextNode(", "));
+    }
+  }
+}
+</script>
 </xsl:if>
 </xsl:template>
 
@@ -6902,11 +7002,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.625 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.625 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.626 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.626 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/04/02 00:13:49 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/04/02 00:13:49 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/04/05 21:24:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/04/05 21:24:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
