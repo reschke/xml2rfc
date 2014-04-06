@@ -5274,9 +5274,14 @@ dd, li, p {
   <xsl:param name="oldtitle" />
   <xsl:param name="waschanged" />
 
+  <xsl:variable name="depth">
+    <!-- count the dots -->
+    <xsl:value-of select="string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.'))"/>
+  </xsl:variable>
+  
   <!-- handle tocdepth parameter -->
   <xsl:choose>
-    <xsl:when test="($tocparam='' or $tocparam='default') and string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.')) &gt;= $parsedTocDepth">
+    <xsl:when test="(not($tocparam) or $tocparam='' or $tocparam='default') and $depth >= $parsedTocDepth">
       <!-- dropped entry because excluded -->
       <xsl:attribute name="class">excluded</xsl:attribute>
     </xsl:when>
@@ -7043,11 +7048,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.627 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.627 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.628 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.628 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/04/06 10:54:55 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/04/06 10:54:55 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/04/06 19:53:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/04/06 19:53:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
