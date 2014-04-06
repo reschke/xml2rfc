@@ -3670,51 +3670,92 @@ function toggleButton(node) {
 <script>
 function getMeta(rfcno, container) {
 
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "http://tools.ietf.org/draft/rfc" + rfcno + "/state.xml", true);
-xhr.onload = function (e) {
-  if (xhr.readyState === 4) {
-    if (xhr.status === 200) {
-      var doc = xhr.responseXML;
-      var info = getChildByName(doc.documentElement, "info");
-
-      var cont = document.getElementById(container);
-      // empty the container
-      while (cont.firstChild) {
-        cont.removeChild(myNode.firstChild);
-      }      
-
-      var c = getChildByName(info, "stdstatus");
-      if (c !== null) {
-        var bld = document.createElement("b");
-        bld.appendChild(document.createTextNode(c.textContent));
-        cont.appendChild(bld);
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "http://tools.ietf.org/draft/rfc" + rfcno + "/state.xml", true);
+  xhr.onload = function (e) {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        var doc = xhr.responseXML;
+        var info = getChildByName(doc.documentElement, "info");
+  
+        var cont = document.getElementById(container);
+        // empty the container
+        while (cont.firstChild) {
+          cont.removeChild(myNode.firstChild);
+        }      
+  
+        var c = getChildByName(info, "stdstatus");
+        if (c !== null) {
+          var bld = newElementWithText("b", c.textContent);
+          cont.appendChild(bld);
+        }
+  
+        c = getChildByName(info, "updatedby");
+        if (c !== null) {
+          cont.appendChild(newElement("br"));
+          cont.appendChild(newText("Updated by: "));
+          appendRfcLinks(cont, c.textContent);
+        }
+  
+        c = getChildByName(info, "obsoletedby");
+        if (c !== null) {
+          cont.appendChild(newElement("br"));
+          cont.appendChild(newText("Obsoleted by: "));
+          appendRfcLinks(cont, c.textContent);
+        }
+        
+        insertErrata(rfcno, cont);
+  
+        cont.style.display = "block";
+      } else {
+        console.error(xhr.statusText);
       }
-
-      c = getChildByName(info, "updatedby");
-      if (c !== null) {
-        cont.appendChild(document.createElement("br"));
-        cont.appendChild(document.createTextNode("Updated by: "));
-        appendRfcLinks(cont, c.textContent);
-      }
-
-      c = getChildByName(info, "obsoletedby");
-      if (c !== null) {
-        cont.appendChild(document.createElement("br"));
-        cont.appendChild(document.createTextNode("Obsoleted by: "));
-        appendRfcLinks(cont, c.textContent);
-      }
-
-      cont.style.display = "block";
-    } else {
-      console.error(xhr.statusText);
     }
-  }
-};
-xhr.onerror = function (e) {
-  console.error(xhr.status + " " + xhr.statusText);
-};
-xhr.send(null);
+  };
+  xhr.onerror = function (e) {
+    console.error(xhr.status + " " + xhr.statusText);
+  };
+  xhr.send(null);
+}
+
+function insertErrata(rfcno, container) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "http://greenbytes.de/tech/webdav/rfcerrata.raw", true);
+  xhr.onload = function (e) {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        var t = "\n" + xhr.responseText + "\n";
+        if (t.indexOf(rfcno) >= 0) {
+          container.appendChild(newElement("br"));
+          var link = newElementWithText("a", "errata");
+          link.setAttribute("href", "http://www.rfc-editor.org/errata_search.php?rfc=" + rfcno);
+          var errata = newElementWithText("i", "This document has ");
+          errata.appendChild(link);
+          errata.appendChild(newText("."));
+          container.appendChild(errata);
+        }
+      } else {
+        console.error(xhr.statusText);
+      }
+    }
+  };
+  xhr.onerror = function (e) {
+    console.error(xhr.status + " " + xhr.statusText);
+  };
+  xhr.send(null);
+}
+
+// DOM helpers
+function newElement(name) {
+  return document.createElement(name);
+}
+function newElementWithText(name, txt) {
+  var e = document.createElement(name);
+  e.appendChild(newText(txt));
+  return e;
+}
+function newText(text) {
+  return document.createTextNode(text);
 }
 
 function getChildByName(parent, name) {
@@ -3736,15 +3777,15 @@ function appendRfcLinks(parent, text) {
   for (var i = 0; i &lt; updates.length; i++) {
     var rfc = updates[i].trim();
     if (rfc.substring(0, 3) == "rfc") {
-      var link = document.createElement("a");
+      var link = newElement("a");
       link.setAttribute("href", "http://tools.ietf.org/html/" + rfc);
-      link.appendChild(document.createTextNode(rfc.substring(3)));
+      link.appendChild(newText(rfc.substring(3)));
       parent.appendChild(link);
     } else {
-      parent.appendChild(document.createTextNode(rfc));
+      parent.appendChild(newText(rfc));
     }
     if (i != updates.length - 1) {
-      parent.appendChild(document.createTextNode(", "));
+      parent.appendChild(newText(", "));
     }
   }
 }
@@ -7002,11 +7043,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.626 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.626 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.627 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.627 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/04/05 21:24:44 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/04/05 21:24:44 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/04/06 10:54:55 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/04/06 10:54:55 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
