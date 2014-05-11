@@ -1358,7 +1358,7 @@
   </dl>
 </xsl:template>
 
-<xsl:template match="list[@style='hanging']">
+<xsl:template match="list[@style='hanging' or @style='x:dictionary']">
   <xsl:call-template name="check-no-text-content"/>
   <dl>
     <xsl:call-template name="insertInsDelClass"/>
@@ -1437,7 +1437,7 @@
   </li>
 </xsl:template>
 
-<xsl:template match="list[@style='hanging']/x:lt">
+<xsl:template match="list[@style='hanging' or @style='x:dictionary']/x:lt">
   <xsl:if test="@hangText!=''">
     <dt>
       <xsl:call-template name="copy-anchor"/>
@@ -1463,7 +1463,7 @@
   </dd>
 </xsl:template>
 
-<xsl:template match="list[@style='hanging']/t | list[@style='hanging']/ed:replace/ed:*/t">
+<xsl:template match="list[@style='hanging' or @style='x:dictionary']/t | list[@style='hanging' or @style='x:dictionary']/ed:replace/ed:*/t">
   <xsl:if test="@hangText!=''">
     <dt>
       <xsl:call-template name="copy-anchor"/>
@@ -7059,11 +7059,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.630 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.630 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.631 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.631 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/05/09 06:10:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/05/09 06:10:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/05/11 14:55:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/05/11 14:55:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
