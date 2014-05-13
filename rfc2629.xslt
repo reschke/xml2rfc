@@ -1359,7 +1359,6 @@
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']">
-  <xsl:call-template name="insertInsDelClass"/>
   <xsl:apply-templates />
 </xsl:template>
 
@@ -1448,6 +1447,7 @@
     <xsl:if test="../@hangIndent">
       <xsl:attribute name="style">text-indent: <xsl:value-of select="format-number(../@hangIndent * -0.7,'#.#')"/>em; padding-left: <xsl:value-of select="format-number(../@hangIndent * 0.7,'#.#')"/>em</xsl:attribute>
     </xsl:if>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:if test="@hangText!=''">
       <b>
         <xsl:call-template name="copy-anchor"/>
@@ -1464,7 +1464,6 @@
       </b>
       <xsl:text> </xsl:text>
     </xsl:if>
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates select="t" />
   </p>
 </xsl:template>
@@ -1501,6 +1500,7 @@
     <xsl:if test="../@hangIndent">
       <xsl:attribute name="style">text-indent: <xsl:value-of select="format-number(../@hangIndent * -0.7,'#.#')"/>em; padding-left: <xsl:value-of select="format-number(../@hangIndent * 0.7,'#.#')"/>em</xsl:attribute>
     </xsl:if>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:if test="@hangText!=''">
       <b>
         <xsl:call-template name="copy-anchor"/>
@@ -1525,7 +1525,6 @@
     </xsl:variable>
   
     <xsl:if test="$dd-content!=''">
-      <xsl:call-template name="insertInsDelClass"/>
       <xsl:apply-templates />
     </xsl:if>
   </p>
@@ -7132,11 +7131,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.633 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.633 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.634 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.634 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/05/13 10:31:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/05/13 10:31:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/05/13 13:12:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/05/13 13:12:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
