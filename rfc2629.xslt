@@ -1452,7 +1452,7 @@
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']/x:lt">
-  <p class="hanging">
+  <div class="hanging">
     <!-- if hangIndent present, use 0.7 of the specified value (1em is the width of the "m" character -->
     <xsl:if test="../@hangIndent">
       <xsl:attribute name="style">text-indent: <xsl:value-of select="format-number(../@hangIndent * -0.7,'#.#')"/>em; padding-left: <xsl:value-of select="format-number(../@hangIndent * 0.7,'#.#')"/>em</xsl:attribute>
@@ -1475,7 +1475,7 @@
       <xsl:text> </xsl:text>
     </xsl:if>
     <xsl:apply-templates select="t" />
-  </p>
+  </div>
 </xsl:template>
 
 <xsl:template match="list[@style='x:dictionary']/x:lt">
@@ -1505,7 +1505,7 @@
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']/t | list[@style='hanging']/ed:replace/ed:*/t">
-  <p class="hanging">
+  <div class="hanging">
     <!-- if hangIndent present, use 0.7 of the specified value (1em is the width of the "m" character -->
     <xsl:if test="../@hangIndent">
       <xsl:attribute name="style">text-indent: <xsl:value-of select="format-number(../@hangIndent * -0.7,'#.#')"/>em; padding-left: <xsl:value-of select="format-number(../@hangIndent * 0.7,'#.#')"/>em</xsl:attribute>
@@ -1537,7 +1537,7 @@
     <xsl:if test="$dd-content!=''">
       <xsl:apply-templates />
     </xsl:if>
-  </p>
+  </div>
 </xsl:template>
 
 <xsl:template match="list[@style='x:dictionary']/t | list[@style='x:dictionary']/ed:replace/ed:*/t">
@@ -3987,7 +3987,8 @@ q {
 p {
   margin-left: 2em;
 }<xsl:if test="//list[@style='hanging']">
-p.hanging {
+div.hanging {
+  margin-left: 2em;
   text-indent: -3em;
   padding-left: 3em;
 }</xsl:if>
@@ -7141,11 +7142,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.635 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.635 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.636 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.636 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/05/23 15:11:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/05/23 15:11:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/05/23 19:40:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/05/23 19:40:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
