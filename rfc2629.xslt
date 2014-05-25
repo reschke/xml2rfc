@@ -375,12 +375,12 @@
 <xsl:param name="rfcUrlPrefix" select="'http://www.ietf.org/rfc/rfc'" />
 <xsl:param name="rfcUrlPostfix" select="'.txt'" />
 -->
-<!-- Reference the marked up versions over on http://tools.ietf.org/html. -->
-<xsl:param name="rfcUrlPrefix" select="'http://tools.ietf.org/html/rfc'" />
+<!-- Reference the marked up versions over on https://tools.ietf.org/html. -->
+<xsl:param name="rfcUrlPrefix" select="'https://tools.ietf.org/html/rfc'" />
 <xsl:param name="rfcUrlPostfix" select="''" />
 <xsl:param name="rfcUrlFragSection" select="'section-'" />
 <xsl:param name="rfcUrlFragAppendix" select="'appendix-'" />
-<xsl:param name="internetDraftUrlPrefix" select="'http://tools.ietf.org/html/'" />
+<xsl:param name="internetDraftUrlPrefix" select="'https://tools.ietf.org/html/'" />
 <xsl:param name="internetDraftUrlPostfix" select="''" />
 <xsl:param name="internetDraftUrlFrag" select="'section-'" />
 
@@ -7142,11 +7142,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.636 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.636 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.637 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.637 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/05/23 19:40:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/05/23 19:40:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/05/25 07:29:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/05/25 07:29:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
