@@ -398,6 +398,8 @@
 <xsl:variable name="lcase" select="'abcdefghijklmnopqrstuvwxyz'" />
 <xsl:variable name="ucase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
 <xsl:variable name="digits" select="'0123456789'" />
+<xsl:variable name="alpha" select="concat($lcase,$ucase)"/>
+<xsl:variable name="alnum" select="concat($alpha,$digits)"/>
 
 <!-- build help keys for indices -->
 <xsl:key name="index-first-letter"
@@ -1326,13 +1328,13 @@
 
 <xsl:template name="compute-iref-anchor">
   <xsl:variable name="first" select="translate(substring(@item,1,1),$ucase,$lcase)"/>
-  <xsl:variable name="nkey" select="translate($first,$lcase,'')"/>
+  <xsl:variable name="nkey" select="translate($first,$alnum,'')"/>
   <xsl:choose>
     <xsl:when test="$nkey=''">
       <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:value-of select="$first"/>.<xsl:number level="any" count="iref[starts-with(translate(@item,$ucase,$lcase),$first)]"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" count="iref[translate(substring(@item,1,1),concat($lcase,$ucase),'')='']"/>
+      <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" count="iref[translate(substring(@item,1,1),$alnum,'')!='']"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -7070,11 +7072,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.638 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.638 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.639 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.639 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/05/31 12:29:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/05/31 12:29:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/13 10:37:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/13 10:37:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
