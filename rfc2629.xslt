@@ -1354,7 +1354,7 @@
 
 <!-- list templates depend on the list style -->
 
-<xsl:template match="list[@style='empty' or not(@style)]">
+<xsl:template match="list[@style='empty' or (not(@style) and not(ancestor::list[@style]) or (not(@style) and ancestor::list[@style='empty']))]">
   <xsl:call-template name="check-no-text-content"/>
   <ul class="empty">
     <xsl:call-template name="insertInsDelClass"/>
@@ -1378,7 +1378,7 @@
   </dl>
 </xsl:template>
 
-<xsl:template match="list[@style='numbers']">
+<xsl:template match="list[@style='numbers' or (not(@style) and ancestor::list[@style='numbers'])]">
   <xsl:call-template name="check-no-text-content"/>
   <ol>
     <xsl:call-template name="insertInsDelClass"/>
@@ -1386,7 +1386,7 @@
   </ol>
 </xsl:template>
 
-<xsl:template match="list[@style='letters']">
+<xsl:template match="list[@style='letters' or (not(@style) and ancestor::list[@style='letters'])]">
   <xsl:call-template name="check-no-text-content"/>
   <xsl:variable name="style">
     <xsl:choose>
@@ -1402,7 +1402,7 @@
   </ol>
 </xsl:template>
 
-<xsl:template match="list[@style='symbols']">
+<xsl:template match="list[@style='symbols' or (not(@style) and ancestor::list[@style='symbols'])]">
   <xsl:call-template name="check-no-text-content"/>
   <ul>
     <xsl:call-template name="insertInsDelClass"/>
@@ -7072,11 +7072,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.639 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.639 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.640 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.640 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/13 10:37:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/13 10:37:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/13 12:42:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/13 12:42:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
