@@ -3065,7 +3065,7 @@
     <!-- check <area> value -->
     <xsl:for-each select="/rfc/front/area">
       <xsl:variable name="area" select="normalize-space(.)"/>
-      <xsl:variable name="allowed">
+      <xsl:variable name="rallowed">
         <ed:v>Applications</ed:v>
         <ed:v>app</ed:v>
         <ed:v>General</ed:v>
@@ -3083,6 +3083,7 @@
         <ed:v>Transport</ed:v>
         <ed:v>tsv</ed:v>
       </xsl:variable>
+      <xsl:variable name="allowed" select="exslt:node-set($rallowed)"/>
       <xsl:choose>
         <xsl:when test="$allowed/ed:v=$area">
           <!-- ok -->
@@ -7072,11 +7073,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.640 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.640 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.641 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.641 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/13 12:42:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/13 12:42:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/16 19:30:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/16 19:30:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
