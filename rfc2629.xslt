@@ -1132,7 +1132,7 @@
     </xsl:variable>
 
     <!-- insert the collected information -->
-    <table class="header">
+    <table class="header" id="{$anchor-prefix}.headerblock">
       <xsl:choose>
         <xsl:when test="function-available('exslt:node-set')">
           <xsl:call-template name="emitheader">
@@ -1149,7 +1149,7 @@
     </table>
   </xsl:if>
 
-  <p class="title">
+  <p class="title" id="{$anchor-prefix}.title">
     <!-- main title -->
 
     <xsl:apply-templates select="title"/>
@@ -5281,13 +5281,15 @@ dd, li, p {
 <xsl:template match="/" mode="toc">
   <hr class="noprint"/>
 
-  <h1 class="np" id="{$anchor-prefix}.toc"> <!-- this pagebreak occurs always -->
-    <a href="#{$anchor-prefix}.toc">Table of Contents</a>
-  </h1>
-
-  <ul class="toc">
-    <xsl:apply-templates mode="toc" />
-  </ul>
+  <div id="{$anchor-prefix}.toc">
+    <h1 class="np"> <!-- this pagebreak occurs always -->
+      <a href="#{$anchor-prefix}.toc">Table of Contents</a>
+    </h1>
+  
+    <ul class="toc">
+      <xsl:apply-templates mode="toc" />
+    </ul>
+  </div>
 </xsl:template>
 
 <xsl:template name="insert-toc-line">
@@ -7073,11 +7075,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.641 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.641 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.642 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.642 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/16 19:30:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/16 19:30:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/18 11:46:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/18 11:46:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
