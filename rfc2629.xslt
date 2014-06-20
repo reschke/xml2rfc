@@ -2270,15 +2270,24 @@
 </xsl:template>
 
 <xsl:template match="title">
-  <xsl:if test="@abbrev and string-length(@abbrev) > 40">
+  <xsl:variable name="tlen" select="string-length(.)"/>
+  <xsl:variable name="alen" select="string-length(@abbrev)"/>
+
+  <xsl:if test="@abbrev and $alen > 40">
     <xsl:call-template name="warning">
       <xsl:with-param name="msg">title/@abbrev too long (max 40 characters)</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
 
-  <xsl:if test="string-length(.) > 40 and (not(@abbrev) or @abbrev='')">
+  <xsl:if test="$tlen > 40 and (not(@abbrev) or @abbrev='')">
     <xsl:call-template name="warning">
       <xsl:with-param name="msg">title too long, should supply title/@abbrev attribute with less than 40 characters</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+
+  <xsl:if test="$tlen &lt;= 40 and @abbrev!=''">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">title/@abbrev was specified despite the title being short enough (<xsl:value-of select="$tlen"/>)</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
 
@@ -7075,11 +7084,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.642 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.642 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.643 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.643 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/18 11:46:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/18 11:46:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/20 19:23:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/20 19:23:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
