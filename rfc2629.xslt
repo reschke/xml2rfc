@@ -6747,7 +6747,14 @@ dd, li, p {
   <xsl:variable name="message"><xsl:value-of select="$level"/>: <xsl:value-of select="$msg"/><xsl:value-of select="$msg2"/><xsl:call-template name="lineno"/></xsl:variable>
   <xsl:choose>
     <xsl:when test="$inline!='no'">
-      <div class="error"><xsl:value-of select="$message"/></div>
+      <xsl:choose>
+        <xsl:when test="ancestor::t">
+          <span class="error"><xsl:value-of select="$message"/></span>
+        </xsl:when>
+        <xsl:otherwise>
+          <div class="error"><xsl:value-of select="$message"/></div>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:when>
     <xsl:otherwise>
       <!-- this fails when the message contains characters not encodable in the output encoding -->
@@ -7084,11 +7091,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.643 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.643 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.644 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.644 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/20 19:23:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/20 19:23:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/22 11:32:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/22 11:32:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
