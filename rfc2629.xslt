@@ -387,6 +387,33 @@
 <!-- the format we're producing -->
 <xsl:param name="outputExtension" select="'html'"/>
 
+<!-- source for autorefresh -->
+<xsl:param name="xml2rfc-ext-refresh-from">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'refresh-from'"/>
+    <xsl:with-param name="default" select="''"/>
+  </xsl:call-template>
+</xsl:param>
+
+<!-- XSLT for autorefresh -->
+<xsl:param name="xml2rfc-ext-refresh-xslt">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'refresh-xslt'"/>
+    <xsl:with-param name="default" select="'rfc2629.xslt'"/>
+  </xsl:call-template>
+</xsl:param>
+
+<!-- interval for autorefresh -->
+<xsl:param name="xml2rfc-ext-refresh-interval">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'refresh-interval'"/>
+    <xsl:with-param name="default" select="10"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- warning re: absent node-set ext. function -->
 <xsl:variable name="node-set-warning">
   This stylesheet requires either an XSLT-1.0 processor with node-set()
@@ -2186,10 +2213,11 @@
 
     </head>
     <body>
-      <xsl:if test="/rfc/x:feedback or ($xml2rfc-ext-insert-metadata='yes' and /rfc/@number)">
+      <xsl:if test="/rfc/x:feedback or ($xml2rfc-ext-insert-metadata='yes' and /rfc/@number) or $xml2rfc-ext-refresh-from!=''">
         <xsl:attribute name="onload">
           <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@number">getMeta(<xsl:value-of select="/rfc/@number"/>,"rfc.meta");</xsl:if>
           <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
+          <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
         </xsl:attribute>
       </xsl:if>
 
@@ -3610,6 +3638,224 @@
 
 <!-- optional scripts -->
 <xsl:template name="insertScripts">
+<xsl:if test="$xml2rfc-ext-refresh-from!=''">
+<script>
+var RfcRefresh = {};
+RfcRefresh.NS_XHTML = "http://www.w3.org/1999/xhtml";
+RfcRefresh.NS_MOZERR = "http://www.mozilla.org/newlayout/xml/parsererror.xml";
+RfcRefresh.lastTxt = "";
+RfcRefresh.xslt = null;
+RfcRefresh.xmlsource = "<xsl:value-of select='$xml2rfc-ext-refresh-from'/>";
+RfcRefresh.xsltsource = "<xsl:value-of select='$xml2rfc-ext-refresh-xslt'/>";
+RfcRefresh.interval = "<xsl:value-of select='number($xml2rfc-ext-refresh-interval)'/>";
+
+RfcRefresh.getXSLT = function() {
+  if (! window.XSLTProcessor) {
+    var err = document.createElement("pre");
+    err.className = "refreshbrowsererror noprint";
+    var msg = "This browser does not support the window.XSLTProcessor functionality.";
+    err.appendChild(document.createTextNode(msg));
+    RfcRefresh.showMessage("refreshxmlerror", err);
+  }
+  else {
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", RfcRefresh.xsltsource, true);
+      xhr.onload = function (e) {
+        if (xhr.readyState === 4) {
+          RfcRefresh.xslt = new XSLTProcessor();
+          RfcRefresh.xslt.importStylesheet(xhr.responseXML);
+        }
+      }
+      xhr.onerror = function (e) {
+        console.error(xhr.status + " " + xhr.statusText);
+      };
+      xhr.send(null);
+    }
+    catch (e) {
+      var err = document.createElement("pre");
+      err.className = "refreshbrowsererror noprint";
+      var msg = "Failed to load XSLT code from &lt;" + RfcRefresh.xsltsource + "&gt;.\n";
+      msg += "Your browser might not support loading from a file: URI.\n";
+      msg += "Error details: " + e;
+      err.appendChild(document.createTextNode(msg));
+      RfcRefresh.showMessage("refreshxmlerror", err);
+    }
+  }
+}
+
+RfcRefresh.findAndUpdate = function(olddoc, elem) {
+  var changed = "";
+  var children = elem.childNodes;
+  for (var i = 0; i != children.length; i++) {
+    var n = children[i];
+    if (n.nodeType == 1) {
+      var c = RfcRefresh.findAndUpdate(olddoc, n);
+      if (changed == '') {
+        changed = c;
+      }
+      var id = n.id;
+      if (id != "") {
+        var old = olddoc.getElementById(id);
+        var newtext = n.innerHTML;
+        if (!old) {
+          console.debug("new " + id);
+        } else {
+          var oldtext = old.innerHTML;
+          if (oldtext != newtext) {
+            console.debug("updating " + id);
+            old.innerHTML = n.innerHTML;
+            if (changed == '') {
+              changed = id;
+            }
+          }
+        }
+      }
+    }
+  }
+  return changed;
+}
+
+RfcRefresh.findDifferences = function(olddoc, newdoc) {
+  var changed = RfcRefresh.findAndUpdate(olddoc, newdoc.documentElement);
+  if (changed != "") {
+    console.debug("changed: " + changed);
+    document.location = "#" + changed;
+  }
+  // final check for changes; if those were not processed earlier,
+  // we refresh the whole document
+  var oldtext = olddoc.documentElement.getElementsByTagName("body")[0].innerHTML;
+  var newtext = newdoc.documentElement.getElementsByTagName("body")[0].innerHTML;
+  if (oldtext != newtext) {
+    console.debug("full refresh: " + newtext);
+    olddoc.documentElement.innerHTML = newdoc.documentElement.innerHTML;
+  }
+}
+
+RfcRefresh.getNodeText = function(elem) {
+  var result = "";
+  var children = elem.childNodes;
+  for (var i = 0; i != children.length; i++) {
+    if (children[i].nodeType == 3) {
+      result += children[i].nodeValue;
+    }
+  }
+  return result; 
+}
+
+RfcRefresh.getParserError = function(dom) {
+  // FIREFOX
+  if ("parsererror" == dom.documentElement.nodeName &amp;&amp; RfcRefresh.NS_MOZERR == dom.documentElement.namespaceURI) {
+    var errmsg = new Object();
+    errmsg.msg = "";
+    errmsg.src = "";
+    var children = dom.documentElement.childNodes;
+    for (var i = 0; i != children.length; i++) {
+      if (children[i].nodeType == 3) {
+        errmsg.msg += children[i].nodeValue;
+      } else if (children[i].nodeName == "sourcetext") {
+        errmsg.src = RfcRefresh.getNodeText(children[i]);
+      }
+    }
+    return errmsg;
+  }
+  
+  var list = dom.getElementsByTagNameNS(RfcRefresh.NS_XHTML, "parsererror");
+  if (list.length != 0) {
+    // Webkit
+    var errmsg = new Object();
+    errmsg.msg = "XML parse error";
+    list = dom.getElementsByTagNameNS(RfcRefresh.NS_XHTML, "div");
+    if (list.length != 0) {
+      errmsg.msg = RfcRefresh.getNodeText(list[0]);
+    }
+    return errmsg;
+  }  
+  
+  
+  return null;
+}
+
+RfcRefresh.showMessage = function(cls, node) {
+  // remove previous message
+  var list = document.getElementsByClassName(cls);
+  if (list.length != 0) {
+    list[0].parentNode.removeChild(list[0]);
+  }
+
+  var bodyl = document.getElementsByTagName("body");
+  bodyl[0].appendChild(node);
+}
+
+RfcRefresh.refresh = function(txt) {
+  if (txt != RfcRefresh.lastTxt) {
+    RfcRefresh.lastTxt = txt;
+    // try to parse
+    var parser = new DOMParser();
+    var dom = parser.parseFromString(txt, "text/xml");
+    var errmsg = RfcRefresh.getParserError(dom);
+    
+    if (errmsg != null) {
+      var err = document.createElement("pre");
+      err.className = "refreshxmlerror noprint";
+      err.appendChild(document.createTextNode(errmsg.msg));
+      if (errmsg.src != null) {
+        err.appendChild(document.createElement("hr"));
+        err.appendChild(document.createTextNode(errmsg.src));
+      }
+      RfcRefresh.showMessage("refreshxmlerror", err);
+    } else {
+      // find new refresh
+      var children = dom.childNodes;
+      for (var i = 0; i != children.length; i++) {
+        if (children[i].nodeType == 7 &amp;&amp; children[i].target == "rfc-ext") {
+          var s = "&lt;foo " + children[i].data + "/>";
+          var sd = parser.parseFromString(s, "text/xml");
+          var refresh = sd.documentElement.getAttribute("refresh-interval");
+          if (refresh != null &amp;&amp; refresh != "") {
+            refresh = parseInt(refresh, 10);
+            if (RfcRefresh.interval != refresh) {
+              if (Number.isNaN(refresh) || refresh &lt; 5) {
+                console.debug("refresh requested to be: " + refresh + " - ignored, using 5 instead.");
+                RfcRefresh.interval = 5;
+              } else {
+                RfcRefresh.interval = refresh;
+                console.debug("refresh changed to: " + refresh);
+              }
+            }
+          }
+        }
+      }
+    
+      var html = RfcRefresh.xslt.transformToDocument(dom);
+      RfcRefresh.findDifferences(document, html);
+    }
+  }
+}
+
+RfcRefresh.initRefresh = function() {
+  RfcRefresh.getXSLT();
+    
+  window.setTimeout(function(){
+    if (RfcRefresh.xslt != null) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", RfcRefresh.xmlsource, true);
+      xhr.onload = function (e) {
+        if (xhr.readyState === 4) {
+          var txt = xhr.responseText;
+          RfcRefresh.refresh(txt);
+        }
+      }
+      xhr.onerror = function (e) {
+        console.error(xhr.status + " " + xhr.statusText);
+      };
+      xhr.send(null);
+      setTimeout(arguments.callee, RfcRefresh.interval * 1000);
+    }
+  }, RfcRefresh.interval * 1000);
+}
+</script>
+</xsl:if>
 <xsl:if test="/rfc/x:feedback">
 <script>
 var buttonsAdded = false;
@@ -4234,6 +4480,21 @@ thead th {
   background-color: yellow;
   font-size: smaller;
   font-weight: bold;
+}</xsl:if><xsl:if test="$xml2rfc-ext-refresh-from!=''">.refreshxmlerror {
+  position: fixed;
+  top: 1%;
+  right: 1%;
+  padding: 5px 5px;
+  color: yellow;
+  background: black;
+}
+.refreshbrowsererror {
+  position: fixed;
+  top: 1%;
+  left: 1%;
+  padding: 5px 5px;
+  color: red;
+  background: black;
 }</xsl:if><xsl:if test="/rfc/x:feedback">.feedback {
   position: fixed;
   bottom: 1%;
@@ -7091,11 +7352,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.644 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.644 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.645 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.645 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/22 11:32:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/22 11:32:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/24 05:33:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/24 05:33:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -7512,6 +7773,9 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='include-references-in-index'"/>
                       <xsl:when test="$attrname='justification'"/>
                       <xsl:when test="$attrname='parse-xml-in-artwork'"/>
+                      <xsl:when test="$attrname='refresh-from'"/>
+                      <xsl:when test="$attrname='refresh-interval'"/>
+                      <xsl:when test="$attrname='refresh-xslt'"/>
                       <xsl:when test="$attrname='sec-no-trailing-dots'"/>
                       <xsl:when test="$attrname='trace-parse-xml'"/>
                       <xsl:when test="$attrname='vspace-pagebreak'"/>
