@@ -3644,6 +3644,7 @@ var RfcRefresh = {};
 RfcRefresh.NS_XHTML = "http://www.w3.org/1999/xhtml";
 RfcRefresh.NS_MOZERR = "http://www.mozilla.org/newlayout/xml/parsererror.xml";
 RfcRefresh.lastTxt = "";
+RfcRefresh.lastEtag = "";
 RfcRefresh.xslt = null;
 RfcRefresh.xmlsource = "<xsl:value-of select='$xml2rfc-ext-refresh-from'/>";
 RfcRefresh.xsltsource = "<xsl:value-of select='$xml2rfc-ext-refresh-xslt'/>";
@@ -3840,10 +3841,16 @@ RfcRefresh.initRefresh = function() {
     if (RfcRefresh.xslt != null) {
       var xhr = new XMLHttpRequest();
       xhr.open("GET", RfcRefresh.xmlsource, true);
+      if (RfcRefresh.lastEtag != "") {
+        xhr.setRequestHeader("If-None-Match", RfcRefresh.lastEtag);
+      }
       xhr.onload = function (e) {
         if (xhr.readyState === 4) {
-          var txt = xhr.responseText;
-          RfcRefresh.refresh(txt);
+          console.debug(xhr.status + " " + xhr.statusText);
+          if (xhr.status != 304) {
+            RfcRefresh.refresh(xhr.responseText);
+          }
+          RfcRefresh.lastEtag = xhr.getResponseHeader("ETag");
         }
       }
       xhr.onerror = function (e) {
@@ -7352,11 +7359,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.645 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.645 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.646 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.646 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/24 05:33:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/24 05:33:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/24 11:24:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/24 11:24:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
