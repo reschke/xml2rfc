@@ -4208,7 +4208,6 @@ pre.text2 {
   border-style: dotted;
   border-width: 1px;
   background-color: #f0f0f0;
-  width: 69em;
 }
 pre.inline {
   background-color: white;
@@ -4218,7 +4217,6 @@ pre.text {
   border-style: dotted;
   border-width: 1px;
   background-color: #f8f8f8;
-  width: 69em;
 }
 pre.drawing {
   border-style: solid;
@@ -4526,6 +4524,12 @@ dd, li, p {
   text-align: justify;
 }</xsl:if>
 
+@media screen {
+  pre.text, pre.text2 {
+    width: 69em;
+  }
+}
+
 @media print {
   .noprint {
     display: none;
@@ -4554,6 +4558,10 @@ dd, li, p {
 
   ul.ind li li a {<!-- links in the leaf nodes of the index should go to page numbers -->
     content: target-counter(attr(href), page);
+  }
+
+  pre.text, pre.text2 {
+    font-size: 10pt;
   }
 
   .print2col {
@@ -7359,11 +7367,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.646 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.646 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.647 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.647 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/24 11:24:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/24 11:24:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/24 16:25:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/24 16:25:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
