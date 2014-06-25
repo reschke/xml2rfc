@@ -2213,13 +2213,12 @@
 
     </head>
     <body>
-      <xsl:if test="/rfc/x:feedback or ($xml2rfc-ext-insert-metadata='yes' and /rfc/@number) or $xml2rfc-ext-refresh-from!=''">
-        <xsl:attribute name="onload">
-          <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@number">getMeta(<xsl:value-of select="/rfc/@number"/>,"rfc.meta");</xsl:if>
-          <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
-          <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
-        </xsl:attribute>
-      </xsl:if>
+      <xsl:attribute name="onload">
+        <xsl:text>insertMenus();</xsl:text>
+        <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@number">getMeta(<xsl:value-of select="/rfc/@number"/>,"rfc.meta");</xsl:if>
+        <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
+        <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
+      </xsl:attribute>
 
       <!-- insert diagnostics -->
       <xsl:call-template name="insert-diagnostics"/>
@@ -3638,6 +3637,27 @@
 
 <!-- optional scripts -->
 <xsl:template name="insertScripts">
+<script>
+function insertMenus() {
+  var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT);
+            
+  while (walker.nextNode()) {
+    var n = walker.currentNode;
+    if (n.nodeName == "P" &amp;&amp; n.id != "") {
+      var menu = document.createElement("menu");
+      menu.setAttribute("type", "context");
+      menu.setAttribute("id", "ctxmenu." + n.id);
+      var menuitem = document.createElement("menuitem");
+      menuitem.setAttribute("label", "Link here...");
+      menuitem.setAttribute("onClick", "window.location=\"#" + n.id + "\";"); 
+      
+      menu.appendChild(menuitem);
+      n.appendChild(menu);
+      n.setAttribute("contextmenu", "ctxmenu." + n.id);
+    }
+  }
+}
+</script>
 <xsl:if test="$xml2rfc-ext-refresh-from!=''">
 <script>
 var RfcRefresh = {};
@@ -7367,11 +7387,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.647 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.647 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.648 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.648 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/24 16:25:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/24 16:25:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/25 14:12:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/25 14:12:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
