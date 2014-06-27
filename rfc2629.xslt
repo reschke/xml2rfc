@@ -3803,9 +3803,7 @@ RfcRefresh.showMessage = function(cls, node) {
   if (list.length != 0) {
     list[0].parentNode.removeChild(list[0]);
   }
-
-  var bodyl = document.getElementsByTagName("body");
-  bodyl[0].appendChild(node);
+  document.body.appendChild(node);
 }
 
 RfcRefresh.refresh = function(txt) {
@@ -3893,8 +3891,7 @@ function initFeedback() {
   fb.setAttribute("onclick", "feedback();");
   fb.appendChild(document.createTextNode("feedback"));
 
-  var bodyl = document.getElementsByTagName("body");
-  bodyl.item(0).appendChild(fb);
+  document.body.appendChild(fb);
 }
 
 function feedback() {
@@ -7387,11 +7384,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.648 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.648 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.649 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.649 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/25 14:12:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/25 14:12:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/27 11:38:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/27 11:38:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
