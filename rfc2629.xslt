@@ -1118,7 +1118,7 @@
   <xsl:if test="@anchor!=''">
     <xsl:call-template name="check-anchor"/>
     <xsl:element name="{$anch-container}">
-    <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
     </xsl:element>
   </xsl:if>
   <xsl:variable name="anch">
@@ -1126,8 +1126,8 @@
   </xsl:variable>
   <xsl:element name="{$anch-container}">
     <xsl:attribute name="id"><xsl:value-of select="$anch"/></xsl:attribute>
+    <xsl:apply-templates />
   </xsl:element>
-  <xsl:apply-templates />
   <xsl:if test="(@title!='') or (@anchor!='' and not(@suppress-title='true'))">
     <xsl:variable name="n"><xsl:call-template name="get-figure-number"/></xsl:variable>
     <p class="figure">
@@ -3643,17 +3643,19 @@ function insertMenus() {
             
   while (walker.nextNode()) {
     var n = walker.currentNode;
-    if (n.nodeName == "P" &amp;&amp; n.id != "") {
-      var menu = document.createElement("menu");
-      menu.setAttribute("type", "context");
-      menu.setAttribute("id", "ctxmenu." + n.id);
-      var menuitem = document.createElement("menuitem");
-      menuitem.setAttribute("label", "Link here...");
-      menuitem.setAttribute("onClick", "window.location=\"#" + n.id + "\";"); 
-      
-      menu.appendChild(menuitem);
-      n.appendChild(menu);
-      n.setAttribute("contextmenu", "ctxmenu." + n.id);
+    if (n.children.length != 0) {
+      if ((n.nodeName == "P" || n.nodeName == "DIV") &amp;&amp; n.id != "") {
+        var menu = document.createElement("menu");
+        menu.setAttribute("type", "context");
+        menu.setAttribute("id", "ctxmenu." + n.id);
+        var menuitem = document.createElement("menuitem");
+        menuitem.setAttribute("label", "Link here...");
+        menuitem.setAttribute("onClick", "window.location=\"#" + n.id + "\";"); 
+        
+        menu.appendChild(menuitem);
+        n.appendChild(menu);
+        n.setAttribute("contextmenu", "ctxmenu." + n.id);
+      }
     }
   }
 }
@@ -6083,9 +6085,9 @@ dd, li, p {
 </xsl:template>
 
 <xsl:template name="get-paragraph-number">
-  <!-- get section number of ancestor section element, then add t or figure number -->
+  <!-- get section number of ancestor section element, then add t number -->
   <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered']) and not(ancestor::x:blockquote) and not(ancestor::x:note)">
-    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|figure|x:blockquote|x:note" />
+    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|x:blockquote|x:note" />
   </xsl:if>
 </xsl:template>
 
@@ -7384,11 +7386,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.650 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.650 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.651 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.651 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/28 14:29:31 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/28 14:29:31 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/28 20:43:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/28 20:43:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
