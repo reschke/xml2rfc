@@ -2372,7 +2372,7 @@
   </xsl:variable>
 
   <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!='' and @anchor='rfc.status'">
-    <div id="rfc.meta" style="float: right; border: 1px solid black; margin: 2em; padding: 1em; display: none;"></div>
+    <div id="{$anchor-prefix}.meta" style="float: right; border: 1px solid black; margin: 2em; padding: 1em; display: none;"></div>
   </xsl:if>
   <div>
     <xsl:if test="@anchor">
@@ -2382,7 +2382,7 @@
 
     <!-- process irefs immediately following the section so that their anchor
     actually is the section heading -->
-    <xsl:apply-templates select="iref[count(preceding-sibling::*[not(self::iref)])=0]"/>
+    <xsl:apply-templates select="iref[count(preceding-sibling::*[not(self::iref) and not(self::x:anchor-alias)])=0]"/>
 
     <xsl:element name="{$elemtype}">
       <xsl:if test="$sectionNumber!=''">
@@ -2426,7 +2426,7 @@
       </xsl:choose>
     </xsl:element>
     <!-- continue with all child elements but the irefs processed above -->
-    <xsl:apply-templates select="*[not(self::iref)]|iref[count(preceding-sibling::*[not(self::iref)])!=0]" />
+    <xsl:apply-templates select="*[not(self::iref)]|iref[count(preceding-sibling::*[not(self::iref) and not(self::x:anchor-alias)])!=0]" />
   </div>
 </xsl:template>
 
@@ -7384,11 +7384,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.649 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.649 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.650 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.650 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/27 11:38:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/27 11:38:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/28 14:29:31 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/28 14:29:31 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
