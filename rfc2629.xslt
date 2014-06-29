@@ -1357,11 +1357,16 @@
   <xsl:variable name="first" select="translate(substring(@item,1,1),$ucase,$lcase)"/>
   <xsl:variable name="nkey" select="translate($first,$alnum,'')"/>
   <xsl:choose>
+    <xsl:when test="count(.|$section-level-irefs)=count($section-level-irefs)">
+      <xsl:for-each select="..">
+        <xsl:value-of select="$anchor-prefix"/>.section.<xsl:call-template name="get-section-number"/>
+      </xsl:for-each>
+    </xsl:when>
     <xsl:when test="$nkey=''">
-      <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:value-of select="$first"/>.<xsl:number level="any" count="iref[starts-with(translate(@item,$ucase,$lcase),$first)]"/>
+      <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:value-of select="$first"/>.<xsl:number level="any" count="iref[starts-with(translate(@item,$ucase,$lcase),$first) and count(.|$section-level-irefs)!=count($section-level-irefs)]"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" count="iref[translate(substring(@item,1,1),$alnum,'')!='']"/>
+      <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" count="iref[translate(substring(@item,1,1),$alnum,'')!='' and count(.|$section-level-irefs)!=count($section-level-irefs)]"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -2343,6 +2348,9 @@
   </xsl:choose>
 </xsl:template>
 
+<!-- irefs that are section-level thus can use the section anchor -->
+<xsl:variable name="section-level-irefs" select="//section/iref[count(preceding-sibling::*[not(self::iref) and not(self::x:anchor-alias)])=0]"/>
+
 <xsl:template match="section|appendix">
   <xsl:call-template name="check-no-text-content"/>
 
@@ -2380,10 +2388,11 @@
       <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
     </xsl:if>
 
-    <!-- process paragraph-level irefs immediately following the section now
-    so that their anchor actually is the section heading -->
-    <xsl:variable name="plirefs" select="iref[count(preceding-sibling::*[not(self::iref) and not(self::x:anchor-alias)])=0]"/>
-    <xsl:apply-templates select="$plirefs"/>
+    <!--<xsl:for-each select="iref">
+      <xsl:if test="count(.|$section-level-irefs)=count($section-level-irefs)">
+        <xsl:apply-templates select="."/>
+      </xsl:if>
+    </xsl:for-each>-->
 
     <xsl:element name="{$elemtype}">
       <xsl:if test="$sectionNumber!=''">
@@ -2429,7 +2438,7 @@
 
     <!-- continue with all child elements but the irefs processed above -->
     <xsl:for-each select="*">
-      <xsl:if test="count(.|$plirefs)!=count($plirefs)">
+      <xsl:if test="count(.|$section-level-irefs)!=count($section-level-irefs)">
         <xsl:apply-templates select="."/>
       </xsl:if>
     </xsl:for-each>
@@ -7392,11 +7401,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.652 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.652 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.653 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.653 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/29 10:51:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/29 10:51:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/06/29 14:15:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/29 14:15:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
