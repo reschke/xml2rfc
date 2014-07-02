@@ -693,7 +693,7 @@
     <xsl:when test="starts-with(@type,'drawing')">
       <xsl:attribute name="class">drawing</xsl:attribute>
     </xsl:when>
-    <xsl:when test="starts-with(@type,'text/plain') or @type='example' or @type='code'">
+    <xsl:when test="starts-with(@type,'text/plain') or @type='example' or @type='code' or @type='application/xml-dtd'">
       <xsl:attribute name="class">text</xsl:attribute>
     </xsl:when>
     <xsl:otherwise/>
@@ -7401,11 +7401,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.653 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.653 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.654 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.654 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/06/29 14:15:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/06/29 14:15:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/07/02 16:52:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/02 16:52:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
