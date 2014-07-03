@@ -222,6 +222,16 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- paragraph links? -->
+
+<xsl:param name="xml2rfc-ext-paragraph-links">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'paragraph-links'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- extension for XML parsing in artwork -->
 
 <xsl:param name="xml2rfc-ext-parse-xml-in-artwork">
@@ -2218,12 +2228,16 @@
 
     </head>
     <body>
-      <xsl:attribute name="onload">
-        <xsl:text>insertMenus();</xsl:text>
+      <xsl:variable name="onload">
         <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@number">getMeta(<xsl:value-of select="/rfc/@number"/>,"rfc.meta");</xsl:if>
         <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
         <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
-      </xsl:attribute>
+      </xsl:variable>
+      <xsl:if test="$onload!=''">
+        <xsl:attribute name="onload">
+          <xsl:value-of select="$onload"/>
+        </xsl:attribute>
+      </xsl:if>
 
       <!-- insert diagnostics -->
       <xsl:call-template name="insert-diagnostics"/>
@@ -2269,12 +2283,22 @@
   <!-- do not open a new p element if this is a whitespace-only text node and no siblings follow -->
   <xsl:if test="not(self::text() and normalize-space(.)='' and not(following-sibling::node()))">
     <p>
-      <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins) and not(ancestor::x:lt) and count(preceding-sibling::node())=0">
-        <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
+      <xsl:variable name="anchor">
+        <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins) and not(ancestor::x:lt) and count(preceding-sibling::node())=0">
+          <xsl:value-of select="concat($anchor-prefix,'.section.',$p)"/>
+        </xsl:if>
+      </xsl:variable>
+      <xsl:if test="$anchor!=''">
+        <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
       </xsl:if>
       <xsl:call-template name="insertInsDelClass"/>
       <xsl:call-template name="editingMark" />
       <xsl:apply-templates mode="t-content2" select="." />
+      <xsl:if test="$xml2rfc-ext-paragraph-links='yes'">
+        <xsl:if test="$anchor!=''">
+          <a class='self' href='#{$anchor}'>&#xb6;</a>
+        </xsl:if>
+      </xsl:if>
     </p>
   </xsl:if>
   <xsl:apply-templates mode="t-content" select="following-sibling::*[self::list or self::figure or self::texttable][1]" />
@@ -3652,29 +3676,6 @@
 
 <!-- optional scripts -->
 <xsl:template name="insertScripts">
-<script>
-function insertMenus() {
-  var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT);
-            
-  while (walker.nextNode()) {
-    var n = walker.currentNode;
-    if (n.children.length != 0) {
-      if ((n.nodeName == "P" || n.nodeName == "DIV") &amp;&amp; n.id != "") {
-        var menu = document.createElement("menu");
-        menu.setAttribute("type", "context");
-        menu.setAttribute("id", "ctxmenu." + n.id);
-        var menuitem = document.createElement("menuitem");
-        menuitem.setAttribute("label", "Link here...");
-        menuitem.setAttribute("onClick", "window.location=\"#" + n.id + "\";"); 
-        
-        menu.appendChild(menuitem);
-        n.appendChild(menu);
-        n.setAttribute("contextmenu", "ctxmenu." + n.id);
-      }
-    }
-  }
-}
-</script>
 <xsl:if test="$xml2rfc-ext-refresh-from!=''">
 <script>
 var RfcRefresh = {};
@@ -4458,8 +4459,22 @@ blockquote > * .bcp14 {
 .warning {
   font-size: 130%;
   background-color: yellow;
+}<xsl:if test="$xml2rfc-ext-paragraph-links='yes'">
+.self {
+    color: #999999;
+    margin-left: .3em;
+    text-decoration: none;
+    visibility: hidden;
+    -webkit-user-select: none;<!-- not std CSS yet--> 
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
-<xsl:if test="$has-edits">del {
+.self:hover {
+    text-decoration: none;
+}
+p:hover .self {
+    visibility: visible;
+}</xsl:if><xsl:if test="$has-edits">del {
   color: red;
   text-decoration: line-through;
 }
@@ -7401,11 +7416,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.654 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.654 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.655 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.655 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/07/02 16:52:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/02 16:52:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/07/03 18:12:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/03 18:12:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
