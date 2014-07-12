@@ -7416,11 +7416,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.657 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.657 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.658 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.658 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/07/12 10:06:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/12 10:06:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/07/12 22:16:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/12 22:16:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -7853,12 +7853,33 @@ prev: <xsl:value-of select="$prev"/>
 
                   <xsl:if test="name()='rfc' and $attr='SANITYCHECK'">
                     <xsl:choose>
+                      <xsl:when test="$attrname='comments'"/>
+                      <xsl:when test="$attrname='compact'"/>
+                      <xsl:when test="$attrname='editing'"/>
+                      <xsl:when test="$attrname='footer'"/>
+                      <xsl:when test="$attrname='header'"/>
                       <xsl:when test="$attrname='include'">
                         <xsl:call-template name="warning">
                           <xsl:with-param name="msg">the rfc include pseudo-attribute is not supported by this processor, see http://greenbytes.de/tech/webdav/rfc2629xslt/rfc2629xslt.html#examples.internalsubset for help.</xsl:with-param>
                         </xsl:call-template>
                       </xsl:when>
-                      <xsl:otherwise/>
+                      <xsl:when test="$attrname='inline'"/>
+                      <xsl:when test="$attrname='iprnotified'"/>
+                      <xsl:when test="$attrname='linefile'"/>
+                      <xsl:when test="$attrname='linkmailto'"/>
+                      <xsl:when test="$attrname='multiple-initials'"/>
+                      <xsl:when test="$attrname='private'"/>
+                      <xsl:when test="$attrname='rfcedstyle'"/>
+                      <xsl:when test="$attrname='sortrefs'"/>
+                      <xsl:when test="$attrname='strict'"/>
+                      <xsl:when test="$attrname='symrefs'"/>
+                      <xsl:when test="$attrname='toc'"/>
+                      <xsl:when test="$attrname='tocdepth'"/>
+                      <xsl:otherwise>
+                        <xsl:call-template name="info">
+                          <xsl:with-param name="msg">unsupported rfc pseudo-attribute '<xsl:value-of select="$attrname"/>'</xsl:with-param>
+                        </xsl:call-template>
+                      </xsl:otherwise>
                     </xsl:choose>
                   </xsl:if>
 
