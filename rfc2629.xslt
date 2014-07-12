@@ -363,7 +363,7 @@
 
 <xsl:param name="xml2rfc-linkmailto">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
     <xsl:with-param name="attr" select="'linkmailto'"/>
     <xsl:with-param name="default" select="'yes'"/>
   </xsl:call-template>
@@ -1028,12 +1028,14 @@
         <xsl:when test="$xml2rfc-rfcedstyle='yes'">Email: </xsl:when>
         <xsl:otherwise>EMail: </xsl:otherwise>
       </xsl:choose>
-      <a>
-        <xsl:if test="$xml2rfc-linkmailto!='no'">
-          <xsl:attribute name="href">mailto:<xsl:value-of select="$email" /></xsl:attribute>
-        </xsl:if>
-        <xsl:value-of select="$email" />
-      </a>
+      <xsl:choose>
+        <xsl:when test="$xml2rfc-linkmailto!='no'">
+          <a href="mailto:{$email}"><xsl:value-of select="$email" /></a>   
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$email" />
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:for-each>
     <xsl:for-each select="address/uri">
       <xsl:variable name="uri">
@@ -1876,16 +1878,8 @@
               </xsl:if>
             </xsl:variable>
             <xsl:choose>
-              <xsl:when test="address/email">
-                <a>
-                  <xsl:if test="$xml2rfc-linkmailto!='no'">
-                    <xsl:attribute name="href">mailto:<xsl:value-of select="address/email" /></xsl:attribute>
-                  </xsl:if>
-                  <xsl:if test="organization/text()">
-                    <xsl:attribute name="title"><xsl:value-of select="organization/text()"/></xsl:attribute>
-                  </xsl:if>
-                  <xsl:value-of select="$displayname" />
-                </a>
+              <xsl:when test="address/email and $xml2rfc-linkmailto!='no'">
+                <a href="mailto:{address/email}"><xsl:value-of select="$displayname" /></a>
               </xsl:when>
               <xsl:otherwise>
                 <xsl:value-of select="$displayname" />
@@ -7422,11 +7416,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.656 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.656 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.657 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.657 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/07/06 21:03:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/06 21:03:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/07/12 10:06:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/12 10:06:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
