@@ -2283,7 +2283,7 @@
     <xsl:if test="normalize-space($textcontent)!=''">
       <p>
         <xsl:variable name="anchor">
-          <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins) and not(ancestor::x:lt) and count(preceding-sibling::node())=0">
+          <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins) and not(ancestor::x:lt) and not(preceding-sibling::node())">
             <xsl:value-of select="concat($anchor-prefix,'.section.',$p)"/>
           </xsl:if>
         </xsl:variable>
@@ -7420,11 +7420,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.660 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.660 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.661 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.661 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/07/17 19:35:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/17 19:35:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/07/18 13:13:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/18 13:13:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
