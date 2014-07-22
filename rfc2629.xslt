@@ -4588,7 +4588,7 @@ dd, li, p {
     font-size: 110%;
   }
 
-  ul.toc a:nth-child(2)::after {
+  ul.toc a:last-child::after {
     content: leader('.') target-counter(attr(href), page);
   }
 
@@ -7402,11 +7402,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.663 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.663 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.664 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.664 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/07/21 21:03:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/21 21:03:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/07/22 19:12:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/22 19:12:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
