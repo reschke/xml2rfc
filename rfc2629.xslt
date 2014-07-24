@@ -2245,6 +2245,7 @@
 
 
 <xsl:template match="t">
+  <xsl:param name="inherited-self-link"/>
   <xsl:if test="preceding-sibling::section or preceding-sibling::appendix">
     <xsl:call-template name="inline-warning">
       <xsl:with-param name="msg">The paragraph below is misplaced; maybe a section is closed in the wrong place: </xsl:with-param>
@@ -2253,10 +2254,16 @@
   </xsl:if>
   <xsl:choose>
     <xsl:when test="@anchor">
-      <div id="{@anchor}"><xsl:apply-templates mode="t-content" select="node()[1]" /></div>
+      <div id="{@anchor}">
+        <xsl:apply-templates mode="t-content" select="node()[1]">
+          <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
+        </xsl:apply-templates>
+      </div>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:apply-templates mode="t-content" select="node()[1]" />
+      <xsl:apply-templates mode="t-content" select="node()[1]">
+        <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
+      </xsl:apply-templates>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -2270,6 +2277,7 @@
 
 <!-- ... otherwise group into p elements -->
 <xsl:template mode="t-content" match="*|node()">
+  <xsl:param name="inherited-self-link"/>
   <xsl:variable name="p">
     <xsl:call-template name="get-paragraph-number" />
   </xsl:variable>
@@ -2296,6 +2304,9 @@
         <xsl:if test="$xml2rfc-ext-paragraph-links='yes'">
           <xsl:if test="$anchor!=''">
             <a class='self' href='#{$anchor}'>&#xb6;</a>
+          </xsl:if>
+          <xsl:if test="$inherited-self-link!=''">
+            <a class='self' href='#{$inherited-self-link}'>&#xb6;</a>
           </xsl:if>
         </xsl:if>
       </p>
@@ -6184,7 +6195,13 @@ dd, li, p {
     <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins)">
       <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
     </xsl:if>
-    <xsl:apply-templates/>
+    <xsl:for-each select="*">
+      <xsl:apply-templates select=".">
+        <xsl:with-param name="inherited-self-link">
+          <xsl:if test="$p!='' and position()=last()"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:if>
+        </xsl:with-param>
+      </xsl:apply-templates>
+    </xsl:for-each>
   </div>
 </xsl:template>
 
@@ -7402,11 +7419,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.664 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.664 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.665 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.665 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/07/22 19:12:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/22 19:12:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/07/24 02:56:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/24 02:56:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
