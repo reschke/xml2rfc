@@ -2246,6 +2246,9 @@
 
 <xsl:template match="t">
   <xsl:param name="inherited-self-link"/>
+  <xsl:variable name="p">
+    <xsl:call-template name="get-paragraph-number" />
+  </xsl:variable>
   <xsl:if test="preceding-sibling::section or preceding-sibling::appendix">
     <xsl:call-template name="inline-warning">
       <xsl:with-param name="msg">The paragraph below is misplaced; maybe a section is closed in the wrong place: </xsl:with-param>
@@ -2255,15 +2258,37 @@
   <xsl:choose>
     <xsl:when test="@anchor">
       <div id="{@anchor}">
-        <xsl:apply-templates mode="t-content" select="node()[1]">
-          <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
-        </xsl:apply-templates>
+        <xsl:choose>
+          <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
+            <div id="{$anchor-prefix}.section.{$p}">
+              <xsl:apply-templates mode="t-content" select="node()[1]">
+                <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
+              </xsl:apply-templates>
+            </div>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates mode="t-content" select="node()[1]">
+              <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
+            </xsl:apply-templates>
+          </xsl:otherwise>          
+        </xsl:choose>
       </div>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:apply-templates mode="t-content" select="node()[1]">
-        <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
-      </xsl:apply-templates>
+      <xsl:choose>
+        <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
+          <div id="{$anchor-prefix}.section.{$p}">
+            <xsl:apply-templates mode="t-content" select="node()[1]">
+              <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
+            </xsl:apply-templates>
+          </div>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates mode="t-content" select="node()[1]">
+            <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
+          </xsl:apply-templates>
+        </xsl:otherwise>          
+      </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -2295,9 +2320,6 @@
             <xsl:value-of select="concat($anchor-prefix,'.section.',$p)"/>
           </xsl:if>
         </xsl:variable>
-        <xsl:if test="$anchor!=''">
-          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-        </xsl:if>
         <xsl:call-template name="insertInsDelClass"/>
         <xsl:call-template name="editingMark" />
         <xsl:apply-templates mode="t-content2" select="." />
@@ -7420,11 +7442,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.666 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.666 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.667 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.667 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/07/24 19:45:51 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/24 19:45:51 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/07/26 11:43:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/26 11:43:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
