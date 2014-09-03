@@ -4160,13 +4160,13 @@ blockquote {
 body {<xsl:if test="$xml2rfc-background!=''">
   background: url(<xsl:value-of select="$xml2rfc-background" />) #ffffff left top;</xsl:if>
   color: black;
-  font-family: cambria, helvetica, arial, sans-serif;
+  font-family: cambria, georgia, serif;
   font-size: 12pt;
   margin: 2em auto;
   max-width: 1000px;
 }
 samp, tt, code, pre {
-  font-family: consolas, monospace;
+  font-family: consolas, monaco, monospace;
 }<xsl:if test="//xhtml:p">
 br.p {
   line-height: 150%;
@@ -4402,10 +4402,7 @@ ul p {
   margin-left: 0em;
 }
 .title, .filename, h1, h2, h3, h4 {
-  font-family: candara, helvetica, arial, sans-serif;
-}
-samp, tt, code, pre {
-  font: consolas, monospace;
+  font-family: candara, calibri, segoe, optima, arial, sans-serif;
 }
 <xsl:if test="$has-index">ul.ind, ul.ind ul {
   list-style: none;
@@ -7442,11 +7439,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.667 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.667 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.668 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.668 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/07/26 11:43:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/07/26 11:43:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/09/03 14:09:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/09/03 14:09:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
