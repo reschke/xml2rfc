@@ -212,6 +212,30 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- CSS max page width -->
+
+<xsl:param name="xml2rfc-ext-maxwidth">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'maxwidth'"/>
+    <xsl:with-param name="default" select="'1000'"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:variable name="parsedMaxwidth">
+  <xsl:choose>
+    <xsl:when test="string(number($xml2rfc-ext-maxwidth)) != 'NaN'">
+      <xsl:value-of select="$xml2rfc-ext-maxwidth"/>
+    </xsl:when>
+    <xsl:when test="$xml2rfc-ext-maxwidth='none'"></xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg" select="concat('Unsupported value of rfc-ext maxwidth PI: ', $xml2rfc-ext-maxwidth)"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:variable>
+
 <!-- initials handling? -->
 
 <xsl:param name="xml2rfc-multiple-initials">
@@ -4162,8 +4186,8 @@ body {<xsl:if test="$xml2rfc-background!=''">
   color: black;
   font-family: cambria, georgia, serif;
   font-size: 12pt;
-  margin: 2em auto;
-  max-width: 1000px;
+  margin: 2em auto;<xsl:if test="$parsedMaxwidth!=''">
+  max-width: <xsl:value-of select="$parsedMaxwidth"/>px;</xsl:if>
 }
 samp, tt, code, pre {
   font-family: consolas, monaco, monospace;
@@ -7439,11 +7463,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.668 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.668 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.669 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.669 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/09/03 14:09:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/09/03 14:09:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/09/04 09:19:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/09/04 09:19:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
