@@ -1189,17 +1189,13 @@
   <xsl:call-template name="check-no-text-content"/>
   <xsl:if test="$xml2rfc-topblock!='no'">
     <!-- collect information for left column -->
-
     <xsl:variable name="leftColumn">
       <xsl:call-template name="collectLeftHeaderColumn" />
     </xsl:variable>
-
     <!-- collect information for right column -->
-
     <xsl:variable name="rightColumn">
       <xsl:call-template name="collectRightHeaderColumn" />
     </xsl:variable>
-
     <!-- insert the collected information -->
     <table class="header" id="{$anchor-prefix}.headerblock">
       <xsl:choose>
@@ -3351,6 +3347,11 @@
         <xsl:value-of select="number($xml2rfc-ext-pub-day)" />
         <xsl:text>,</xsl:text>
       </xsl:if>
+    </xsl:if>
+    <xsl:if test="$xml2rfc-ext-pub-month='' and $rfcno!=''">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="'month missing but is required for RFCs'"/>
+      </xsl:call-template>
     </xsl:if>
     <xsl:if test="$xml2rfc-ext-pub-day='' and /rfc/@docName and not(substring(/rfc/@docName, string-length(/rfc/@docName) - string-length('-latest') + 1) = '-latest')">
       <xsl:call-template name="warning">
@@ -7469,11 +7470,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.670 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.670 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.671 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.671 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/10/16 09:15:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/10/16 09:15:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/10/16 11:25:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/10/16 11:25:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
