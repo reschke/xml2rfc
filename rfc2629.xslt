@@ -2528,7 +2528,7 @@
   </div>
 </xsl:template>
 
-<xsl:template match="spanx[@style='emph' or not(@style)]|em|i">
+<xsl:template match="spanx[@style='emph' or not(@style)]|em">
   <em>
     <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates />
@@ -2556,7 +2556,7 @@
   </b>
 </xsl:template>
 
-<xsl:template match="spanx[@style='strong']|strong|b">
+<xsl:template match="spanx[@style='strong']|strong">
   <strong>
     <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates />
@@ -4328,8 +4328,11 @@ pre.drawing {
 q {
   font-style: italic;
 }</xsl:if>
-<xsl:if test="//x:sup">
+<xsl:if test="//x:sup|sup">
 sup {
+  font-size: 60%;
+}</xsl:if><xsl:if test="sub">
+sub {
   font-size: 60%;
 }</xsl:if>
 table {
@@ -6336,10 +6339,19 @@ dd, li, p {
 </xsl:template>
 
 <!-- superscripts -->
-<xsl:template match="x:sup">
+<xsl:template match="x:sup|sup">
   <sup>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates/>
   </sup>
+</xsl:template>
+
+<!-- subscripts -->
+<xsl:template match="sub">
+  <sub>
+    <xsl:call-template name="copy-anchor"/>
+    <xsl:apply-templates/>
+  </sub>
 </xsl:template>
 
 <!-- bold -->
@@ -7491,11 +7503,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.674 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.674 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.675 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.675 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/10/29 13:03:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/10/29 13:03:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/10/29 15:00:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/10/29 15:00:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
