@@ -416,7 +416,8 @@
 <xsl:param name="rfcUrlFragAppendix" select="'appendix-'" />
 <xsl:param name="internetDraftUrlPrefix" select="'https://tools.ietf.org/html/'" />
 <xsl:param name="internetDraftUrlPostfix" select="''" />
-<xsl:param name="internetDraftUrlFrag" select="'section-'" />
+<xsl:param name="internetDraftUrlFragSection" select="'section-'" />
+<xsl:param name="internetDraftUrlFragAppendix" select="'appendix-'" />
 
 <!-- the format we're producing -->
 <xsl:param name="outputExtension" select="'html'"/>
@@ -476,8 +477,8 @@
     use="concat(@item,'..',@subitem)" />
 
 <xsl:key name="index-xref-by-sec"
-  match="xref[@x:sec]"
-    use="concat(@target,'..',@x:sec)" />
+  match="xref[@x:sec|@section]"
+    use="concat(@target,'..',@x:sec,@section)" />
 
 <xsl:key name="index-xref-by-anchor"
   match="xref[@x:rel]"
@@ -1685,6 +1686,24 @@
   <xsl:param name="bib"/>
   <xsl:param name="ref"/>
 
+  <xsl:variable name="sec">
+    <xsl:choose>
+      <xsl:when test="$ref and starts-with($ref/@x:rel,'#') and not($ref/@x:sec) and not($ref/@section)">
+        <xsl:variable name="extdoc" select="document($bib/x:source/@href)"/>
+        <xsl:for-each select="$extdoc//*[@anchor=substring-after($ref/@x:rel,'#')]">
+          <xsl:call-template name="get-section-number"/>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:when test="$ref and $ref/@section">
+        <xsl:value-of select="$ref/@section"/>
+      </xsl:when>
+      <xsl:when test="$ref">
+        <xsl:value-of select="$ref/@x:sec"/>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+  </xsl:variable>
+
   <xsl:choose>
     <xsl:when test="$ref and $bib/x:source/@href and $bib/x:source/@basename and $ref/@x:rel">
       <xsl:value-of select="concat($bib/x:source/@basename,'.',$outputExtension,$ref/@x:rel)" />
@@ -1705,20 +1724,6 @@
           <xsl:with-param name="msg" select="concat('seriesInfo/@name=RFC encountered multiple times for reference ',$bib/@anchor,', will generate link to first entry only')"/>
         </xsl:call-template>
       </xsl:if>
-      <xsl:variable name="sec">
-        <xsl:choose>
-          <xsl:when test="$ref and starts-with($ref/@x:rel,'#') and not($ref/@x:sec)">
-            <xsl:variable name="extdoc" select="document($bib/x:source/@href)"/>
-            <xsl:for-each select="$extdoc//*[@anchor=substring-after($ref/@x:rel,'#')]">
-              <xsl:call-template name="get-section-number"/>
-            </xsl:for-each>
-          </xsl:when>
-          <xsl:when test="$ref">
-            <xsl:value-of select="$ref/@x:sec"/>
-          </xsl:when>
-          <xsl:otherwise/>
-        </xsl:choose>
-      </xsl:variable>
       <xsl:value-of select="concat($rfcUrlPrefix,$rfcEntries[1]/@value,$rfcUrlPostfix)" />
       <xsl:if test="$ref and $sec!='' and $rfcUrlFragSection and $rfcUrlFragAppendix">
         <xsl:choose>
@@ -1733,21 +1738,16 @@
     </xsl:when>
     <xsl:when test="$bib/seriesInfo/@name='Internet-Draft'">
       <xsl:value-of select="concat($internetDraftUrlPrefix,$bib/seriesInfo[@name='Internet-Draft']/@value,$internetDraftUrlPostfix)" />
-      <xsl:choose>
-        <xsl:when test="$ref and starts-with($ref/@x:rel,'#') and $internetDraftUrlFrag">
-          <xsl:variable name="sec">
-            <xsl:call-template name="compute-section-number">
-              <xsl:with-param name="bib" select="$bib"/>
-              <xsl:with-param name="ref" select="$ref"/>
-            </xsl:call-template>
-          </xsl:variable>
-          <xsl:value-of select="concat('#',$internetDraftUrlFrag,$sec)"/>
-        </xsl:when>
-        <xsl:when test="$ref and $ref/@x:sec and $internetDraftUrlFrag">
-          <xsl:value-of select="concat('#',$internetDraftUrlFrag,$ref/@x:sec)"/>
-        </xsl:when>
-        <xsl:otherwise/>
-      </xsl:choose>
+      <xsl:if test="$ref and $sec!='' and $internetDraftUrlFragSection and $internetDraftUrlFragAppendix">
+        <xsl:choose>
+          <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
+            <xsl:value-of select="concat('#',$internetDraftUrlFragAppendix,$sec)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="concat('#',$internetDraftUrlFragSection,$sec)"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:if>
     </xsl:when>
     <xsl:otherwise />
   </xsl:choose>
@@ -2975,6 +2975,14 @@
                 <xsl:with-param name="msg">x:rel attribute '<xsl:value-of select="$xref/@x:rel"/>' in reference to <xsl:value-of select="$node/@anchor"/> is expected to start with '#'.</xsl:with-param>
               </xsl:call-template>
             </xsl:when>
+            <xsl:when test="$xref/@section">
+              <xsl:value-of select="$xref/@section"/>
+              <xsl:if test="$xref/@x:sec">
+                <xsl:call-template name="error">
+                  <xsl:with-param name="msg">Both @x:sec and @section specified.</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+            </xsl:when>
             <xsl:otherwise>
               <xsl:value-of select="$xref/@x:sec"/>
             </xsl:otherwise>
@@ -2991,8 +2999,20 @@
 
         <xsl:variable name="fmt">
           <xsl:choose>
-            <xsl:when test="$xref/@x:fmt!=''"><xsl:value-of select="$xref/@x:fmt"/></xsl:when>
-            <xsl:when test="$xref/ancestor::artwork">,</xsl:when>
+            <xsl:when test="$xref/@sectionFormat!=''">
+              <xsl:value-of select="$xref/@sectionFormat"/>
+              <xsl:if test="$xref/@x:fmt">
+                <xsl:call-template name="error">
+                  <xsl:with-param name="msg">Both @x:fmt and @sectionFormat specified.</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+            </xsl:when>
+            <xsl:when test="$xref/@x:fmt=','">comma</xsl:when>
+            <xsl:when test="$xref/@x:fmt='()'">parens</xsl:when>
+            <xsl:when test="$xref/@x:fmt!=''">
+              <xsl:value-of select="$xref/@x:fmt"/>
+            </xsl:when>
+            <xsl:when test="$xref/ancestor::artwork">comma</xsl:when>
             <xsl:otherwise>of</xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
@@ -3018,14 +3038,14 @@
         <!--
         Formats:
 
-          ()      [XXXX] (Section SS)
-          ,       [XXXX], Section SS
+          parens  [XXXX] (Section SS)
+          comma   [XXXX], Section SS
           of      Section SS of [XXXX]
           sec     Section SS
           number  SS
         -->
 
-        <xsl:if test="$fmt and not($fmt='()' or $fmt=',' or $fmt='of' or $fmt='sec' or $fmt='anchor' or $fmt='number')">
+        <xsl:if test="$fmt and not($fmt='of' or $fmt='sec' or $fmt='anchor' or $fmt='number' or $fmt='parens' or $fmt='comma')">
           <xsl:call-template name="error">
             <xsl:with-param name="msg" select="concat('unknown xref/@x:fmt extension: ',$fmt)"/>
           </xsl:call-template>
@@ -3111,7 +3131,7 @@
 
         <xsl:if test="$sec!=''">
           <xsl:choose>
-            <xsl:when test="$fmt='()'">
+            <xsl:when test="$fmt='parens'">
               <xsl:text> (</xsl:text>
               <xsl:choose>
                 <xsl:when test="$href!=''">
@@ -3121,7 +3141,7 @@
               </xsl:choose>
               <xsl:text>)</xsl:text>
             </xsl:when>
-            <xsl:when test="$fmt=','">
+            <xsl:when test="$fmt='comma'">
               <xsl:text>, </xsl:text>
               <xsl:choose>
                 <xsl:when test="$href!=''">
@@ -7537,11 +7557,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.677 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.677 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.678 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.678 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/10/31 12:03:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/10/31 12:03:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/10/31 23:13:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/10/31 23:13:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
