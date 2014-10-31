@@ -290,7 +290,7 @@
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
     <xsl:with-param name="attr" select="'insert-metadata'"/>
-    <xsl:with-param name="default" select="'no'"/>
+    <xsl:with-param name="default" select="'yes'"/>
   </xsl:call-template>
 </xsl:param>
 
@@ -7537,11 +7537,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.676 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.676 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.677 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.677 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/10/30 20:54:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/10/30 20:54:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/10/31 12:03:23 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/10/31 12:03:23 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
