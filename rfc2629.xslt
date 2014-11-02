@@ -2659,6 +2659,50 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="get-section-xref-format">
+  <xsl:choose>
+    <xsl:when test="@sectionFormat">
+      <xsl:if test="@x:fmt">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">both @x:fmt and @sectionFormat specified</xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="@sectionFormat='parens' or @sectionFormat='of' or @sectionFormat='comma'">
+          <xsl:value-of select="@sectionFormat"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">unknown format for @sectionFormat</xsl:with-param>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:when test="@x:fmt">
+      <xsl:choose>
+        <xsl:when test="@x:fmt='()'">parens</xsl:when>
+        <xsl:when test="@x:fmt='of'">of</xsl:when>
+        <xsl:when test="@x:fmt=','">comma</xsl:when>
+        <xsl:when test="@x:fmt='none'">none</xsl:when>
+        <xsl:when test="@x:fmt='sec'">sec</xsl:when>
+        <xsl:when test="@x:fmt='number'">number</xsl:when>
+        <xsl:when test="@x:fmt='anchor'">anchor</xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">unknown format for @x:fmt</xsl:with-param>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:choose>
+        <xsl:when test="parent::artwork">comma</xsl:when>
+        <xsl:otherwise>of</xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="xref[node()]">
 
   <xsl:variable name="target" select="@target" />
@@ -2772,6 +2816,10 @@
   <xsl:variable name="xref" select="."/>
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="$xref/@target"/>.<xsl:number level="any" count="xref[@target=$xref/@target]"/></xsl:variable>
 
+  <xsl:variable name="fmt">
+    <xsl:call-template name="get-section-xref-format"/>
+  </xsl:variable>
+  
   <!-- ensure we have the right context, this <xref> may be processed from within the boilerplate -->
   <xsl:for-each select="$src">
 
@@ -2997,26 +3045,6 @@
           </xsl:choose>
         </xsl:variable>
 
-        <xsl:variable name="fmt">
-          <xsl:choose>
-            <xsl:when test="$xref/@sectionFormat!=''">
-              <xsl:value-of select="$xref/@sectionFormat"/>
-              <xsl:if test="$xref/@x:fmt">
-                <xsl:call-template name="error">
-                  <xsl:with-param name="msg">Both @x:fmt and @sectionFormat specified.</xsl:with-param>
-                </xsl:call-template>
-              </xsl:if>
-            </xsl:when>
-            <xsl:when test="$xref/@x:fmt=','">comma</xsl:when>
-            <xsl:when test="$xref/@x:fmt='()'">parens</xsl:when>
-            <xsl:when test="$xref/@x:fmt!=''">
-              <xsl:value-of select="$xref/@x:fmt"/>
-            </xsl:when>
-            <xsl:when test="$xref/ancestor::artwork">comma</xsl:when>
-            <xsl:otherwise>of</xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
-
         <xsl:variable name="title">
           <xsl:choose>
             <xsl:when test="starts-with($xref/@x:rel,'#') and not($xref/@x:sec) and $node/x:source/@href">
@@ -3045,7 +3073,7 @@
           number  SS
         -->
 
-        <xsl:if test="$fmt and not($fmt='of' or $fmt='sec' or $fmt='anchor' or $fmt='number' or $fmt='parens' or $fmt='comma')">
+        <xsl:if test="$fmt!='' and not($fmt='of' or $fmt='sec' or $fmt='anchor' or $fmt='number' or $fmt='parens' or $fmt='comma')">
           <xsl:call-template name="error">
             <xsl:with-param name="msg" select="concat('unknown xref/@x:fmt extension: ',$fmt)"/>
           </xsl:call-template>
@@ -7557,11 +7585,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.678 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.678 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.679 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.679 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/10/31 23:13:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/10/31 23:13:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/02 09:08:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/02 09:08:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
