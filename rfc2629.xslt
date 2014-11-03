@@ -2701,6 +2701,23 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="get-section-xref-section">
+  <xsl:choose>
+    <xsl:when test="@section">
+      <xsl:if test="@x:sec">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">both @x:sec and @section specified</xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:value-of select="@section"/>
+    </xsl:when>
+    <xsl:when test="@x:sec">
+      <xsl:value-of select="@x:sec"/>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="xref[node()]">
 
   <xsl:variable name="target" select="@target" />
@@ -2709,6 +2726,10 @@
 
   <xsl:variable name="sfmt">
     <xsl:call-template name="get-section-xref-format"/>
+  </xsl:variable>
+
+  <xsl:variable name="ssec">
+    <xsl:call-template name="get-section-xref-section"/>
   </xsl:variable>
 
   <xsl:choose>
@@ -2827,6 +2848,10 @@
         </xsl:choose>
       </xsl:with-param>
     </xsl:call-template>
+  </xsl:variable>
+
+  <xsl:variable name="ssec">
+    <xsl:call-template name="get-section-xref-section"/>
   </xsl:variable>
 
   <!-- ensure we have the right context, this <xref> may be processed from within the boilerplate -->
@@ -3021,27 +3046,19 @@
 
         <xsl:variable name="sec">
           <xsl:choose>
-            <xsl:when test="starts-with($xref/@x:rel,'#') and not($xref/@x:sec)">
+            <xsl:when test="starts-with($xref/@x:rel,'#') and $ssec=''">
               <xsl:call-template name="compute-section-number">
                 <xsl:with-param name="bib" select="$node"/>
                 <xsl:with-param name="ref" select="$xref"/>
               </xsl:call-template>
             </xsl:when>
-            <xsl:when test="$xref/@x:rel and not(starts-with($xref/@x:rel,'#')) and not($xref/@x:sec)">
+            <xsl:when test="$xref/@x:rel and not(starts-with($xref/@x:rel,'#')) and $ssec=''">
               <xsl:call-template name="error">
                 <xsl:with-param name="msg">x:rel attribute '<xsl:value-of select="$xref/@x:rel"/>' in reference to <xsl:value-of select="$node/@anchor"/> is expected to start with '#'.</xsl:with-param>
               </xsl:call-template>
             </xsl:when>
-            <xsl:when test="$xref/@section">
-              <xsl:value-of select="$xref/@section"/>
-              <xsl:if test="$xref/@x:sec">
-                <xsl:call-template name="error">
-                  <xsl:with-param name="msg">Both @x:sec and @section specified.</xsl:with-param>
-                </xsl:call-template>
-              </xsl:if>
-            </xsl:when>
             <xsl:otherwise>
-              <xsl:value-of select="$xref/@x:sec"/>
+              <xsl:value-of select="$ssec"/>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
@@ -3056,7 +3073,7 @@
 
         <xsl:variable name="title">
           <xsl:choose>
-            <xsl:when test="starts-with($xref/@x:rel,'#') and not($xref/@x:sec) and $node/x:source/@href">
+            <xsl:when test="starts-with($xref/@x:rel,'#') and $ssec='' and $node/x:source/@href">
               <xsl:variable name="extdoc" select="document($node/x:source/@href)"/>
               <xsl:variable name="nodes" select="$extdoc//*[@anchor=substring-after($xref//@x:rel,'#')]"/>
               <xsl:if test="not($nodes)">
@@ -7594,11 +7611,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.680 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.680 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.681 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.681 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/02 13:11:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/02 13:11:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/03 12:52:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/03 12:52:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
