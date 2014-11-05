@@ -4729,6 +4729,9 @@ thead th {
   border-radius: 5px;
   background: #a00000;
   border: 1px solid silver;
+  -webkit-user-select: none;<!-- not std CSS yet--> 
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 .fbbutton {
   margin-left: 1em;
@@ -7615,11 +7618,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.683 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.683 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.684 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.684 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/04 13:20:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/04 13:20:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/05 16:10:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/05 16:10:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
