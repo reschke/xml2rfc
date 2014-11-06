@@ -2690,7 +2690,6 @@
         <xsl:when test="@x:fmt='none'">none</xsl:when>
         <xsl:when test="@x:fmt='sec'">sec</xsl:when>
         <xsl:when test="@x:fmt='number'">number</xsl:when>
-        <xsl:when test="@x:fmt='anchor'">anchor</xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="warning">
             <xsl:with-param name="msg">unknown format for @x:fmt</xsl:with-param>
@@ -3102,7 +3101,7 @@
           number  SS
         -->
 
-        <xsl:if test="$sfmt!='' and not($sfmt='of' or $sfmt='sec' or $sfmt='anchor' or $sfmt='number' or $sfmt='parens' or $sfmt='comma')">
+        <xsl:if test="$sfmt!='' and not($sfmt='of' or $sfmt='sec' or $sfmt='number' or $sfmt='parens' or $sfmt='comma')">
           <xsl:call-template name="error">
             <xsl:with-param name="msg" select="concat('unknown xref section format extension: ',$sfmt)"/>
           </xsl:call-template>
@@ -3169,7 +3168,7 @@
                     </xsl:call-template>
                   </xsl:variable>
                   <xsl:choose>
-                    <xsl:when test="$sfmt='anchor' or $xref/@format='counter'">
+                    <xsl:when test="$xref/@format='counter'">
                       <!-- remove brackets -->
                       <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
                     </xsl:when>
@@ -7618,11 +7617,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.685 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.685 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.686 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.686 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/06 06:26:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/06 06:26:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/06 18:35:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/06 18:35:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
