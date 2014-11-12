@@ -958,20 +958,28 @@
     </xsl:if>
 
     <xsl:if test="address/postal">
-      <xsl:if test="address/postal/street">
-        <xsl:for-each select="address/postal/street">
-          <xsl:variable name="street">
-            <xsl:call-template name="extract-normalized">
-              <xsl:with-param name="node" select="."/>
-              <xsl:with-param name="name" select="'street'"/>
-            </xsl:call-template>
-          </xsl:variable>
-          <xsl:if test="$street!=''">
-            <br/>
-            <xsl:value-of select="$street"/>
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:if>
+      <xsl:for-each select="address/postal/street">
+        <xsl:variable name="street">
+          <xsl:call-template name="extract-normalized">
+            <xsl:with-param name="name" select="'street'"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:if test="$street!=''">
+          <br/>
+          <xsl:value-of select="$street"/>
+        </xsl:if>
+      </xsl:for-each>
+      <xsl:for-each select="address/postal/postalLine">
+        <xsl:variable name="line">
+          <xsl:call-template name="extract-normalized">
+            <xsl:with-param name="name" select="'postalLine'"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:if test="$line!=''">
+          <br/>
+          <xsl:value-of select="$line"/>
+        </xsl:if>
+      </xsl:for-each>
       <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
         <br/>
         <xsl:if test="address/postal/city">
@@ -7632,11 +7640,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.689 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.689 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.690 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.690 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/11 19:28:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/11 19:28:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/12 21:37:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/12 21:37:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -7853,7 +7861,7 @@ prev: <xsl:value-of select="$prev"/>
 </xsl:template>
 
 <xsl:template name="extract-normalized">
-  <xsl:param name="node"/>
+  <xsl:param name="node" select="."/>
   <xsl:param name="name"/>
   <xsl:variable name="text" select="normalize-space($node)"/>
   <xsl:if test="string-length($node) != string-length($text)">
