@@ -1479,6 +1479,10 @@
   <xsl:variable name="compact">
     <xsl:call-template name="get-compact-setting"/>
   </xsl:variable>
+  <!-- insert a hard space for nested lists so that indentation works ok -->
+  <xsl:if test="ancestor::list and normalize-space(preceding-sibling::text())=''">
+    <xsl:text>&#160;</xsl:text>
+  </xsl:if>
   <dl>
     <xsl:if test="$compact='yes'">
       <xsl:attribute name="class">compact</xsl:attribute>
@@ -4368,10 +4372,14 @@ dl {
   margin-left: 2em;
 }
 dl > dt {
-  margin-top: .5em;
+  float: left;
+  margin-right: 1em;
 }
-dl.compact > dt {
-  margin-top: 0em;
+dl > * {
+  padding-top: .5em;
+}
+dl.compact > * {
+  padding-top: .0em;
 }
 ul.empty {<!-- spacing between two entries in definition lists -->
   list-style-type: none;
@@ -7674,11 +7682,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.691 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.691 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.692 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.692 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/17 13:22:56 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/17 13:22:56 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/18 08:43:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/18 08:43:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
