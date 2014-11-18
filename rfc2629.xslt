@@ -4375,11 +4375,14 @@ dl > dt {
   float: left;
   margin-right: 1em;
 }
-dl > * {
-  padding-top: .5em;
+dl > dd {
+  margin-bottom: .5em;
 }
-dl.compact > * {
-  padding-top: .0em;
+dl.compact > dd {
+  margin-bottom: .0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
 }
 ul.empty {<!-- spacing between two entries in definition lists -->
   list-style-type: none;
@@ -7682,11 +7685,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.692 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.692 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.693 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.693 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/18 08:43:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/18 08:43:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/18 16:07:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/18 16:07:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
