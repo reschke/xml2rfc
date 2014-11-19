@@ -1441,6 +1441,36 @@
   </ul>
 </xsl:template>
 
+<xsl:template match="dl">
+  <xsl:variable name="hang" select="@hanging"/>
+  <xsl:variable name="spac" select="@spacing"/>
+  <xsl:variable name="class">
+    <xsl:if test="$spac='compact'">compact </xsl:if>
+    <xsl:if test="not($hang='true')">nohang </xsl:if>
+  </xsl:variable>
+  <dl>
+    <xsl:if test="normalize-space($class)!=''">
+      <xsl:attribute name="class"><xsl:value-of select="normalize-space($class)"/></xsl:attribute>
+    </xsl:if>
+    <xsl:for-each select="dt">
+      <xsl:apply-templates select="."/>
+      <xsl:apply-templates select="following-sibling::dd[1]"/>
+    </xsl:for-each>
+  </dl>
+</xsl:template>
+
+<xsl:template match="dt">
+  <dt>
+    <xsl:apply-templates/>
+  </dt>
+</xsl:template>
+
+<xsl:template match="dd">
+  <dd>
+    <xsl:apply-templates/>
+  </dd>
+</xsl:template>
+
 <xsl:template match="list[starts-with(@style,'format ')]">
   <xsl:call-template name="check-no-text-content"/>
   <dl>
@@ -4374,6 +4404,9 @@ dl {
 dl > dt {
   float: left;
   margin-right: 1em;
+}
+dl.nohang > dt {
+  float: none;
 }
 dl > dd {
   margin-bottom: .5em;
@@ -7685,11 +7718,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.693 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.693 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.694 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.694 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/18 16:07:51 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/18 16:07:51 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/19 16:58:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/19 16:58:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
