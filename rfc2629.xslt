@@ -1468,7 +1468,20 @@
 
 <xsl:template match="dd">
   <dd>
-    <xsl:apply-templates/>
+    <xsl:choose>
+      <xsl:when test="t">
+        <!-- TODO: improve error handling-->
+        <xsl:for-each select="t">
+          <p>
+            <xsl:call-template name="copy-anchor"/>
+            <xsl:apply-templates/>
+          </p>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates/>
+      </xsl:otherwise>
+    </xsl:choose>
   </dd>
 </xsl:template>
 
@@ -7730,11 +7743,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.695 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.695 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.696 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.696 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/21 14:26:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/21 14:26:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/23 12:48:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/23 12:48:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8539,7 +8552,7 @@ prev: <xsl:value-of select="$prev"/>
                      section/t | section/ed:replace/ed:*/t |
                      x:blockquote/t | x:blockquote/ed:replace/ed:*/t |
                      x:note/t | x:note/ed:replace/ed:*/t |
-                     x:lt/t | x:lt/ed:replace/ed:*/t" mode="validate" priority="9">
+                     x:lt/t | x:lt/ed:replace/ed:*/t | dd/t" mode="validate" priority="9">
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
 <xsl:template match="t" mode="validate">
