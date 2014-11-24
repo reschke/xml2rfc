@@ -2522,7 +2522,10 @@
           <xsl:with-param name="msg">both @title attribute and name child node present</xsl:with-param>
         </xsl:call-template>
       </xsl:if>
-      <xsl:apply-templates select="name/node()"/>
+      <xsl:variable name="n">
+        <xsl:apply-templates select="name/node()"/>
+      </xsl:variable>
+      <xsl:apply-templates select="exslt:node-set($n)/node()" mode="strip-links"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="@title"/>
@@ -5961,7 +5964,10 @@ dd, li, p {
                 <del><xsl:value-of select="$oldtitle"/></del>
               </xsl:when>
               <xsl:when test="$name">
-                <xsl:apply-templates select="$name/node()"/>
+                <xsl:variable name="n">
+                  <xsl:apply-templates select="$name/node()"/>
+                </xsl:variable>
+                <xsl:apply-templates select="exslt:node-set($n)/node()" mode="strip-links"/>
               </xsl:when>
               <xsl:otherwise>
                 <xsl:value-of select="$title"/>
@@ -7743,11 +7749,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.696 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.696 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.697 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.697 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/23 12:48:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/23 12:48:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/24 09:56:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/24 09:56:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8566,6 +8572,22 @@ prev: <xsl:value-of select="$prev"/>
       <xsl:with-param name="msg">No text content allowed inside &lt;<xsl:value-of select="name(.)"/>&gt;, but found: <xsl:value-of select="text()"/></xsl:with-param>
     </xsl:call-template>
   </xsl:if>
+</xsl:template>
+
+<!-- clean up links from HTML -->
+<xsl:template match="processing-instruction()" mode="strip-links">
+  <xsl:text>&#10;</xsl:text>
+  <xsl:copy/>
+</xsl:template>
+<xsl:template match="comment()|@*" mode="strip-links"><xsl:copy/></xsl:template>
+<xsl:template match="text()" mode="strip-links"><xsl:copy/></xsl:template>
+<xsl:template match="*" mode="strip-links">
+  <xsl:element name="{local-name()}">
+  	<xsl:apply-templates select="@*|node()" mode="strip-links" />
+  </xsl:element>
+</xsl:template>
+<xsl:template match="a|xhtml:a" mode="strip-links" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+	<xsl:apply-templates select="node()" mode="strip-links" />
 </xsl:template>
 
 </xsl:transform>
