@@ -1468,14 +1468,22 @@
 
 <xsl:template match="dd">
   <dd>
+    <xsl:variable name="block-level-children" select="t | dl"/>
     <xsl:choose>
-      <xsl:when test="t">
+      <xsl:when test="$block-level-children">
         <!-- TODO: improve error handling-->
-        <xsl:for-each select="t">
-          <p>
-            <xsl:call-template name="copy-anchor"/>
-            <xsl:apply-templates/>
-          </p>
+        <xsl:for-each select="$block-level-children">
+          <xsl:choose>
+            <xsl:when test="self::t">
+              <p>
+                <xsl:call-template name="copy-anchor"/>
+                <xsl:apply-templates/>
+              </p>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:apply-templates select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
@@ -7749,11 +7757,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.697 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.697 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.698 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.698 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/24 09:56:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/24 09:56:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/25 12:45:50 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/25 12:45:50 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
