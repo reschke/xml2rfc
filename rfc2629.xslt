@@ -2166,6 +2166,17 @@
 
   <xsl:variable name="title">
     <xsl:choose>
+      <xsl:when test="name">
+        <xsl:if test="@title">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">both @title attribute and name child node present</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+        <xsl:variable name="n">
+          <xsl:apply-templates select="name/node()"/>
+        </xsl:variable>
+        <xsl:apply-templates select="exslt:node-set($n)/node()" mode="strip-links"/>
+      </xsl:when>
       <xsl:when test="not(@title) or @title=''"><xsl:value-of select="$xml2rfc-refparent"/></xsl:when>
       <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
     </xsl:choose>
@@ -2191,7 +2202,7 @@
       </xsl:call-template>
     </a>
     <xsl:text> </xsl:text>
-    <xsl:value-of select="$title"/>
+    <xsl:copy-of select="$title"/>
   </xsl:element>
 
   <table>
@@ -2208,6 +2219,8 @@
   </table>
 
 </xsl:template>
+<!-- processed earlier -->
+<xsl:template match="references/name"/>
 
 <xsl:template match="rfc">
   <xsl:call-template name="check-no-text-content"/>
@@ -6079,6 +6092,7 @@ dd, li, p {
             </xsl:with-param>
             <xsl:with-param name="target" select="concat($anchor-prefix,'.references')"/>
             <xsl:with-param name="title" select="$title"/>
+            <xsl:with-param name="name" select="name"/>
           </xsl:call-template>
         </li>
       </xsl:for-each>
@@ -6117,6 +6131,7 @@ dd, li, p {
                 <xsl:with-param name="number" select="$sectionNumber"/>
                 <xsl:with-param name="target" select="concat($anchor-prefix,'.references','.',$num)"/>
                 <xsl:with-param name="title" select="$title"/>
+                <xsl:with-param name="name" select="name"/>
               </xsl:call-template>
             </li>
           </xsl:for-each>
@@ -7757,11 +7772,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.699 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.699 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.700 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.700 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/25 21:45:24 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/25 21:45:24 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/26 21:24:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/26 21:24:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
