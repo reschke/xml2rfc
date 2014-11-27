@@ -4419,7 +4419,7 @@ address {
   margin-top: 1em;
   margin-left: 2em;
   font-style: normal;
-}<xsl:if test="//x:blockquote">
+}<xsl:if test="//x:blockquote|//blockquote">
 blockquote {
   border-style: solid;
   border-color: gray;
@@ -4713,7 +4713,7 @@ ul.ind li li {
   font-style: normal;
   text-transform: lowercase;
   font-variant: small-caps;
-}</xsl:if><xsl:if test="//x:blockquote">
+}</xsl:if><xsl:if test="//x:blockquote|//blockquote">
 blockquote > * .bcp14 {
   font-style: italic;
 }</xsl:if>
@@ -6456,8 +6456,8 @@ dd, li, p {
 
 <xsl:template name="get-paragraph-number">
   <!-- get section number of ancestor section element, then add t number -->
-  <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered']) and not(ancestor::x:blockquote) and not(ancestor::x:note)">
-    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|x:blockquote|x:note" />
+  <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered']) and not(ancestor::x:blockquote) and not(ancestor::blockquote) and not(ancestor::x:note)">
+    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|x:blockquote|blockquote|x:note" />
   </xsl:if>
 </xsl:template>
 
@@ -6575,12 +6575,13 @@ dd, li, p {
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="x:blockquote">
+<xsl:template match="x:blockquote|blockquote">
   <xsl:variable name="p">
     <xsl:call-template name="get-paragraph-number" />
   </xsl:variable>
 
   <blockquote>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:if test="string-length($p) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins)">
       <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
     </xsl:if>
@@ -7772,11 +7773,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.700 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.700 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.701 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.701 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/26 21:24:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/26 21:24:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/11/27 16:57:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/27 16:57:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8579,6 +8580,7 @@ prev: <xsl:value-of select="$prev"/>
                      list/t | list/ed:replace/ed:*/t |
                      note/t | note/ed:replace/ed:*/t |
                      section/t | section/ed:replace/ed:*/t |
+                     blockquote/t |
                      x:blockquote/t | x:blockquote/ed:replace/ed:*/t |
                      x:note/t | x:note/ed:replace/ed:*/t |
                      x:lt/t | x:lt/ed:replace/ed:*/t | dd/t" mode="validate" priority="9">
