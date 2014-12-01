@@ -5949,7 +5949,14 @@ dd, li, p {
 
   <xsl:variable name="depth">
     <!-- count the dots -->
-    <xsl:value-of select="string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.'))"/>
+    <xsl:choose>
+      <xsl:when test="starts-with($number,'unnumbered-')">
+        <xsl:value-of select="string-length(translate(substring-after($number,'unnumbered-'),'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.'))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.'))"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:variable>
   
   <!-- handle tocdepth parameter -->
@@ -7313,9 +7320,9 @@ dd, li, p {
     <xsl:when test="@x:fixed-section-number and @x:fixed-section-number!=''">
       <xsl:value-of select="@x:fixed-section-number"/>
     </xsl:when>
-    <xsl:when test="@x:fixed-section-number and @x:fixed-section-number=''">
+    <xsl:when test="(@x:fixed-section-number and @x:fixed-section-number='') or @numbered='no'">
       <xsl:text>unnumbered-</xsl:text>
-      <xsl:number count="section[@x:fixed-section-number='']" level="any"/>
+      <xsl:number count="section[@x:fixed-section-number='' or @numbered='no']" level="any"/>
     </xsl:when>
     <xsl:when test="self::section and parent::ed:ins and local-name(../..)='replace'">
       <xsl:for-each select="../.."><xsl:call-template name="sectionnumberAndEdits" /></xsl:for-each>
@@ -7797,11 +7804,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.703 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.703 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.704 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.704 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/11/29 14:33:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/11/29 14:33:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/12/01 19:15:45 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/12/01 19:15:45 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -7838,9 +7845,9 @@ dd, li, p {
     <xsl:when test="@x:fixed-section-number and @x:fixed-section-number!=''">
       <xsl:value-of select="@x:fixed-section-number"/>
     </xsl:when>
-    <xsl:when test="@x:fixed-section-number and @x:fixed-section-number=''">
+    <xsl:when test="(@x:fixed-section-number and @x:fixed-section-number='') or @numbered='no'">
       <xsl:text>unnumbered-</xsl:text>
-      <xsl:number count="section[@x:fixed-section-number='']" level="any"/>
+      <xsl:number count="section[@x:fixed-section-number='' or @numbered='no']" level="any"/>
     </xsl:when>
     <xsl:when test="$has-edits or ancestor::*/@x:fixed-section-number">
       <xsl:call-template name="sectionnumberAndEdits" />
