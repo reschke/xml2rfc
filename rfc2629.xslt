@@ -1552,6 +1552,20 @@
   </ol>
 </xsl:template>
 
+<xsl:template match="ol">
+  <xsl:call-template name="check-no-text-content"/>
+  <ol>
+    <xsl:call-template name="insertInsDelClass"/>
+    <xsl:apply-templates />
+  </ol>
+</xsl:template>
+
+<xsl:template match="li">
+  <li>
+    <xsl:apply-templates />
+  </li>
+</xsl:template>
+
 <xsl:template match="list[@style='letters' or (not(@style) and ancestor::list[@style='letters'])]">
   <xsl:call-template name="check-no-text-content"/>
   <xsl:variable name="style">
@@ -7804,11 +7818,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.705 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.705 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.706 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.706 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/12/03 10:57:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/12/03 10:57:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/12/03 16:41:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/12/03 16:41:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8624,7 +8638,7 @@ prev: <xsl:value-of select="$prev"/>
 </xsl:template>
 
 <xsl:template name="check-no-text-content">
-  <xsl:if test="text()!=''">
+  <xsl:if test="normalize-space(text())!=''">
     <xsl:call-template name="warning">
       <xsl:with-param name="msg">No text content allowed inside &lt;<xsl:value-of select="name(.)"/>&gt;, but found: <xsl:value-of select="text()"/></xsl:with-param>
     </xsl:call-template>
