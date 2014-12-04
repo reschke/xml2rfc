@@ -1555,6 +1555,7 @@
 <xsl:template match="ol">
   <xsl:call-template name="check-no-text-content"/>
   <ol>
+    <xsl:copy-of select="@start"/>
     <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </ol>
@@ -3060,7 +3061,7 @@
       </xsl:when>
 
       <!-- Paragraph links -->
-      <xsl:when test="$node/self::t or $node/self::dt">
+      <xsl:when test="$node/self::t or $node/self::dt or $node/self::li">
         <a href="#{$xref/@target}">
           <xsl:variable name="tcnt">
             <xsl:for-each select="$node">
@@ -3074,6 +3075,7 @@
                 <xsl:value-of select="$pparent/@style"/>
               </xsl:when>
               <xsl:when test="$pparent/self::dl">definition</xsl:when> 
+              <xsl:when test="$pparent/self::ol">numbers</xsl:when> 
               <xsl:otherwise></xsl:otherwise>
             </xsl:choose>
           </xsl:variable>
@@ -7818,11 +7820,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.706 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.706 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.707 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.707 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/12/03 16:41:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/12/03 16:41:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/12/04 14:08:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/12/04 14:08:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8629,7 +8631,7 @@ prev: <xsl:value-of select="$prev"/>
                      x:blockquote/t | x:blockquote/ed:replace/ed:*/t |
                      x:note/t | x:note/ed:replace/ed:*/t |
                      aside/t |
-                     x:lt/t | x:lt/ed:replace/ed:*/t | dd/t" mode="validate" priority="9">
+                     x:lt/t | li/t | x:lt/ed:replace/ed:*/t | dd/t" mode="validate" priority="9">
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
 <xsl:template match="t" mode="validate">
