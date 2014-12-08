@@ -2571,7 +2571,7 @@
 </xsl:template>
 
 <!-- irefs that are section-level thus can use the section anchor -->
-<xsl:variable name="section-level-irefs" select="//section/iref[count(preceding-sibling::*[not(self::iref) and not(self::x:anchor-alias)])=0]"/>
+<xsl:variable name="section-level-irefs" select="//section/iref[count(preceding-sibling::*[not(self::iref) and not(self::x:anchor-alias) and not(self::name)])=0]"/>
 
 <xsl:template match="section|appendix">
   <xsl:call-template name="check-no-text-content"/>
@@ -7826,11 +7826,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.708 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.708 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.709 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.709 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/12/04 17:17:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/12/04 17:17:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/12/08 06:33:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/12/08 06:33:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
