@@ -2399,18 +2399,28 @@
 
 <xsl:template match="t">
   <xsl:param name="inherited-self-link"/>
+
+  <xsl:variable name="textcontent" select="normalize-space(.)"/>
+  <xsl:variable name="endswith" select="substring($textcontent,string-length($textcontent))"/>
+  <xsl:variable name="keepwithnext" select="$endswith=':'"/>
+
   <xsl:variable name="p">
     <xsl:call-template name="get-paragraph-number" />
   </xsl:variable>
+
   <xsl:if test="preceding-sibling::section or preceding-sibling::appendix">
     <xsl:call-template name="inline-warning">
       <xsl:with-param name="msg">The paragraph below is misplaced; maybe a section is closed in the wrong place: </xsl:with-param>
       <xsl:with-param name="msg2"><xsl:value-of select="."/></xsl:with-param>
     </xsl:call-template>
   </xsl:if>
+
   <xsl:choose>
     <xsl:when test="@anchor">
       <div id="{@anchor}">
+        <xsl:if test="$keepwithnext">
+          <xsl:attribute name="class">avoidbreakafter</xsl:attribute>
+        </xsl:if>
         <xsl:choose>
           <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
             <div id="{$anchor-prefix}.section.{$p}">
@@ -3811,7 +3821,7 @@
   <xsl:if test="$number!='suppress'">
     <xsl:call-template name="insert-conditional-hrule"/>
 
-    <div class="avoidbreak">
+    <div class="avoidbreakinside">
       <h1 id="{$anchor-prefix}.authors">
         <xsl:call-template name="insert-conditional-pagebreak"/>
         <xsl:if test="$number != ''">
@@ -4729,8 +4739,11 @@ ul.ind li li {
   line-height: 150%;
   margin-left: 0em;
 }
-.avoidbreak {
+.avoidbreakinside {
   page-break-inside: avoid;
+}
+.avoidbreakafter {
+  page-break-after: avoid;
 }
 </xsl:if><xsl:if test="//x:bcp14|//bcp14">.bcp14 {
   font-style: normal;
@@ -7826,11 +7839,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.709 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.709 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.710 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.710 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2014/12/08 06:33:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/12/08 06:33:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2014/12/09 13:12:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2014/12/09 13:12:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
