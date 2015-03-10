@@ -538,8 +538,8 @@
 
 <xsl:variable name="consensus">
   <xsl:choose>
-    <xsl:when test="/rfc/@consensus='yes' or not(/rfc/@consensus)">yes</xsl:when>
-    <xsl:when test="/rfc/@consensus='no'">no</xsl:when>
+    <xsl:when test="/rfc/@consensus='yes' or /rfc/@consensus='true' or not(/rfc/@consensus)">yes</xsl:when>
+    <xsl:when test="/rfc/@consensus='no' or /rfc/@consensus='false'">no</xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="concat('(UNSUPPORTED VALUE FOR CONSENSUS: ',/rfc/@consensus,')')"/>
       <xsl:call-template name="error">
@@ -7839,11 +7839,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.714 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.714 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.715 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.715 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/03/07 12:58:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/03/07 12:58:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/03/10 17:44:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/03/10 17:44:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
