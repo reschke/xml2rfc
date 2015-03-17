@@ -2060,7 +2060,8 @@
         </xsl:choose>
       </xsl:for-each>
 
-      <xsl:if test="not(front/title/@x:quotes='false')">&#8220;</xsl:if>
+      <xsl:variable name="quoted" select="not(front/title/@x:quotes='false') and not(@quote-title='false')"/>
+      <xsl:if test="$quoted">&#8220;</xsl:if>
       <xsl:choose>
         <xsl:when test="string-length($target) &gt; 0">
           <a href="{$target}"><xsl:value-of select="normalize-space(front/title)" /></a>
@@ -2069,7 +2070,7 @@
           <xsl:value-of select="normalize-space(front/title)" />
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:if test="not(front/title/@x:quotes='false')">&#8221;</xsl:if>
+      <xsl:if test="$quoted">&#8221;</xsl:if>
 
       <xsl:variable name="rfcs" select="count(seriesInfo[@name='RFC'])"/>
 
@@ -7839,11 +7840,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.715 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.715 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.716 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.716 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/03/10 17:44:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/03/10 17:44:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/03/17 15:00:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/03/17 15:00:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
