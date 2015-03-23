@@ -236,6 +236,21 @@
   </xsl:choose>
 </xsl:variable>
 
+<!-- RFC-Editor site linking -->
+
+<xsl:param name="xml2rfc-ext-link-rfc-to-info-page">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'link-rfc-to-info-page'"/>
+    <xsl:with-param name="default">
+      <xsl:choose>
+        <xsl:when test="$pub-yearmonth >= 201503">yes</xsl:when>
+        <xsl:otherwise>no</xsl:otherwise>
+      </xsl:choose>
+    </xsl:with-param>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- initials handling? -->
 
 <xsl:param name="xml2rfc-multiple-initials">
@@ -2123,11 +2138,20 @@
         <xsl:value-of select="front/date/@year" />
       </xsl:if>
 
-      <xsl:if test="string-length(normalize-space(@target)) &gt; 0">
-        <xsl:text>, &lt;</xsl:text>
-        <a href="{normalize-space(@target)}"><xsl:value-of select="normalize-space(@target)"/></a>
-        <xsl:text>&gt;</xsl:text>
-      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="string-length(normalize-space(@target)) &gt; 0">
+          <xsl:text>, &lt;</xsl:text>
+          <a href="{normalize-space(@target)}"><xsl:value-of select="normalize-space(@target)"/></a>
+          <xsl:text>&gt;</xsl:text>
+        </xsl:when>
+        <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and seriesInfo[@name='RFC']">
+          <xsl:text>, &lt;</xsl:text>
+          <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/rfc',seriesInfo[@name='RFC']/@value)"/>
+          <a href="{$uri}"><xsl:value-of select="$uri"/></a>
+          <xsl:text>&gt;</xsl:text>
+        </xsl:when>
+        <xsl:otherwise/>
+      </xsl:choose>
 
       <xsl:text>.</xsl:text>
 
@@ -7840,11 +7864,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.716 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.716 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.717 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.717 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/03/17 15:00:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/03/17 15:00:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/03/23 17:14:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/03/23 17:14:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
