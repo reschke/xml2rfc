@@ -2835,7 +2835,7 @@
         </xsl:call-template>
       </xsl:if>
       <xsl:choose>
-        <xsl:when test="@sectionFormat='parens' or @sectionFormat='of' or @sectionFormat='comma'">
+        <xsl:when test="@sectionFormat='parens' or @sectionFormat='of' or @sectionFormat='comma' or @sectionFormat='section' or @sectionFormat='number-only'">
           <xsl:value-of select="@sectionFormat"/>
         </xsl:when>
         <xsl:otherwise>
@@ -2851,8 +2851,8 @@
         <xsl:when test="@x:fmt='of'">of</xsl:when>
         <xsl:when test="@x:fmt=','">comma</xsl:when>
         <xsl:when test="@x:fmt='none'">none</xsl:when>
-        <xsl:when test="@x:fmt='sec'">sec</xsl:when>
-        <xsl:when test="@x:fmt='number'">number</xsl:when>
+        <xsl:when test="@x:fmt='sec'">section</xsl:when>
+        <xsl:when test="@x:fmt='number'">number-only</xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="warning">
             <xsl:with-param name="msg">unknown format for @x:fmt</xsl:with-param>
@@ -3274,7 +3274,7 @@
           number  SS
         -->
 
-        <xsl:if test="$sfmt!='' and not($sfmt='of' or $sfmt='sec' or $sfmt='number' or $sfmt='parens' or $sfmt='comma')">
+        <xsl:if test="$sfmt!='' and not($sfmt='of' or $sfmt='section' or $sfmt='number-only' or $sfmt='parens' or $sfmt='comma')">
           <xsl:call-template name="error">
             <xsl:with-param name="msg" select="concat('unknown xref section format extension: ',$sfmt)"/>
           </xsl:call-template>
@@ -3283,14 +3283,14 @@
         <xsl:if test="$sec!=''">
 
           <xsl:choose>
-            <xsl:when test="$sfmt='of' or $sfmt='sec'">
+            <xsl:when test="$sfmt='of' or $sfmt='section'">
               <xsl:choose>
                 <xsl:when test="$href!=''">
                   <a href="{$href}">
                     <xsl:if test="$title!=''">
                       <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
                     </xsl:if>
-                    <xsl:if test="$sfmt='sec' and $xml2rfc-ext-include-references-in-index='yes'">
+                    <xsl:if test="$sfmt='section' and $xml2rfc-ext-include-references-in-index='yes'">
                       <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
                     </xsl:if>
                     <xsl:value-of select="$secterm"/>
@@ -3304,7 +3304,7 @@
                 <xsl:text> of </xsl:text>
               </xsl:if>
             </xsl:when>
-            <xsl:when test="$sfmt='number'">
+            <xsl:when test="$sfmt='number-only'">
               <xsl:choose>
                 <xsl:when test="$href!=''">
                   <a href="{$href}">
@@ -3324,7 +3324,7 @@
           </xsl:choose>
         </xsl:if>
 
-        <xsl:if test="$sec='' or ($sfmt!='sec' and $sfmt!='number')">
+        <xsl:if test="$sec='' or ($sfmt!='section' and $sfmt!='number-only')">
           <xsl:choose>
             <xsl:when test="$xref/@format='none'">
               <!-- Nothing to do -->
@@ -7864,11 +7864,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.717 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.717 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.718 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.718 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/03/23 17:14:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/03/23 17:14:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/04/08 13:10:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/04/08 13:10:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
