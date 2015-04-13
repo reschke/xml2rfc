@@ -2712,25 +2712,11 @@
   </em>
 </xsl:template>
 
-<xsl:template match="i">
-  <i>
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:apply-templates />
-  </i>
-</xsl:template>
-
 <xsl:template match="spanx[@style='verb' or @style='vbare']|tt">
   <tt>
     <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates />
   </tt>
-</xsl:template>
-
-<xsl:template match="b">
-  <b>
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:apply-templates />
-  </b>
 </xsl:template>
 
 <xsl:template match="spanx[@style='strong']|strong">
@@ -7864,11 +7850,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.718 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.718 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.719 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.719 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/04/08 13:10:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/04/08 13:10:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/04/13 18:49:24 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/04/13 18:49:24 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
