@@ -2541,28 +2541,33 @@
       </xsl:if>
 
     </head>
-    <body>
-      <xsl:variable name="onload">
-        <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@number">getMeta(<xsl:value-of select="/rfc/@number"/>,"rfc.meta");</xsl:if>
-        <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
-        <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
-      </xsl:variable>
-      <xsl:if test="$onload!=''">
-        <xsl:attribute name="onload">
-          <xsl:value-of select="$onload"/>
-        </xsl:attribute>
-      </xsl:if>
-
-      <!-- insert diagnostics -->
-      <xsl:call-template name="insert-diagnostics"/>
-
-      <xsl:call-template name="header" />
-      <xsl:apply-templates select="front" />
-      <xsl:apply-templates select="middle" />
-      <xsl:call-template name="back" />
-      <xsl:call-template name="footer" />
-    </body>
+    <xsl:call-template name="body"/>
   </html>
+</xsl:template>
+
+
+<xsl:template name="body">
+  <body>
+    <xsl:variable name="onload">
+      <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@number">getMeta(<xsl:value-of select="/rfc/@number"/>,"rfc.meta");</xsl:if>
+      <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
+      <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
+    </xsl:variable>
+    <xsl:if test="$onload!=''">
+      <xsl:attribute name="onload">
+        <xsl:value-of select="$onload"/>
+      </xsl:attribute>
+    </xsl:if>
+
+    <!-- insert diagnostics -->
+    <xsl:call-template name="insert-diagnostics"/>
+
+    <xsl:call-template name="header" />
+    <xsl:apply-templates select="front" />
+    <xsl:apply-templates select="middle" />
+    <xsl:call-template name="back" />
+    <xsl:call-template name="footer" />
+  </body>
 </xsl:template>
 
 
