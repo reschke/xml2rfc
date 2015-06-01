@@ -1172,6 +1172,13 @@
 
 </xsl:template>
 
+<!-- header and footer for customisation. -->
+<xsl:template name="header">
+</xsl:template>
+
+<xsl:template name="footer">
+</xsl:template>
+
 <xsl:template match="eref[node()]">
   <a href="{@target}"><xsl:apply-templates /></a>
 </xsl:template>
@@ -2549,9 +2556,11 @@
       <!-- insert diagnostics -->
       <xsl:call-template name="insert-diagnostics"/>
 
+      <xsl:call-template name="header" />
       <xsl:apply-templates select="front" />
       <xsl:apply-templates select="middle" />
       <xsl:call-template name="back" />
+      <xsl:call-template name="footer" />
     </body>
   </html>
 </xsl:template>
