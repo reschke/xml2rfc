@@ -526,6 +526,15 @@
   match="//x:ref"
     use="."/>
 
+<!-- default table style -->
+<xsl:variable name="default-table-style" select="'full'" />
+
+<!-- ToC list class(es) -->
+<xsl:variable name="toc-ul-class" select="''" />
+
+<!-- indent string for ToC -->
+<xsl:variable name="toc-indent" select="'&#160;&#160;&#160;'"/>
+
 <!-- prefix for automatically generated anchors -->
 <xsl:variable name="anchor-prefix" select="'rfc'" />
 
@@ -723,7 +732,9 @@
 <xsl:template match="abstract">
   <xsl:call-template name="check-no-text-content"/>
   <h1 id="{$anchor-prefix}.abstract"><a href="#{$anchor-prefix}.abstract">Abstract</a></h1>
-  <xsl:apply-templates />
+  <div class="lead">
+    <xsl:apply-templates />
+  </div>
 </xsl:template>
 
 <msxsl:script language="JScript" implements-prefix="myns">
@@ -1170,6 +1181,13 @@
 
 </xsl:template>
 
+<!-- header and footer for customisation. -->
+<xsl:template name="header">
+</xsl:template>
+
+<xsl:template name="footer">
+</xsl:template>
+
 <xsl:template match="eref[node()]">
   <a href="{@target}"><xsl:apply-templates /></a>
 </xsl:template>
@@ -1236,7 +1254,7 @@
       <xsl:call-template name="collectRightHeaderColumn" />
     </xsl:variable>
     <!-- insert the collected information -->
-    <table class="header" id="{$anchor-prefix}.headerblock">
+    <table class="table table-condensed header" id="{$anchor-prefix}.headerblock">
       <xsl:choose>
         <xsl:when test="function-available('exslt:node-set')">
           <xsl:call-template name="emitheader">
@@ -1253,7 +1271,8 @@
     </table>
   </xsl:if>
 
-  <p class="title" id="{$anchor-prefix}.title">
+  <div class="page-header">
+  <h1 class="title" id="{$anchor-prefix}.title">
     <!-- main title -->
 
     <xsl:apply-templates select="title"/>
@@ -1330,7 +1349,8 @@
       </xsl:if>
 
     </xsl:if>
-  </p>
+  </h1>
+  </div>
 
   <!-- insert notice about update -->
   <xsl:variable name="published-as" select="/*/x:link[@rel='Alternate' and starts-with(@title,'RFC')]"/>
@@ -2089,8 +2109,7 @@
     </xsl:choose>
   </xsl:variable>
 
-  <tr>
-    <td class="reference">
+    <dt>
       <xsl:call-template name="insertInsDelClass"/>
       <xsl:variable name="del-node" select="ancestor::ed:del"/>
       <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
@@ -2103,9 +2122,9 @@
       <b id="{@anchor}">
         <xsl:call-template name="reference-name"/>
       </b>
-    </td>
+    </dt>
 
-    <td class="top">
+    <dd>
       <xsl:call-template name="insertInsDelClass"/>
       <xsl:for-each select="front/author">
         <xsl:variable name="initials">
@@ -2293,8 +2312,7 @@
         <xsl:apply-templates />
       </xsl:for-each>
 
-    </td>
-  </tr>
+    </dd>
 
 
 </xsl:template>
@@ -2378,7 +2396,7 @@
     <xsl:copy-of select="$title"/>
   </xsl:element>
 
-  <table>
+  <dl class="dl-horizontal">
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
         <xsl:apply-templates>
@@ -2389,7 +2407,7 @@
         <xsl:apply-templates />
       </xsl:otherwise>
     </xsl:choose>
-  </table>
+  </dl>
 
 </xsl:template>
 <!-- processed earlier -->
@@ -2532,26 +2550,33 @@
       </xsl:if>
 
     </head>
-    <body>
-      <xsl:variable name="onload">
-        <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@number">getMeta(<xsl:value-of select="/rfc/@number"/>,"rfc.meta");</xsl:if>
-        <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
-        <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
-      </xsl:variable>
-      <xsl:if test="$onload!=''">
-        <xsl:attribute name="onload">
-          <xsl:value-of select="$onload"/>
-        </xsl:attribute>
-      </xsl:if>
-
-      <!-- insert diagnostics -->
-      <xsl:call-template name="insert-diagnostics"/>
-
-      <xsl:apply-templates select="front" />
-      <xsl:apply-templates select="middle" />
-      <xsl:call-template name="back" />
-    </body>
+    <xsl:call-template name="body"/>
   </html>
+</xsl:template>
+
+
+<xsl:template name="body">
+  <body>
+    <xsl:variable name="onload">
+      <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@number">getMeta(<xsl:value-of select="/rfc/@number"/>,"rfc.meta");</xsl:if>
+      <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
+      <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
+    </xsl:variable>
+    <xsl:if test="$onload!=''">
+      <xsl:attribute name="onload">
+        <xsl:value-of select="$onload"/>
+      </xsl:attribute>
+    </xsl:if>
+
+    <!-- insert diagnostics -->
+    <xsl:call-template name="insert-diagnostics"/>
+
+    <xsl:call-template name="header" />
+    <xsl:apply-templates select="front" />
+    <xsl:apply-templates select="middle" />
+    <xsl:call-template name="back" />
+    <xsl:call-template name="footer" />
+  </body>
 </xsl:template>
 
 
@@ -3544,9 +3569,9 @@
     <xsl:with-param name="inline" select="'no'"/>
     <xsl:with-param name="msg">no XSLT template for element '<xsl:value-of select="name()"/>'</xsl:with-param>
   </xsl:call-template>
-  <tt class="error">&lt;<xsl:value-of select="name()" />&gt;</tt>
+  <tt class="bg-danger">&lt;<xsl:value-of select="name()" />&gt;</tt>
   <xsl:copy><xsl:apply-templates select="node()|@*" /></xsl:copy>
-  <tt class="error">&lt;/<xsl:value-of select="name()" />&gt;</tt>
+  <tt class="bg-danger">&lt;/<xsl:value-of select="name()" />&gt;</tt>
 </xsl:template>
 
 <xsl:template match="/">
@@ -3803,8 +3828,8 @@
       <xsl:variable name="pos" select="position()" />
       <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1">
         <tr>
-          <td class="left"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
-          <td class="right"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
+          <td class="text-left"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
+          <td class="text-right"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
         </tr>
       </xsl:if>
     </xsl:for-each>
@@ -4186,7 +4211,7 @@ RfcRefresh.interval = "<xsl:value-of select='number($xml2rfc-ext-refresh-interva
 RfcRefresh.getXSLT = function() {
   if (! window.XSLTProcessor) {
     var err = document.createElement("pre");
-    err.className = "refreshbrowsererror noprint";
+    err.className = "refreshbrowsererror hidden-print";
     var msg = "This browser does not support the window.XSLTProcessor functionality.";
     err.appendChild(document.createTextNode(msg));
     RfcRefresh.showMessage("refreshxmlerror", err);
@@ -4208,7 +4233,7 @@ RfcRefresh.getXSLT = function() {
     }
     catch (e) {
       var err = document.createElement("pre");
-      err.className = "refreshbrowsererror noprint";
+      err.className = "refreshbrowsererror hidden-print";
       var msg = "Failed to load XSLT code from &lt;" + RfcRefresh.xsltsource + "&gt;.\n";
       msg += "Your browser might not support loading from a file: URI.\n";
       msg += "Error details: " + e;
@@ -4329,7 +4354,7 @@ RfcRefresh.refresh = function(txt) {
     
     if (errmsg != null) {
       var err = document.createElement("pre");
-      err.className = "refreshxmlerror noprint";
+      err.className = "refreshxmlerror hidden-print";
       err.appendChild(document.createTextNode(errmsg.msg));
       if (errmsg.src != null) {
         err.appendChild(document.createElement("hr"));
@@ -4400,7 +4425,7 @@ var buttonsAdded = false;
 
 function initFeedback() {
   var fb = document.createElement("div");
-  fb.className = "feedback noprint";
+  fb.className = "feedback hidden-print";
   fb.setAttribute("onclick", "feedback();");
   fb.appendChild(document.createTextNode("feedback"));
 
@@ -4466,7 +4491,7 @@ function toggleButton(node) {
     uri = uri.replace("{ref}", encodeURIComponent(ref));
 
     var button = document.createElement("a");
-    button.className = "fbbutton noprint";
+    button.className = "fbbutton hidden-print";
     button.setAttribute("href", uri);
     button.appendChild(document.createTextNode("send feedback"));
     node.appendChild(button);
@@ -4475,7 +4500,7 @@ function toggleButton(node) {
     var buttons = node.getElementsByTagName("a");
     for (var i = 0; i &lt; buttons.length; i++) {
       var b = buttons.item(i);
-      if (b.className == "fbbutton noprint") {
+      if (b.className == "fbbutton hidden-print") {
         node.removeChild(b);
       }
     }
@@ -4658,6 +4683,23 @@ dl.compact > dd {
 dl > dd > dl {
   margin-top: 0.5em;
 }
+dl.dl-horizontal {
+  margin-left: 0;
+}
+@media (min-width: 768px) {
+  dl.dl-horizontal > dt {
+    float: left;
+    width: 160px;
+    clear: left;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  dl.dl-horizontal dd {
+    margin-left: 180px;
+  }
+}
 ul.empty {<!-- spacing between two entries in definition lists -->
   list-style-type: none;
 }
@@ -4768,14 +4810,14 @@ sub {
 table {
   margin-left: 2em;
 }<xsl:if test="//texttable">
-table.tt {
+table.table {
   vertical-align: top;
   border-color: gray;
 }
-table.tt th {
+table.table th {
   border-color: gray;
 }
-table.tt td {
+table.table td {
   border-color: gray;
 }
 table.all {
@@ -4786,7 +4828,7 @@ table.full {
   border-style: solid;
   border-width: 2px;
 }
-table.tt td {
+table.table td {
   vertical-align: top;
 }
 table.all td {
@@ -4797,7 +4839,7 @@ table.full td {
   border-style: none solid;
   border-width: 1px;
 }
-table.tt th {
+table.table th {
   vertical-align: top;
 }
 table.all th {
@@ -4812,13 +4854,13 @@ table.headers th {
   border-style: none none solid none;
   border-width: 2px;
 }
-table.left {
+table.text-left {
   margin-right: auto;
 }
-table.right {
+table.text-right {
   margin-left: auto;
 }
-table.center {
+table.text-center {
   margin-left: auto;
   margin-right: auto;
 }
@@ -4921,7 +4963,7 @@ blockquote > * .bcp14 {
 .center {
   text-align: center;
 }
-.error {
+.bg-danger {
   color: red;
   font-style: italic;
   font-weight: bold;
@@ -4941,10 +4983,10 @@ blockquote > * .bcp14 {
 .fn {
   font-weight: bold;
 }
-.left {
+.text-left {
   text-align: left;
 }
-.right {
+.text-right {
   text-align: right;
 }
 .title {
@@ -5082,7 +5124,7 @@ dd, li, p {
 }
 
 @media print {
-  .noprint {
+  .hidden-print {
     display: none;
   }
 
@@ -5316,7 +5358,7 @@ dd, li, p {
   </h1>
 
   <!-- generate navigation links to index subsections -->
-  <p class="noprint">
+  <p class="hidden-print">
     <xsl:variable name="irefs" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))[1])]"/>
     <xsl:variable name="xrefs" select="//reference[not(starts-with(@anchor,'deleted-'))][generate-id(.) = generate-id(key('index-first-letter',translate(substring(concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase))[1])]"/>
 
@@ -6119,7 +6161,7 @@ dd, li, p {
 <!-- TOC generation -->
 
 <xsl:template match="/" mode="toc">
-  <hr class="noprint"/>
+  <hr class="hidden-print"/>
 
   <div id="{$anchor-prefix}.toc">
     <h1 class="np"> <!-- this pagebreak occurs always -->
@@ -6178,7 +6220,7 @@ dd, li, p {
                 <xsl:with-param name="no" select="$number"/>
               </xsl:call-template>
             </a>
-            <xsl:text>&#160;&#160;&#160;</xsl:text>
+            <xsl:value-of select="$toc-indent"/>
           </xsl:if>
           <a href="#{$target}">
             <xsl:choose>
@@ -6395,7 +6437,7 @@ dd, li, p {
 
       <!-- only recurse if we need to (do not produce useless list container) -->
       <xsl:if test="$nested-content!=''">
-        <ul>
+        <ul class="{$toc-ul-class}">
           <xsl:apply-templates mode="toc" />
         </ul>
       </xsl:if>
@@ -7409,7 +7451,7 @@ dd, li, p {
     <xsl:choose>
       <!-- block level? -->
       <xsl:when test="not(ancestor::t) and not(ancestor::title) and not(ancestor::figure) and not($change/@ed:old-title)">
-        <div class="issuepointer noprint">
+        <div class="issuepointer hidden-print">
           <xsl:if test="not($deleted-anchor)">
             <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
           </xsl:if>
@@ -7446,13 +7488,13 @@ dd, li, p {
           </xsl:if>
           <xsl:choose>
             <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
-              <xsl:attribute name="class">closed-issue noprint</xsl:attribute>
+              <xsl:attribute name="class">closed-issue hidden-print</xsl:attribute>
             </xsl:when>
             <xsl:when test="//ed:issue[@name=$resolves and @status='editor']">
-              <xsl:attribute name="class">editor-issue noprint</xsl:attribute>
+              <xsl:attribute name="class">editor-issue hidden-print</xsl:attribute>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:attribute name="class">open-issue noprint</xsl:attribute>
+              <xsl:attribute name="class">open-issue hidden-print</xsl:attribute>
             </xsl:otherwise>
           </xsl:choose>
           <xsl:text>&#160;I&#160;</xsl:text>
@@ -7647,10 +7689,10 @@ dd, li, p {
     <xsl:when test="$inline!='no'">
       <xsl:choose>
         <xsl:when test="ancestor::t">
-          <span class="error"><xsl:value-of select="$message"/></span>
+          <span class="bg-danger"><xsl:value-of select="$message"/></span>
         </xsl:when>
         <xsl:otherwise>
-          <div class="error"><xsl:value-of select="$message"/></div>
+          <div class="bg-danger"><xsl:value-of select="$message"/></div>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
@@ -7678,17 +7720,17 @@ dd, li, p {
     </xsl:if>
     <xsl:apply-templates select="preamble" />
     <xsl:variable name="style">
-      <xsl:text>tt </xsl:text>
+      <xsl:text>table </xsl:text>
       <xsl:choose>
         <xsl:when test="@style!=''">
           <xsl:value-of select="@style"/>
         </xsl:when>
-        <xsl:otherwise>full</xsl:otherwise>
+        <xsl:otherwise><xsl:value-of select="$default-table-style"/></xsl:otherwise>
       </xsl:choose>
       <xsl:choose>
-        <xsl:when test="@align='left'"> left</xsl:when>
-        <xsl:when test="@align='right'"> right</xsl:when>
-        <xsl:when test="@align='center' or not(@align) or @align=''"> center</xsl:when>
+        <xsl:when test="@align='left'"> text-left</xsl:when>
+        <xsl:when test="@align='right'"> text-right</xsl:when>
+        <xsl:when test="@align='center' or not(@align) or @align=''"> text-center</xsl:when>
         <xsl:otherwise/>
       </xsl:choose>
 
@@ -8297,7 +8339,7 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:template name="insert-conditional-hrule">
   <xsl:if test="$xml2rfc-compact!='yes'">
-    <hr class="noprint" />
+    <hr class="hidden-print" />
   </xsl:if>
 </xsl:template>
 

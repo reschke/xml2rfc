@@ -1490,7 +1490,7 @@
   <xsl:variable name="node" select="//*[@anchor=$target]" />
   <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
     <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
-    <span class="error">Undefined target: <xsl:value-of select="@target" /></span>
+    <span class="bg-danger">Undefined target: <xsl:value-of select="@target" /></span>
   </xsl:if>
 
   <xsl:variable name="sfmt">
