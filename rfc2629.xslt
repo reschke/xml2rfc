@@ -4770,14 +4770,14 @@ sub {
 table {
   margin-left: 2em;
 }<xsl:if test="//texttable">
-table.tt {
+table.table {
   vertical-align: top;
   border-color: gray;
 }
-table.tt th {
+table.table th {
   border-color: gray;
 }
-table.tt td {
+table.table td {
   border-color: gray;
 }
 table.all {
@@ -4788,7 +4788,7 @@ table.full {
   border-style: solid;
   border-width: 2px;
 }
-table.tt td {
+table.table td {
   vertical-align: top;
 }
 table.all td {
@@ -4799,7 +4799,7 @@ table.full td {
   border-style: none solid;
   border-width: 1px;
 }
-table.tt th {
+table.table th {
   vertical-align: top;
 }
 table.all th {
@@ -4814,13 +4814,13 @@ table.headers th {
   border-style: none none solid none;
   border-width: 2px;
 }
-table.left {
+table.text-left {
   margin-right: auto;
 }
-table.right {
+table.text-right {
   margin-left: auto;
 }
-table.center {
+table.text-center {
   margin-left: auto;
   margin-right: auto;
 }
@@ -7680,7 +7680,7 @@ dd, li, p {
     </xsl:if>
     <xsl:apply-templates select="preamble" />
     <xsl:variable name="style">
-      <xsl:text>tt </xsl:text>
+      <xsl:text>table </xsl:text>
       <xsl:choose>
         <xsl:when test="@style!=''">
           <xsl:value-of select="@style"/>
@@ -7688,9 +7688,9 @@ dd, li, p {
         <xsl:otherwise>full</xsl:otherwise>
       </xsl:choose>
       <xsl:choose>
-        <xsl:when test="@align='left'"> left</xsl:when>
-        <xsl:when test="@align='right'"> right</xsl:when>
-        <xsl:when test="@align='center' or not(@align) or @align=''"> center</xsl:when>
+        <xsl:when test="@align='left'"> text-left</xsl:when>
+        <xsl:when test="@align='right'"> text-right</xsl:when>
+        <xsl:when test="@align='center' or not(@align) or @align=''"> text-center</xsl:when>
         <xsl:otherwise/>
       </xsl:choose>
 
