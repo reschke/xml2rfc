@@ -1262,6 +1262,7 @@
     </table>
   </xsl:if>
 
+  <div class="page-header">
   <p class="title" id="{$anchor-prefix}.title">
     <!-- main title -->
 
@@ -1340,6 +1341,7 @@
 
     </xsl:if>
   </p>
+  </div>
 
   <!-- insert notice about update -->
   <xsl:variable name="published-as" select="/*/x:link[@rel='Alternate' and starts-with(@title,'RFC')]"/>
