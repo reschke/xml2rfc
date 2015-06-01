@@ -2100,8 +2100,7 @@
     </xsl:choose>
   </xsl:variable>
 
-  <tr>
-    <td class="reference">
+    <dt>
       <xsl:call-template name="insertInsDelClass"/>
       <xsl:variable name="del-node" select="ancestor::ed:del"/>
       <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
@@ -2114,9 +2113,9 @@
       <b id="{@anchor}">
         <xsl:call-template name="reference-name"/>
       </b>
-    </td>
+    </dt>
 
-    <td class="top">
+    <dd>
       <xsl:call-template name="insertInsDelClass"/>
       <xsl:for-each select="front/author">
         <xsl:variable name="initials">
@@ -2304,8 +2303,7 @@
         <xsl:apply-templates />
       </xsl:for-each>
 
-    </td>
-  </tr>
+    </dd>
 
 
 </xsl:template>
@@ -2389,7 +2387,7 @@
     <xsl:copy-of select="$title"/>
   </xsl:element>
 
-  <table>
+  <dl class="dl-horizontal">
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
         <xsl:apply-templates>
@@ -2400,7 +2398,7 @@
         <xsl:apply-templates />
       </xsl:otherwise>
     </xsl:choose>
-  </table>
+  </dl>
 
 </xsl:template>
 <!-- processed earlier -->
@@ -4675,6 +4673,23 @@ dl.compact > dd {
 }
 dl > dd > dl {
   margin-top: 0.5em;
+}
+dl.dl-horizontal {
+  margin-left: 0;
+}
+@media (min-width: 768px) {
+  dl.dl-horizontal > dt {
+    float: left;
+    width: 160px;
+    clear: left;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  dl.dl-horizontal dd {
+    margin-left: 180px;
+  }
 }
 ul.empty {<!-- spacing between two entries in definition lists -->
   list-style-type: none;
