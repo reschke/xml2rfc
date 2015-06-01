@@ -3546,9 +3546,9 @@
     <xsl:with-param name="inline" select="'no'"/>
     <xsl:with-param name="msg">no XSLT template for element '<xsl:value-of select="name()"/>'</xsl:with-param>
   </xsl:call-template>
-  <tt class="error">&lt;<xsl:value-of select="name()" />&gt;</tt>
+  <tt class="bg-danger">&lt;<xsl:value-of select="name()" />&gt;</tt>
   <xsl:copy><xsl:apply-templates select="node()|@*" /></xsl:copy>
-  <tt class="error">&lt;/<xsl:value-of select="name()" />&gt;</tt>
+  <tt class="bg-danger">&lt;/<xsl:value-of select="name()" />&gt;</tt>
 </xsl:template>
 
 <xsl:template match="/">
@@ -4923,7 +4923,7 @@ blockquote > * .bcp14 {
 .center {
   text-align: center;
 }
-.error {
+.bg-danger {
   color: red;
   font-style: italic;
   font-weight: bold;
@@ -7649,10 +7649,10 @@ dd, li, p {
     <xsl:when test="$inline!='no'">
       <xsl:choose>
         <xsl:when test="ancestor::t">
-          <span class="error"><xsl:value-of select="$message"/></span>
+          <span class="bg-danger"><xsl:value-of select="$message"/></span>
         </xsl:when>
         <xsl:otherwise>
-          <div class="error"><xsl:value-of select="$message"/></div>
+          <div class="bg-danger"><xsl:value-of select="$message"/></div>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
