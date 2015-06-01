@@ -532,6 +532,9 @@
 <!-- ToC list class(es) -->
 <xsl:variable name="toc-ul-class" select="''" />
 
+<!-- indent string for ToC -->
+<xsl:variable name="toc-indent" select="'&#160;&#160;&#160;'"/>
+
 <!-- prefix for automatically generated anchors -->
 <xsl:variable name="anchor-prefix" select="'rfc'" />
 
@@ -6217,7 +6220,7 @@ dd, li, p {
                 <xsl:with-param name="no" select="$number"/>
               </xsl:call-template>
             </a>
-            <xsl:text>&#160;&#160;&#160;</xsl:text>
+            <xsl:value-of select="$toc-indent"/>
           </xsl:if>
           <a href="#{$target}">
             <xsl:choose>
