@@ -529,6 +529,9 @@
 <!-- default table style -->
 <xsl:variable name="default-table-style" select="'full'" />
 
+<!-- ToC list class(es) -->
+<xsl:variable name="toc-ul-class" select="''" />
+
 <!-- prefix for automatically generated anchors -->
 <xsl:variable name="anchor-prefix" select="'rfc'" />
 
@@ -6431,7 +6434,7 @@ dd, li, p {
 
       <!-- only recurse if we need to (do not produce useless list container) -->
       <xsl:if test="$nested-content!=''">
-        <ul>
+        <ul class="{$toc-ul-class}">
           <xsl:apply-templates mode="toc" />
         </ul>
       </xsl:if>
