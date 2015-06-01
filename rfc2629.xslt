@@ -526,6 +526,9 @@
   match="//x:ref"
     use="."/>
 
+<!-- default table style -->
+<xsl:variable name="default-table-style" select="'full'" />
+
 <!-- prefix for automatically generated anchors -->
 <xsl:variable name="anchor-prefix" select="'rfc'" />
 
@@ -7716,7 +7719,7 @@ dd, li, p {
         <xsl:when test="@style!=''">
           <xsl:value-of select="@style"/>
         </xsl:when>
-        <xsl:otherwise>full</xsl:otherwise>
+        <xsl:otherwise><xsl:value-of select="$default-table-style"/></xsl:otherwise>
       </xsl:choose>
       <xsl:choose>
         <xsl:when test="@align='left'"> text-left</xsl:when>
