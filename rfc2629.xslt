@@ -1263,7 +1263,7 @@
   </xsl:if>
 
   <div class="page-header">
-  <p class="title" id="{$anchor-prefix}.title">
+  <h1 class="title" id="{$anchor-prefix}.title">
     <!-- main title -->
 
     <xsl:apply-templates select="title"/>
@@ -1340,7 +1340,7 @@
       </xsl:if>
 
     </xsl:if>
-  </p>
+  </h1>
   </div>
 
   <!-- insert notice about update -->
