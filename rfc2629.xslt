@@ -723,7 +723,9 @@
 <xsl:template match="abstract">
   <xsl:call-template name="check-no-text-content"/>
   <h1 id="{$anchor-prefix}.abstract"><a href="#{$anchor-prefix}.abstract">Abstract</a></h1>
-  <xsl:apply-templates />
+  <div class="lead">
+    <xsl:apply-templates />
+  </div>
 </xsl:template>
 
 <msxsl:script language="JScript" implements-prefix="myns">
