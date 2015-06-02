@@ -236,6 +236,32 @@
   </xsl:choose>
 </xsl:variable>
 
+<!-- CSS class name remapping -->
+
+<xsl:param name="xml2rfc-ext-css-map"/>
+
+<xsl:template name="generate-css-class">
+  <xsl:param name="name"/>
+  <xsl:variable name="cssmap" select="document($xml2rfc-ext-css-map)"/>
+  <xsl:variable name="entry" select="$cssmap/*/map[@from=$name]"/>
+  <xsl:choose>
+    <xsl:when test="$entry">
+      <xsl:value-of select="$entry/@css"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$name"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- WORK IN PROGRESS; ONLY A FEW CLASSES SUPPORTED FOR NOW -->
+<xsl:variable name="css-error"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'error'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-noprint"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'noprint'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-tcenter"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tcenter'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-tleft"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tleft'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-tright"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tright'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-tt"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tt'"/></xsl:call-template></xsl:variable>
+
 <!-- RFC-Editor site linking -->
 
 <xsl:param name="xml2rfc-ext-link-rfc-to-info-page">
@@ -3544,9 +3570,9 @@
     <xsl:with-param name="inline" select="'no'"/>
     <xsl:with-param name="msg">no XSLT template for element '<xsl:value-of select="name()"/>'</xsl:with-param>
   </xsl:call-template>
-  <tt class="error">&lt;<xsl:value-of select="name()" />&gt;</tt>
+  <tt class="{$css-error}">&lt;<xsl:value-of select="name()" />&gt;</tt>
   <xsl:copy><xsl:apply-templates select="node()|@*" /></xsl:copy>
-  <tt class="error">&lt;/<xsl:value-of select="name()" />&gt;</tt>
+  <tt class="{$css-error}">&lt;/<xsl:value-of select="name()" />&gt;</tt>
 </xsl:template>
 
 <xsl:template match="/">
@@ -4186,7 +4212,7 @@ RfcRefresh.interval = "<xsl:value-of select='number($xml2rfc-ext-refresh-interva
 RfcRefresh.getXSLT = function() {
   if (! window.XSLTProcessor) {
     var err = document.createElement("pre");
-    err.className = "refreshbrowsererror noprint";
+    err.className = "refreshbrowsererror <xsl:value-of select="$css-noprint"/>";
     var msg = "This browser does not support the window.XSLTProcessor functionality.";
     err.appendChild(document.createTextNode(msg));
     RfcRefresh.showMessage("refreshxmlerror", err);
@@ -4208,7 +4234,7 @@ RfcRefresh.getXSLT = function() {
     }
     catch (e) {
       var err = document.createElement("pre");
-      err.className = "refreshbrowsererror noprint";
+      err.className = "refreshbrowsererror <xsl:value-of select="$css-noprint"/>";
       var msg = "Failed to load XSLT code from &lt;" + RfcRefresh.xsltsource + "&gt;.\n";
       msg += "Your browser might not support loading from a file: URI.\n";
       msg += "Error details: " + e;
@@ -4329,7 +4355,7 @@ RfcRefresh.refresh = function(txt) {
     
     if (errmsg != null) {
       var err = document.createElement("pre");
-      err.className = "refreshxmlerror noprint";
+      err.className = "refreshxmlerror <xsl:value-of select="$css-noprint"/>";
       err.appendChild(document.createTextNode(errmsg.msg));
       if (errmsg.src != null) {
         err.appendChild(document.createElement("hr"));
@@ -4400,7 +4426,7 @@ var buttonsAdded = false;
 
 function initFeedback() {
   var fb = document.createElement("div");
-  fb.className = "feedback noprint";
+  fb.className = "feedback <xsl:value-of select="$css-noprint"/>";
   fb.setAttribute("onclick", "feedback();");
   fb.appendChild(document.createTextNode("feedback"));
 
@@ -4466,7 +4492,7 @@ function toggleButton(node) {
     uri = uri.replace("{ref}", encodeURIComponent(ref));
 
     var button = document.createElement("a");
-    button.className = "fbbutton noprint";
+    button.className = "fbbutton <xsl:value-of select="$css-noprint"/>";
     button.setAttribute("href", uri);
     button.appendChild(document.createTextNode("send feedback"));
     node.appendChild(button);
@@ -4475,7 +4501,7 @@ function toggleButton(node) {
     var buttons = node.getElementsByTagName("a");
     for (var i = 0; i &lt; buttons.length; i++) {
       var b = buttons.item(i);
-      if (b.className == "fbbutton noprint") {
+      if (b.className == "fbbutton <xsl:value-of select="$css-noprint"/>") {
         node.removeChild(b);
       }
     }
@@ -4768,14 +4794,14 @@ sub {
 table {
   margin-left: 2em;
 }<xsl:if test="//texttable">
-table.tt {
+table.<xsl:value-of select="$css-tt"/> {
   vertical-align: top;
   border-color: gray;
 }
-table.tt th {
+table.<xsl:value-of select="$css-tt"/> th {
   border-color: gray;
 }
-table.tt td {
+table.<xsl:value-of select="$css-tt"/> td {
   border-color: gray;
 }
 table.all {
@@ -4786,7 +4812,7 @@ table.full {
   border-style: solid;
   border-width: 2px;
 }
-table.tt td {
+table.<xsl:value-of select="$css-tt"/> td {
   vertical-align: top;
 }
 table.all td {
@@ -4797,7 +4823,7 @@ table.full td {
   border-style: none solid;
   border-width: 1px;
 }
-table.tt th {
+table.<xsl:value-of select="$css-tt"/> th {
   vertical-align: top;
 }
 table.all th {
@@ -4812,13 +4838,13 @@ table.headers th {
   border-style: none none solid none;
   border-width: 2px;
 }
-table.left {
+table.<xsl:value-of select="$css-tleft"/> {
   margin-right: auto;
 }
-table.right {
+table.<xsl:value-of select="$css-tright"/> {
   margin-left: auto;
 }
-table.center {
+table.<xsl:value-of select="$css-tcenter"/> {
   margin-left: auto;
   margin-right: auto;
 }
@@ -4921,7 +4947,7 @@ blockquote > * .bcp14 {
 .center {
   text-align: center;
 }
-.error {
+.<xsl:value-of select="$css-error"/> {
   color: red;
   font-style: italic;
   font-weight: bold;
@@ -5082,7 +5108,7 @@ dd, li, p {
 }
 
 @media print {
-  .noprint {
+  .<xsl:value-of select="$css-noprint"/> {
     display: none;
   }
 
@@ -5316,7 +5342,7 @@ dd, li, p {
   </h1>
 
   <!-- generate navigation links to index subsections -->
-  <p class="noprint">
+  <p class="{$css-noprint}">
     <xsl:variable name="irefs" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))[1])]"/>
     <xsl:variable name="xrefs" select="//reference[not(starts-with(@anchor,'deleted-'))][generate-id(.) = generate-id(key('index-first-letter',translate(substring(concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase))[1])]"/>
 
@@ -6119,7 +6145,7 @@ dd, li, p {
 <!-- TOC generation -->
 
 <xsl:template match="/" mode="toc">
-  <hr class="noprint"/>
+  <hr class="{$css-noprint}"/>
 
   <div id="{$anchor-prefix}.toc">
     <h1 class="np"> <!-- this pagebreak occurs always -->
@@ -7409,7 +7435,7 @@ dd, li, p {
     <xsl:choose>
       <!-- block level? -->
       <xsl:when test="not(ancestor::t) and not(ancestor::title) and not(ancestor::figure) and not($change/@ed:old-title)">
-        <div class="issuepointer noprint">
+        <div class="issuepointer {$css-noprint}">
           <xsl:if test="not($deleted-anchor)">
             <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
           </xsl:if>
@@ -7446,13 +7472,13 @@ dd, li, p {
           </xsl:if>
           <xsl:choose>
             <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
-              <xsl:attribute name="class">closed-issue noprint</xsl:attribute>
+              <xsl:attribute name="class">closed-issue <xsl:value-of select="$css-noprint"/></xsl:attribute>
             </xsl:when>
             <xsl:when test="//ed:issue[@name=$resolves and @status='editor']">
-              <xsl:attribute name="class">editor-issue noprint</xsl:attribute>
+              <xsl:attribute name="class">editor-issue <xsl:value-of select="$css-noprint"/></xsl:attribute>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:attribute name="class">open-issue noprint</xsl:attribute>
+              <xsl:attribute name="class">open-issue <xsl:value-of select="$css-noprint"/></xsl:attribute>
             </xsl:otherwise>
           </xsl:choose>
           <xsl:text>&#160;I&#160;</xsl:text>
@@ -7647,10 +7673,10 @@ dd, li, p {
     <xsl:when test="$inline!='no'">
       <xsl:choose>
         <xsl:when test="ancestor::t">
-          <span class="error"><xsl:value-of select="$message"/></span>
+          <span class="{$css-error}"><xsl:value-of select="$message"/></span>
         </xsl:when>
         <xsl:otherwise>
-          <div class="error"><xsl:value-of select="$message"/></div>
+          <div class="{$css-error}"><xsl:value-of select="$message"/></div>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
@@ -7677,8 +7703,10 @@ dd, li, p {
       <div id="{@anchor}"/>
     </xsl:if>
     <xsl:apply-templates select="preamble" />
+
     <xsl:variable name="style">
-      <xsl:text>tt </xsl:text>
+      <xsl:value-of select="$css-tt"/>
+      <xsl:text> </xsl:text>
       <xsl:choose>
         <xsl:when test="@style!=''">
           <xsl:value-of select="@style"/>
@@ -7686,12 +7714,11 @@ dd, li, p {
         <xsl:otherwise>full</xsl:otherwise>
       </xsl:choose>
       <xsl:choose>
-        <xsl:when test="@align='left'"> left</xsl:when>
-        <xsl:when test="@align='right'"> right</xsl:when>
-        <xsl:when test="@align='center' or not(@align) or @align=''"> center</xsl:when>
+        <xsl:when test="@align='left'"><xsl:text> </xsl:text><xsl:value-of select="$css-tleft"/></xsl:when>
+        <xsl:when test="@align='right'"><xsl:text> </xsl:text><xsl:value-of select="$css-tright"/></xsl:when>
+        <xsl:when test="@align='center' or not(@align) or @align=''"><xsl:text> </xsl:text><xsl:value-of select="$css-tcenter"/></xsl:when>
         <xsl:otherwise/>
       </xsl:choose>
-
     </xsl:variable>
 
     <table class="{$style}" cellpadding="3" cellspacing="0">
@@ -8009,11 +8036,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.733 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.733 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.734 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.734 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/05/28 13:08:20 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/05/28 13:08:20 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/06/02 05:22:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/06/02 05:22:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8297,7 +8324,7 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:template name="insert-conditional-hrule">
   <xsl:if test="$xml2rfc-compact!='yes'">
-    <hr class="noprint" />
+    <hr class="{$css-noprint}" />
   </xsl:if>
 </xsl:template>
 
