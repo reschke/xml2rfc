@@ -748,7 +748,7 @@
 
 <xsl:template match="abstract">
   <xsl:call-template name="check-no-text-content"/>
-  <h1 id="{$anchor-prefix}.abstract"><a href="#{$anchor-prefix}.abstract">Abstract</a></h1>
+  <h2 id="{$anchor-prefix}.abstract"><a href="#{$anchor-prefix}.abstract">Abstract</a></h2>
   <xsl:apply-templates />
 </xsl:template>
 
@@ -1279,10 +1279,10 @@
     </table>
   </xsl:if>
 
-  <p class="title" id="{$anchor-prefix}.title">
+  <div id="{$anchor-prefix}.title">
     <!-- main title -->
 
-    <xsl:apply-templates select="title"/>
+    <h1><xsl:apply-templates select="title"/></h1>
     <xsl:if test="/rfc/@docName">
     
       <xsl:variable name="docname" select="/rfc/@docName"/>
@@ -1294,8 +1294,7 @@
           </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
-          <br/>
-          <span class="filename"><xsl:value-of select="$docname"/></span>
+          <p class="filename"><xsl:value-of select="$docname"/></p>
         </xsl:otherwise>
       </xsl:choose>
       
@@ -1320,7 +1319,6 @@
           <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should not contain the character '<xsl:value-of select="substring($offending,1,1)"/>'.</xsl:with-param>
         </xsl:call-template>
       </xsl:if>
-
 
       <xsl:if test="contains($docname,'--')">
         <xsl:call-template name="warning">
@@ -1356,7 +1354,7 @@
       </xsl:if>
 
     </xsl:if>
-  </p>
+  </div>
 
   <!-- insert notice about update -->
   <xsl:variable name="published-as" select="/*/x:link[@rel='Alternate' and starts-with(@title,'RFC')]"/>
@@ -1892,12 +1890,12 @@
 <xsl:template match="note">
   <xsl:call-template name="check-no-text-content"/>
   <xsl:variable name="num"><xsl:number/></xsl:variable>
-    <h1 id="{$anchor-prefix}.note.{$num}">
+    <h2 id="{$anchor-prefix}.note.{$num}">
       <xsl:call-template name="insertInsDelClass"/>
       <a href="#{$anchor-prefix}.note.{$num}">
         <xsl:value-of select="@title" />
       </a>
-    </h1>
+    </h2>
   <xsl:apply-templates />
 </xsl:template>
 
@@ -2341,7 +2339,7 @@
   <!-- insert pseudo section when needed -->
   <xsl:if test="not(preceding::references) and $refseccount!=1">
     <xsl:call-template name="insert-conditional-hrule"/>
-    <h1 id="{$anchor-prefix}.references">
+    <h2 id="{$anchor-prefix}.references">
       <xsl:call-template name="insert-conditional-pagebreak"/>
       <xsl:variable name="sectionNumber">
         <xsl:call-template name="get-references-section-number"/>
@@ -2353,13 +2351,13 @@
       </a>
       <xsl:text> </xsl:text>
       <xsl:value-of select="$xml2rfc-refparent"/>
-    </h1>
+    </h2>
   </xsl:if>
 
   <xsl:variable name="elemtype">
     <xsl:choose>
-      <xsl:when test="$refseccount!=1">h2</xsl:when>
-      <xsl:otherwise>h1</xsl:otherwise>
+      <xsl:when test="$refseccount!=1">h3</xsl:when>
+      <xsl:otherwise>h2</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 
@@ -2803,7 +2801,7 @@
 
   <xsl:variable name="elemtype">
     <xsl:choose>
-      <xsl:when test="count(ancestor::section) &lt;= 4">h<xsl:value-of select="1 + count(ancestor::section)"/></xsl:when>
+      <xsl:when test="count(ancestor::section) &lt;= 3">h<xsl:value-of select="2 + count(ancestor::section)"/></xsl:when>
       <xsl:otherwise>h6</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -4015,14 +4013,14 @@
     <xsl:call-template name="insert-conditional-hrule"/>
 
     <div class="avoidbreakinside">
-      <h1 id="{$anchor-prefix}.authors">
+      <h2 id="{$anchor-prefix}.authors">
         <xsl:call-template name="insert-conditional-pagebreak"/>
         <xsl:if test="$number != ''">
           <a href="#{$anchor-prefix}.section.{$number}" id="{$anchor-prefix}.section.{$number}"><xsl:value-of select="$number"/>.</a>
           <xsl:text> </xsl:text>
         </xsl:if>
         <a href="#{$anchor-prefix}.authors"><xsl:call-template name="get-authors-section-title"/></a>
-      </h1>
+      </h2>
 
       <xsl:apply-templates select="/rfc/front/author" />
     </div>
@@ -4702,23 +4700,32 @@ dl p {
   margin-left: 0em;
 }
 h1 {
+  color: green;
+  font-size: 150%;
+  line-height: 18pt;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 36pt;
+  margin-bottom: 0pt;
+}
+h2 {
   font-size: 130%;
   line-height: 21pt;
   page-break-after: avoid;
 }
-h1.np {
+h2.np {
   page-break-before: always;
 }
-h2 {
+h3 {
   font-size: 120%;
   line-height: 15pt;
   page-break-after: avoid;
 }
-h3 {
+h4 {
   font-size: 110%;
   page-break-after: avoid;
 }
-h4, h5, h6 {
+h5, h6 {
   page-break-after: avoid;
 }
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
@@ -4913,7 +4920,7 @@ li.excluded {
 ul p {
   margin-left: 0em;
 }
-.title, .filename, h1, h2, h3, h4 {
+.filename, h1, h2, h3, h4 {
   font-family: candara, calibri, segoe, optima, arial, sans-serif;
 }
 <xsl:if test="$has-index">ul.ind, ul.ind ul {
@@ -4967,10 +4974,11 @@ blockquote > * .bcp14 {
 }
 .filename {
   color: #333333;
-  font-size: 75%;
+  font-size: 112%;
   font-weight: bold;
   line-height: 21pt;
   text-align: center;
+  margin-top: 0pt;
 }
 .fn {
   font-weight: bold;
@@ -4980,14 +4988,6 @@ blockquote > * .bcp14 {
 }
 .right {
   text-align: right;
-}
-.title {
-  color: green;
-  font-size: 150%;
-  line-height: 18pt;
-  font-weight: bold;
-  text-align: center;
-  margin-top: 36pt;
 }
 .warning {
   font-size: 130%;
@@ -5344,10 +5344,10 @@ dd, li, p {
 
   <xsl:call-template name="insert-conditional-hrule"/>
 
-  <h1 id="{$anchor-prefix}.index">
+  <h2 id="{$anchor-prefix}.index">
     <xsl:call-template name="insert-conditional-pagebreak"/>
     <a href="#{$anchor-prefix}.index">Index</a>
-  </h1>
+  </h2>
 
   <!-- generate navigation links to index subsections -->
   <p class="{$css-noprint}">
@@ -6156,9 +6156,9 @@ dd, li, p {
   <hr class="{$css-noprint}"/>
 
   <div id="{$anchor-prefix}.toc">
-    <h1 class="np"> <!-- this pagebreak occurs always -->
+    <h2 class="np"> <!-- this pagebreak occurs always -->
       <a href="#{$anchor-prefix}.toc">Table of Contents</a>
-    </h1>
+    </h2>
   
     <ul class="toc">
       <xsl:apply-templates mode="toc" />
@@ -7875,10 +7875,10 @@ dd, li, p {
 
   <xsl:call-template name="insert-conditional-hrule"/>
 
-  <h1>
+  <h2>
     <xsl:call-template name="insert-conditional-pagebreak"/>
     <a id="{$anchor-prefix}.comments" href="#{$anchor-prefix}.comments">Editorial Comments</a>
-  </h1>
+  </h2>
 
   <dl>
     <xsl:for-each select="//cref">
@@ -8044,11 +8044,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.735 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.735 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.736 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.736 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/06/05 08:58:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/06/05 08:58:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/06/05 18:58:55 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/06/05 18:58:55 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
