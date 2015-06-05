@@ -2556,30 +2556,38 @@
       <xsl:if test="front/abstract">
         <meta name="description" content="{normalize-space(front/abstract)}" />
       </xsl:if>
-
     </head>
-    <body>
-      <xsl:variable name="onload">
-        <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@number">getMeta(<xsl:value-of select="/rfc/@number"/>,"rfc.meta");</xsl:if>
-        <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
-        <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
-      </xsl:variable>
-      <xsl:if test="$onload!=''">
-        <xsl:attribute name="onload">
-          <xsl:value-of select="$onload"/>
-        </xsl:attribute>
-      </xsl:if>
 
-      <!-- insert diagnostics -->
-      <xsl:call-template name="insert-diagnostics"/>
-
-      <xsl:apply-templates select="front" />
-      <xsl:apply-templates select="middle" />
-      <xsl:call-template name="back" />
-    </body>
+    <xsl:call-template name="body" />
   </html>
 </xsl:template>
 
+<xsl:template name="body">
+  <body>
+    <!-- insert onload scripts, when required -->
+    <xsl:variable name="onload">
+      <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@number">getMeta(<xsl:value-of select="/rfc/@number"/>,"rfc.meta");</xsl:if>
+      <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
+      <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
+    </xsl:variable>
+    <xsl:if test="$onload!=''">
+      <xsl:attribute name="onload">
+        <xsl:value-of select="$onload"/>
+      </xsl:attribute>
+    </xsl:if>
+
+    <xsl:call-template name="add-start-material" />
+
+    <!-- insert diagnostics -->
+    <xsl:call-template name="insert-diagnostics"/>
+
+    <xsl:apply-templates select="front" />
+    <xsl:apply-templates select="middle" />
+    <xsl:call-template name="back" />
+
+    <xsl:call-template name="add-end-material" />
+  </body>
+</xsl:template>
 
 <xsl:template match="t">
   <xsl:param name="inherited-self-link"/>
@@ -8036,11 +8044,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.734 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.734 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.735 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.735 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/06/02 05:22:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/06/02 05:22:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/06/05 08:58:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/06/05 08:58:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8887,5 +8895,9 @@ prev: <xsl:value-of select="$prev"/>
 <xsl:template match="a|xhtml:a" mode="strip-links" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 	<xsl:apply-templates select="node()" mode="strip-links" />
 </xsl:template>
+
+<!-- customization: these templates can be overridden in an XSLT that imports from this one -->
+<xsl:template name="add-start-material"/>
+<xsl:template name="add-end-material"/>
 
 </xsl:transform>
