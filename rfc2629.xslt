@@ -728,6 +728,10 @@
 <!-- does the document contain edits? -->
 <xsl:variable name="has-edits" select="//ed:ins | //ed:del | //ed:replace" />
 
+<!-- does the document have a published-as-rfc link? -->
+<xsl:variable name="published-as-rfc" select="/*/x:link[@rel='Alternate' and starts-with(@title,'RFC')]"/>
+
+
 <xsl:template match="text()[not(ancestor::artwork)]">
   <xsl:variable name="ws" select="'&#9;&#10;&#13;&#32;'"/>
   <xsl:variable name="starts-with-ws" select="'' = translate(substring(.,1,1),$ws,'')"/>
@@ -1357,10 +1361,9 @@
   </div>
 
   <!-- insert notice about update -->
-  <xsl:variable name="published-as" select="/*/x:link[@rel='Alternate' and starts-with(@title,'RFC')]"/>
-  <xsl:if test="$published-as">
-    <p style="color: green; text-align: center; font-size: 14pt; background-color: yellow;">
-      <b>Note:</b> a later version of this document has been published as <a href="{$published-as/@href}"><xsl:value-of select="$published-as/@title"/></a>.
+  <xsl:if test="$published-as-rfc">
+    <p class="publishedasrfc">
+      <b>Note:</b> a later version of this document has been published as <a href="{$published-as-rfc/@href}"><xsl:value-of select="$published-as-rfc/@title"/></a>.
     </p>
   </xsl:if>
 
@@ -5128,6 +5131,12 @@ dd, li, p {
   float: right;
   margin: 2em;
   padding: 1em;
+}</xsl:if><xsl:if test="$published-as-rfc">
+.publishedasrfc {
+  background-color: yellow;
+  color: green;
+  font-size: 14pt;
+  text-align: center;
 }</xsl:if>
 
 @media screen {
@@ -8065,11 +8074,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.741 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.741 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.742 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.742 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/09/24 15:00:27 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/09/24 15:00:27 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/09/24 15:44:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/09/24 15:44:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
