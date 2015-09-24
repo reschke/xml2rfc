@@ -8058,11 +8058,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.739 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.739 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.740 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.740 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/09/06 15:45:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/09/06 15:45:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/09/24 08:18:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/09/24 08:18:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8835,6 +8835,7 @@ prev: <xsl:value-of select="$prev"/>
 <xsl:template match="@*" mode="validate"/>
 
 <xsl:template name="warninvalid">
+  <xsl:param name="additionalDiagnostics"/>
   <xsl:variable name="pname">
     <xsl:if test="namespace-uri(..)!=''">
       <xsl:value-of select="concat('{',namespace-uri(..),'}')"/>
@@ -8848,7 +8849,7 @@ prev: <xsl:value-of select="$prev"/>
     <xsl:value-of select="local-name(.)"/>
   </xsl:variable>
   <xsl:call-template name="warning">
-    <xsl:with-param name="msg" select="concat($cname,' not allowed inside ',$pname)"/>
+    <xsl:with-param name="msg" select="concat($cname,' not allowed inside ',$pname,$additionalDiagnostics)"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -8893,6 +8894,14 @@ prev: <xsl:value-of select="$prev"/>
 </xsl:template>
 <xsl:template match="t" mode="validate">
   <xsl:call-template name="warninvalid"/>
+  <xsl:apply-templates select="@*|*" mode="validate"/>
+</xsl:template>
+
+<!-- xref element -->
+<xsl:template match="abstract//xref" mode="validate">
+  <xsl:call-template name="warninvalid">
+    <xsl:with-param name="additionalDiagnostics"> (inside &lt;artwork>)</xsl:with-param>
+  </xsl:call-template>
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
 
