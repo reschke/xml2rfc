@@ -827,6 +827,9 @@
         <xsl:choose>
           <xsl:when test="@surname and @surname!=''">
             <xsl:choose>
+              <xsl:when test="$truncated-initials='' and @surname">
+                <xsl:value-of select="@surname"/>
+              </xsl:when>
               <xsl:when test="@surname and position()=last() and position()!=1">
                 <xsl:value-of select="concat($truncated-initials,' ',@surname)" />
               </xsl:when>
