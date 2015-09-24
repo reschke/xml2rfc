@@ -262,6 +262,8 @@
 <xsl:variable name="css-tright"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tright'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tt"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tt'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-header"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'header'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-meta"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'meta'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-update"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'update'"/></xsl:call-template></xsl:variable>
 
 <!-- RFC-Editor site linking -->
 
@@ -1360,7 +1362,7 @@
   <!-- insert notice about update -->
   <xsl:variable name="published-as" select="/*/x:link[@rel='Alternate' and starts-with(@title,'RFC')]"/>
   <xsl:if test="$published-as">
-    <p style="color: green; text-align: center; font-size: 14pt; background-color: yellow;">
+    <p class="{$css-update}">
       <b>Note:</b> a later version of this document has been published as <a href="{$published-as/@href}"><xsl:value-of select="$published-as/@title"/></a>.
     </p>
   </xsl:if>
@@ -2808,7 +2810,7 @@
   </xsl:variable>
 
   <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!='' and @anchor='rfc.status'">
-    <div id="{$anchor-prefix}.meta" style="float: right; border: 1px solid black; margin: 2em; padding: 1em; display: none;"></div>
+    <div id="{$anchor-prefix}.meta" class="{$css-meta}"></div>
   </xsl:if>
   <div>
     <xsl:if test="@anchor">
@@ -3836,7 +3838,7 @@
       <xsl:variable name="pos" select="position()" />
       <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1">
         <tr>
-          <td class="{css-tleft}"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
+          <td class="{$css-tleft}"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
           <td class="{$css-tright}"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
         </tr>
       </xsl:if>
@@ -4987,8 +4989,21 @@ blockquote > * .bcp14 {
 .left {
   text-align: left;
 }
+.meta {
+  float: right; 
+  border: 1px solid black; 
+  margin: 2em; 
+  padding: 1em; 
+  display: none;
+}
 .right {
   text-align: right;
+}
+.update {
+  color: green; 
+  text-align: center; 
+  font-size: 14pt; 
+  background-color: yellow;
 }
 .warning {
   font-size: 130%;
