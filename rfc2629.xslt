@@ -256,17 +256,18 @@
 
 <!-- WORK IN PROGRESS; ONLY A FEW CLASSES SUPPORTED FOR NOW -->
 <xsl:variable name="css-error"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'error'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-fbbutton"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'fbbutton'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-feedback"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'feedback'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-header"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'header'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-meta"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'meta'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-noprint"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'noprint'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-note"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'note'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tcenter"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tcenter'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tleft"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tleft'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tright"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tright'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tt"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tt'"/></xsl:call-template></xsl:variable>
-<xsl:variable name="css-header"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'header'"/></xsl:call-template></xsl:variable>
-<xsl:variable name="css-meta"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'meta'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-update"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'update'"/></xsl:call-template></xsl:variable>
-<xsl:variable name="css-feedback"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'feedback'"/></xsl:call-template></xsl:variable>
-<xsl:variable name="css-fbbutton"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'fbbutton'"/></xsl:call-template></xsl:variable>
-<xsl:variable name="css-note"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'note'"/></xsl:call-template></xsl:variable>
+
 
 <!-- RFC-Editor site linking -->
 
