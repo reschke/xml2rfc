@@ -261,6 +261,7 @@
 <xsl:variable name="css-tleft"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tleft'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tright"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tright'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tt"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tt'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-header"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'header'"/></xsl:call-template></xsl:variable>
 
 <!-- RFC-Editor site linking -->
 
@@ -1262,7 +1263,7 @@
       <xsl:call-template name="collectRightHeaderColumn" />
     </xsl:variable>
     <!-- insert the collected information -->
-    <table class="header" id="{$anchor-prefix}.headerblock">
+    <table class="{$css-header}" id="{$anchor-prefix}.headerblock">
       <xsl:choose>
         <xsl:when test="function-available('exslt:node-set')">
           <xsl:call-template name="emitheader">
@@ -3835,8 +3836,8 @@
       <xsl:variable name="pos" select="position()" />
       <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1">
         <tr>
-          <td class="left"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
-          <td class="right"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
+          <td class="{css-tleft}"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
+          <td class="{$css-tright}"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
         </tr>
       </xsl:if>
     </xsl:for-each>
