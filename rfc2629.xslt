@@ -264,6 +264,8 @@
 <xsl:variable name="css-header"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'header'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-meta"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'meta'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-update"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'update'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-feedback"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'feedback'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-fbbutton"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'fbbutton'"/></xsl:call-template></xsl:variable>
 
 <!-- RFC-Editor site linking -->
 
@@ -4435,7 +4437,7 @@ var buttonsAdded = false;
 
 function initFeedback() {
   var fb = document.createElement("div");
-  fb.className = "feedback <xsl:value-of select="$css-noprint"/>";
+  fb.className = "<xsl:value-of select="$css-feedback"/><xsl:text> </xsl:text><xsl:value-of select="$css-noprint"/>";
   fb.setAttribute("onclick", "feedback();");
   fb.appendChild(document.createTextNode("feedback"));
 
@@ -4501,7 +4503,7 @@ function toggleButton(node) {
     uri = uri.replace("{ref}", encodeURIComponent(ref));
 
     var button = document.createElement("a");
-    button.className = "fbbutton <xsl:value-of select="$css-noprint"/>";
+    button.className = "<xsl:value-of select="$css-fbbutton"/><xsl:text> </xsl:text><xsl:value-of select="$css-noprint"/>";
     button.setAttribute("href", uri);
     button.appendChild(document.createTextNode("send feedback"));
     node.appendChild(button);
@@ -4510,7 +4512,7 @@ function toggleButton(node) {
     var buttons = node.getElementsByTagName("a");
     for (var i = 0; i &lt; buttons.length; i++) {
       var b = buttons.item(i);
-      if (b.className == "fbbutton <xsl:value-of select="$css-noprint"/>") {
+      if (b.className == "<xsl:value-of select="$css-fbbutton"/> <xsl:value-of select="$css-noprint"/>") {
         node.removeChild(b);
       }
     }
