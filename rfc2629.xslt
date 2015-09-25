@@ -1298,7 +1298,7 @@
           </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
-          <p class="filename"><xsl:value-of select="$docname"/></p>
+          <div class="filename"><xsl:value-of select="$docname"/></div>
         </xsl:otherwise>
       </xsl:choose>
       
@@ -8074,11 +8074,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.742 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.742 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.743 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.743 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/09/24 15:44:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/09/24 15:44:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/09/25 12:36:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/09/25 12:36:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
