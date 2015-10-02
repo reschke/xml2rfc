@@ -256,11 +256,18 @@
 
 <!-- WORK IN PROGRESS; ONLY A FEW CLASSES SUPPORTED FOR NOW -->
 <xsl:variable name="css-error"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'error'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-fbbutton"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'fbbutton'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-feedback"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'feedback'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-header"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'header'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-docstatus"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'docstatus'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-noprint"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'noprint'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-note"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'note'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tcenter"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tcenter'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tleft"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tleft'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tright"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tright'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tt"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tt'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-publishedasrfc"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'publishedasrfc'"/></xsl:call-template></xsl:variable>
+
 
 <!-- RFC-Editor site linking -->
 
@@ -1266,7 +1273,7 @@
       <xsl:call-template name="collectRightHeaderColumn" />
     </xsl:variable>
     <!-- insert the collected information -->
-    <table class="header" id="{$anchor-prefix}.headerblock">
+    <table class="{$css-header}" id="{$anchor-prefix}.headerblock">
       <xsl:choose>
         <xsl:when test="function-available('exslt:node-set')">
           <xsl:call-template name="emitheader">
@@ -1362,7 +1369,7 @@
 
   <!-- insert notice about update -->
   <xsl:if test="$published-as-rfc">
-    <p class="publishedasrfc">
+    <p class="{$css-publishedasrfc}">
       <b>Note:</b> a later version of this document has been published as <a href="{$published-as-rfc/@href}"><xsl:value-of select="$published-as-rfc/@title"/></a>.
     </p>
   </xsl:if>
@@ -2813,7 +2820,7 @@
   </xsl:variable>
 
   <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!='' and @anchor='rfc.status'">
-    <div id="{$anchor-prefix}.meta" class="docstatus"></div>
+    <div id="{$anchor-prefix}.meta" class="{$css-docstatus}"></div>
   </xsl:if>
   <div>
     <xsl:if test="@anchor">
@@ -3852,8 +3859,8 @@
       <xsl:variable name="pos" select="position()" />
       <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1">
         <tr>
-          <td class="left"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
-          <td class="right"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
+          <td class="{$css-tleft}"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
+          <td class="{$css-tright}"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
         </tr>
       </xsl:if>
     </xsl:for-each>
@@ -4449,7 +4456,7 @@ var buttonsAdded = false;
 
 function initFeedback() {
   var fb = document.createElement("div");
-  fb.className = "feedback <xsl:value-of select="$css-noprint"/>";
+  fb.className = "<xsl:value-of select="$css-feedback"/><xsl:text> </xsl:text><xsl:value-of select="$css-noprint"/>";
   fb.setAttribute("onclick", "feedback();");
   fb.appendChild(document.createTextNode("feedback"));
 
@@ -4457,7 +4464,6 @@ function initFeedback() {
 }
 
 function feedback() {
-  toggleButtonsToElementsByName("h1");
   toggleButtonsToElementsByName("h2");
   toggleButtonsToElementsByName("h3");
   toggleButtonsToElementsByName("h4");
@@ -4515,7 +4521,7 @@ function toggleButton(node) {
     uri = uri.replace("{ref}", encodeURIComponent(ref));
 
     var button = document.createElement("a");
-    button.className = "fbbutton <xsl:value-of select="$css-noprint"/>";
+    button.className = "<xsl:value-of select="$css-fbbutton"/><xsl:text> </xsl:text><xsl:value-of select="$css-noprint"/>";
     button.setAttribute("href", uri);
     button.appendChild(document.createTextNode("send feedback"));
     node.appendChild(button);
@@ -4524,7 +4530,7 @@ function toggleButton(node) {
     var buttons = node.getElementsByTagName("a");
     for (var i = 0; i &lt; buttons.length; i++) {
       var b = buttons.item(i);
-      if (b.className == "fbbutton <xsl:value-of select="$css-noprint"/>") {
+      if (b.className == "<xsl:value-of select="$css-fbbutton"/><xsl:text> </xsl:text><xsl:value-of select="$css-noprint"/>") {
         node.removeChild(b);
       }
     }
@@ -6799,7 +6805,7 @@ dd, li, p {
     <xsl:call-template name="get-paragraph-number" />
   </xsl:variable>
 
-  <div class="note">
+  <div class="{$css-note}">
     <xsl:call-template name="copy-anchor"/>
     <div>
       <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins)">
