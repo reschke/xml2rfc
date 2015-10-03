@@ -2032,8 +2032,21 @@
   <xsl:param name="bib"/>
   <xsl:param name="ref"/>
 
+  <xsl:variable name="bibtarget">
+    <xsl:choose>
+      <xsl:when test="starts-with($bib/@target,'http://www.rfc-editor.org/info/rfc') or starts-with($bib/@target,'https://www.rfc-editor.org/info/rfc')">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">Ignoring @target <xsl:value-of select="$bib/@target"/> in link calculation</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$bib/@target"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  
   <xsl:choose>
-    <xsl:when test="$bib/@target">
+    <xsl:when test="$bibtarget!=''">
       <xsl:if test="$ref and $ref/@x:sec">
         <xsl:choose>
           <xsl:when test="$ref/@x:rel">
@@ -8099,11 +8112,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.746 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.746 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.747 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.747 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/10/03 14:37:31 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/10/03 14:37:31 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/10/03 16:52:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/10/03 16:52:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
