@@ -4574,7 +4574,8 @@ function toggleButton(node) {
 function getMeta(rfcno, container) {
 
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", "http://tools.ietf.org/draft/rfc" + rfcno + "/state.xml", true);
+  var protocol = document.baseURI.toLowerCase().startsWith("https:") ? "https:" : "http:";
+  xhr.open("GET", protocol + "//tools.ietf.org/draft/rfc" + rfcno + "/state.xml", true);
   xhr.onload = function (e) {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
@@ -8112,11 +8113,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.747 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.747 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.748 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.748 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/10/03 16:52:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/10/03 16:52:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/10/04 14:22:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/10/04 14:22:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
