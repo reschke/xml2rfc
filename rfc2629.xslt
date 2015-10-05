@@ -4724,7 +4724,7 @@ br.p {
 cite {
   font-style: normal;
 }<xsl:if test="//x:note|//aside">
-div.note {
+div.<xsl:value-of select="$css-note"/> {
   margin-left: 2em;
 }</xsl:if>
 dl {
@@ -4926,7 +4926,7 @@ caption {
   margin-top: .5em;
 }
 </xsl:if>
-table.header {
+table.<xsl:value-of select="$css-header"/> {
   border-spacing: 1px;
   width: 95%;
   font-size: 11pt;
@@ -4939,11 +4939,11 @@ td.topnowrap {
   vertical-align: top;
   white-space: nowrap;
 }
-table.header td {
+table.<xsl:value-of select="$css-header"/> td {
   background-color: gray;
   width: 50%;
 }<xsl:if test="/rfc/@obsoletes | /rfc/@updates">
-table.header a {
+table.<xsl:value-of select="$css-header"/> a {
   color: white;
 }</xsl:if>
 td.reference {
@@ -5138,7 +5138,7 @@ thead th {
   padding: 5px 5px;
   color: red;
   background: black;
-}</xsl:if><xsl:if test="/rfc/x:feedback">.feedback {
+}</xsl:if><xsl:if test="/rfc/x:feedback">.<xsl:value-of select="$css-feedback"/> {
   position: fixed;
   bottom: 1%;
   right: 1%;
@@ -5151,7 +5151,7 @@ thead th {
   -moz-user-select: none;
   -ms-user-select: none;
 }
-.fbbutton {
+.<xsl:value-of select="$css-fbbutton"/> {
   margin-left: 1em;
   color: #303030;
   font-size: small;
@@ -5164,14 +5164,14 @@ thead th {
 dd, li, p {
   text-align: justify;
 }</xsl:if><xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!=''">
-.docstatus {
+.<xsl:value-of select="$css-docstatus"/> {
   border: 1px solid black;
   display: none;
   float: right;
   margin: 2em;
   padding: 1em;
 }</xsl:if><xsl:if test="$published-as-rfc">
-.publishedasrfc {
+.<xsl:value-of select="$css-publishedasrfc"/> {
   background-color: yellow;
   color: green;
   font-size: 14pt;
@@ -5194,11 +5194,11 @@ dd, li, p {
     text-decoration: none;
   }
 
-  table.header {
+  table.<xsl:value-of select="$css-header"/> {
     width: 90%;
   }
 
-  td.header {
+  td.<xsl:value-of select="$css-header"/> {
     width: 50%;
     color: black;
     background-color: white;
@@ -8113,11 +8113,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.749 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.749 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.750 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.750 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/10/04 17:16:42 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/10/04 17:16:42 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/10/05 09:10:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/10/05 09:10:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
