@@ -260,9 +260,11 @@
 <xsl:variable name="css-fbbutton"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'fbbutton'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-feedback"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'feedback'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-header"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'header'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-left"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'left'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-noprint"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'noprint'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-note"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'note'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-publishedasrfc"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'publishedasrfc'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-right"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'right'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tcenter"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tcenter'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tleft"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tleft'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tright"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tright'"/></xsl:call-template></xsl:variable>
@@ -3890,8 +3892,8 @@
       <xsl:variable name="pos" select="position()" />
       <xsl:if test="$pos &lt; count($lc/myns:item) + 1 or $pos &lt; count($rc/myns:item) + 1">
         <tr>
-          <td class="left"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
-          <td class="right"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
+          <td class="{$css-left}"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$lc/myns:item[$pos]/node()" /></xsl:call-template></td>
+          <td class="{$css-right}"><xsl:call-template name="copynodes"><xsl:with-param name="nodes" select="$rc/myns:item[$pos]/node()" /></xsl:call-template></td>
         </tr>
       </xsl:if>
     </xsl:for-each>
@@ -5039,10 +5041,10 @@ blockquote > * .bcp14 {
 .fn {
   font-weight: bold;
 }
-.left {
+.<xsl:value-of select="$css-left"/> {
   text-align: left;
 }
-.right {
+.<xsl:value-of select="$css-right"/> {
   text-align: right;
 }
 .warning {
@@ -7842,7 +7844,7 @@ dd, li, p {
                     <xsl:attribute name="class"><xsl:value-of select="$col/@align"/></xsl:attribute>
                   </xsl:when>
                   <xsl:when test="$col/@align='left' or not($col/@align)">
-                    <xsl:attribute name="class">left</xsl:attribute>
+                    <xsl:attribute name="class"><xsl:value-of select="$css-left"/></xsl:attribute>
                   </xsl:when>
                   <xsl:otherwise>
                     <xsl:call-template name="warning">
@@ -8113,11 +8115,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.751 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.751 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.752 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.752 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/10/05 10:24:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/10/05 10:24:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2015/10/05 16:24:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/10/05 16:24:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
