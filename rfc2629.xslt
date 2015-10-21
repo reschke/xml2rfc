@@ -264,6 +264,7 @@
 <xsl:variable name="css-noprint"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'noprint'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-note"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'note'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-publishedasrfc"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'publishedasrfc'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-reference"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'reference'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-right"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'right'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tcenter"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tcenter'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-tleft"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'tleft'"/></xsl:call-template></xsl:variable>
@@ -2443,7 +2444,7 @@
     <xsl:copy-of select="$title"/>
   </xsl:element>
 
-  <dl class="reference">
+  <dl class="{$css-reference}">
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
         <xsl:apply-templates>
@@ -4752,10 +4753,10 @@ ul.empty li {
 dl p {
   margin-left: 0em;
 }
-dl.reference > dt {
+dl.<xsl:value-of select="$css-reference"/> > dt {
   font-weight: bold;
 }
-dl.reference > dd {
+dl.<xsl:value-of select="$css-reference"/> > dd {
   margin-left: 6em;
 }
 h1 {
