@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2006-2015, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -3037,6 +3037,9 @@
   <xsl:param name="default"/>
   <xsl:choose>
     <xsl:when test="@sectionFormat">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">@sectionFormat is deprecated, use @x:fmt instead</xsl:with-param>
+      </xsl:call-template>
       <xsl:if test="@x:fmt">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg">both @x:fmt and @sectionFormat specified</xsl:with-param>
@@ -3077,6 +3080,9 @@
 <xsl:template name="get-section-xref-section">
   <xsl:choose>
     <xsl:when test="@section">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">@section is deprecated, use @x:sec instead</xsl:with-param>
+      </xsl:call-template>
       <xsl:if test="@x:sec">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg">both @x:sec and @section specified</xsl:with-param>
@@ -8058,11 +8064,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.756 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.756 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.757 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.757 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2015/12/31 17:59:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2015/12/31 17:59:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/01/24 11:59:36 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/01/24 11:59:36 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
