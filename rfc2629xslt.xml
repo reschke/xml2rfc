@@ -29,7 +29,7 @@
   		</address>
   	</author>
      
-    <date year="2015"/>
+    <date/>
 
     <keyword>RFC2629</keyword>
     <keyword>xml2rfc</keyword>
@@ -1434,24 +1434,6 @@ Content-Length: &lt;x:length-of target="req"/>
   See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.ul"/>.
 </t>
 </section>
-
-<section title="Extensions to xref Element" anchor="v3.xref">
-<section title="relative attribute" anchor="v3.xref.relative">
-<t>
-  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.xref.attribute.relative"/>.
-</t>
-</section>
-<section title="section attribute" anchor="v3.xref.section">
-<t>
-  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.xref.attribute.section"/>.
-</t>
-</section>
-<section title="sectionFormat attribute" anchor="v3.xref.sectionFormat">
-<t>
-  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.xref.attribute.sectionFormat"/>.
-</t>
-</section>
-</section>
 </section>
 
 <section title="Utilities" anchor="utilities">
@@ -2411,10 +2393,7 @@ attlist.xref &amp;=
   attribute x:fmt  { "()" | "," | "of" | "number" | "sec" |
                      "none" }?,
   attribute x:rel  { ATEXT }?,
-  attribute x:sec  { ATEXT }?,
-  attribute relative { ATEXT }?,      # <em><xref target="v3.xref.relative"/></em>
-  attribute section { ATEXT }?,       # <em><xref target="v3.xref.section"/></em>
-  attribute sectionFormat { ATEXT }?  # <em><xref target="v3.xref.sectionFormat"/></em>
+  attribute x:sec  { ATEXT }?
 
 <em anchor="v3_aside"><iref item="aside V3 Extension Element"/><iref item="V3 Extension Elements" subitem="aside"
 /># Side Note (see <xref target="v3.aside"/>)</em>

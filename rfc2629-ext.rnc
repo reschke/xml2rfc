@@ -311,10 +311,7 @@ attlist.xref &=
   attribute x:fmt  { "()" | "," | "of" | "number" | "sec" |
                      "none" }?,
   attribute x:rel  { ATEXT }?,
-  attribute x:sec  { ATEXT }?,
-  attribute relative { ATEXT }?,      # Section 12.21.1
-  attribute section { ATEXT }?,       # Section 12.21.2
-  attribute sectionFormat { ATEXT }?  # Section 12.21.3
+  attribute x:sec  { ATEXT }?
 
 # Side Note (see Section 12.1)
 v3_aside =
