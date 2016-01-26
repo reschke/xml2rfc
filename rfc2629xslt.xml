@@ -2058,12 +2058,12 @@ ocasionally save.
 
 <reference anchor="XML2RFCV3">
   <front>
-    <title>The 'XML2RFC' version 3 Vocabulary</title>
+    <title>The "xml2rfc" version 3 Vocabulary</title>
     <author initials="P." surname="Hoffman" fullname="Paul Hoffman"/>
-    <date month="September" year="2015"/>
+    <date month="January" year="2016"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-hoffman-xml2rfc-23"/>
-  <x:source href="/projects/ietf/xml2rfc/vocabulary/v3/23/draft-hoffman-xml2rfc-latest.xml"/>
+  <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfc-02"/>
+  <x:source href="/projects/ietf/xml2rfc/vocabulary/v3/iab02/draft-iab-xml2rfc-latest.xml"/>
 </reference>
 
 </references>
