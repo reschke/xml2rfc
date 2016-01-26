@@ -2050,10 +2050,10 @@ ocasionally save.
   <front>
     <title>The 'XML2RFC' version 2 Vocabulary</title>
     <author initials="J. F." surname="Reschke" fullname="Julian F. Reschke"/>
-    <date year="2014" month="October" day="23"/>
+    <date year="2015" month="September" day="16"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-reschke-xml2rfc-13"/>
-  <x:source href="draft-reschke-xml2rfc-13.xml"/>
+  <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfcv2-02"/>
+  <x:source href="draft-iab-xml2rfcv2-02.xml"/>
 </reference>
 
 <reference anchor="XML2RFCV3">
