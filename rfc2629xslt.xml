@@ -2060,10 +2060,10 @@ ocasionally save.
   <front>
     <title>The 'XML2RFC' version 3 Vocabulary</title>
     <author initials="P." surname="Hoffman" fullname="Paul Hoffman"/>
-    <date month="April" year="2015"/>
+    <date month="September" year="2015"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-hoffman-xml2rfc-17"/>
-  <x:source href="/projects/ietf/xml2rfc/vocabulary/v3/17/draft-hoffman-xml2rfc-latest.xml"/>
+  <seriesInfo name="Internet-Draft" value="draft-hoffman-xml2rfc-23"/>
+  <x:source href="/projects/ietf/xml2rfc/vocabulary/v3/23/draft-hoffman-xml2rfc-latest.xml"/>
 </reference>
 
 </references>
