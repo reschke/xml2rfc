@@ -856,7 +856,7 @@ mkepub.sh rfc2616.xml
   <iref item="blockquote Extension Element" primary="true"/>
   <x:anchor-alias value="blockquote"/>
   <t>
-    This element is like the &lt;blockquote&gt; element defined in <xref target="HTML" section="9.2.2" relative="/struct/text.html#h-9.2.2"/> 
+    This element is like the &lt;blockquote&gt; element defined in <xref target="HTML" x:sec="9.2.2" x:rel="/struct/text.html#h-9.2.2"/> 
     (note this is a block-level element!). It should contain one or more
     &lt;t> child elements.
   </t>
@@ -892,7 +892,7 @@ mkepub.sh rfc2616.xml
   <iref item="dfn Extension Element" primary="true"/>
   <x:anchor-alias value="dfn"/>
   <t>
-    This element is like the &lt;dfn&gt; element defined in <xref target="HTML" section="9.2.1" relative="/struct/text.html#h-9.2.1"/>.
+    This element is like the &lt;dfn&gt; element defined in <xref target="HTML" x:sec="9.2.1" x:rel="/struct/text.html#h-9.2.1"/>.
   </t>
 </section>
 
@@ -1047,7 +1047,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="q Extension Element" primary="true"/>
   <x:anchor-alias value="q"/>
   <t>
-    This element is like the &lt;q&gt; element defined in <xref target="HTML" section="9.2.2" relative="/struct/text.html#h-9.2.2"/>.
+    This element is like the &lt;q&gt; element defined in <xref target="HTML" x:sec="9.2.2" x:rel="/struct/text.html#h-9.2.2"/>.
   </t>
 </section>
 
@@ -1124,7 +1124,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="sup Extension Element" primary="true"/>
   <x:anchor-alias value="sup"/>
   <t>
-    This element is like the &lt;sup&gt; element in <xref target="HTML" section="9.2.3" relative="/struct/text.html#h-9.2.3"/>.
+    This element is like the &lt;sup&gt; element in <xref target="HTML" x:sec="9.2.3" x:rel="/struct/text.html#h-9.2.3"/>.
   </t>
   <t>
     Note: the down conversion to RFC2629 format replaces
@@ -3288,7 +3288,7 @@ rdf_content =
 </section>
   <section title="License" anchor="license">
   <t>
-Copyright (c) 2006-2014, Julian Reschke (julian.reschke@greenbytes.de)
+Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
   </t>
   <t>
 All rights reserved.
