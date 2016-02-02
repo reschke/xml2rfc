@@ -3,7 +3,7 @@
     available from <ftp://ftp.isi.edu/in-notes/rfc-index.xml> and
     "tr.rdf", available from <http://www.w3.org/2002/01/tr-automation/tr.rdf>)
 
-    Copyright (c) 2006-2013, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -225,7 +225,7 @@
     <xsl:when test="$stat/ietfdoc/state[phase='IESG' or phase='RFC-Editor']">
       <xsl:value-of select="concat('[',$stat/ietfdoc/state/phase/@ts,' ',$stat/ietfdoc/state/phase,'] ok')"/>
     </xsl:when>
-    <xsl:when test="$stat/ietfdoc[state/phase='ID-Exists' and info/validity='Active']">
+    <xsl:when test="$stat/ietfdoc[(state/phase='ID-Exists' or not(state/phase/*)) and info/validity='Active']">
       <xsl:value-of select="concat('[',$stat/ietfdoc/state/phase/@ts,' ',$stat/ietfdoc/state/phase,'] ok')"/>
     </xsl:when>
     <xsl:when test="$stat/ietfdoc[info/validity!='Active']">
