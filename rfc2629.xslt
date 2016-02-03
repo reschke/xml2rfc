@@ -4681,6 +4681,23 @@ function appendRfcLinks(parent, text) {
 }
 </script>
 </xsl:if>
+<script type="application/javascript">
+window.addEventListener('DOMContentLoaded', function () {
+  if (window.location.hash.length >= 1) {
+    var fragid = window.location.hash.substr(1);
+    if (fragid) {
+      if (! document.getElementById(fragid)) {
+        var prefix = "<xsl:value-of select="$anchor-prefix"/>";
+        if (fragid.indexOf("section-") == 0) {
+          window.location.hash = prefix + ".section." + fragid.substring(8);
+        } else if (fragid.indexOf("appendix-") == 0) {
+          window.location.hash = prefix + ".section." + fragid.substring(9);
+        }
+      }
+    }  
+  }
+});
+</script>
 </xsl:template>
 
 <!-- insert CSS style info -->
@@ -8064,11 +8081,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.757 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.757 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.758 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.758 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/01/24 11:59:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/01/24 11:59:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/03 19:24:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/03 19:24:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
