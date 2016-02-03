@@ -47,7 +47,7 @@
 <section title="Introduction" anchor="introduction">
 <t>
   This document describes a set of XSLT transformations that can be used to 
-  transform "XML2RFC" XML (<xref target="XML2RFCV2"/>, updating <xref target="RFC2629"/>) to various
+  transform "XML2RFC" XML (<xref target="RFC7749"/>, updating <xref target="RFC2629"/>) to various
   output formats, such as HTML and PDF. The main topics are  
   <list style="symbols">
     <t>compliance to the xml2rfc XML element set (<xref target="supported.elements"/>),</t>
@@ -2046,14 +2046,14 @@ ocasionally save.
   </annotation>
 </reference>
 
-<reference anchor="XML2RFCV2">
+<reference anchor="RFC7749">
   <front>
-    <title>The 'XML2RFC' version 2 Vocabulary</title>
+    <title>The "xml2rfc" Version 2 Vocabulary</title>
     <author initials="J. F." surname="Reschke" fullname="Julian F. Reschke"/>
-    <date year="2015" month="September" day="16"/>
+    <date year="2016" month="February"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfcv2-02"/>
-  <x:source href="draft-iab-xml2rfcv2-02.xml"/>
+  <seriesInfo name="RFC" value="7749"/>
+  <x:source href="rfc7749.xml" basename="rfc7749"/>
 </reference>
 
 <reference anchor="XML2RFCV3">
