@@ -8104,11 +8104,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.760 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.760 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.761 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.761 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/05 12:54:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/05 12:54:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/05 15:26:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/05 15:26:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8574,6 +8574,13 @@ prev: <xsl:value-of select="$prev"/>
                     <xsl:choose>
                       <xsl:when test="$attrname='comments'"/>
                       <xsl:when test="$attrname='compact'"/>
+                      <xsl:when test="$attrname='docmapping'">
+                        <xsl:if test="$value!='yes'">
+                          <xsl:call-template name="warning">
+                            <xsl:with-param name="msg">the rfc docmapping pseudo-attribute with values other than 'yes' in not supported by this processor.</xsl:with-param>
+                          </xsl:call-template>
+                        </xsl:if>
+                      </xsl:when>
                       <xsl:when test="$attrname='editing'"/>
                       <xsl:when test="$attrname='footer'"/>
                       <xsl:when test="$attrname='header'"/>

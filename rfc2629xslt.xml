@@ -144,6 +144,12 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c/>
 
   <c>rfc</c>
+  <c>docmapping<iref item="docmapping PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="docmapping"/></c>
+  <c/>
+  <c>"yes"</c>
+  <c>This is the default for rfc2629.xslt anyway, and it can not be changed</c>
+
+  <c>rfc</c>
   <c>editing<iref item="editing PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="editing"/></c>
   <c>xml2rfc-editing<iref item="xml2rfc-editing parameter"/> <iref item="Parameters" subitem="xml2rfc-editing"/></c>
   <c>"no"</c>
