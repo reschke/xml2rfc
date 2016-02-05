@@ -1,7 +1,7 @@
 <!-- 
     XSLT transformation from RFC2629 XML format to XSL-FO
       
-    Copyright (c) 2006-2015, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -138,7 +138,7 @@
 
 <xsl:template name="add-artwork-attr">
   <xsl:choose>
-    <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='application/xml-dtd' or @type='application/relax-ng-compact-syntax'">
+    <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='abnf7230' or @type='application/xml-dtd' or @type='application/relax-ng-compact-syntax'">
       <!-- just display inline -->
     </xsl:when>
 
