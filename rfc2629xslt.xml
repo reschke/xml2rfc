@@ -2906,13 +2906,13 @@ rdf_content =
 
   &lt;!-- <em>allow later RFC2616 reference using "&amp;rfc2616;"</em> -->
   &lt;!-- <em>the data will be fetched from xml.resource.org</em> -->
-  &lt;!ENTITY rfc2616 PUBLIC
+  &lt;!ENTITY rfc2616 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">
 
   &lt;!-- <em>allow a custom reference using "&amp;mydraft;"</em> -->
   &lt;!-- <em>the data will be fetched from the same location as the 
        source file</em> -->
-  &lt;!ENTITY mydraft PUBLIC "reference.mydraft.xml">
+  &lt;!ENTITY mydraft SYSTEM "reference.mydraft.xml">
 ]>
 </artwork>
 <postamble>
