@@ -398,7 +398,7 @@
 </xsl:template>
 
 <!-- processed in a later stage -->
-<xsl:template match="iref[not(ancestor::t) and not(parent::section)]">
+<xsl:template match="iref[not(ancestor::t or ancestor::li) and not(parent::section)]">
   <fo:block>
     <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix" />.iref.<xsl:number level="any"/></xsl:attribute>
     <xsl:choose>
@@ -420,7 +420,7 @@
   <!-- processed on section level -->
 </xsl:template>
 
-<xsl:template match="iref[ancestor::t and not(parent::section)]">
+<xsl:template match="iref[(ancestor::t or ancestor::li) and not(parent::section)]">
   <fo:inline>
     <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix" />.iref.<xsl:number level="any"/></xsl:attribute>
     <xsl:choose>
