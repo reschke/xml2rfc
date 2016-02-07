@@ -609,6 +609,9 @@
 
 <xsl:template match="ul | list[@style='symbols' or (not(@style) and ancestor::list[@style='symbols'])]" priority="1">
   <fo:list-block provisional-distance-between-starts="1.5em">
+    <xsl:if test="self::ul and parent::section|parent::note|parent::abstract">
+      <xsl:attribute name="start-indent">2em</xsl:attribute>
+    </xsl:if>
     <xsl:apply-templates />
   </fo:list-block>
 </xsl:template>
