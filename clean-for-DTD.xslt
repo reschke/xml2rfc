@@ -1090,6 +1090,22 @@
   </t>
 </xsl:template>
 
+<!-- date formats -->
+<xsl:template match="/rfc/front/date/@month" mode="cleanup">
+  <xsl:attribute name="month">
+    <xsl:choose>
+      <xsl:when test="string(number(.))!='NaN' and number(.)&gt;0 and number(.)&lt;13">
+        <xsl:call-template name="get-month-as-name">
+          <xsl:with-param name="month" select="."/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:attribute>
+</xsl:template>
+
 <!-- Display names for references -->
 <xsl:template match="displayreference" mode="cleanup"/>
 <xsl:template match="reference/@anchor[.=/rfc/back/displayreference/@target]" mode="cleanup">

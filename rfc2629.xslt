@@ -3933,6 +3933,7 @@
   <xsl:param name="in-prose"/>
   <xsl:choose>
     <xsl:when test="number($xml2rfc-ext-pub-day) >= 1">
+      <!-- have day of month? -->
       <xsl:if test="$in-prose">
         <xsl:text>on </xsl:text>
       </xsl:if>
@@ -3946,19 +3947,26 @@
       <xsl:if test="$in-prose">
         <xsl:text>in </xsl:text>
       </xsl:if>
+      <xsl:variable name="month">
+        <xsl:call-template name="get-month-as-num">
+          <xsl:with-param name="month" select="$xml2rfc-ext-pub-month"/>
+        </xsl:call-template>
+      </xsl:variable>
       <xsl:choose>
-        <xsl:when test="$xml2rfc-ext-pub-month='January'">July <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-        <xsl:when test="$xml2rfc-ext-pub-month='February'">August <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-        <xsl:when test="$xml2rfc-ext-pub-month='March'">September <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-        <xsl:when test="$xml2rfc-ext-pub-month='April'">October <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-        <xsl:when test="$xml2rfc-ext-pub-month='May'">November <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-        <xsl:when test="$xml2rfc-ext-pub-month='June'">December <xsl:value-of select="$xml2rfc-ext-pub-year" /></xsl:when>
-        <xsl:when test="$xml2rfc-ext-pub-month='July'">January <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
-        <xsl:when test="$xml2rfc-ext-pub-month='August'">February <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
-        <xsl:when test="$xml2rfc-ext-pub-month='September'">March <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
-        <xsl:when test="$xml2rfc-ext-pub-month='October'">April <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
-        <xsl:when test="$xml2rfc-ext-pub-month='November'">May <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
-        <xsl:when test="$xml2rfc-ext-pub-month='December'">June <xsl:value-of select="$xml2rfc-ext-pub-year + 1" /></xsl:when>
+        <xsl:when test="string(number($month))!='NaN' and number($month) &gt; 0 and number($month) &lt; 7">
+          <xsl:call-template name="get-month-as-name">
+            <xsl:with-param name="month" select="number($month) + 6"/>
+          </xsl:call-template>
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="$xml2rfc-ext-pub-year" />
+        </xsl:when>
+        <xsl:when test="string(number($month))!='NaN' and number($month) &gt; 6 and number($month) &lt; 13">
+          <xsl:call-template name="get-month-as-name">
+            <xsl:with-param name="month" select="number($month) - 6"/>
+          </xsl:call-template>
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="$xml2rfc-ext-pub-year + 1" />
+        </xsl:when>
         <xsl:otherwise>WRONG SYNTAX FOR MONTH</xsl:otherwise>
       </xsl:choose>
     </xsl:otherwise>
@@ -8104,11 +8112,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.761 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.761 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.762 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.762 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/05 15:26:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/05 15:26:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/11 10:24:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/11 10:24:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8841,7 +8849,17 @@ prev: <xsl:value-of select="$prev"/>
 <xsl:param name="xml2rfc-ext-pub-month">
   <xsl:choose>
     <xsl:when test="/rfc/front/date/@month and /rfc/front/date/@month!=''">
-      <xsl:value-of select="/rfc/front/date/@month"/>
+      <xsl:variable name="m" select="/rfc/front/date/@month"/>
+      <xsl:choose>
+        <xsl:when test="string(number($m))!='NaN' and number($m) &gt; 0 and number($m) &lt; 13">
+          <xsl:call-template name="get-month-as-name">
+            <xsl:with-param name="month" select="$m"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$m"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:when>
     <xsl:when test="$current-month!='' and $may-default-dates='yes'">
       <xsl:call-template name="get-month-as-name">
