@@ -742,7 +742,7 @@
 <xsl:variable name="published-as-rfc" select="/*/x:link[@rel='Alternate' and starts-with(@title,'RFC')]"/>
 
 
-<xsl:template match="text()[not(ancestor::artwork)]">
+<xsl:template match="text()[not(ancestor::artwork) and not(ancestor::sourcecode)]">
   <xsl:variable name="ws" select="'&#9;&#10;&#13;&#32;'"/>
   <xsl:variable name="starts-with-ws" select="'' = translate(substring(.,1,1),$ws,'')"/>
   <xsl:variable name="ends-with-ws" select="'' = translate(substring(.,string-length(.),1),$ws,'')"/>
@@ -817,7 +817,7 @@
   </xsl:if>
 </xsl:template>
 
-<xsl:template match="artwork">
+<xsl:template match="artwork|sourcecode">
   <xsl:if test="not(ancestor::ed:del) and $xml2rfc-ext-parse-xml-in-artwork='yes' and function-available('myns:parseXml')" use-when="function-available('myns:parseXml')">
     <xsl:if test="contains(.,'&lt;?xml')">
       <xsl:variable name="body" select="substring-after(substring-after(.,'&lt;?xml'),'?>')" />
@@ -8112,11 +8112,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.762 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.762 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.763 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.763 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/11 10:24:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/11 10:24:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/12 13:46:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/12 13:46:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

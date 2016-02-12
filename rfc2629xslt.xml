@@ -1367,6 +1367,14 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="sourcecode Element" anchor="v3.sourcecode">
+  <iref item="V3 Extension Elements" subitem="sourcecode" primary="true"/>
+  <iref item="sourcecode V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.sourcecode"/>.
+</t>
+</section>
+
 <section title="Extensions to reference Element" anchor="v3.reference">
   <iref item="V3 Extension Elements" subitem="reference" primary="true"/>
   <iref item="reference V3 Extension Element" primary="true"/>
@@ -2082,10 +2090,10 @@ ocasionally save.
   <front>
     <title>The "xml2rfc" version 3 Vocabulary</title>
     <author initials="P." surname="Hoffman" fullname="Paul Hoffman"/>
-    <date month="January" year="2016"/>
+    <date month="February" year="2016"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfc-02"/>
-  <x:source href="/projects/ietf/xml2rfc/vocabulary/v3/iab02/draft-iab-xml2rfc-latest.xml"/>
+  <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfc-03"/>
+  <x:source href="/projects/ietf/xml2rfc/vocabulary/v3/iab03/draft-iab-xml2rfc-latest.xml"/>
 </reference>
 
 </references>
@@ -2189,6 +2197,16 @@ include "rfc2629.rnc" {
       (TEXT
         | eref
         | xref)*
+    }
+
+  <em># Redefine &lt;figure> to allow more child elements</em>
+  figure =
+    element figure {
+      attlist.cref,
+      iref*,
+      preamble?,
+      ( artwork | <strong><x:ref>v3_sourcecode</x:ref></strong>),
+      postamble?
     }
 
   <em># Redefine &lt;front> to allow boilerplate</em>
@@ -2305,6 +2323,7 @@ include "rfc2629.rnc" {
        <strong>| <x:ref>v3_dl</x:ref></strong>
        <strong>| <x:ref>v3_name</x:ref></strong>
        <strong>| <x:ref>v3_ol</x:ref></strong>
+       <strong>| <x:ref>v3_sourcecode</x:ref></strong>
        <strong>| <x:ref>v3_ul</x:ref></strong>
        <strong>| <x:ref>x_anchor-alias</x:ref></strong>
        <strong>| <x:ref>x_blockquote</x:ref></strong>
@@ -2561,6 +2580,14 @@ attlist.xref &amp;=
   element refcontent {
     (TEXT
       | <x:ref>v3_em</x:ref>)*
+  }
+
+<em anchor="v3_sourcecode"><iref item="sourcecode V3 Extension Element"/><iref item="V3 Extension Elements" subitem="sourcecode"
+/># Source Code (see <xref target="v3.sourcecode"/>)</em>
+<x:ref>v3_sourcecode</x:ref> =
+  element sourcecode {
+    attribute anchor { xsd:ID }?,
+    TEXT
   }
 
 <em anchor="v3_strong"><iref item="strong V3 Extension Element"/><iref item="V3 Extension Elements" subitem="strong"

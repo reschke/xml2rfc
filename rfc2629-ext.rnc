@@ -87,6 +87,16 @@ include "rfc2629.rnc" {
         | xref)*
     }
 
+  # Redefine <figure> to allow more child elements
+  figure =
+    element figure {
+      attlist.cref,
+      iref*,
+      preamble?,
+      ( artwork | v3_sourcecode),
+      postamble?
+    }
+
   # Redefine <front> to allow boilerplate
   front =
     element front {
@@ -201,6 +211,7 @@ include "rfc2629.rnc" {
        | v3_dl
        | v3_name
        | v3_ol
+       | v3_sourcecode
        | v3_ul
        | x_anchor-alias
        | x_blockquote
@@ -278,7 +289,7 @@ attlist.preamble &=
 
 # Extend attribute set for <reference>
 attlist.reference &=
-  attribute quoteTitle { "false" | "true" }? # see Section 12.14.1
+  attribute quoteTitle { "false" | "true" }? # see Section 12.15.1
 
 # Extend attribute set for <rfc>
 attlist.rfc &=
@@ -290,8 +301,8 @@ attlist.x_section &=
   attribute anchor { xsd:ID }?,
   attribute title { ATEXT }?,
   attribute toc { "include" | "exclude" | "default" }?,
-  attribute numbered { "false" | "true" }?, # see Section 12.15.1
-  attribute removeInRFC { "false" | "true" }?, # see Section 12.15.2
+  attribute numbered { "false" | "true" }?, # see Section 12.16.1
+  attribute removeInRFC { "false" | "true" }?, # see Section 12.16.2
   attribute x:fixed-section-number { ATEXT }?
 
 # Allow anchor attribute on <spanx>
@@ -446,7 +457,14 @@ v3_refcontent =
       | v3_em)*
   }
 
-# Emphasized Text (see Section 12.16)
+# Source Code (see Section 12.14)
+v3_sourcecode =
+  element sourcecode {
+    attribute anchor { xsd:ID }?,
+    TEXT
+  }
+
+# Emphasized Text (see Section 12.17)
 v3_strong =
   element strong {
     (TEXT
@@ -455,19 +473,19 @@ v3_strong =
       | x_ref)*
   }
 
-# Subscript (see Section 12.17)
+# Subscript (see Section 12.18)
 v3_sub =
   element sub {
     (TEXT)*
   }
 
-# Superscript (see Section 12.18)
+# Superscript (see Section 12.19)
 v3_sup =
   element sup {
     (TEXT)*
   }
 
-# Monospaced Text (see Section 12.19)
+# Monospaced Text (see Section 12.20)
 v3_tt =
   element tt {
     (TEXT
@@ -476,7 +494,7 @@ v3_tt =
       | x_ref)*
   }
 
-# Unordered List (see Section 12.20)
+# Unordered List (see Section 12.21)
 v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,

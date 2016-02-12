@@ -1090,6 +1090,26 @@
   </t>
 </xsl:template>
 
+<!-- Source Code -->
+<xsl:template match="sourcecode" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="parent::figure">
+      <artwork>
+        <xsl:copy-of select="@anchor|@type"/>
+        <xsl:apply-templates mode="cleanup"/>
+      </artwork>
+    </xsl:when>
+    <xsl:otherwise>
+      <figure>
+        <artwork>
+          <xsl:copy-of select="@anchor|@type"/>
+          <xsl:apply-templates mode="cleanup"/>
+        </artwork>
+      </figure>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <!-- date formats -->
 <xsl:template match="/rfc/front/date/@month" mode="cleanup">
   <xsl:attribute name="month">

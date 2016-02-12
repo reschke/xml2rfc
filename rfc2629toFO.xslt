@@ -177,19 +177,24 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="artwork">
-  <xsl:if test="@x:isCodeComponent='yes'">
-    <fo:block font-family="monospace" color="gray">&lt;CODE BEGINS></fo:block>
-  </xsl:if>
-  <fo:block font-family="monospace" padding=".5em"
-    white-space-treatment="preserve" linefeed-treatment="preserve"
-    white-space-collapse="false" page-break-inside="avoid">
-    <xsl:call-template name="add-artwork-attr"/>
-    <xsl:apply-templates/>
+<xsl:template match="artwork|sourcecode">
+  <fo:block>
+    <xsl:if test="not(ancestor::figure)">
+      <xsl:attribute name="start-indent">2em</xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@x:isCodeComponent='yes'">
+      <fo:block font-family="monospace" color="gray">&lt;CODE BEGINS></fo:block>
+    </xsl:if>
+    <fo:block font-family="monospace" padding=".5em"
+      white-space-treatment="preserve" linefeed-treatment="preserve"
+      white-space-collapse="false" page-break-inside="avoid">
+      <xsl:call-template name="add-artwork-attr"/>
+      <xsl:apply-templates/>
+    </fo:block>
+    <xsl:if test="@x:isCodeComponent='yes'">
+      <fo:block font-family="monospace" color="gray">&lt;CODE ENDS></fo:block>
+    </xsl:if>
   </fo:block>
-  <xsl:if test="@x:isCodeComponent='yes'">
-    <fo:block font-family="monospace" color="gray">&lt;CODE ENDS></fo:block>
-  </xsl:if>
 </xsl:template>
 
 <xsl:template match="artwork[@src and starts-with(@type,'image/')]">
