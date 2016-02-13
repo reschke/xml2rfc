@@ -1,7 +1,7 @@
 <!--
     Strip rfc2629.xslt extensions, generating XML input for MTR's xml2rfc
 
-    Copyright (c) 2006-2015, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,10 @@
                 xmlns:ed="http://greenbytes.de/2002/rfcedit"
                 xmlns:grddl="http://www.w3.org/2003/g/data-view#"
                 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                xmlns:svg="http://www.w3.org/2000/svg"
                 xmlns:x="http://purl.org/net/xml2rfc/ext"
                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
-                exclude-result-prefixes="ed grddl rdf x xhtml"
+                exclude-result-prefixes="ed grddl rdf svg x xhtml"
 >
 
 <!-- re-use some of the default RFC2629.xslt rules -->
@@ -661,6 +662,14 @@
 <xsl:template name="insert-begin-code"/>
 <xsl:template name="insert-end-code"/>
 <xsl:template match="@x:is-code-component" mode="cleanup"/>
+
+<xsl:template match="artwork[svg:svg]" mode="cleanup">
+<xsl:call-template name="warning">
+  <xsl:with-param name="inline" select="'no'"/>
+  <xsl:with-param name="msg">SVG image removed.</xsl:with-param>
+</xsl:call-template>
+<artwork>(see SVG image in HTML version)</artwork>
+</xsl:template>
 
 <xsl:template match="artwork" mode="cleanup">
   <xsl:variable name="content2"><xsl:apply-templates select="."/></xsl:variable>

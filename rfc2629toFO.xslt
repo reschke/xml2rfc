@@ -37,9 +37,10 @@
     xmlns:msxsl="urn:schemas-microsoft-com:xslt"
     xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:svg="http://www.w3.org/2000/svg"
     xmlns:x="http://purl.org/net/xml2rfc/ext"
 
-    exclude-result-prefixes="ed exslt msxsl myns rdf x"
+    exclude-result-prefixes="ed exslt msxsl myns rdf svg x"
 >
 
 <xsl:import href="rfc2629.xslt" />
@@ -175,6 +176,12 @@
     </xsl:when>
     <xsl:otherwise/>
   </xsl:choose>
+</xsl:template>
+
+<xsl:template match="artwork[svg:svg]">
+  <fo:instream-foreign-object>
+    <xsl:copy-of select="svg:svg"/>
+  </fo:instream-foreign-object>
 </xsl:template>
 
 <xsl:template match="artwork|sourcecode">

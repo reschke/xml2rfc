@@ -40,10 +40,11 @@
                 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
                 xmlns:saxon="http://saxon.sf.net/"
                 xmlns:saxon-old="http://icl.com/saxon"
+                xmlns:svg="http://www.w3.org/2000/svg"
                 xmlns:x="http://purl.org/net/xml2rfc/ext"
                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
 
-                exclude-result-prefixes="date ed exslt msxsl myns rdf saxon saxon-old x xhtml"
+                exclude-result-prefixes="date ed exslt msxsl myns rdf saxon saxon-old svg x xhtml"
                 >
 
 <xsl:strip-space elements="abstract author back figure front list middle note postal reference references rfc section texttable"/>
@@ -815,6 +816,10 @@
   <xsl:if test="@x:is-code-component='yes'">
     <pre class="ccmarker ccb"><span>&lt;CODE ENDS></span></pre>
   </xsl:if>
+</xsl:template>
+
+<xsl:template match="artwork[svg:svg]">
+  <xsl:copy-of select="svg:svg"/>
 </xsl:template>
 
 <xsl:template match="artwork|sourcecode">
@@ -5047,7 +5052,14 @@ ul.ind li li {
   font-weight: normal;
   line-height: 150%;
   margin-left: 0em;
+}<xsl:if test="//svg:svg">
+@namespace svg url(http://www.w3.org/2000/svg);
+svg|svg {
+  margin-left: 3em;
 }
+svg {
+  margin-left: 3em;
+}</xsl:if>
 .avoidbreakinside {
   page-break-inside: avoid;
 }
@@ -8112,11 +8124,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.763 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.763 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.764 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.764 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/12 13:46:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/12 13:46:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/13 15:06:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/13 15:06:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

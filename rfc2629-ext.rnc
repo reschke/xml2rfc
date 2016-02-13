@@ -11,6 +11,9 @@ namespace grddl = "http://www.w3.org/2003/g/data-view#"
 # Define RDF namespace
 namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
+# Define SVG namespace
+namespace svg = "http://www.w3.org/2000/svg"
+
 # Include rfc2629bis RNC grammar
 include "rfc2629.rnc" {
   
@@ -32,24 +35,26 @@ include "rfc2629.rnc" {
   artwork =
     element artwork {
       attlist.artwork,
-      (TEXT
-        | eref 
-        | iref 
-        | spanx 
-        | xref
-        | v3_em
-        | v3_strong
-        | x_abnf-char-sequence
-        | x_bb
-        | x_bc
-        | x_bcp14
-        | x_bt
-        | x_highlight
-        | x_length-of
-        | x_parse-xml
-        | x_ref
-        | x_span
-        | x_x)* 
+      ( v3_svg |
+        (TEXT
+          | eref 
+          | iref 
+          | spanx 
+          | xref
+          | v3_em
+          | v3_strong
+          | x_abnf-char-sequence
+          | x_bb
+          | x_bc
+          | x_bcp14
+          | x_bt
+          | x_highlight
+          | x_length-of
+          | x_parse-xml
+          | x_ref
+          | x_span
+          | x_x)*
+        )
     }
 
   # Redefine <back> to allow boilerplate
@@ -485,7 +490,7 @@ v3_sup =
     (TEXT)*
   }
 
-# Monospaced Text (see Section 12.20)
+# Monospaced Text (see Section 12.21)
 v3_tt =
   element tt {
     (TEXT
@@ -494,7 +499,7 @@ v3_tt =
       | x_ref)*
   }
 
-# Unordered List (see Section 12.21)
+# Unordered List (see Section 12.22)
 v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,
@@ -502,6 +507,21 @@ v3_ul =
     v3_li+
   }
 
+# SVG (see Section 12.20)
+v3_svg =
+  element svg:svg {
+    (attribute * { text }
+        | text
+        | anySVGElement)*
+  }
+
+ anySVGElement =
+    element svg:* {
+       (attribute * { text }
+        | text
+        | anySVGElement)*
+    }
+      
 # Conversion to ABNF char sequence (see Section 11.1)
 x_abnf-char-sequence =
   element x:abnf-char-sequence {

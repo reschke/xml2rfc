@@ -1,7 +1,7 @@
 <!-- 
     Transform XSL 1.1 extensions to Apache FOP
 
-    Copyright (c) 2007-2010, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2007-2016, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -57,8 +57,8 @@
 
 <!-- remove third-party extensions -->
 
-<xsl:template match="*[not(ancestor::fo:declarations) and namespace-uri()!='http://www.w3.org/1999/XSL/Format' and namespace-uri()!='http://xml.apache.org/fop/extensions']" />
-<xsl:template match="@*[not(ancestor::fo:declarations) and namespace-uri()!='' and namespace-uri()!='http://www.w3.org/1999/XSL/Format' and namespace-uri()!='http://xml.apache.org/fop/extensions']" />
+<xsl:template match="*[not(ancestor::fo:declarations) and namespace-uri()!='http://www.w3.org/1999/XSL/Format' and namespace-uri()!='http://www.w3.org/2000/svg' and namespace-uri()!='http://xml.apache.org/fop/extensions']" />
+<xsl:template match="@*[not(ancestor::fo:declarations) and namespace-uri()!='' and namespace-uri()!='http://www.w3.org/2000/svg' and namespace-uri()!='http://www.w3.org/1999/XSL/Format' and namespace-uri()!='http://xml.apache.org/fop/extensions']" />
 
 <!-- index-page-citation-list -->
 

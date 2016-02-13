@@ -1433,6 +1433,14 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="svg Element" anchor="v3.svg">
+  <iref item="V3 Extension Elements" subitem="svg" primary="true"/>
+  <iref item="svg V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.svg"/>.
+</t>
+</section>
+
 <section title="tt Element" anchor="v3.tt">
   <iref item="V3 Extension Elements" subitem="tt" primary="true"/>
   <iref item="tt V3 Extension Element" primary="true"/>
@@ -1448,6 +1456,7 @@ Content-Length: &lt;x:length-of target="req"/>
   See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.ul"/>.
 </t>
 </section>
+
 </section>
 
 <section title="Utilities" anchor="utilities">
@@ -2090,10 +2099,10 @@ ocasionally save.
   <front>
     <title>The "xml2rfc" version 3 Vocabulary</title>
     <author initials="P." surname="Hoffman" fullname="Paul Hoffman"/>
-    <date month="February" year="2016"/>
+    <date month="January" year="2016"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfc-03"/>
-  <x:source href="/projects/ietf/xml2rfc/vocabulary/v3/iab03/draft-iab-xml2rfc-latest.xml"/>
+  <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfc-02"/>
+  <x:source href="/projects/ietf/xml2rfc/vocabulary/v3/iab02/draft-iab-xml2rfc-latest.xml"/>
 </reference>
 
 </references>
@@ -2123,6 +2132,9 @@ namespace grddl = "http://www.w3.org/2003/g/data-view#"
 <em># Define RDF namespace</em>
 namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
+<em># Define SVG namespace</em>
+namespace svg = "http://www.w3.org/2000/svg"
+
 <em># Include rfc2629bis RNC grammar</em>
 include "rfc2629.rnc" {
   
@@ -2144,24 +2156,26 @@ include "rfc2629.rnc" {
   artwork =
     element artwork {
       attlist.artwork,
-      (TEXT
-        <strong>| eref</strong> 
-        <strong>| iref</strong> 
-        <strong>| spanx</strong> 
-        <strong>| xref</strong>
-        <strong>| <x:ref>v3_em</x:ref></strong>
-        <strong>| <x:ref>v3_strong</x:ref></strong>
-        <strong>| <x:ref>x_abnf-char-sequence</x:ref></strong>
-        <strong>| <x:ref>x_bb</x:ref></strong>
-        <strong>| <x:ref>x_bc</x:ref></strong>
-        <strong>| <x:ref>x_bcp14</x:ref></strong>
-        <strong>| <x:ref>x_bt</x:ref></strong>
-        <strong>| <x:ref>x_highlight</x:ref></strong>
-        <strong>| <x:ref>x_length-of</x:ref></strong>
-        <strong>| <x:ref>x_parse-xml</x:ref></strong>
-        <strong>| <x:ref>x_ref</x:ref></strong>
-        <strong>| <x:ref>x_span</x:ref></strong>
-        <strong>| <x:ref>x_x</x:ref></strong>)* 
+      ( <strong><x:ref>v3_svg</x:ref> |
+        </strong>(TEXT
+          <strong>| eref</strong> 
+          <strong>| iref</strong> 
+          <strong>| spanx</strong> 
+          <strong>| xref</strong>
+          <strong>| <x:ref>v3_em</x:ref></strong>
+          <strong>| <x:ref>v3_strong</x:ref></strong>
+          <strong>| <x:ref>x_abnf-char-sequence</x:ref></strong>
+          <strong>| <x:ref>x_bb</x:ref></strong>
+          <strong>| <x:ref>x_bc</x:ref></strong>
+          <strong>| <x:ref>x_bcp14</x:ref></strong>
+          <strong>| <x:ref>x_bt</x:ref></strong>
+          <strong>| <x:ref>x_highlight</x:ref></strong>
+          <strong>| <x:ref>x_length-of</x:ref></strong>
+          <strong>| <x:ref>x_parse-xml</x:ref></strong>
+          <strong>| <x:ref>x_ref</x:ref></strong>
+          <strong>| <x:ref>x_span</x:ref></strong>
+          <strong>| <x:ref>x_x</x:ref></strong>)*
+        )
     }
 
   <em># Redefine &lt;back> to allow boilerplate</em>
@@ -2633,6 +2647,22 @@ attlist.xref &amp;=
     <x:ref>v3_li</x:ref>+
   }
 
+<em anchor="v3_svg"><iref item="svg V3 Extension Element"/><iref item="V3 Extension Elements" subitem="svg"
+/># SVG (see <xref target="v3.svg"/>)</em>
+<x:ref>v3_svg</x:ref> =
+  element svg:svg {
+    (attribute * { text }
+        | text
+        | anySVGElement)*
+  }
+
+ anySVGElement =
+    element svg:* {
+       (attribute * { text }
+        | text
+        | anySVGElement)*
+    }
+      
 <em anchor="x_abnf-char-sequence"><iref item="abnf-char-sequence Extension Element"/><iref item="Extension Elements" subitem="abnf-char-sequence"
 /># Conversion to ABNF char sequence (see <xref target="ext.element.abnf-char-sequence"/>)</em>
 <x:ref>x_abnf-char-sequence</x:ref> =
