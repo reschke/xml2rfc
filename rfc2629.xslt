@@ -237,6 +237,28 @@
   </xsl:choose>
 </xsl:variable>
 
+<!-- include PI -->
+
+<xsl:variable name="includeDirectives">
+  <xsl:for-each select="/rfc/back/references/processing-instruction('rfc')">
+    <xsl:variable name="include">
+      <xsl:call-template name="parse-pis">
+        <xsl:with-param name="nodes" select="."/>
+        <xsl:with-param name="attr" select="'include'"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="$include=''"/>
+      <xsl:when test="substring($include, string-length($include) - 3) != '.xml'">
+        <xsl:copy-of select="document(concat($include,'.xml'))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy-of select="document($include)"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:for-each>
+</xsl:variable>
+
 <!-- CSS class name remapping -->
 
 <xsl:param name="xml2rfc-ext-css-map"/>
@@ -2116,9 +2138,14 @@
         <xsl:with-param name="msg">missing anchor on reference: <xsl:value-of select="."/></xsl:with-param>
       </xsl:call-template>
     </xsl:when>
-    <xsl:when test="not(ancestor::ed:del) and not(key('xref-item',$anchor))">
+    <xsl:when test="not(ancestor::ed:del) and (ancestor::rfc and not(key('xref-item',$anchor)))">
       <xsl:call-template name="warning">
         <xsl:with-param name="msg">unused reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="not(ancestor::ed:del) and (not(ancestor::rfc) and not($src//xref[@target=$anchor]))">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">unused (included) reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise/>
@@ -2370,7 +2397,6 @@
 
 </xsl:template>
 
-
 <xsl:template match="references">
   <xsl:call-template name="check-no-text-content"/>
 
@@ -2449,15 +2475,35 @@
     <xsl:copy-of select="$title"/>
   </xsl:element>
 
+  <xsl:variable name="included">
+    <xsl:for-each select="processing-instruction('rfc')">
+      <xsl:variable name="include">
+        <xsl:call-template name="parse-pis">
+          <xsl:with-param name="nodes" select="."/>
+          <xsl:with-param name="attr" select="'include'"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:choose>
+        <xsl:when test="$include=''"/>
+        <xsl:when test="substring($include, string-length($include) - 3) != '.xml'">
+          <xsl:copy-of select="document(concat($include,'.xml'))"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:copy-of select="document($include)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:variable>
+
   <dl class="{$css-reference}">
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
-        <xsl:apply-templates>
+        <xsl:apply-templates select="*|exslt:node-set($included)/reference">
           <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
         </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates />
+        <xsl:apply-templates select="*|exslt:node-set($included)/reference"/>
       </xsl:otherwise>
     </xsl:choose>
   </dl>
@@ -3239,7 +3285,7 @@
   <!-- ensure we have the right context, this <xref> may be processed from within the boilerplate -->
   <xsl:for-each select="$src">
 
-    <xsl:variable name="node" select="key('anchor-item',$xref/@target)" />
+    <xsl:variable name="node" select="key('anchor-item',$xref/@target)|exslt:node-set($includeDirectives)//reference[@anchor=$xref/@target]"/>
     <xsl:if test="count($node)=0 and not($node/ancestor::ed:del)">
       <xsl:for-each select="$xref">
         <xsl:call-template name="error">
@@ -7462,7 +7508,7 @@ dd, li, p {
   </xsl:if>
 
   <!-- check IDs -->
-  <xsl:variable name="badTargets" select="//xref[not(@target=//@anchor) and not(ancestor::ed:del)]" />
+  <xsl:variable name="badTargets" select="//xref[not(@target=//@anchor) and not(@target=exslt:node-set($includeDirectives)//@anchor) and not(ancestor::ed:del)]" />
   <xsl:if test="$badTargets">
     <xsl:variable name="text">
       <xsl:text>The following target names do not exist: </xsl:text>
@@ -8124,11 +8170,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.765 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.765 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.766 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.766 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/14 08:59:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/14 08:59:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/14 20:50:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/14 20:50:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8606,7 +8652,7 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='header'"/>
                       <xsl:when test="$attrname='include'">
                         <xsl:call-template name="warning">
-                          <xsl:with-param name="msg">the rfc include pseudo-attribute is not supported by this processor, see http://greenbytes.de/tech/webdav/rfc2629xslt/rfc2629xslt.html#examples.internalsubset for help.</xsl:with-param>
+                          <xsl:with-param name="msg">the rfc include pseudo-attribute is only partially supported by this processor, see http://greenbytes.de/tech/webdav/rfc2629xslt/rfc2629xslt.html#examples.internalsubset for alternative syntax.</xsl:with-param>
                         </xsl:call-template>
                       </xsl:when>
                       <xsl:when test="$attrname='inline'"/>
