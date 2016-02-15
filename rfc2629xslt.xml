@@ -2099,10 +2099,10 @@ ocasionally save.
   <front>
     <title>The "xml2rfc" version 3 Vocabulary</title>
     <author initials="P." surname="Hoffman" fullname="Paul Hoffman"/>
-    <date month="January" year="2016"/>
+    <date month="February" year="2016"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfc-02"/>
-  <x:source href="/projects/ietf/xml2rfc/vocabulary/v3/iab02/draft-iab-xml2rfc-latest.xml"/>
+  <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfc-03"/>
+  <x:source href="draft-iab-xml2rfc-03.xml"/>
 </reference>
 
 </references>
