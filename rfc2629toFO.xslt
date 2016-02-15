@@ -1070,15 +1070,21 @@
     </xsl:choose>
   </xsl:variable>
 
+  <xsl:variable name="included">
+    <xsl:call-template name="getIncludes">
+      <xsl:with-param name="nodes" select="processing-instruction('rfc')"/>
+    </xsl:call-template>
+  </xsl:variable>
+
   <fo:list-block provisional-distance-between-starts="{string-length($l) * 0.8}em">
     <xsl:choose>
-      <xsl:when test="$xml2rfc-sortrefs='yes'">
-        <xsl:apply-templates>
-          <xsl:sort select="/rfc/back/displayreference[@target=current()/@anchor]/@to|@anchor"/>
+      <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
+        <xsl:apply-templates select="*|exslt:node-set($included)/reference">
+          <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
         </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates />
+        <xsl:apply-templates select="*|exslt:node-set($included)/reference"/>
       </xsl:otherwise>
     </xsl:choose>
   </fo:list-block>
@@ -1505,7 +1511,7 @@
   <xsl:variable name="xref" select="."/>
   <xsl:variable name="target" select="@target"/>
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
-  <xsl:variable name="node" select="//*[@anchor=$target]" />
+  <xsl:variable name="node" select="key('anchor-item',$xref/@target)|exslt:node-set($includeDirectives)//reference[@anchor=$xref/@target]"/>
   <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
     <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
     <span class="error">Undefined target: <xsl:value-of select="@target" /></span>

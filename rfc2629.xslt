@@ -239,8 +239,9 @@
 
 <!-- include PI -->
 
-<xsl:variable name="includeDirectives">
-  <xsl:for-each select="/rfc/back/references/processing-instruction('rfc')">
+<xsl:template name="getIncludes">
+  <xsl:param name="nodes"/>
+  <xsl:for-each select="$nodes">
     <xsl:variable name="include">
       <xsl:call-template name="parse-pis">
         <xsl:with-param name="nodes" select="."/>
@@ -257,6 +258,12 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
+</xsl:template>
+
+<xsl:variable name="includeDirectives">
+  <xsl:call-template name="getIncludes">
+    <xsl:with-param name="nodes" select="/rfc/back/references/processing-instruction('rfc')"/>
+  </xsl:call-template>
 </xsl:variable>
 
 <!-- CSS class name remapping -->
@@ -2476,23 +2483,9 @@
   </xsl:element>
 
   <xsl:variable name="included">
-    <xsl:for-each select="processing-instruction('rfc')">
-      <xsl:variable name="include">
-        <xsl:call-template name="parse-pis">
-          <xsl:with-param name="nodes" select="."/>
-          <xsl:with-param name="attr" select="'include'"/>
-        </xsl:call-template>
-      </xsl:variable>
-      <xsl:choose>
-        <xsl:when test="$include=''"/>
-        <xsl:when test="substring($include, string-length($include) - 3) != '.xml'">
-          <xsl:copy-of select="document(concat($include,'.xml'))"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:copy-of select="document($include)"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:for-each>
+    <xsl:call-template name="getIncludes">
+      <xsl:with-param name="nodes" select="processing-instruction('rfc')"/>
+    </xsl:call-template>
   </xsl:variable>
 
   <dl class="{$css-reference}">
@@ -8170,11 +8163,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.766 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.766 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.767 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.767 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/14 20:50:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/14 20:50:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/15 17:05:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/15 17:05:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
