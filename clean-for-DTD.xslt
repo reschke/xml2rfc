@@ -703,6 +703,7 @@
 </xsl:template>
 
 <xsl:template match="@x:indent-with" mode="cleanup"/>
+<xsl:template match="@x:lang" mode="cleanup"/>
 
 <xsl:template name="indent">
   <xsl:param name="content"/>

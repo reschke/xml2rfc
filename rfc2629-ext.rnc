@@ -266,9 +266,10 @@ include "rfc2629.rnc" {
     }
 }
 
-# Allow x:indent-with attribute on <artwork>
+# Allow extension attributes on <artwork> (Section 11.23)
 attlist.artwork &=
   attribute x:indent-with { ATEXT }?,
+  attribute x:lang { "" }?,
   attribute x:is-code-component { "no" | "yes" }?
 
 # Allow anchor and x:annotation attributes on <author>
@@ -466,6 +467,7 @@ v3_refcontent =
 v3_sourcecode =
   element sourcecode {
     attribute anchor { xsd:ID }?,
+    attribute x:lang { "" }?,
     TEXT
   }
 
@@ -722,6 +724,7 @@ x_sup =
 x_span =
   element x:span {
     attribute anchor { xsd:ID }?,
+    attribute x:lang { "" }?,
     (TEXT
       | x_parse-xml)* 
   }

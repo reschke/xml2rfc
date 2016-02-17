@@ -266,6 +266,27 @@
   </xsl:call-template>
 </xsl:variable>
 
+<!-- prettyprinting -->
+
+<xsl:param name="xml2rfc-ext-html-pretty-print">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'html-pretty-print'"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:variable name="prettyprint-class">
+  <xsl:if test="$xml2rfc-ext-html-pretty-print">
+    <xsl:value-of select="substring-before(normalize-space($xml2rfc-ext-html-pretty-print),' ')"/>
+  </xsl:if>
+</xsl:variable>
+
+<xsl:variable name="prettyprint-script">
+  <xsl:if test="$xml2rfc-ext-html-pretty-print">
+    <xsl:value-of select="substring-after(normalize-space($xml2rfc-ext-html-pretty-print),' ')"/>
+  </xsl:if>
+</xsl:variable>
+
 <!-- CSS class name remapping -->
 
 <xsl:param name="xml2rfc-ext-css-map"/>
@@ -815,24 +836,20 @@
 </msxsl:script>
 
 <xsl:template name="add-artwork-class">
-  <xsl:choose>
-    <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='abnf7230' or @type='application/xml-dtd' or @type='inline' or @type='application/relax-ng-compact-syntax'">
-      <xsl:attribute name="class">inline</xsl:attribute>
-    </xsl:when>
-    <xsl:when test="starts-with(@type,'message/http') and contains(@type,'msgtype=&quot;request&quot;')">
-      <xsl:attribute name="class">text2</xsl:attribute>
-    </xsl:when>
-    <xsl:when test="starts-with(@type,'message/http')">
-      <xsl:attribute name="class">text</xsl:attribute>
-    </xsl:when>
-    <xsl:when test="starts-with(@type,'drawing')">
-      <xsl:attribute name="class">drawing</xsl:attribute>
-    </xsl:when>
-    <xsl:when test="starts-with(@type,'text/plain') or @type='example' or @type='code' or @type='application/xml-dtd' or @type='application/json'">
-      <xsl:attribute name="class">text</xsl:attribute>
-    </xsl:when>
-    <xsl:otherwise/>
-  </xsl:choose>
+  <xsl:variable name="v">
+    <xsl:choose>
+      <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='abnf7230' or @type='application/xml-dtd' or @type='inline' or @type='application/relax-ng-compact-syntax'">inline</xsl:when>
+      <xsl:when test="starts-with(@type,'message/http') and contains(@type,'msgtype=&quot;request&quot;')">text2</xsl:when>
+      <xsl:when test="starts-with(@type,'message/http')">text</xsl:when>
+      <xsl:when test="starts-with(@type,'drawing')">drawing</xsl:when>
+      <xsl:when test="starts-with(@type,'text/plain') or @type='example' or @type='code' or @type='application/xml-dtd' or @type='application/json'">text</xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+    <xsl:if test="@x:lang and $prettyprint-class!=''"><xsl:value-of select="concat(' ',$prettyprint-class)"/></xsl:if>
+  </xsl:variable>
+  <xsl:if test="normalize-space($v)!=''">
+    <xsl:attribute name="class"><xsl:value-of select="normalize-space($v)"/></xsl:attribute>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template name="insert-begin-code">
@@ -4772,7 +4789,8 @@ function anchorRewrite() {
 }
 window.addEventListener('hashchange', anchorRewrite);
 window.addEventListener('DOMContentLoaded', anchorRewrite);
-</script>
+</script><xsl:if test="$prettyprint-script!=''">
+<script src="{$prettyprint-script}"/></xsl:if>
 </xsl:template>
 
 <!-- insert CSS style info -->
@@ -4941,7 +4959,8 @@ pre.text2 {
 pre.inline {
   background-color: white;
   padding: 0em;
-  page-break-inside: auto;
+  page-break-inside: auto;<xsl:if test="$prettyprint-script!=''">
+  border: none !important;</xsl:if>
 }
 pre.text {
   border-style: dotted;
@@ -7078,12 +7097,22 @@ dd, li, p {
   <xsl:value-of select="string-length($content) + $lineends - $indents"/>
 </xsl:template>
 
-<!-- Nop -->
+<!-- Almost Nop -->
 <xsl:template match="x:span">
-  <span>
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:apply-templates/>
-  </span>
+  <xsl:choose>
+    <xsl:when test="@x:lang and $prettyprint-class!=''">
+      <code class="{$prettyprint-class}">
+        <xsl:call-template name="copy-anchor"/>
+        <xsl:apply-templates/>
+      </code>
+    </xsl:when>
+    <xsl:otherwise>
+      <span>
+        <xsl:call-template name="copy-anchor"/>
+        <xsl:apply-templates/>
+      </span>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="x:parse-xml">
@@ -8163,11 +8192,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.767 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.767 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.768 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.768 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/15 17:05:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/15 17:05:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/17 16:38:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/17 16:38:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8610,6 +8639,7 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='authors-section'"/>
                       <xsl:when test="$attrname='check-artwork-width'"/>
                       <xsl:when test="$attrname='duplex'"/>
+                      <xsl:when test="$attrname='html-pretty-print'"/>
                       <xsl:when test="$attrname='include-index'"/>
                       <xsl:when test="$attrname='include-references-in-index'"/>
                       <xsl:when test="$attrname='justification'"/>

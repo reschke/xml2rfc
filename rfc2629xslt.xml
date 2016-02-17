@@ -273,7 +273,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
 </texttable>
 </section>
 
-<section title="Extension PIs">
+<section title="Extension PIs" anchor="extension.pis">
 <texttable>
   <ttcol>PI target</ttcol>
   <ttcol>PI pseudo-attribute</ttcol>
@@ -301,6 +301,13 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>xml2rfc-ext-duplex<iref item="xml2rfc-ext-duplex"/> <iref item="Parameters" subitem="xml2rfc-ext-duplex"/></c>
   <c>"no"</c>
   <c>When set to "yes", format the PDF output for doublesided printing.</c>
+
+  <c>rfc-ext</c>
+  <c>html-pretty-print<iref item="html-pretty-print PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="html-pretty-print"/></c>
+  <c>xml2rfc-ext-html-pretty-print<iref item="xml2rfc-ext-html-pretty-print"/> <iref item="Parameters" subitem="xml2rfc-ext-html-pretty-print"/></c>
+  <c></c>
+  <c>Used to specify a JS-based code pretty-printer; the value is the CSS class name to insert, followed by a blank space, followed by the URI of the JS library. For instance:
+  "prettyprint https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"</c>
 
   <c>rfc-ext</c>
   <c>include-index<iref item="include-index PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-index"/></c>
@@ -1155,6 +1162,12 @@ Content-Length: &lt;x:length-of target="req"/>
   Furthermore, documents can contain code that might need to be marked as "code
   component" (<eref target="http://www.ietf.org/iesg/statement/copyright.html"/>).
   This can be done using "x:is-code-component".
+</t>
+<t>
+  Finally, when allowing pretty-printing of code (see "html-pretty-print" in
+  <xref target="extension.pis"/>, the "x:lang" attribute can used to explicitly
+  opt into pretty-printing (the value is currently unused and ought to be set
+  to an empty string).
 </t>
 </section>
 
@@ -2387,9 +2400,10 @@ include "rfc2629.rnc" {
     }
 }
 
-<em># Allow x:indent-with attribute on &lt;artwork></em>
+<em># Allow extension attributes on &lt;artwork> (<xref target="ext-rfc2629.artwork"/>)</em>
 attlist.artwork &amp;=
   attribute x:indent-with { ATEXT }?,
+  attribute x:lang { "" }?,
   attribute x:is-code-component { "no" | "yes" }?
 
 <em># Allow anchor and x:annotation attributes on &lt;author></em>
@@ -2601,6 +2615,7 @@ attlist.xref &amp;=
 <x:ref>v3_sourcecode</x:ref> =
   element sourcecode {
     attribute anchor { xsd:ID }?,
+    attribute x:lang { "" }?,
     TEXT
   }
 
@@ -2888,6 +2903,7 @@ attlist.xref &amp;=
 <x:ref>x_span</x:ref> =
   element x:span {
     attribute anchor { xsd:ID }?,
+    attribute x:lang { "" }?,
     (TEXT
       | <x:ref>x_parse-xml</x:ref>)* 
   }
