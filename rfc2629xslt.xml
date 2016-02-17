@@ -329,7 +329,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
   inserts it into the front page (standards track, obsoletion, updates, errata).</c>
 
   <c>rfc-ext</c>
-  <c>justification<iref item="justification PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="ijustification"/></c>
+  <c>justification<iref item="justification PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="justification"/></c>
   <c>xml2rfc-ext-justification<iref item="xml2rfc-ext-justification parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-justification"/></c>
   <c>"never"</c>
   <c>"never": never emit justified text, "always": always emit justified text, "print": only emit justified text for print media.</c>
