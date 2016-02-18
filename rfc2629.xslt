@@ -248,15 +248,22 @@
         <xsl:with-param name="attr" select="'include'"/>
       </xsl:call-template>
     </xsl:variable>
-    <xsl:choose>
-      <xsl:when test="$include=''"/>
-      <xsl:when test="substring($include, string-length($include) - 3) != '.xml'">
-        <xsl:copy-of select="document(concat($include,'.xml'))"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:copy-of select="document($include)"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:variable name="doc">
+      <xsl:choose>
+        <xsl:when test="$include=''"/>
+        <xsl:when test="substring($include, string-length($include) - 3) != '.xml'">
+          <xsl:copy-of select="document(concat($include,'.xml'))"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:copy-of select="document($include)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:if test="count(exslt:node-set($doc)) = 1">
+      <myns:include from="{$include}" in="{generate-id(..)}">
+        <xsl:copy-of select="$doc"/>
+      </myns:include>
+    </xsl:if>
   </xsl:for-each>
 </xsl:template>
 
@@ -2499,21 +2506,16 @@
     <xsl:copy-of select="$title"/>
   </xsl:element>
 
-  <xsl:variable name="included">
-    <xsl:call-template name="getIncludes">
-      <xsl:with-param name="nodes" select="processing-instruction('rfc')"/>
-    </xsl:call-template>
-  </xsl:variable>
-
+  <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
   <dl class="{$css-reference}">
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
-        <xsl:apply-templates select="*|exslt:node-set($included)/reference">
+        <xsl:apply-templates select="*|$included">
           <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
         </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates select="*|exslt:node-set($included)/reference"/>
+        <xsl:apply-templates select="*|$included"/>
       </xsl:otherwise>
     </xsl:choose>
   </dl>
@@ -8192,11 +8194,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.768 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.768 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.769 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.769 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/17 16:38:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/17 16:38:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/18 12:26:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/18 12:26:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

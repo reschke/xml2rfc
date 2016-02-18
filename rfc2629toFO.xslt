@@ -1070,21 +1070,16 @@
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:variable name="included">
-    <xsl:call-template name="getIncludes">
-      <xsl:with-param name="nodes" select="processing-instruction('rfc')"/>
-    </xsl:call-template>
-  </xsl:variable>
-
+  <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
   <fo:list-block provisional-distance-between-starts="{string-length($l) * 0.8}em">
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
-        <xsl:apply-templates select="*|exslt:node-set($included)/reference">
+        <xsl:apply-templates select="*|$included">
           <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
         </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates select="*|exslt:node-set($included)/reference"/>
+        <xsl:apply-templates select="*|$included"/>
       </xsl:otherwise>
     </xsl:choose>
   </fo:list-block>
