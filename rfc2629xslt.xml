@@ -9,6 +9,7 @@
 <?rfc symrefs="yes"?>
 <?rfc sortrefs="yes"?>
 <?rfc-ext allow-markup-in-artwork="yes" ?>
+<?rfc-ext html-pretty-print="prettyprint https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"?>
 <?rfc-ext include-references-in-index="yes" ?>
 <!--<?rfc-ext refresh-from="rfc2629xslt.xml"?>-->
 
@@ -96,7 +97,7 @@
 </t>
 <figure>
 <preamble>Using processing instructions:</preamble>
-<artwork type="example">
+<artwork type="example" x:lang="">
 &lt;?rfc toc="yes"?>
 &lt;?rfc-ext support-rfc2731="no"?>
 </artwork>
@@ -512,7 +513,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
   the start of the source file:
 </t>
 <iref item="xml-stylesheet PI"/>
-<figure><artwork type="example">
+<figure><artwork type="example" x:lang="">
   &lt;?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 </artwork></figure>
 <t>
@@ -819,7 +820,7 @@ mkepub.sh rfc2616.xml
       The DOCTYPE definition below allows using these keywords using XML
       entity expansion: such as in "...server &amp;MUST; accept...".
     </preamble>
-    <artwork type="example">
+    <artwork type="example" x:lang="">
 &lt;!DOCTYPE rfc [
  &lt;!ENTITY MAY "&lt;bcp14 xmlns='http://purl.org/net/xml2rfc/ext'
    >MAY&lt;/bcp14>">
@@ -918,7 +919,7 @@ mkepub.sh rfc2616.xml
     The template string takes the form of a URI template, such as:
   </t>
   <figure>
-    <artwork type="example">
+    <artwork type="example" x:lang="">
 &lt;x:feedback template="mailto:ietf-http-wg@w3.org?subject={docname},%20%22{section}%22&amp;amp;body=&amp;lt;{ref}&amp;gt;:"/>
 </artwork></figure>
   <t>
@@ -960,7 +961,7 @@ mkepub.sh rfc2616.xml
   </t>
   <figure>
     <preamble>Example: computing the Content-Length header value</preamble>
-    <artwork type="example">
+    <artwork type="example" x:lang="">
 &lt;artwork>
 ...
 Content-Length: &lt;x:length-of target="req"/>
@@ -991,11 +992,11 @@ Content-Length: &lt;x:length-of target="req"/>
   </t>
   <figure>
     <preamble>Example: generating HTML link element</preamble>
-    <artwork type="example">
-        &lt;x:link xmlns:x="http://purl.org/net/xml2rfc/ext"
-            rel="Bookmark"
-            title="IETF WEBDAV Working Group"
-            href="http://ftp.ics.uci.edu/pub/ietf/webdav/"/></artwork>
+    <artwork type="example" x:lang="">
+&lt;x:link xmlns:x="http://purl.org/net/xml2rfc/ext"
+    rel="Bookmark"
+    title="IETF WEBDAV Working Group"
+    href="http://ftp.ics.uci.edu/pub/ietf/webdav/"/></artwork>
   </figure>
   <t>
     If the attribute "basename" is present, it is used to compute the 
@@ -1005,11 +1006,11 @@ Content-Length: &lt;x:length-of target="req"/>
   </t>
   <figure>
     <preamble>For instance:</preamble>
-    <artwork type="example">
-        &lt;x:link xmlns:x="http://purl.org/net/xml2rfc/ext"
-            rel="next"
-            title="Part2"
-            basename="draft-foobar-protocol-p2-latest"/></artwork>
+    <artwork type="example" x:lang="">
+&lt;x:link xmlns:x="http://purl.org/net/xml2rfc/ext"
+    rel="next"
+    title="Part2"
+    basename="draft-foobar-protocol-p2-latest"/></artwork>
   </figure>
 </section>
 
@@ -1079,30 +1080,30 @@ Content-Length: &lt;x:length-of target="req"/>
     For instance, given an alias definition such as
   </t>
   <figure>
-    <artwork type="example">
-      &lt;section title="Test" anchor="test">
-        &lt;x:anchor-alias value="alias1"/>
-        &lt;x:anchor-alias value="alias 2"/>
-        ...
-      &lt;/section></artwork>
+    <artwork type="example" x:lang="">
+&lt;section title="Test" anchor="test">
+  &lt;x:anchor-alias value="alias1"/>
+  &lt;x:anchor-alias value="alias 2"/>
+  ...
+&lt;/section></artwork>
   </figure>
   <t>
     the following simple references
   </t>
   <figure>
-    <artwork type="example">
-      &lt;x:ref>test&lt;/x:ref>
-      &lt;x:ref>alias1&lt;/x:ref>
-      &lt;x:ref>alias 2&lt;/x:ref></artwork>
+    <artwork type="example" x:lang="">
+&lt;x:ref>test&lt;/x:ref>
+&lt;x:ref>alias1&lt;/x:ref>
+&lt;x:ref>alias 2&lt;/x:ref></artwork>
   </figure>
   <t>
     are equivalent to...:
   </t>
   <figure>
-    <artwork type="example">
-      &lt;xref target="test">test&lt;/xref>
-      &lt;xref target="test">alias1&lt;/xref>
-      &lt;xref target="test">alias 2&lt;/xref></artwork>
+    <artwork type="example" x:lang="">
+&lt;xref target="test">test&lt;/xref>
+&lt;xref target="test">alias1&lt;/xref>
+&lt;xref target="test">alias 2&lt;/xref></artwork>
   </figure>
 </section>
 
@@ -1120,14 +1121,14 @@ Content-Length: &lt;x:length-of target="req"/>
       For example:
     </preamble>
     <artwork type="example">
-      ...
-      &lt;xref target="RFC2616" x:fmt="of" x:rel="#PUT" />
-      ...
-    
-      &lt;reference target="RFC2616"/>
-        ...
-        &lt;x:source href="rfc2616.xml"/>
-        ...
+...
+&lt;xref target="RFC2616" x:fmt="of" x:rel="#PUT" />
+...
+
+&lt;reference target="RFC2616"/>
+  ...
+  &lt;x:source href="rfc2616.xml"/>
+  ...
     </artwork>
   </figure>
 </section>
@@ -1587,7 +1588,7 @@ The picture below shows the RFC dependencies in RFC2629.
 </t>
 <figure>
 <preamble>For instance:</preamble>
-<artwork type="example">
+<artwork type="example" x:lang="">
 &lt;?xml version="1.0" encoding="utf-8"?>
 &lt;references>
  &lt;reference target="urn:isbn:0134516591">
@@ -1753,7 +1754,7 @@ The picture below shows the RFC dependencies in RFC2629.
   Use of this feature requires the inclusion of a processing instruction that 
   holds the name of the XML source, such as:
 </t>
-<figure><artwork type="example">
+<figure><artwork type="example" x:lang="">
 &lt;?rfc-ext refresh-from="draft-foo-bar-00.xml"?>
 </artwork></figure>
 <t>
@@ -1766,7 +1767,7 @@ The picture below shows the RFC dependencies in RFC2629.
 <preamble>
   To test this feature, start with a minimal source file like this:
 </preamble>
-<artwork type="example">
+<artwork type="example" x:lang="">
 &lt;?xml-stylesheet type='text/xsl' href='rfc2629.xslt'?>
 &lt;?rfc-ext refresh-from="draft-foo-bar-00.xml"?> 
 &lt;rfc docName="draft-foo-bar-00" ipr="trust200902">
@@ -2962,7 +2963,7 @@ rdf_content =
     The prolog of the XML document can both be used to refer to an external
     DTD, and also to define internal entities (<xref target="XML" x:fmt="of" x:sec="2.8" x:rel="#sec-prolog-dtd"/>): 
   </t>
-  <figure><artwork type="example">
+  <figure><artwork type="example" x:lang="">
 &lt;?xml version="1.0"?>
 &lt;?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -3005,7 +3006,7 @@ rdf_content =
   <preamble>For instance, the code below overrides several attributes in
   <tt>rfc2629toFO.xslt</tt>, changing the color, spacing and font family for 
   headers.</preamble>
-  <artwork type="example">
+  <artwork type="example" x:lang="">
 &lt;xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                version="1.0">
 
