@@ -200,7 +200,6 @@
           <xsl:when test="self::preamble">
             <!-- it's not an element we can link to -->
             <xsl:call-template name="warning">
-              <xsl:with-param name="inline" select="'no'"/>
               <xsl:with-param name="msg">couldn't create the link as <xsl:value-of select="name()"/> does not support the anchor attribute.</xsl:with-param>
             </xsl:call-template>
             <xsl:value-of select="$current"/>
@@ -213,7 +212,6 @@
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg">internal link target for '<xsl:value-of select="$val"/>' does not exist.</xsl:with-param>
       </xsl:call-template>
       <xsl:value-of select="."/>
@@ -665,7 +663,6 @@
 
 <xsl:template match="artwork[svg:svg]" mode="cleanup">
 <xsl:call-template name="warning">
-  <xsl:with-param name="inline" select="'no'"/>
   <xsl:with-param name="msg">SVG image removed.</xsl:with-param>
 </xsl:call-template>
 <artwork>(see SVG image in HTML version)</artwork>
@@ -761,7 +758,6 @@
     <xsl:value-of select="."/>
   </xsl:comment>
   <xsl:call-template name="warning">
-    <xsl:with-param name="inline" select="'no'"/>
     <xsl:with-param name="msg">Dropping annotation on <xsl:value-of select="local-name(..)"/> element.</xsl:with-param>
   </xsl:call-template>
 </xsl:template>
@@ -822,7 +818,6 @@
   <xsl:choose>
     <xsl:when test="*">
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg">strong not translated when including child elements</xsl:with-param>
       </xsl:call-template>
       <xsl:apply-templates mode="cleanup"/>
@@ -839,7 +834,6 @@
   <xsl:choose>
     <xsl:when test="*">
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg">em not translated when including child elements</xsl:with-param>
       </xsl:call-template>
       <xsl:apply-templates mode="cleanup"/>
@@ -856,7 +850,6 @@
   <xsl:choose>
     <xsl:when test="*">
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg">tt not translated when they include child elements</xsl:with-param>
       </xsl:call-template>
       <xsl:apply-templates mode="cleanup"/>
@@ -958,7 +951,6 @@
   </section>
   <xsl:if test="@numbered='no'">
     <xsl:call-template name="warning">
-      <xsl:with-param name="inline" select="'no'"/>
       <xsl:with-param name="msg">unnumbered sections not supported</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
@@ -1072,7 +1064,6 @@
   <t>
     <xsl:if test="@start and @start!='1'">
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg">list start != 1 not supported</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
@@ -1157,7 +1148,6 @@
     <xsl:when test="translate(substring($tnewname,1,1),$digits,'')=''">
       <xsl:value-of select="concat('_',$tnewname)"/>
       <xsl:call-template name="warning">
-        <xsl:with-param name="inline" select="'no'"/>
         <xsl:with-param name="msg">rewriting reference name '<xsl:value-of select="$tnewname"/>' to '<xsl:value-of select="concat('_',$tnewname)"/>' due to illegal start character</xsl:with-param>
       </xsl:call-template>
     </xsl:when>

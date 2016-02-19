@@ -2096,9 +2096,7 @@
   <xsl:variable name="bibtarget">
     <xsl:choose>
       <xsl:when test="starts-with($bib/@target,'http://www.rfc-editor.org/info/rfc') or starts-with($bib/@target,'https://www.rfc-editor.org/info/rfc') and $ref and ($ref/@x:sec or $ref/@x:rel or $ref/@section or $ref/@relative)">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">Ignoring @target <xsl:value-of select="$bib/@target"/> in link calculation</xsl:with-param>
-        </xsl:call-template>
+        <!--ignored, use tools.ietf.org link instead -->
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$bib/@target"/>
@@ -2204,8 +2202,16 @@
 
   <xsl:variable name="target">
     <xsl:choose>
+      <xsl:when test="starts-with(@target,'http://www.rfc-editor.org/info/rfc') or starts-with(@target,'https://www.rfc-editor.org/info/rfc')">
+        <xsl:call-template name="info">
+          <xsl:with-param name="msg">Ignoring @target <xsl:value-of select="@target"/> in link calculation</xsl:with-param>
+        </xsl:call-template>
+        <xsl:call-template name="computed-auto-target">
+          <xsl:with-param name="bib" select="."/>
+        </xsl:call-template>
+      </xsl:when>
       <xsl:when test="@target">
-        <xsl:if test="string-length(normalize-space(@target)) = 0">
+        <xsl:if test="normalize-space(@target)=''">
           <xsl:call-template name="warning">
             <xsl:with-param name="msg">invalid (empty) target attribute in reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
           </xsl:call-template>
@@ -3721,7 +3727,6 @@
           <xsl:when test="starts-with(/rfc/@docName,'draft-irft-') and $submissionType='IRTF'"/>
           <xsl:otherwise>
             <xsl:call-template name="info">
-              <xsl:with-param name="inline" select="'no'"/>
               <xsl:with-param name="msg">The /rfc/front/workgroup should only be used for Working/Research Group drafts</xsl:with-param>
             </xsl:call-template>
           </xsl:otherwise>
@@ -3731,7 +3736,6 @@
           <xsl:variable name="tmp" select="translate($v, $ucase, $lcase)"/>
           <xsl:if test="contains($tmp,' research group') or contains($tmp,' working group')">
             <xsl:call-template name="info">
-              <xsl:with-param name="inline" select="'no'"/>
               <xsl:with-param name="msg">No need to include 'Working Group' or 'Research Group' postfix in /rfc/front/workgroup value '<xsl:value-of select="$v"/>'</xsl:with-param>
             </xsl:call-template>
           </xsl:if>
@@ -3757,7 +3761,6 @@
       <xsl:otherwise>
         <xsl:if test="starts-with(/rfc/@docName,'draft-ietf-') and not(/rfc/front/workgroup)">
           <xsl:call-template name="info">
-            <xsl:with-param name="inline" select="'no'"/>
             <xsl:with-param name="msg">WG submissions should include a /rfc/front/workgroup element</xsl:with-param>
           </xsl:call-template>
         </xsl:if>
@@ -3800,7 +3803,6 @@
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="warning">
-            <xsl:with-param name="inline" select="'no'"/>
             <xsl:with-param name="msg">Unknown IETF area: "<xsl:value-of select="$area"/>" - should be one of: <xsl:for-each select="$allowed/ed:v">
               <xsl:text>"</xsl:text>
               <xsl:value-of select="."/>
@@ -3840,7 +3842,6 @@
           <xsl:when test="/rfc/@category='std'">STD: <xsl:value-of select="/rfc/@seriesNo" /></xsl:when>
           <xsl:otherwise>
             <xsl:call-template name="warning">
-              <xsl:with-param name="inline" select="'no'"/>
               <xsl:with-param name="msg">There is no IETF document series called '<xsl:value-of select="/rfc/@category"/>'</xsl:with-param>
             </xsl:call-template>
             <xsl:value-of select="concat(translate(/rfc/@category,$lcase,$ucase),': ',/rfc/@seriesNo)" />
@@ -7788,7 +7789,6 @@ dd, li, p {
 <xsl:template name="warning">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
-  <xsl:param name="inline"/>
   <xsl:call-template name="emit-message">
     <xsl:with-param name="level">WARNING</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
@@ -7800,12 +7800,11 @@ dd, li, p {
 <xsl:template name="info">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
-  <xsl:param name="inline"/>
   <xsl:call-template name="emit-message">
     <xsl:with-param name="level">INFO</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
     <xsl:with-param name="msg2" select="$msg2"/>
-    <xsl:with-param name="inline" select="$inline"/>
+    <xsl:with-param name="inline" select="'no'"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -8194,11 +8193,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.769 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.769 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.770 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.770 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/18 12:26:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/18 12:26:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/19 11:12:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/19 11:12:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
