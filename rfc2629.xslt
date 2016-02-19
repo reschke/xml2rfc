@@ -2549,9 +2549,6 @@
 
   <html lang="{$lang}">
     <head>
-      <xsl:if test="$xml2rfc-ext-support-rfc2731!='no'">
-        <xsl:attribute name="profile">http://dublincore.org/documents/2008/08/04/dc-html/</xsl:attribute>
-      </xsl:if>
       <title>
         <xsl:apply-templates select="front/title" mode="get-text-content" />
       </title>
@@ -2615,27 +2612,27 @@
 
       <xsl:if test="$xml2rfc-ext-support-rfc2731!='no'">
         <!-- Dublin Core Metadata -->
-        <link rel="schema.dct" href="http://purl.org/dc/terms/" />
+        <link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
 
         <!-- DC creator, see RFC2731 -->
         <xsl:for-each select="front/author">
           <xsl:variable name="initials">
             <xsl:call-template name="format-initials"/>
           </xsl:variable>
-          <meta name="dct.creator" content="{concat(@surname,', ',$initials)}" />
+          <meta name="dcterms.creator" content="{concat(@surname,', ',$initials)}" />
         </xsl:for-each>
 
         <xsl:if test="$xml2rfc-private=''">
           <xsl:choose>
             <xsl:when test="@number">
-              <meta name="dct.identifier" content="urn:ietf:rfc:{@number}" />
+              <meta name="dcterms.identifier" content="urn:ietf:rfc:{@number}" />
             </xsl:when>
             <xsl:when test="@docName">
-              <meta name="dct.identifier" content="urn:ietf:id:{@docName}" />
+              <meta name="dcterms.identifier" content="urn:ietf:id:{@docName}" />
             </xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
-          <meta name="dct.issued" scheme="ISO8601">
+          <meta name="dcterms.issued" scheme="ISO8601">
             <xsl:attribute name="content">
               <xsl:value-of select="concat($xml2rfc-ext-pub-year,'-',$pub-month-numeric)"/>
               <xsl:if test="$xml2rfc-ext-pub-day != '' and not(@number)">
@@ -2652,16 +2649,16 @@
         </xsl:if>
 
         <xsl:if test="front/abstract">
-          <meta name="dct.abstract" content="{normalize-space(front/abstract)}" />
+          <meta name="dcterms.abstract" content="{normalize-space(front/abstract)}" />
         </xsl:if>
 
         <xsl:if test="@number">
-          <meta name="dct.isPartOf" content="urn:issn:2070-1721" />
+          <meta name="dcterms.isPartOf" content="urn:issn:2070-1721" />
         </xsl:if>
 
       </xsl:if>
 
-      <!-- this replicates dct.abstract, but is used by Google & friends -->
+      <!-- this replicates dcterms.abstract, but is used by Google & friends -->
       <xsl:if test="front/abstract">
         <meta name="description" content="{normalize-space(front/abstract)}" />
       </xsl:if>
@@ -8193,11 +8190,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.770 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.770 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.771 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.771 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/19 11:12:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/19 11:12:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/19 13:43:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/19 13:43:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
