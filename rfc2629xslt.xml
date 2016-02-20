@@ -522,8 +522,8 @@ xsltproc --param xml2rfc-toc '"yes"' \
 
 <section title="HTML compliance">
 <t>
-  The transformation result is supposed to conform to the HTML 4.01 strict
-  DTD <xref target="HTML"/>. This can be checked using the W3C's online
+  The transformation result is supposed to conform to HTML5 <xref target="HTML5"/>.
+  This can be checked using the W3C's online
   validator at <eref target="http://validator.w3.org" /><iref item="HTML compliance"/>.
 </t>
 </section>
@@ -870,7 +870,7 @@ mkepub.sh rfc2616.xml
   <iref item="blockquote Extension Element" primary="true"/>
   <x:anchor-alias value="blockquote"/>
   <t>
-    This element is like the &lt;blockquote&gt; element defined in <xref target="HTML" x:sec="9.2.2" x:rel="/struct/text.html#h-9.2.2"/> 
+    This element is like the &lt;blockquote&gt; element defined in <xref target="HTML5" x:sec="4.4.4" x:rel="grouping-content.html#the-blockquote-element"/> 
     (note this is a block-level element!). It should contain one or more
     &lt;t> child elements.
   </t>
@@ -906,7 +906,7 @@ mkepub.sh rfc2616.xml
   <iref item="dfn Extension Element" primary="true"/>
   <x:anchor-alias value="dfn"/>
   <t>
-    This element is like the &lt;dfn&gt; element defined in <xref target="HTML" x:sec="9.2.1" x:rel="/struct/text.html#h-9.2.1"/>.
+    This element is like the &lt;dfn&gt; element defined in <xref target="HTML5" x:sec="4.5.8" x:rel="text-level-semantics.html#the-dfn-element"/>.
   </t>
 </section>
 
@@ -1061,7 +1061,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="q Extension Element" primary="true"/>
   <x:anchor-alias value="q"/>
   <t>
-    This element is like the &lt;q&gt; element defined in <xref target="HTML" x:sec="9.2.2" x:rel="/struct/text.html#h-9.2.2"/>.
+    This element is like the &lt;q&gt; element defined in <xref target="HTML5" x:sec="4.5.7" x:rel="text-level-semantics.html#the-q-element"/>.
   </t>
 </section>
 
@@ -1138,14 +1138,14 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="sup Extension Element" primary="true"/>
   <x:anchor-alias value="sup"/>
   <t>
-    This element is like the &lt;sup&gt; element in <xref target="HTML" x:sec="9.2.3" x:rel="/struct/text.html#h-9.2.3"/>.
+    This element is like the &lt;sup&gt; element in <xref target="HTML5" x:sec="4.5.16" x:rel="text-level-semantics.html#the-sub-and-sup-elements"/>.
   </t>
   <t>
     Note: the down conversion to RFC2629 format replaces
     "x<x:sup>y</x:sup>" by "x^y".
   </t>
   <t>
-    <em>See also &lt;refcontent&gt; (<xref target="v3.sup"/>).</em>
+    <em>See also &lt;sup&gt; (<xref target="v3.sup"/>).</em>
   </t>
 </section>
 
@@ -1968,29 +1968,23 @@ ocasionally save.
   <seriesInfo name="RFC" value="5234"/>
 </reference>
 
-<reference anchor='RFC5741'>
+<reference anchor='HTML5'
+           target='http://www.w3.org/TR/2014/REC-html5-20141028/'>
   <front>
-    <title>RFC Streams, Headers, and Boilerplates</title>
-    <author initials='L.' surname='Daigle' fullname='Leslie Daigle'/>
-    <author initials='O.' surname='Kolkman' fullname='Olaf Kolkman'/>
-    <date month='December' year='2009' />
+    <title>HTML5</title>
+    <author fullname='Ian Hickson' surname='Hickson' initials='I.'/>
+    <author fullname='Robin Berjon' surname='Berjon' initials='R.'/>
+    <author fullname='Steve Faulkner' surname='Faulkner' initials='S.'/>
+    <author fullname='Travis Leithead' surname='Leithead' initials='T.'/>
+    <author fullname='Erika Doyle Navara' surname='Doyle Navara' initials='E.'/>
+    <author fullname='Edward O&apos;Connor' surname='O&apos;Connor' initials='E.'/>
+    <author fullname='Silvia Pfeiffer' surname='Pfeiffer' initials='S.'/>
+    <date year='2014' month='October' day='28'/>
   </front>
-  <seriesInfo name='RFC' value='5741' />
-</reference>
-
-<reference anchor='HTML'
-           target='http://www.w3.org/TR/1999/REC-html401-19991224'>
-  <front>
-    <title>HTML 4.01 Specification</title>
-    <author fullname='Dave Raggett' surname='Raggett' initials='D.'/>
-    <author fullname='Arnaud Le Hors' surname='Le Hors' initials='A.'/>
-    <author fullname='Ian Jacobs' surname='Jacobs' initials='I.'/>
-    <date year='1999' month='December' day='24'/>
-  </front>
-  <seriesInfo name='W3C Recommendation' value='REC-html401-19991224'/>
+  <seriesInfo name='W3C Recommendation' value='REC-html5-20141028'/>
   <annotation>
     Latest version available at
-    <eref target='http://www.w3.org/TR/html401'/>.
+    <eref target='http://www.w3.org/TR/html5/'/>.
   </annotation>
 </reference>
 
