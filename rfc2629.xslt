@@ -49,7 +49,7 @@
 
 <xsl:strip-space elements="abstract author back figure front list middle note postal reference references rfc section texttable"/>
 
-<xsl:output method="html" encoding="iso-8859-1" version="4.0" doctype-public="-//W3C//DTD HTML 4.01//EN" indent="no"/>
+<xsl:output method="html" encoding="utf-8" doctype-public="about:legacy-compat" indent="no"/>
 
 <!-- rfc comments PI -->
 
@@ -2991,10 +2991,10 @@
 </xsl:template>
 
 <xsl:template match="spanx[@style='verb' or @style='vbare']|tt">
-  <tt>
+  <span class="tt">
     <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates />
-  </tt>
+  </span>
 </xsl:template>
 
 <xsl:template match="spanx[@style='strong']|strong">
@@ -3690,9 +3690,9 @@
     <xsl:with-param name="inline" select="'no'"/>
     <xsl:with-param name="msg">no XSLT template for element '<xsl:value-of select="name()"/>'</xsl:with-param>
   </xsl:call-template>
-  <tt class="{$css-error}">&lt;<xsl:value-of select="name()" />&gt;</tt>
+  <span class="tt {$css-error}">&lt;<xsl:value-of select="name()" />&gt;</span>
   <xsl:copy><xsl:apply-templates select="node()|@*" /></xsl:copy>
-  <tt class="{$css-error}">&lt;/<xsl:value-of select="name()" />&gt;</tt>
+  <span class="tt {$css-error}">&lt;/<xsl:value-of select="name()" />&gt;</span>
 </xsl:template>
 
 <xsl:template match="/">
@@ -4829,7 +4829,7 @@ body {<xsl:if test="$xml2rfc-background!=''">
   margin: 2em auto;<xsl:if test="$parsedMaxwidth!=''">
   max-width: <xsl:value-of select="$parsedMaxwidth"/>px;</xsl:if>
 }
-samp, tt, code, pre {
+samp, span.tt, code, pre {
   font-family: consolas, monaco, monospace;
 }<xsl:if test="//xhtml:p">
 br.p {
@@ -5701,7 +5701,7 @@ dd, li, p {
                     <li>
                       <xsl:choose>
                         <xsl:when test="$in-artwork">
-                          <tt><xsl:value-of select="@item" /></tt>
+                          <span class="tt"><xsl:value-of select="@item" /></span>
                         </xsl:when>
                         <xsl:otherwise>
                           <xsl:value-of select="@item" />
@@ -5732,7 +5732,7 @@ dd, li, p {
 
                                 <xsl:choose>
                                   <xsl:when test="$in-artwork2">
-                                    <tt><xsl:value-of select="@subitem" /></tt>
+                                    <span class="tt"><xsl:value-of select="@subitem" /></span>
                                   </xsl:when>
                                   <xsl:otherwise>
                                     <xsl:value-of select="@subitem" />
@@ -8194,11 +8194,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.772 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.772 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.773 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.773 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/19 20:35:11 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/19 20:35:11 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/20 16:42:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/20 16:42:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
