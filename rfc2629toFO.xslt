@@ -43,7 +43,7 @@
     exclude-result-prefixes="ed exslt msxsl myns rdf svg x"
 >
 
-<xsl:import href="rfc2629.xslt" />
+<xsl:import href="rfc2629-no-doctype.xslt" />
 
 <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="no"/>
 

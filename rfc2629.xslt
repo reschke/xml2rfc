@@ -49,7 +49,7 @@
 
 <xsl:strip-space elements="abstract author back figure front list middle note postal reference references rfc section texttable"/>
 
-<xsl:output method="html" encoding="utf-8" doctype-public="about:legacy-compat" indent="no"/>
+<xsl:output method="html" encoding="utf-8" doctype-system="about:legacy-compat" indent="no"/>
 
 <!-- rfc comments PI -->
 
@@ -8194,11 +8194,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.773 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.773 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.774 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.774 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/20 16:42:39 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/20 16:42:39 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/21 11:57:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/21 11:57:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

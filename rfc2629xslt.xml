@@ -526,6 +526,60 @@ xsltproc --param xml2rfc-toc '"yes"' \
   This can be checked using the W3C's online
   validator at <eref target="http://validator.w3.org" /><iref item="HTML compliance"/>.
 </t>
+<t>
+  XSLT 1.0 is not capable to directly emit the HTML doctype declaration, thus
+  uses the SYSTEM ID "about:legacy-compat" instead
+  (see <xref target="HTML5" x:sec="8.1.1" x:rel="syntax.html#the-doctype"/>).
+</t>
+<t>
+  When not run in a browser, the doctype declaration can be adjusted using
+  a small script, such as with:
+</t>
+<figure><artwork type="example">
+saxon test.xml rfc2629.xslt | awk -f html5doctype.awk
+</artwork></figure>
+<t>
+  with
+</t>
+<figure><artwork x:lang="" filename="html5doctype.awk" type="code">
+<?BEGINESCAPEDINC html5doctype.awk ?>
+#!/usr/bin/awk -f
+
+# waitfordoctype:
+# 0: wait for line starting with DOCTYPE and eat empty lines
+# 1: wait for line starting with &lt;html
+# 2: afterwards
+
+BEGIN {
+  waitfordoctype = 0;
+}
+
+/&lt;!DOCTYPE .*/ {
+  if (waitfordoctype == 0) {
+    waitfordoctype = 1
+  }
+}
+
+/&lt;html.*/ {
+  if (waitfordoctype == 1) {
+    waitfordoctype = 2
+    printf("&lt;!DOCTYPE html>\n")
+  }
+  else {
+    print
+  }
+}
+
+{
+  if (waitfordoctype == 0 &amp;&amp; $0 != "") {
+    print
+  }
+  else if (waitfordoctype == 2) {
+    print
+  }
+}
+<?ENDESCAPEDINC html5doctype.awk ?>
+</artwork></figure>
 </section>
 
 <section title="Standard HTML LINK elements" anchor="html.link">
