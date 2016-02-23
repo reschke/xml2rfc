@@ -770,7 +770,7 @@ saxon tmp.fo xsl11toFop.xslt > rfc2629.fo
 </section>
 </section>
 
-<section title="Via X(HTML)" anchor="output.pdf.html">
+<section title="Via HTML" anchor="output.pdf.html">
 <t>
   PDF output can also be produced directly from (X)HTML. One simple approach
   is to rely on the browser's printing function, and to use a printer driver
@@ -788,9 +788,8 @@ saxon tmp.fo xsl11toFop.xslt > rfc2629.fo
     produced with:
   </preamble>
   <artwork type="example">
-saxon input.xml rfc2629toXHTML.xslt xml2rfc-ext-justification=print \
-  > output.xhtml
-prince output.xhtml output.pdf</artwork>
+saxon input.xml rfc2629.xslt > output.html
+prince output.html output.pdf</artwork>
 </figure>
 </section>
 
