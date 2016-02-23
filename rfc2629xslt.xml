@@ -35,7 +35,6 @@
     <keyword>RFC2629</keyword>
     <keyword>xml2rfc</keyword>
     <keyword>XSLT</keyword>
-    <keyword>hCard</keyword>
     <keyword>XSL-FO</keyword>
     <keyword>PDF</keyword>
     <keyword>GRDDL</keyword>
@@ -59,7 +58,8 @@
     <t>outputting CHM (Compiled Microsoft Help, <xref target="output.chm"/>),</t>
     <t>outputting PDF (<xref target="output.pdf"/>),</t>
     <t>outputting ePub (<xref target="output.epub"/>),</t>
-    <t>extensions to the xml2rfc vocabulary (<xref target="extensions"/>).</t>
+    <t>extensions to the xml2rfc vocabulary (<xref target="extensions"/>),</t>
+    <t>selected extensions from the proposed xml2rfc V3 vocabulary (<xref target="v3"/>),</t>
     <t>various utilities (<xref target="utilities"/>).</t>
   </list>
 </t>
