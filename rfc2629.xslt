@@ -8194,11 +8194,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.774 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.774 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.775 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.775 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/21 11:57:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/21 11:57:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/24 14:35:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/24 14:35:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8693,6 +8693,13 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='symrefs'"/>
                       <xsl:when test="$attrname='toc'"/>
                       <xsl:when test="$attrname='tocdepth'"/>
+                      <xsl:when test="$attrname='tocindent'">
+                        <xsl:if test="$value!='yes'">
+                          <xsl:call-template name="warning">
+                            <xsl:with-param name="msg">the rfc tocindent pseudo-attribute with values other than 'yes' in not supported by this processor.</xsl:with-param>
+                          </xsl:call-template>
+                        </xsl:if>
+                      </xsl:when>
                       <xsl:otherwise>
                         <xsl:call-template name="info">
                           <xsl:with-param name="msg">unsupported rfc pseudo-attribute '<xsl:value-of select="$attrname"/>'</xsl:with-param>
