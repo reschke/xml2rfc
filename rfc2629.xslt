@@ -2437,6 +2437,48 @@
 <xsl:template match="references">
   <xsl:call-template name="check-no-text-content"/>
 
+  <xsl:variable name="refseccount" select="count(/rfc/back/references)+count(/rfc/back/ed:replace/ed:ins/references)"/>
+
+  <xsl:choose>
+    <!-- insert pseudo section when needed -->
+    <xsl:when test="not(preceding::references) and $refseccount!=1">
+      <xsl:call-template name="insert-conditional-hrule"/>
+      <div id="{$anchor-prefix}.references">
+        <xsl:call-template name="insert-conditional-pagebreak"/>
+        <xsl:variable name="sectionNumber">
+          <xsl:call-template name="get-references-section-number"/>
+        </xsl:variable>
+        <h2 id="{$anchor-prefix}.section.{$sectionNumber}">
+          <a href="#{$anchor-prefix}.section.{$sectionNumber}">
+            <xsl:call-template name="emit-section-number">
+              <xsl:with-param name="no" select="$sectionNumber"/>
+            </xsl:call-template>
+          </a>
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="$xml2rfc-refparent"/>
+        </h2>
+        <xsl:for-each select=".|following-sibling::references">
+          <xsl:call-template name="make-references">
+            <xsl:with-param name="nested" select="true()"/>
+          </xsl:call-template>
+        </xsl:for-each>
+      </div>
+    </xsl:when>
+    <xsl:when test="preceding::references">
+      <!-- already processed -->
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="make-references">
+        <xsl:with-param name="nested" select="false()"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+
+</xsl:template>
+
+<xsl:template name="make-references">
+  <xsl:param name="nested"/>
+  
   <xsl:variable name="name">
     <xsl:if test="ancestor::ed:del">
       <xsl:text>del-</xsl:text>
@@ -2444,29 +2486,9 @@
     <xsl:number level="any"/>
   </xsl:variable>
 
-  <xsl:variable name="refseccount" select="count(/rfc/back/references)+count(/rfc/back/ed:replace/ed:ins/references)"/>
-
-  <!-- insert pseudo section when needed -->
-  <xsl:if test="not(preceding::references) and $refseccount!=1">
-    <xsl:call-template name="insert-conditional-hrule"/>
-    <h2 id="{$anchor-prefix}.references">
-      <xsl:call-template name="insert-conditional-pagebreak"/>
-      <xsl:variable name="sectionNumber">
-        <xsl:call-template name="get-references-section-number"/>
-      </xsl:variable>
-      <a id="{$anchor-prefix}.section.{$sectionNumber}" href="#{$anchor-prefix}.section.{$sectionNumber}">
-        <xsl:call-template name="emit-section-number">
-          <xsl:with-param name="no" select="$sectionNumber"/>
-        </xsl:call-template>
-      </a>
-      <xsl:text> </xsl:text>
-      <xsl:value-of select="$xml2rfc-refparent"/>
-    </h2>
-  </xsl:if>
-
   <xsl:variable name="elemtype">
     <xsl:choose>
-      <xsl:when test="$refseccount!=1">h3</xsl:when>
+      <xsl:when test="$nested">h3</xsl:when>
       <xsl:otherwise>h2</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -2489,42 +2511,43 @@
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:element name="{$elemtype}">
+  <xsl:variable name="sectionNumber">
+    <xsl:call-template name="get-section-number"/>
+  </xsl:variable>
+
+  <xsl:variable name="anchorpostfix">
+    <xsl:if test="$nested">.<xsl:value-of select="$name"/></xsl:if>
+  </xsl:variable>
+
+  <div id="{$anchor-prefix}.references{$anchorpostfix}">
     <xsl:if test="$name='1'">
       <xsl:call-template name="insert-conditional-pagebreak"/>
     </xsl:if>
-    <xsl:variable name="sectionNumber">
-      <xsl:call-template name="get-section-number"/>
-    </xsl:variable>
-    <xsl:variable name="anchorpref">
+    <xsl:element name="{$elemtype}">
+      <xsl:attribute name="id"><xsl:value-of select="concat($anchor-prefix,'.section.',$sectionNumber)"/></xsl:attribute>
+      <a href="#{$anchor-prefix}.section.{$sectionNumber}">
+        <xsl:call-template name="emit-section-number">
+          <xsl:with-param name="no" select="$sectionNumber"/>
+        </xsl:call-template>
+      </a>
+      <xsl:text> </xsl:text>
+      <xsl:copy-of select="$title"/>
+    </xsl:element>
+  
+    <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
+    <dl class="{$css-reference}">
       <xsl:choose>
-        <xsl:when test="$elemtype='h2'"></xsl:when>
-        <xsl:otherwise>.<xsl:value-of select="$name"/></xsl:otherwise>
+        <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
+          <xsl:apply-templates select="*|$included">
+            <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
+          </xsl:apply-templates>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="*|$included"/>
+        </xsl:otherwise>
       </xsl:choose>
-    </xsl:variable>
-    <xsl:attribute name="id"><xsl:value-of select="concat($anchor-prefix,'.references',$anchorpref)"/></xsl:attribute>
-    <a href="#{$anchor-prefix}.section.{$sectionNumber}" id="{$anchor-prefix}.section.{$sectionNumber}">
-      <xsl:call-template name="emit-section-number">
-        <xsl:with-param name="no" select="$sectionNumber"/>
-      </xsl:call-template>
-    </a>
-    <xsl:text> </xsl:text>
-    <xsl:copy-of select="$title"/>
-  </xsl:element>
-
-  <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
-  <dl class="{$css-reference}">
-    <xsl:choose>
-      <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
-        <xsl:apply-templates select="*|$included">
-          <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
-        </xsl:apply-templates>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates select="*|$included"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </dl>
+    </dl>
+  </div>
 </xsl:template>
 
 <!-- processed earlier -->
@@ -8194,11 +8217,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.775 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.775 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.776 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.776 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/24 14:35:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/24 14:35:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/25 16:42:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/25 16:42:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
