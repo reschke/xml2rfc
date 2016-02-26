@@ -820,10 +820,10 @@
 
 <xsl:template match="abstract">
   <xsl:call-template name="check-no-text-content"/>
-  <div id="{$anchor-prefix}.abstract">
+  <section id="{$anchor-prefix}.abstract">
     <h2><a href="#{$anchor-prefix}.abstract">Abstract</a></h2>
     <xsl:apply-templates />
-  </div>
+  </section>
 </xsl:template>
 
 <msxsl:script language="JScript" implements-prefix="myns">
@@ -1326,109 +1326,108 @@
 
 <xsl:template match="front">
   <xsl:call-template name="check-no-text-content"/>
-  <xsl:if test="$xml2rfc-topblock!='no'">
-    <!-- collect information for left column -->
-    <xsl:variable name="leftColumn">
-      <xsl:call-template name="collectLeftHeaderColumn" />
-    </xsl:variable>
-    <!-- collect information for right column -->
-    <xsl:variable name="rightColumn">
-      <xsl:call-template name="collectRightHeaderColumn" />
-    </xsl:variable>
-    <!-- insert the collected information -->
-    <table class="{$css-header}" id="{$anchor-prefix}.headerblock">
-      <xsl:choose>
-        <xsl:when test="function-available('exslt:node-set')">
-          <xsl:call-template name="emitheader">
-            <xsl:with-param name="lc" select="exslt:node-set($leftColumn)" />
-            <xsl:with-param name="rc" select="exslt:node-set($rightColumn)" />
-          </xsl:call-template>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:call-template name="error">
-            <xsl:with-param name="msg" select="$node-set-warning"/>
-          </xsl:call-template>
-        </xsl:otherwise>
-      </xsl:choose>
-    </table>
-  </xsl:if>
-
-  <div id="{$anchor-prefix}.title">
-    <!-- main title -->
-
-    <h1><xsl:apply-templates select="title"/></h1>
-    <xsl:if test="/rfc/@docName">
-    
-      <xsl:variable name="docname" select="/rfc/@docName"/>
-
-      <xsl:choose>
-        <xsl:when test="$rfcno!=''">
-          <xsl:call-template name="warning">
-            <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' is ignored because an RFC number is specified as well.</xsl:with-param>
-          </xsl:call-template>
-        </xsl:when>
-        <xsl:otherwise>
-          <div class="filename"><xsl:value-of select="$docname"/></div>
-        </xsl:otherwise>
-      </xsl:choose>
-      
-      <xsl:variable name="docname-noext">
+  <header>
+    <xsl:if test="$xml2rfc-topblock!='no'">
+      <!-- collect information for left column -->
+      <xsl:variable name="leftColumn">
+        <xsl:call-template name="collectLeftHeaderColumn" />
+      </xsl:variable>
+      <!-- collect information for right column -->
+      <xsl:variable name="rightColumn">
+        <xsl:call-template name="collectRightHeaderColumn" />
+      </xsl:variable>
+      <!-- insert the collected information -->
+      <table class="{$css-header}" id="{$anchor-prefix}.headerblock">
         <xsl:choose>
-          <xsl:when test="contains($docname,'.')">
-            <xsl:call-template name="warning">
-              <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should contain the base name, not the filename (thus no file extension).</xsl:with-param>
+          <xsl:when test="function-available('exslt:node-set')">
+            <xsl:call-template name="emitheader">
+              <xsl:with-param name="lc" select="exslt:node-set($leftColumn)" />
+              <xsl:with-param name="rc" select="exslt:node-set($rightColumn)" />
             </xsl:call-template>
-            <xsl:value-of select="substring-before($docname,'.')"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="$docname"/>
+            <xsl:call-template name="error">
+              <xsl:with-param name="msg" select="$node-set-warning"/>
+            </xsl:call-template>
           </xsl:otherwise>
         </xsl:choose>
-      </xsl:variable>
-
-      <!-- more name checks -->
-      <xsl:variable name="offending" select="translate($docname,concat($lcase,$digits,'-.'),'')"/>
-      <xsl:if test="$offending != ''">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should not contain the character '<xsl:value-of select="substring($offending,1,1)"/>'.</xsl:with-param>
-        </xsl:call-template>
-      </xsl:if>
-
-      <xsl:if test="contains($docname,'--')">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should not contain the character sequence '--'.</xsl:with-param>
-        </xsl:call-template>
-      </xsl:if>
-
-      <xsl:if test="not(starts-with($docname,'draft-'))">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should start with 'draft-'.</xsl:with-param>
-        </xsl:call-template>
-      </xsl:if>
-
-      <!-- sequence number -->
-      <xsl:variable name="seq">
-        <xsl:choose>
-          <xsl:when test="substring($docname-noext,string-length($docname-noext) + 1 - string-length('-latest'))='-latest'">latest</xsl:when>
-          <xsl:when test="substring($docname-noext,string-length($docname-noext) - 2, 1)='-'"><xsl:value-of select="substring($docname-noext,string-length($docname-noext)-1)"/></xsl:when>
-          <xsl:otherwise/>
-        </xsl:choose>
-      </xsl:variable>
-
-      <xsl:if test="$seq='' or ($seq!='latest' and translate($seq,$digits,'')!='')">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should end with a two-digit sequence number or 'latest'.</xsl:with-param>
-        </xsl:call-template>
-      </xsl:if>
-
-      <xsl:if test="string-length($docname)-string-length($seq) > 50">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>', excluding sequence number, should have less than 50 characters.</xsl:with-param>
-        </xsl:call-template>
-      </xsl:if>
-
+      </table>
     </xsl:if>
-  </div>
+
+    <div id="{$anchor-prefix}.title">
+      <!-- main title -->
+      <h1><xsl:apply-templates select="title"/></h1>
+      <xsl:if test="/rfc/@docName">
+        <xsl:variable name="docname" select="/rfc/@docName"/>
+        <xsl:choose>
+          <xsl:when test="$rfcno!=''">
+            <xsl:call-template name="warning">
+              <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' is ignored because an RFC number is specified as well.</xsl:with-param>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+            <div class="filename"><xsl:value-of select="$docname"/></div>
+          </xsl:otherwise>
+        </xsl:choose>
+        
+        <xsl:variable name="docname-noext">
+          <xsl:choose>
+            <xsl:when test="contains($docname,'.')">
+              <xsl:call-template name="warning">
+                <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should contain the base name, not the filename (thus no file extension).</xsl:with-param>
+              </xsl:call-template>
+              <xsl:value-of select="substring-before($docname,'.')"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$docname"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+  
+        <!-- more name checks -->
+        <xsl:variable name="offending" select="translate($docname,concat($lcase,$digits,'-.'),'')"/>
+        <xsl:if test="$offending != ''">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should not contain the character '<xsl:value-of select="substring($offending,1,1)"/>'.</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+  
+        <xsl:if test="contains($docname,'--')">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should not contain the character sequence '--'.</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+  
+        <xsl:if test="not(starts-with($docname,'draft-'))">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should start with 'draft-'.</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+  
+        <!-- sequence number -->
+        <xsl:variable name="seq">
+          <xsl:choose>
+            <xsl:when test="substring($docname-noext,string-length($docname-noext) + 1 - string-length('-latest'))='-latest'">latest</xsl:when>
+            <xsl:when test="substring($docname-noext,string-length($docname-noext) - 2, 1)='-'"><xsl:value-of select="substring($docname-noext,string-length($docname-noext)-1)"/></xsl:when>
+            <xsl:otherwise/>
+          </xsl:choose>
+        </xsl:variable>
+  
+        <xsl:if test="$seq='' or ($seq!='latest' and translate($seq,$digits,'')!='')">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' should end with a two-digit sequence number or 'latest'.</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+  
+        <xsl:if test="string-length($docname)-string-length($seq) > 50">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>', excluding sequence number, should have less than 50 characters.</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+  
+      </xsl:if>
+    </div>
+  </header>
 
   <!-- insert notice about update -->
   <xsl:if test="$published-as-rfc">
@@ -1963,7 +1962,7 @@
 <xsl:template match="note">
   <xsl:call-template name="check-no-text-content"/>
   <xsl:variable name="num"><xsl:number/></xsl:variable>
-  <div id="{$anchor-prefix}.note.{$num}">
+  <section id="{$anchor-prefix}.note.{$num}">
     <h2>
       <xsl:call-template name="insertInsDelClass"/>
       <a href="#{$anchor-prefix}.note.{$num}">
@@ -1971,7 +1970,7 @@
       </a>
     </h2>
     <xsl:apply-templates />
-  </div>
+  </section>
 </xsl:template>
 
 <xsl:template match="postamble">
@@ -2447,7 +2446,7 @@
     <!-- insert pseudo section when needed -->
     <xsl:when test="not(preceding::references) and $refseccount!=1">
       <xsl:call-template name="insert-conditional-hrule"/>
-      <div id="{$anchor-prefix}.references">
+      <section id="{$anchor-prefix}.references">
         <xsl:call-template name="insert-conditional-pagebreak"/>
         <xsl:variable name="sectionNumber">
           <xsl:call-template name="get-references-section-number"/>
@@ -2466,7 +2465,7 @@
             <xsl:with-param name="nested" select="true()"/>
           </xsl:call-template>
         </xsl:for-each>
-      </div>
+      </section>
     </xsl:when>
     <xsl:when test="preceding::references">
       <!-- already processed -->
@@ -2523,7 +2522,7 @@
     <xsl:if test="$nested">.<xsl:value-of select="$name"/></xsl:if>
   </xsl:variable>
 
-  <div id="{$anchor-prefix}.references{$anchorpostfix}">
+  <section id="{$anchor-prefix}.references{$anchorpostfix}">
     <xsl:if test="$name='1'">
       <xsl:call-template name="insert-conditional-pagebreak"/>
     </xsl:if>
@@ -2551,7 +2550,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </dl>
-  </div>
+  </section>
 </xsl:template>
 
 <!-- processed earlier -->
@@ -2944,7 +2943,7 @@
   <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!='' and @anchor='rfc.status'">
     <div id="{$anchor-prefix}.meta" class="{$css-docstatus}"></div>
   </xsl:if>
-  <div>
+  <section>
     <xsl:if test="@anchor">
       <xsl:call-template name="check-anchor"/>
       <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
@@ -3004,7 +3003,7 @@
         <xsl:apply-templates select="."/>
       </xsl:if>
     </xsl:for-each>
-  </div>
+  </section>
 </xsl:template>
 
 <!-- already processed by insertTitle -->
@@ -4167,9 +4166,9 @@
   <xsl:if test="$number!='suppress'">
     <xsl:call-template name="insert-conditional-hrule"/>
 
-    <div class="avoidbreakinside">
-      <h2 id="{$anchor-prefix}.authors">
-        <xsl:call-template name="insert-conditional-pagebreak"/>
+    <section id="{$anchor-prefix}.authors" class="avoidbreakinside">
+      <xsl:call-template name="insert-conditional-pagebreak"/>
+      <h2>
         <xsl:if test="$number != ''">
           <a href="#{$anchor-prefix}.section.{$number}" id="{$anchor-prefix}.section.{$number}"><xsl:value-of select="$number"/>.</a>
           <xsl:text> </xsl:text>
@@ -4178,7 +4177,7 @@
       </h2>
 
       <xsl:apply-templates select="/rfc/front/author" />
-    </div>
+    </section>
   </xsl:if>
 </xsl:template>
 
@@ -5567,7 +5566,7 @@ dd, li, p {
 
   <xsl:call-template name="insert-conditional-hrule"/>
 
-  <div id="{$anchor-prefix}.index">
+  <section id="{$anchor-prefix}.index">
     <xsl:call-template name="insert-conditional-pagebreak"/>
     <h2>
       <a href="#{$anchor-prefix}.index">Index</a>
@@ -5794,7 +5793,7 @@ dd, li, p {
         </xsl:for-each>
       </ul>
     </div>
-  </div>
+  </section>
 </xsl:template>
 
 <xsl:template name="insertPreamble" myns:namespaceless-elements="xml2rfc">
@@ -6377,7 +6376,7 @@ dd, li, p {
 <xsl:template match="/" mode="toc">
   <hr class="{$css-noprint}"/>
 
-  <div id="{$anchor-prefix}.toc">
+  <nav id="{$anchor-prefix}.toc">
     <h2 class="np"> <!-- this pagebreak occurs always -->
       <a href="#{$anchor-prefix}.toc">Table of Contents</a>
     </h2>
@@ -6385,7 +6384,7 @@ dd, li, p {
     <ul class="toc">
       <xsl:apply-templates mode="toc" />
     </ul>
-  </div>
+  </nav>
 </xsl:template>
 
 <xsl:template name="insert-toc-line">
@@ -8220,11 +8219,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.778 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.778 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.779 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.779 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/26 13:27:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/26 13:27:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/26 22:32:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/26 22:32:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
