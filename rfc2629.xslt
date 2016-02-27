@@ -2658,7 +2658,7 @@
             </xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
-          <meta name="dcterms.issued" scheme="ISO8601">
+          <meta name="dcterms.issued">
             <xsl:attribute name="content">
               <xsl:value-of select="concat($xml2rfc-ext-pub-year,'-',$pub-month-numeric)"/>
               <xsl:if test="$xml2rfc-ext-pub-day != '' and not(@number)">
@@ -8219,11 +8219,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.779 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.779 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.780 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.780 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/26 22:32:35 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/26 22:32:35 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/27 09:17:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/27 09:17:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
