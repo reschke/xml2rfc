@@ -5313,6 +5313,9 @@ thead th {
   padding: 1px 4px;
   border: 1px solid silver;
   border-radius: 5px;
+  -webkit-user-select: none;<!-- not std CSS yet--> 
+  -moz-user-select: none;
+  -ms-user-select: none;
 }</xsl:if><xsl:if test="$xml2rfc-ext-justification='always'">
 dd, li, p {
   text-align: justify;
@@ -8219,11 +8222,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.781 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.781 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.782 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.782 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/27 11:32:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/27 11:32:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/28 07:16:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/28 07:16:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
