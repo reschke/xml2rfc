@@ -118,7 +118,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
 <postamble>(note the required quoting of string parameters)<iref item="xsltproc" subitem="passing parameters"/></postamble>
 </figure>
 
-<section title="Supported xml2rfc-compatible PIs">
+<section title="Supported xml2rfc-compatible PIs" anchor="supported.pis">
 <texttable>
   <ttcol>PI target</ttcol>
   <ttcol>PI pseudo-attribute</ttcol>
@@ -167,6 +167,10 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>xml2rfc-header<iref item="xml2rfc-header parameter"/> <iref item="Parameters" subitem="xml2rfc-header"/></c>
   <c>(not set)</c>
   <c/>
+
+  <c>rfc</c>
+  <c>include<iref item="include PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include"/></c>
+  <c>only partly supported, use external entities instead (see <xref target="examples.internalsubset"/>) or other tools (<xref target="refreshing.inclusions"/>) instead</c>
 
   <c>rfc</c>
   <c>inline<iref item="inline PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="inline"/></c>
@@ -237,15 +241,11 @@ xsltproc --param xml2rfc-toc '"yes"' \
 </texttable>
 </section>
 
-<section title="Unsupported xml2rfc-compatible PIs">
+<section title="Unsupported xml2rfc-compatible PIs" anchor="unsupported.pis">
 <texttable>
   <ttcol>PI target</ttcol>
   <ttcol>PI pseudo-attribute</ttcol>
   <ttcol>comment</ttcol>
-
-  <c>rfc</c>
-  <c>include<iref item="include PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include"/></c>
-  <c>incompatible with XML/XSLT processing model, please use external entities instead (see <xref target="examples.internalsubset"/>)</c>
 
   <c>rfc</c>
   <c>needLines<iref item="needLines PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="needLines"/></c>
@@ -1836,6 +1836,177 @@ The picture below shows the RFC dependencies in RFC2629.
 ocasionally save.
 </postamble>
 </figure>
+</section>
+
+<section title="Refreshing included material in the XML source" anchor="refreshing.inclusions">
+<t>
+  There are many methods for automatic inclusion of material in the XML source,
+  such as the "include" processing instruction<iref item="include PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include"/>
+  (see <xref target="supported.pis"/>), external entities (<xref target="examples.internalsubset"/>), or XInclude.
+  In general, those share a common problem: the XML source file isn't
+  self-contained, which makes it harder to submit it as Internet Draft.
+</t>
+<t>
+  The tool <tt>refresh-inclusions.sh</tt> does in-place replacement: it
+  scans the source file for inclusion directives (expressed as XML
+  processing instructions), and refreshes the included text with data
+  from an external file. It will not modify the source file unless included
+  material did actually change. When it does modify the source file, it
+  will copy the original source to a backup file.
+</t>
+<t>
+  <tt>refresh-inclusions.sh</tt> can include both plain text (<tt>BEGINESCAPEDINC</tt>/<tt>ENDESCAPEDINC</tt>) and 
+  XML (<tt>BEGININC</tt>/<tt>ENDINC</tt>). The figure below was inserted
+  using:
+</t>
+<figure><artwork type="example" x:lang="">
+&lt;?BEGINESCAPEDINC refresh-inclusions.sh ?>
+...
+&lt;?ENDSCAPEDINC refresh-inclusions.sh ?>
+</artwork>
+<postamble>(note that the SP character at the end of the directive is significant)</postamble>
+</figure>
+<figure>
+<preamble><tt>refresh-inclusions.sh</tt>:</preamble>
+<artwork name="refresh-inclusions.sh" x:lang="">
+<?BEGINESCAPEDINC refresh-inclusions.sh ?>
+#!/bin/sh
+# Refresh file inclusions based on XML processing instructions
+# 
+# Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice,
+#   this list of conditions and the following disclaimer.
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# * Neither the name of Julian Reschke nor the names of its contributors
+#   may be used to endorse or promote products derived from this software
+#   without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+expand() {
+
+  # remember whether we started with CRLF (assumes that we have dos2unix)
+  CRLF=$(dos2unix -ic "$1" 2>/dev/null | tr -d ' ')
+  
+  cat "$1" | awk ' 
+
+  function filecontents(filename) {
+    while (getline &lt; filename > 0) {
+      fc[filename] = fc[filename] $0 "\n"
+    }
+    return fc[filename]
+  }
+
+  BEGIN {
+    includefile = "";
+    includeescapedfile = "";
+  }
+  
+  # start include (verbatim mode)
+  /&lt;\?BEGININC .* \?>$/ {
+    print
+    keyword = "&lt;?BEGININC " 
+    extract = match($0, /&lt;\?BEGININC .* \?>$/)
+    includefile = substr($0, RSTART + length(keyword),
+                    RLENGTH - 3 - length(keyword))
+    output = filecontents(includefile)
+    printf("%s", output)
+  }
+  
+  # start include (escape-for-XML mode)
+  /&lt;\?BEGINESCAPEDINC .* \?>$/ {
+    print
+    keyword = "&lt;?BEGINESCAPEDINC " 
+    extract = match($0, /&lt;\?BEGINESCAPEDINC .* \?>$/)
+    includeescapedfile = substr($0, RSTART + length(keyword),
+                           RLENGTH - 3 - length(keyword))
+    output = filecontents(includeescapedfile)
+    # escape ampersand, less-than, and greater-than
+    # when part of a CDATA end marker
+    gsub(/&amp;/, "\\&amp;amp;", output)
+    gsub(/&lt;/, "\\&amp;lt;", output)
+    gsub(/]]&gt;/, "]]\\&amp;gt;", output)
+    printf("%s", output)
+  }
+
+  # end include (verbatim mode)
+  /^&lt;\?ENDINC .* \?>/ {
+    if ($2 != includefile) {
+      printf ("unexpected ENDINC, got %s but expected %s\n", $2,
+        includefile) >> "/dev/stderr"
+    }
+    includefile = "";
+  }
+  
+  # end include (escape-for-XML mode)
+  /^&lt;\?ENDESCAPEDINC .* \?>/ {
+    if ($2 != includeescapedfile) {
+      printf ("unexpected ENDESCAPEDINC, got %s but expected %s\n", $2,
+        includeescapedfile) >> "/dev/stderr"
+    }
+    includeescapedfile = "";
+  }
+
+  #default
+  {
+    if (includefile == "" &amp;&amp; includeescapedfile == "") {
+      print
+    }
+  }
+  
+  END {
+    if (includefile != "") {
+      printf ("missing ENDINC for %s\n",
+        includefile) >> "/dev/stderr"
+    }
+    if (includeescapedfile != "") {
+      printf ("missing ENDESCAPEDINC for %s\n",
+        includeescapedfile) >> "/dev/stderr"
+    }
+  }
+  
+  ' > $$
+  
+  # restore CRLF if needed
+  if [ -n "$CRLF" ]; then
+    FNN=$(echo "$1" | tr -d ' ')
+    [ "$FNN" = "$CRLF" ] &amp;&amp; unix2dos -q $$
+  fi
+  
+  # check for changes
+  cmp -s "$1" $$ || (
+    cp -v "$1" "$1".ri.bak
+    cp $$ "$1"
+    echo "$1" updated )
+  
+  rm -f $$
+}
+
+[ $# -ne 0 ] || ( echo "refresh-inclusions.sh file..." >&amp;2 ; exit 2 )
+
+for i in $*
+do
+  expand $i
+done
+<?ENDESCAPEDINC refresh-inclusions.sh ?>
+</artwork></figure>
 </section>
 
 </section>
