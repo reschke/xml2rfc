@@ -320,7 +320,6 @@
 <xsl:variable name="css-header"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'header'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-left"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'left'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-noprint"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'noprint'"/></xsl:call-template></xsl:variable>
-<xsl:variable name="css-note"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'note'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-publishedasrfc"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'publishedasrfc'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-reference"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'reference'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-right"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'right'"/></xsl:call-template></xsl:variable>
@@ -4864,7 +4863,7 @@ br.p {
 cite {
   font-style: normal;
 }<xsl:if test="//x:note|//aside">
-div.<xsl:value-of select="$css-note"/> {
+aside {
   margin-left: 2em;
 }</xsl:if>
 dl {
@@ -6993,7 +6992,7 @@ dd, li, p {
     <xsl:call-template name="get-paragraph-number" />
   </xsl:variable>
 
-  <div class="{$css-note}">
+  <aside>
     <xsl:call-template name="copy-anchor"/>
     <div>
       <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins)">
@@ -7007,7 +7006,7 @@ dd, li, p {
         </xsl:apply-templates>
       </xsl:for-each>
     </div>
-  </div>
+  </aside>
 </xsl:template>
 
 <xsl:template match="x:bcp14|bcp14">
@@ -8222,11 +8221,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.782 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.782 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.783 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.783 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/28 07:16:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/28 07:16:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/28 11:17:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/28 11:17:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
