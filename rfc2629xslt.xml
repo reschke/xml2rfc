@@ -2367,6 +2367,9 @@ namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 <em># Define SVG namespace</em>
 namespace svg = "http://www.w3.org/2000/svg"
 
+<em># Define XInclude namespace</em>
+namespace xi = "http://www.w3.org/2001/XInclude"
+
 <em># Include rfc2629bis RNC grammar</em>
 include "rfc2629.rnc" {
   
@@ -2540,7 +2543,8 @@ include "rfc2629.rnc" {
     element references {
       attribute title { text }?,
       <strong><x:ref>v3_name</x:ref>?</strong>,
-      reference+
+      (reference
+       | <x:ref>xi_include</x:ref>)+
     }
 
   <em># Redefine &lt;rfc> to allow our extension elements</em>
@@ -3131,6 +3135,14 @@ attlist.xref &amp;=
 /># Nop (for alignment in source)</em>
 <x:ref>x_x</x:ref> =
   element x:x {
+    empty
+  }
+
+<em anchor="xi_include"><iref item="xi:include Extension Element"/><iref item="XInclude Extension Elements" subitem="include"
+/># XInclude</em>
+<x:ref>xi_include</x:ref> =
+  element xi:include {
+    attribute href { text },
     empty
   }
 

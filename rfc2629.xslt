@@ -42,9 +42,10 @@
                 xmlns:saxon-old="http://icl.com/saxon"
                 xmlns:svg="http://www.w3.org/2000/svg"
                 xmlns:x="http://purl.org/net/xml2rfc/ext"
+                xmlns:xi="http://www.w3.org/2001/XInclude"
                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
 
-                exclude-result-prefixes="date ed exslt msxsl myns rdf saxon saxon-old svg x xhtml"
+                exclude-result-prefixes="date ed exslt msxsl myns rdf saxon saxon-old svg x xi xhtml"
                 >
 
 <xsl:strip-space elements="abstract author back figure front list middle note postal reference references rfc section texttable"/>
@@ -267,9 +268,35 @@
   </xsl:for-each>
 </xsl:template>
 
+<xsl:template name="getXIncludes">
+  <xsl:param name="nodes"/>
+  <xsl:for-each select="$nodes">
+    <xsl:choose>
+      <xsl:when test="(@parse and @parse!='xml') or @xpointer">
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg" select="'Unsupported attributes on x:include element'"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:variable name="doc">
+          <xsl:copy-of select="document(@href)"/>
+        </xsl:variable>
+        <xsl:if test="count(exslt:node-set($doc)) = 1">
+          <myns:include from="{@href}" in="{generate-id(..)}">
+            <xsl:copy-of select="$doc"/>
+          </myns:include>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:for-each>
+</xsl:template>
+
 <xsl:variable name="includeDirectives">
   <xsl:call-template name="getIncludes">
     <xsl:with-param name="nodes" select="/rfc/back/references/processing-instruction('rfc')"/>
+  </xsl:call-template>
+  <xsl:call-template name="getXIncludes">
+    <xsl:with-param name="nodes" select="/rfc/back/references/xi:include"/>
   </xsl:call-template>
 </xsl:variable>
 
@@ -2555,6 +2582,19 @@
       </xsl:choose>
     </dl>
   </section>
+</xsl:template>
+
+<xsl:template match="xi:include">
+  <xsl:choose>
+    <xsl:when test="not(parent::references)">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="'Support for x:include is restricted to child elements of &lt;references>'"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <!-- handled elsewhere -->
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- processed earlier -->
@@ -8226,11 +8266,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.784 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.784 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.785 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.785 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/02/28 17:17:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/28 17:17:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/02/29 18:17:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/02/29 18:17:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

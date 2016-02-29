@@ -39,8 +39,9 @@
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:svg="http://www.w3.org/2000/svg"
     xmlns:x="http://purl.org/net/xml2rfc/ext"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
 
-    exclude-result-prefixes="ed exslt msxsl myns rdf svg x"
+    exclude-result-prefixes="ed exslt msxsl myns rdf svg x xi"
 >
 
 <xsl:import href="rfc2629-no-doctype.xslt" />
@@ -1828,6 +1829,19 @@
 
 <xsl:template match="/">
   <xsl:apply-templates />
+</xsl:template>
+
+<xsl:template match="xi:include">
+  <xsl:choose>
+    <xsl:when test="not(parent::references)">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="'Support for x:include is restricted to child elements of &lt;references>'"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <!-- handled elsewhere -->
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="*">

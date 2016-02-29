@@ -36,8 +36,9 @@
                 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
                 xmlns:svg="http://www.w3.org/2000/svg"
                 xmlns:x="http://purl.org/net/xml2rfc/ext"
+                xmlns:xi="http://www.w3.org/2001/XInclude"
                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
-                exclude-result-prefixes="ed grddl rdf svg x xhtml"
+                exclude-result-prefixes="ed grddl rdf svg x xi xhtml"
 >
 
 <!-- re-use some of the default RFC2629.xslt rules -->
@@ -1125,6 +1126,11 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:attribute>
+</xsl:template>
+
+<!-- x:include -->
+<xsl:template match="/rfc/back/references/xi:include" mode="cleanup">
+  <xsl:copy-of select="document(@href)"/>
 </xsl:template>
 
 <!-- Display names for references -->
