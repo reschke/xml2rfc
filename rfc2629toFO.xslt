@@ -122,7 +122,7 @@
 </xsl:attribute-set>
 
 <xsl:template match="abstract">
-  <fo:block xsl:use-attribute-sets="h1" id="{concat($anchor-prefix,'.abstract')}">Abstract</fo:block>
+  <fo:block xsl:use-attribute-sets="h1" id="{concat($anchor-pref,'abstract')}">Abstract</fo:block>
   <xsl:apply-templates />
 </xsl:template>
 
@@ -413,7 +413,7 @@
 <!-- processed in a later stage -->
 <xsl:template match="iref[not(ancestor::t or ancestor::li) and not(parent::section)]">
   <fo:block>
-    <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix" />.iref.<xsl:number level="any"/></xsl:attribute>
+    <xsl:attribute name="id"><xsl:value-of select="$anchor-pref" />iref.<xsl:number level="any"/></xsl:attribute>
     <xsl:choose>
       <xsl:when test="@primary='true'">
         <xsl:attribute name="index-key">
@@ -435,7 +435,7 @@
 
 <xsl:template match="iref[(ancestor::t or ancestor::li) and not(parent::section)]">
   <fo:inline>
-    <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix" />.iref.<xsl:number level="any"/></xsl:attribute>
+    <xsl:attribute name="id"><xsl:value-of select="$anchor-pref" />iref.<xsl:number level="any"/></xsl:attribute>
     <xsl:choose>
       <xsl:when test="@primary='true'">
         <xsl:attribute name="index-key">
@@ -453,7 +453,7 @@
 
 <xsl:template match="iref" mode="iref-start">
   <fo:index-range-begin>
-    <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix" />.iref.<xsl:number level="any"/></xsl:attribute>
+    <xsl:attribute name="id"><xsl:value-of select="$anchor-pref" />iref.<xsl:number level="any"/></xsl:attribute>
     <xsl:choose>
       <xsl:when test="@primary='true'">
         <xsl:attribute name="index-key">
@@ -471,7 +471,7 @@
 
 <xsl:template match="iref" mode="iref-end">
   <fo:index-range-end>
-    <xsl:attribute name="ref-id"><xsl:value-of select="$anchor-prefix" />.iref.<xsl:number level="any"/></xsl:attribute>
+    <xsl:attribute name="ref-id"><xsl:value-of select="$anchor-pref" />iref.<xsl:number level="any"/></xsl:attribute>
   </fo:index-range-end>
 </xsl:template>
 
@@ -785,7 +785,7 @@
                
 <xsl:template match="note">
   <xsl:variable name="num"><xsl:number count="note"/></xsl:variable>
-  <fo:block xsl:use-attribute-sets="h1" id="{concat($anchor-prefix,'.note.',$num)}"><xsl:value-of select="@title" /></fo:block>
+  <fo:block xsl:use-attribute-sets="h1" id="{concat($anchor-pref,'note.',$num)}"><xsl:value-of select="@title" /></fo:block>
   <xsl:apply-templates />
 </xsl:template>
 
@@ -1000,7 +1000,7 @@
 
   <!-- insert pseudo section when needed -->
   <xsl:if test="$name='1' and count(/*/back/references)!=1">
-    <fo:block id="{$anchor-prefix}.references" xsl:use-attribute-sets="h1">
+    <fo:block id="{$anchor-pref}references" xsl:use-attribute-sets="h1">
       <xsl:if test="$name='1'">
         <xsl:attribute name="page-break-before">always</xsl:attribute>
       </xsl:if>
@@ -1017,7 +1017,7 @@
 
   <xsl:choose>
     <xsl:when test="count(/*/back/references)=1">
-      <fo:block id="{$anchor-prefix}.references" xsl:use-attribute-sets="h1 newpage">
+      <fo:block id="{$anchor-pref}references" xsl:use-attribute-sets="h1 newpage">
         <xsl:variable name="sectionNumber">
           <xsl:call-template name="get-section-number"/>
         </xsl:variable>
@@ -1040,7 +1040,7 @@
       </fo:block>
     </xsl:when>
     <xsl:otherwise>
-      <fo:block id="{$anchor-prefix}.references.{$name}" xsl:use-attribute-sets="h2">
+      <fo:block id="{$anchor-pref}references.{$name}" xsl:use-attribute-sets="h2">
         <xsl:variable name="sectionNumber">
           <xsl:call-template name="get-section-number"/>
         </xsl:variable>
@@ -1264,7 +1264,7 @@
   </xsl:variable>
 
   <xsl:if test="$sectionNumber!=''">
-    <xsl:attribute name="id"><xsl:value-of select="concat($anchor-prefix,'.section.',$sectionNumber)"/>
+    <xsl:attribute name="id"><xsl:value-of select="concat($anchor-pref,'section.',$sectionNumber)"/>
   </xsl:attribute></xsl:if>
   
   <xsl:call-template name="add-anchor" />
@@ -1422,7 +1422,7 @@
 
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="//*[@anchor=$target]" />
-  <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
 
   <xsl:variable name="sfmt">
     <xsl:call-template name="get-section-xref-format"/>
@@ -1506,7 +1506,7 @@
 
   <xsl:variable name="xref" select="."/>
   <xsl:variable name="target" select="@target"/>
-  <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
   <xsl:variable name="node" select="key('anchor-item',$xref/@target)|exslt:node-set($includeDirectives)//reference[@anchor=$xref/@target]"/>
   <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
     <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
@@ -1891,7 +1891,7 @@
   </xsl:variable>
 
   <xsl:if test="$sectionNumber!='suppress'">
-    <fo:block id="{$anchor-prefix}.authors" xsl:use-attribute-sets="h1 newpage">
+    <fo:block id="{$anchor-pref}authors" xsl:use-attribute-sets="h1 newpage">
       <xsl:if test="$sectionNumber != ''">
         <xsl:call-template name="emit-section-number">
           <xsl:with-param name="no" select="$sectionNumber"/>
@@ -1910,7 +1910,7 @@
 
 <xsl:template name="insertIndex">
 
-  <fo:block xsl:use-attribute-sets="h1 newpage" id="{$anchor-prefix}.index">
+  <fo:block xsl:use-attribute-sets="h1 newpage" id="{$anchor-pref}index">
     <xsl:text>Index</xsl:text>
   </fo:block>
 
@@ -2100,7 +2100,7 @@
 
 
 <xsl:template match="/" mode="toc">
-  <fo:block xsl:use-attribute-sets="h1 newpage" id="{concat($anchor-prefix,'.toc')}">
+  <fo:block xsl:use-attribute-sets="h1 newpage" id="{concat($anchor-pref,'toc')}">
     <xsl:text>Table of Contents</xsl:text>
   </fo:block>
 
@@ -2120,7 +2120,7 @@
   <!-- insert the index if index entries exist -->
   <xsl:if test="$has-index">
     <xsl:call-template name="insert-toc-line">
-      <xsl:with-param name="target" select="concat($anchor-prefix,'.index')"/>
+      <xsl:with-param name="target" select="concat($anchor-pref,'index')"/>
       <xsl:with-param name="title" select="'Index'"/>
     </xsl:call-template>
   </xsl:if>
@@ -2132,7 +2132,7 @@
   <!-- copyright statements -->
   <xsl:if test="$xml2rfc-private='' and not($no-copylong)">
     <xsl:call-template name="insert-toc-line">
-      <xsl:with-param name="target" select="concat($anchor-prefix,'.ipr')"/>
+      <xsl:with-param name="target" select="concat($anchor-pref,'ipr')"/>
       <xsl:with-param name="title" select="'Intellectual Property and Copyright Statements'"/>
     </xsl:call-template>
   </xsl:if>
@@ -2149,7 +2149,7 @@
   </xsl:variable>
   <xsl:if test="$authors-number!='suppress'">
     <xsl:call-template name="insert-toc-line">
-      <xsl:with-param name="target" select="concat($anchor-prefix,'.authors')"/>
+      <xsl:with-param name="target" select="concat($anchor-pref,'authors')"/>
       <xsl:with-param name="title" select="$authors-title"/>
       <xsl:with-param name="number" select="$authors-number"/>
     </xsl:call-template>
@@ -2180,7 +2180,7 @@
           <xsl:with-param name="number">
             <xsl:call-template name="get-references-section-number"/>
           </xsl:with-param>
-          <xsl:with-param name="target" select="concat($anchor-prefix,'.references')"/>
+          <xsl:with-param name="target" select="concat($anchor-pref,'references')"/>
           <xsl:with-param name="title" select="$title"/>
           <xsl:with-param name="name" select="name"/>
         </xsl:call-template>
@@ -2192,7 +2192,7 @@
         <xsl:with-param name="number">
           <xsl:call-template name="get-references-section-number"/>
         </xsl:with-param>
-        <xsl:with-param name="target" select="concat($anchor-prefix,'.references')"/>
+        <xsl:with-param name="target" select="concat($anchor-pref,'references')"/>
         <xsl:with-param name="title" select="$xml2rfc-refparent"/>
       </xsl:call-template>
   
@@ -2215,7 +2215,7 @@
 
         <xsl:call-template name="insert-toc-line">
           <xsl:with-param name="number" select="$sectionNumber"/>
-          <xsl:with-param name="target" select="concat($anchor-prefix,'.references','.',$num)"/>
+          <xsl:with-param name="target" select="concat($anchor-pref,'references','.',$num)"/>
           <xsl:with-param name="title" select="$title"/>
           <xsl:with-param name="name" select="name"/>
         </xsl:call-template>
@@ -2232,7 +2232,7 @@
   <xsl:variable name="target">
     <xsl:choose>
       <xsl:when test="@anchor"><xsl:value-of select="@anchor" /></xsl:when>
-       <xsl:otherwise><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$sectionNumber" /></xsl:otherwise>
+       <xsl:otherwise><xsl:value-of select="$anchor-pref"/>section.<xsl:value-of select="$sectionNumber" /></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 
@@ -2517,7 +2517,7 @@
 </xsl:template>
 
 <xsl:template match="abstract" mode="bookmarks">
-  <fo:bookmark internal-destination="{concat($anchor-prefix,'.abstract')}">
+  <fo:bookmark internal-destination="{concat($anchor-pref,'abstract')}">
     <fo:bookmark-title>Abstract</fo:bookmark-title>
     <xsl:apply-templates mode="bookmarks"/>
   </fo:bookmark>
@@ -2527,7 +2527,7 @@
   <xsl:variable name="num">
     <xsl:number count="note" />
   </xsl:variable>
-  <fo:bookmark internal-destination="{concat($anchor-prefix,'.note.',$num)}">
+  <fo:bookmark internal-destination="{concat($anchor-pref,'note.',$num)}">
     <fo:bookmark-title><xsl:value-of select="@title"/></fo:bookmark-title>
     <xsl:apply-templates mode="bookmarks"/>
   </fo:bookmark>
@@ -2535,7 +2535,7 @@
 
 <xsl:template match="section[not(@myns:unnumbered)]" mode="bookmarks">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
-  <fo:bookmark internal-destination="{$anchor-prefix}.section.{$sectionNumber}">
+  <fo:bookmark internal-destination="{$anchor-pref}section.{$sectionNumber}">
     <fo:bookmark-title>
       <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
         <xsl:value-of select="$sectionNumber"/>
@@ -2577,7 +2577,7 @@
 
   <!-- insert the index if index entries exist -->
   <xsl:if test="$has-index">
-    <fo:bookmark internal-destination="{concat($anchor-prefix,'.index')}">
+    <fo:bookmark internal-destination="{concat($anchor-pref,'index')}">
       <fo:bookmark-title>Index</fo:bookmark-title>
     </fo:bookmark>
   </xsl:if>
@@ -2588,7 +2588,7 @@
 
   <xsl:if test="$xml2rfc-private='' and not($no-copylong)">
     <!-- copyright statements -->
-    <fo:bookmark internal-destination="{concat($anchor-prefix,'.ipr')}">
+    <fo:bookmark internal-destination="{concat($anchor-pref,'ipr')}">
       <fo:bookmark-title>Intellectual Property and Copyright Statements</fo:bookmark-title>
     </fo:bookmark>
   </xsl:if>
@@ -2610,7 +2610,7 @@
   </xsl:variable>
 
   <xsl:if test="$authors-number!='suppress'">
-    <fo:bookmark internal-destination="{concat($anchor-prefix,'.authors')}">
+    <fo:bookmark internal-destination="{concat($anchor-pref,'authors')}">
       <fo:bookmark-title><xsl:value-of select="$title"/></fo:bookmark-title>
     </fo:bookmark>
   </xsl:if>
@@ -2640,7 +2640,7 @@
           </xsl:choose>
         </xsl:variable>
       
-        <fo:bookmark internal-destination="{$anchor-prefix}.references">
+        <fo:bookmark internal-destination="{$anchor-pref}references">
           <fo:bookmark-title>
             <xsl:call-template name="get-references-section-number"/>
             <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
@@ -2652,7 +2652,7 @@
     </xsl:when>
     <xsl:otherwise>
       <!-- insert pseudo container -->    
-      <fo:bookmark internal-destination="{$anchor-prefix}.references">
+      <fo:bookmark internal-destination="{$anchor-pref}references">
         <fo:bookmark-title>
           <xsl:call-template name="get-references-section-number"/>
           <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
@@ -2679,7 +2679,7 @@
             <xsl:number/>
           </xsl:variable>
   
-          <fo:bookmark internal-destination="{$anchor-prefix}.references.{$num}">
+          <fo:bookmark internal-destination="{$anchor-pref}references.{$num}">
             <fo:bookmark-title><xsl:value-of select="concat($sectionNumber,' ',normalize-space($title))"/></fo:bookmark-title>
           </fo:bookmark>
         </xsl:for-each>
@@ -2702,7 +2702,7 @@
   </xsl:if>
 
   <xsl:if test="$xml2rfc-toc='yes'">
-    <fo:bookmark internal-destination="{concat($anchor-prefix,'.toc')}">
+    <fo:bookmark internal-destination="{concat($anchor-pref,'toc')}">
       <fo:bookmark-title>Table of Contents</fo:bookmark-title>
     </fo:bookmark>
   </xsl:if>
