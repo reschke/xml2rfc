@@ -647,7 +647,7 @@
     use="."/>
 
 <!-- prefix for automatically generated anchors -->
-<xsl:variable name="anchor-prefix" select="'rfc'" />
+<xsl:variable name="anchor-pref" select="'rfc.'" />
 
 <!-- IPR version switch -->
 <xsl:variable name="ipr-rfc3667" select="(
@@ -846,8 +846,8 @@
 
 <xsl:template match="abstract">
   <xsl:call-template name="check-no-text-content"/>
-  <section id="{$anchor-prefix}.abstract">
-    <h2><a href="#{$anchor-prefix}.abstract">Abstract</a></h2>
+  <section id="{$anchor-pref}abstract">
+    <h2><a href="#{$anchor-pref}abstract">Abstract</a></h2>
     <xsl:apply-templates />
   </section>
 </xsl:template>
@@ -1363,7 +1363,7 @@
         <xsl:call-template name="collectRightHeaderColumn" />
       </xsl:variable>
       <!-- insert the collected information -->
-      <table class="{$css-header}" id="{$anchor-prefix}.headerblock">
+      <table class="{$css-header}" id="{$anchor-pref}headerblock">
         <xsl:choose>
           <xsl:when test="function-available('exslt:node-set')">
             <xsl:call-template name="emitheader">
@@ -1380,7 +1380,7 @@
       </table>
     </xsl:if>
 
-    <div id="{$anchor-prefix}.title">
+    <div id="{$anchor-pref}title">
       <!-- main title -->
       <h1><xsl:apply-templates select="title"/></h1>
       <xsl:if test="/rfc/@docName">
@@ -1558,14 +1558,14 @@
   <xsl:choose>
     <xsl:when test="count(.|$section-level-irefs)=count($section-level-irefs)">
       <xsl:for-each select="..">
-        <xsl:value-of select="$anchor-prefix"/>.section.<xsl:call-template name="get-section-number"/>
+        <xsl:value-of select="$anchor-pref"/>section.<xsl:call-template name="get-section-number"/>
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="$nkey=''">
-      <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:value-of select="$first"/>.<xsl:number level="any" count="iref[starts-with(translate(@item,$ucase,$lcase),$first) and count(.|$section-level-irefs)!=count($section-level-irefs)]"/>
+      <xsl:value-of select="$anchor-pref"/>iref.<xsl:value-of select="$first"/>.<xsl:number level="any" count="iref[starts-with(translate(@item,$ucase,$lcase),$first) and count(.|$section-level-irefs)!=count($section-level-irefs)]"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$anchor-prefix"/>.iref.<xsl:number level="any" count="iref[translate(substring(@item,1,1),$alnum,'')!='' and count(.|$section-level-irefs)!=count($section-level-irefs)]"/>
+      <xsl:value-of select="$anchor-pref"/>iref.<xsl:number level="any" count="iref[translate(substring(@item,1,1),$alnum,'')!='' and count(.|$section-level-irefs)!=count($section-level-irefs)]"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -1575,10 +1575,10 @@
   <xsl:variable name="nkey" select="translate($first,$lcase,'')"/>
   <xsl:choose>
     <xsl:when test="$nkey=''">
-      <xsl:value-of select="$anchor-prefix"/>.extref.<xsl:value-of select="$first"/>.<xsl:number level="any" count="x:ref[starts-with(translate(.,$ucase,$lcase),$first)]"/>
+      <xsl:value-of select="$anchor-pref"/>extref.<xsl:value-of select="$first"/>.<xsl:number level="any" count="x:ref[starts-with(translate(.,$ucase,$lcase),$first)]"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$anchor-prefix"/>.extref.<xsl:number level="any" count="x:ref[translate(substring(.,1,1),concat($lcase,$ucase),'')='']"/>
+      <xsl:value-of select="$anchor-pref"/>extref.<xsl:number level="any" count="x:ref[translate(substring(.,1,1),concat($lcase,$ucase),'')='']"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -1605,7 +1605,7 @@
   </xsl:variable>
   <xsl:choose>
     <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-      <div id="{$anchor-prefix}.section.{$p}">
+      <div id="{$anchor-pref}section.{$p}">
         <dl>
           <xsl:call-template name="copy-anchor"/>
           <xsl:if test="normalize-space($class)!=''">
@@ -1735,7 +1735,7 @@
   </xsl:variable>
   <xsl:choose>
     <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ul) and not(ancestor::dl) and not(ancestor::ol) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-      <div id="{$anchor-prefix}.section.{$p}">
+      <div id="{$anchor-pref}section.{$p}">
         <ol>
           <xsl:call-template name="copy-anchor"/>
           <xsl:copy-of select="@start"/>
@@ -1774,7 +1774,7 @@
   </xsl:variable>
   <ul>
     <xsl:if test="$p!='' and not(ancestor::list) and not(ancestor::ul) and not(ancestor::dl) and not(ancestor::ol) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-      <xsl:attribute name="id"><xsl:value-of select="concat($anchor-prefix,'.section.',$p)"/></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="concat($anchor-pref,'section.',$p)"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="@empty='true'">
       <xsl:attribute name="class">empty</xsl:attribute>
@@ -1993,10 +1993,10 @@
 <xsl:template match="note">
   <xsl:call-template name="check-no-text-content"/>
   <xsl:variable name="num"><xsl:number/></xsl:variable>
-  <section id="{$anchor-prefix}.note.{$num}">
+  <section id="{$anchor-pref}note.{$num}">
     <h2>
       <xsl:call-template name="insertInsDelClass"/>
-      <a href="#{$anchor-prefix}.note.{$num}">
+      <a href="#{$anchor-pref}note.{$num}">
         <xsl:value-of select="@title" />
       </a>
     </h2>
@@ -2477,13 +2477,13 @@
     <!-- insert pseudo section when needed -->
     <xsl:when test="not(preceding::references) and $refseccount!=1">
       <xsl:call-template name="insert-conditional-hrule"/>
-      <section id="{$anchor-prefix}.references">
+      <section id="{$anchor-pref}references">
         <xsl:call-template name="insert-conditional-pagebreak"/>
         <xsl:variable name="sectionNumber">
           <xsl:call-template name="get-references-section-number"/>
         </xsl:variable>
-        <h2 id="{$anchor-prefix}.section.{$sectionNumber}">
-          <a href="#{$anchor-prefix}.section.{$sectionNumber}">
+        <h2 id="{$anchor-pref}section.{$sectionNumber}">
+          <a href="#{$anchor-pref}section.{$sectionNumber}">
             <xsl:call-template name="emit-section-number">
               <xsl:with-param name="no" select="$sectionNumber"/>
             </xsl:call-template>
@@ -2553,13 +2553,13 @@
     <xsl:if test="$nested">.<xsl:value-of select="$name"/></xsl:if>
   </xsl:variable>
 
-  <section id="{$anchor-prefix}.references{$anchorpostfix}">
+  <section id="{$anchor-pref}references{$anchorpostfix}">
     <xsl:if test="$name='1'">
       <xsl:call-template name="insert-conditional-pagebreak"/>
     </xsl:if>
     <xsl:element name="{$elemtype}">
-      <xsl:attribute name="id"><xsl:value-of select="concat($anchor-prefix,'.section.',$sectionNumber)"/></xsl:attribute>
-      <a href="#{$anchor-prefix}.section.{$sectionNumber}">
+      <xsl:attribute name="id"><xsl:value-of select="concat($anchor-pref,'section.',$sectionNumber)"/></xsl:attribute>
+      <a href="#{$anchor-pref}section.{$sectionNumber}">
         <xsl:call-template name="emit-section-number">
           <xsl:with-param name="no" select="$sectionNumber"/>
         </xsl:call-template>
@@ -2628,21 +2628,21 @@
 
       <!-- link elements -->
       <xsl:if test="$xml2rfc-toc='yes'">
-        <link rel="Contents" href="#{$anchor-prefix}.toc" />
+        <link rel="Contents" href="#{$anchor-pref}toc" />
       </xsl:if>
-      <link rel="Author" href="#{$anchor-prefix}.authors" />
+      <link rel="Author" href="#{$anchor-pref}authors" />
       <xsl:if test="$xml2rfc-private=''">
         <xsl:choose>
           <xsl:when test="$no-copylong">
-            <link rel="Copyright" href="#{$anchor-prefix}.copyrightnotice" />
+            <link rel="Copyright" href="#{$anchor-pref}copyrightnotice" />
           </xsl:when>
           <xsl:otherwise>
-            <link rel="Copyright" href="#{$anchor-prefix}.copyright" />
+            <link rel="Copyright" href="#{$anchor-pref}copyright" />
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
       <xsl:if test="$has-index">
-        <link rel="Index" href="#{$anchor-prefix}.index" />
+        <link rel="Index" href="#{$anchor-pref}index" />
       </xsl:if>
       <xsl:apply-templates select="/" mode="links" />
       <xsl:for-each select="x:link">
@@ -2791,7 +2791,7 @@
         </xsl:if>
         <xsl:choose>
           <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-            <div id="{$anchor-prefix}.section.{$p}">
+            <div id="{$anchor-pref}section.{$p}">
               <xsl:apply-templates mode="t-content" select="node()[1]">
                 <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
               </xsl:apply-templates>
@@ -2808,7 +2808,7 @@
     <xsl:otherwise>
       <xsl:choose>
         <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ol) and not(ancestor::ul) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-          <div id="{$anchor-prefix}.section.{$p}">
+          <div id="{$anchor-pref}section.{$p}">
             <xsl:if test="$keepwithnext">
               <xsl:attribute name="class">avoidbreakafter</xsl:attribute>
             </xsl:if>
@@ -2851,7 +2851,7 @@
       <p>
         <xsl:variable name="anchor">
           <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins) and not(ancestor::li) and not(ancestor::x:lt) and not(preceding-sibling::node())">
-            <xsl:value-of select="concat($anchor-prefix,'.section.',$p)"/>
+            <xsl:value-of select="concat($anchor-pref,'section.',$p)"/>
           </xsl:if>
         </xsl:variable>
         <xsl:call-template name="insertInsDelClass"/>
@@ -2985,7 +2985,7 @@
   </xsl:variable>
 
   <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!='' and @anchor='rfc.status'">
-    <div id="{$anchor-prefix}.meta" class="{$css-docstatus}"></div>
+    <div id="{$anchor-pref}meta" class="{$css-docstatus}"></div>
   </xsl:if>
   <section>
     <xsl:call-template name="copy-anchor"/>
@@ -2998,7 +2998,7 @@
 
     <xsl:element name="{$elemtype}">
       <xsl:if test="$sectionNumber!=''">
-        <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$sectionNumber"/></xsl:attribute>
+        <xsl:attribute name="id"><xsl:value-of select="$anchor-pref"/>section.<xsl:value-of select="$sectionNumber"/></xsl:attribute>
       </xsl:if>
       <xsl:choose>
         <xsl:when test="$sectionNumber='1' or $sectionNumber='A'">
@@ -3014,7 +3014,7 @@
       <xsl:call-template name="insertInsDelClass" />
   
       <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
-        <a href="#{$anchor-prefix}.section.{$sectionNumber}">
+        <a href="#{$anchor-pref}section.{$sectionNumber}">
           <xsl:call-template name="emit-section-number">
             <xsl:with-param name="no" select="$sectionNumber"/>
           </xsl:call-template>
@@ -3234,7 +3234,7 @@
 
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="key('anchor-item',$target)" />
-  <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
 
   <xsl:variable name="sfmt">
     <xsl:call-template name="get-section-xref-format"/>
@@ -3347,7 +3347,7 @@
 <xsl:template match="xref[not(node())]">
 
   <xsl:variable name="xref" select="."/>
-  <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="$xref/@target"/>.<xsl:number level="any" count="xref[@target=$xref/@target]"/></xsl:variable>
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="$xref/@target"/>.<xsl:number level="any" count="xref[@target=$xref/@target]"/></xsl:variable>
   
   <xsl:variable name="sfmt">
     <xsl:call-template name="get-section-xref-format">
@@ -4207,14 +4207,14 @@
   <xsl:if test="$number!='suppress'">
     <xsl:call-template name="insert-conditional-hrule"/>
 
-    <section id="{$anchor-prefix}.authors" class="avoidbreakinside">
+    <section id="{$anchor-pref}authors" class="avoidbreakinside">
       <xsl:call-template name="insert-conditional-pagebreak"/>
       <h2>
         <xsl:if test="$number != ''">
-          <a href="#{$anchor-prefix}.section.{$number}" id="{$anchor-prefix}.section.{$number}"><xsl:value-of select="$number"/>.</a>
+          <a href="#{$anchor-pref}section.{$number}" id="{$anchor-pref}section.{$number}"><xsl:value-of select="$number"/>.</a>
           <xsl:text> </xsl:text>
         </xsl:if>
-        <a href="#{$anchor-prefix}.authors"><xsl:call-template name="get-authors-section-title"/></a>
+        <a href="#{$anchor-pref}authors"><xsl:call-template name="get-authors-section-title"/></a>
       </h2>
 
       <xsl:apply-templates select="/rfc/front/author" />
@@ -4229,7 +4229,7 @@
 <xsl:template name="insertCopyright" myns:namespaceless-elements="xml2rfc">
 
   <xsl:if test="not($no-copylong)">
-    <section title="Full Copyright Statement" anchor="{$anchor-prefix}.copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+    <section title="Full Copyright Statement" anchor="{$anchor-pref}copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
       <xsl:choose>
         <xsl:when test="$ipr-rfc3667">
           <t>
@@ -4295,7 +4295,7 @@
       </xsl:choose>
     </section>
 
-    <section title="Intellectual Property" anchor="{$anchor-prefix}.ipr" myns:unnumbered="unnumbered">
+    <section title="Intellectual Property" anchor="{$anchor-pref}ipr" myns:unnumbered="unnumbered">
       <xsl:choose>
         <xsl:when test="$ipr-rfc3667">
           <t>
@@ -4845,14 +4845,14 @@ function anchorRewrite() {
     var fragid = window.location.hash.substr(1);
     if (fragid) {
       if (! document.getElementById(fragid)) {
-        var prefix = "<xsl:value-of select="$anchor-prefix"/>";
+        var prefix = "<xsl:value-of select="$anchor-pref"/>";
         var mapped = map[fragid];
         if (mapped) {
           window.location.hash = mapped;
         } else if (fragid.indexOf("section-") == 0) {
-          window.location.hash = prefix + ".section." + fragid.substring(8);
+          window.location.hash = prefix + "section." + fragid.substring(8);
         } else if (fragid.indexOf("appendix-") == 0) {
-          window.location.hash = prefix + ".section." + fragid.substring(9);
+          window.location.hash = prefix + "section." + fragid.substring(9);
         }
       }
     }  
@@ -5548,8 +5548,8 @@ dd, li, p {
             <xsl:comment>workaround for Saxon 9.1 bug; force evaluation of: <xsl:value-of select="$target"/></xsl:comment>
             <xsl:variable name="no"><xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
             <xsl:text>#</xsl:text>
-            <xsl:value-of select="$anchor-prefix"/>
-            <xsl:text>.xref.</xsl:text>
+            <xsl:value-of select="$anchor-pref"/>
+            <xsl:text>xref.</xsl:text>
             <xsl:value-of select="@target"/>
             <xsl:text>.</xsl:text>
             <xsl:value-of select="$no"/>
@@ -5600,7 +5600,7 @@ dd, li, p {
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="target" select="@target"/>
-      <xsl:variable name="backlink">#<xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="$target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
+      <xsl:variable name="backlink">#<xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="$target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
       <a href="{$backlink}">
         <xsl:call-template name="insertInsDelClass"/>
         <xsl:value-of select="$n"/>
@@ -5614,10 +5614,10 @@ dd, li, p {
 
   <xsl:call-template name="insert-conditional-hrule"/>
 
-  <section id="{$anchor-prefix}.index">
+  <section id="{$anchor-pref}index">
     <xsl:call-template name="insert-conditional-pagebreak"/>
     <h2>
-      <a href="#{$anchor-prefix}.index">Index</a>
+      <a href="#{$anchor-pref}index">Index</a>
     </h2>
 
     <!-- generate navigation links to index subsections -->
@@ -5637,7 +5637,7 @@ dd, li, p {
           <xsl:variable name="showit" select="$xml2rfc-ext-include-references-in-index='yes' or $irefs[starts-with(translate(@item,$lcase,$ucase),$letter)]"/>
   
           <xsl:if test="$showit">
-            <a href="#{$anchor-prefix}.index.{$letter}">
+            <a href="#{$anchor-pref}index.{$letter}">
               <xsl:value-of select="$letter" />
             </a>
             <xsl:text> </xsl:text>
@@ -5664,7 +5664,7 @@ dd, li, p {
               <!-- make letters and digits stand out -->
               <xsl:choose>
                 <xsl:when test="translate($letter,concat($lcase,$ucase,'0123456789'),'')=''">
-                  <a id="{$anchor-prefix}.index.{$letter}" href="#{$anchor-prefix}.index.{$letter}">
+                  <a id="{$anchor-pref}index.{$letter}" href="#{$anchor-pref}index.{$letter}">
                     <b><xsl:value-of select="$letter" /></b>
                   </a>
                 </xsl:when>
@@ -5878,7 +5878,7 @@ dd, li, p {
     created, and it may not be published except as an Internet-Draft.
   </xsl:variable>
 
-  <section myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.status">
+  <section myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-pref}status">
   <xsl:attribute name="title">
     <xsl:choose>
       <xsl:when test="$xml2rfc-rfcedstyle='yes'">Status of This Memo</xsl:when>
@@ -6265,7 +6265,7 @@ dd, li, p {
 
   <xsl:choose>
     <xsl:when test="$ipr-2008-11">
-      <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice">
+      <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
         <t>
           Copyright &#169; <xsl:value-of select="$xml2rfc-ext-pub-year" /> IETF Trust and the persons identified
           as the document authors.  All rights reserved.
@@ -6402,14 +6402,14 @@ dd, li, p {
       <!-- no copyright notice -->
     </xsl:when>
     <xsl:when test="$ipr-rfc4748">
-      <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice">
+      <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
         <t>
           Copyright &#169; The IETF Trust (<xsl:value-of select="$xml2rfc-ext-pub-year" />).  All Rights Reserved.
         </t>
       </section>
     </xsl:when>
     <xsl:otherwise>
-      <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-prefix}.copyrightnotice">
+      <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
         <t>
           Copyright &#169; The Internet Society (<xsl:value-of select="$xml2rfc-ext-pub-year" />).  All Rights Reserved.
         </t>
@@ -6424,9 +6424,9 @@ dd, li, p {
 <xsl:template match="/" mode="toc">
   <hr class="{$css-noprint}"/>
 
-  <nav id="{$anchor-prefix}.toc">
+  <nav id="{$anchor-pref}toc">
     <h2 class="np"> <!-- this pagebreak occurs always -->
-      <a href="#{$anchor-prefix}.toc">Table of Contents</a>
+      <a href="#{$anchor-pref}toc">Table of Contents</a>
     </h2>
   
     <ul class="toc">
@@ -6476,7 +6476,7 @@ dd, li, p {
         </xsl:when>
         <xsl:otherwise>
           <xsl:if test="$number != '' and not(contains($number,'unnumbered-'))">
-            <a href="#{$anchor-prefix}.section.{$number}">
+            <a href="#{$anchor-pref}section.{$number}">
               <xsl:call-template name="emit-section-number">
                 <xsl:with-param name="no" select="$number"/>
               </xsl:call-template>
@@ -6511,7 +6511,7 @@ dd, li, p {
   <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
     <li>
       <xsl:call-template name="insert-toc-line">
-        <xsl:with-param name="target" select="concat($anchor-prefix,'.comments')"/>
+        <xsl:with-param name="target" select="concat($anchor-pref,'comments')"/>
         <xsl:with-param name="title" select="'Editorial Comments'"/>
       </xsl:call-template>
     </li>
@@ -6526,7 +6526,7 @@ dd, li, p {
   <xsl:if test="$has-index">
     <li>
       <xsl:call-template name="insert-toc-line">
-        <xsl:with-param name="target" select="concat($anchor-prefix,'.index')"/>
+        <xsl:with-param name="target" select="concat($anchor-pref,'index')"/>
         <xsl:with-param name="title" select="'Index'"/>
       </xsl:call-template>
     </li>
@@ -6540,7 +6540,7 @@ dd, li, p {
   <xsl:if test="$xml2rfc-private='' and not($no-copylong)">
     <li>
       <xsl:call-template name="insert-toc-line">
-        <xsl:with-param name="target" select="concat($anchor-prefix,'.ipr')"/>
+        <xsl:with-param name="target" select="concat($anchor-pref,'ipr')"/>
         <xsl:with-param name="title" select="'Intellectual Property and Copyright Statements'"/>
       </xsl:call-template>
     </li>
@@ -6560,7 +6560,7 @@ dd, li, p {
   <xsl:if test="$authors-number!='suppress'">
     <li>
       <xsl:call-template name="insert-toc-line">
-        <xsl:with-param name="target" select="concat($anchor-prefix,'.authors')"/>
+        <xsl:with-param name="target" select="concat($anchor-pref,'authors')"/>
         <xsl:with-param name="title" select="$authors-title"/>
         <xsl:with-param name="number" select="$authors-number"/>
       </xsl:call-template>
@@ -6595,7 +6595,7 @@ dd, li, p {
             <xsl:with-param name="number">
               <xsl:call-template name="get-references-section-number"/>
             </xsl:with-param>
-            <xsl:with-param name="target" select="concat($anchor-prefix,'.references')"/>
+            <xsl:with-param name="target" select="concat($anchor-pref,'references')"/>
             <xsl:with-param name="title" select="$title"/>
             <xsl:with-param name="name" select="name"/>
           </xsl:call-template>
@@ -6609,7 +6609,7 @@ dd, li, p {
           <xsl:with-param name="number">
             <xsl:call-template name="get-references-section-number"/>
           </xsl:with-param>
-          <xsl:with-param name="target" select="concat($anchor-prefix,'.references')"/>
+          <xsl:with-param name="target" select="concat($anchor-pref,'references')"/>
           <xsl:with-param name="title" select="$xml2rfc-refparent"/>
         </xsl:call-template>
 
@@ -6634,7 +6634,7 @@ dd, li, p {
             <li>
               <xsl:call-template name="insert-toc-line">
                 <xsl:with-param name="number" select="$sectionNumber"/>
-                <xsl:with-param name="target" select="concat($anchor-prefix,'.references','.',$num)"/>
+                <xsl:with-param name="target" select="concat($anchor-pref,'references','.',$num)"/>
                 <xsl:with-param name="title" select="$title"/>
                 <xsl:with-param name="name" select="name"/>
               </xsl:call-template>
@@ -6654,7 +6654,7 @@ dd, li, p {
   <xsl:variable name="target">
     <xsl:choose>
       <xsl:when test="@anchor"><xsl:value-of select="@anchor" /></xsl:when>
-       <xsl:otherwise><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$sectionNumber" /></xsl:otherwise>
+       <xsl:otherwise><xsl:value-of select="$anchor-pref"/>section.<xsl:value-of select="$sectionNumber" /></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 
@@ -6741,7 +6741,7 @@ dd, li, p {
             </xsl:variable>
             <li>
               <xsl:call-template name="insert-toc-line">
-                <xsl:with-param name="target" select="concat($anchor-prefix,'.figure.',$n)" />
+                <xsl:with-param name="target" select="concat($anchor-pref,'figure.',$n)" />
                 <xsl:with-param name="title" select="$title" />
               </xsl:call-template>
             </li>
@@ -7042,12 +7042,12 @@ dd, li, p {
     <xsl:call-template name="copy-anchor"/>
     <div>
       <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-        <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
+        <xsl:attribute name="id"><xsl:value-of select="$anchor-pref"/>section.<xsl:value-of select="$p"/></xsl:attribute>
       </xsl:if>
       <xsl:for-each select="*">
         <xsl:apply-templates select=".">
           <xsl:with-param name="inherited-self-link">
-            <xsl:if test="$p!='' and position()=last()"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:if>
+            <xsl:if test="$p!='' and position()=last()"><xsl:value-of select="$anchor-pref"/>section.<xsl:value-of select="$p"/></xsl:if>
           </xsl:with-param>
         </xsl:apply-templates>
       </xsl:for-each>
@@ -7102,7 +7102,7 @@ dd, li, p {
   </xsl:variable>
   <blockquote>
     <xsl:if test="string-length($p) &gt; 0 and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-      <xsl:attribute name="id"><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$p"/></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$anchor-pref"/>section.<xsl:value-of select="$p"/></xsl:attribute>
     </xsl:if>
     <xsl:call-template name="insertInsDelClass"/>
     <xsl:call-template name="editingMark" />
@@ -7375,12 +7375,12 @@ dd, li, p {
 <xsl:template match="ed:issueref">
   <xsl:choose>
     <xsl:when test=".=//ed:issue/@name">
-      <a href="#{$anchor-prefix}.issue.{.}">
+      <a href="#{$anchor-pref}issue.{.}">
         <xsl:apply-templates/>
       </a>
     </xsl:when>
     <xsl:when test="@href">
-      <a href="{@href}" id="{$anchor-prefix}.issue.{.}">
+      <a href="{@href}" id="{$anchor-pref}issue.{.}">
         <xsl:apply-templates/>
       </a>
     </xsl:when>
@@ -7404,7 +7404,7 @@ dd, li, p {
   <table class="{$class}">
     <tr>
       <td colspan="3">
-        <a id="{$anchor-prefix}.issue.{@name}">
+        <a id="{$anchor-pref}issue.{@name}">
           <xsl:choose>
             <xsl:when test="@status='closed'">
               <xsl:attribute name="class">closed-issue</xsl:attribute>
@@ -7445,13 +7445,13 @@ dd, li, p {
           Associated changes in this document:
           <xsl:variable name="issue" select="@name"/>
           <xsl:for-each select="$changes">
-            <a href="#{$anchor-prefix}.change.{$issue}.{position()}">
+            <a href="#{$anchor-pref}change.{$issue}.{position()}">
               <xsl:variable name="label">
                 <xsl:call-template name="get-section-number"/>
               </xsl:variable>
               <xsl:choose>
                 <xsl:when test="$label!=''"><xsl:value-of select="$label"/></xsl:when>
-                <xsl:otherwise>&lt;<xsl:value-of select="concat('#',$anchor-prefix,'.change.',$issue,'.',position())"/>&gt;</xsl:otherwise>
+                <xsl:otherwise>&lt;<xsl:value-of select="concat('#',$anchor-pref,'change.',$issue,'.',position())"/>&gt;</xsl:otherwise>
               </xsl:choose>
             </a>
             <xsl:if test="position()!=last()">, </xsl:if>
@@ -7543,7 +7543,7 @@ dd, li, p {
 
 <xsl:template name="insertIssuesList">
 
-  <h2 id="{$anchor-prefix}.issues-list" ><a href="#{$anchor-prefix}.issues-list">Issues list</a></h2>
+  <h2 id="{$anchor-pref}issues-list" ><a href="#{$anchor-pref}issues-list">Issues list</a></h2>
   <table>
     <thead>
       <tr>
@@ -7559,7 +7559,7 @@ dd, li, p {
         <xsl:sort select="@status" />
         <xsl:sort select="@name" />
         <tr>
-          <td><a href="#{$anchor-prefix}.issue.{@name}"><xsl:value-of select="@name" /></a></td>
+          <td><a href="#{$anchor-pref}issue.{@name}"><xsl:value-of select="@name" /></a></td>
           <td><xsl:value-of select="@type" /></td>
           <td><xsl:value-of select="@status" /></td>
           <td><xsl:value-of select="ed:item[1]/@date" /></td>
@@ -7574,18 +7574,38 @@ dd, li, p {
 <xsl:template name="insert-diagnostics">
 
   <!-- check anchor names -->
-  <xsl:variable name="badAnchors"
-    select="//*[starts-with(@anchor,concat($anchor-prefix,'.'))][@anchor!=concat($anchor-prefix,'.authors') and /*/x:assign-section-number[@number='suppress' and @builtin-target='authors']]" />
 
+  <xsl:variable name="badAnchors" select="//*[starts-with(@anchor,$anchor-pref)]" />
   <xsl:if test="$badAnchors">
     <xsl:variable name="text">
-      The following anchor names may collide with internally generated anchors because of their prefix "<xsl:value-of select="$anchor-prefix" />":
+      <xsl:text>The following anchor names may collide with internally generated anchors because of their prefix "</xsl:text>
+      <xsl:value-of select="$anchor-pref" />
+      <xsl:text>": </xsl:text>
       <xsl:for-each select="$badAnchors">
-        <xsl:value-of select="@anchor"/><xsl:if test="position()!=last()">, </xsl:if>
+        <xsl:value-of select="@anchor"/>
+        <xsl:call-template name="lineno"/>
+        <xsl:if test="position()!=last()">, </xsl:if>
       </xsl:for-each>
     </xsl:variable>
     <xsl:call-template name="warning">
-      <xsl:with-param name="msg"><xsl:value-of select="$text"/></xsl:with-param>
+      <xsl:with-param name="msg"><xsl:value-of select="normalize-space($text)"/></xsl:with-param>
+      <xsl:with-param name="lineno" select="false()"/>
+    </xsl:call-template>
+  </xsl:if>
+
+  <xsl:variable name="badV3Anchors" select="//*[substring(@anchor,2,1)='-' and translate(substring(@anchor,1,1),$lcase,'')='']" />
+  <xsl:if test="$badV3Anchors">
+    <xsl:variable name="text">
+      <xsl:text>The following anchor names may collide with internally generated anchors in XML2RFCV3 mode because: </xsl:text>
+      <xsl:for-each select="$badV3Anchors">
+        <xsl:value-of select="@anchor"/>
+        <xsl:call-template name="lineno"/>
+        <xsl:if test="position()!=last()">, </xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg"><xsl:value-of select="normalize-space($text)"/></xsl:with-param>
+      <xsl:with-param name="lineno" select="false()"/>
     </xsl:call-template>
   </xsl:if>
 
@@ -7663,7 +7683,7 @@ dd, li, p {
     <xsl:variable name="count"><xsl:for-each select=".."><xsl:number level="any" count="*[@ed:resolves=$resolves or ed:resolves=$resolves]" /></xsl:for-each></xsl:variable>
     <xsl:variable name="total" select="count(//*[@ed:resolves=$resolves or ed:resolves=$resolves])" />
     <xsl:variable name="id">
-      <xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" />
+      <xsl:value-of select="$anchor-pref"/>change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" />
     </xsl:variable>
     <xsl:choose>
       <!-- block level? -->
@@ -7673,9 +7693,9 @@ dd, li, p {
             <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
           </xsl:if>
           <xsl:if test="$count > 1">
-            <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count - 1}">&#x2191;</a>
+            <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-pref}change.{$resolves}.{$count - 1}">&#x2191;</a>
           </xsl:if>
-          <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
+          <a class="open-issue" href="#{$anchor-pref}issue.{$resolves}" title="resolves: {$resolves}">
             <xsl:choose>
               <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
                 <xsl:attribute name="class">closed-issue</xsl:attribute>
@@ -7690,16 +7710,16 @@ dd, li, p {
             <xsl:text>&#160;I&#160;</xsl:text>
           </a>
           <xsl:if test="$count &lt; $total">
-            <a class="bg-issue" title="next change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count + 1}">&#x2193;</a>
+            <a class="bg-issue" title="next change for {$resolves}" href="#{$anchor-pref}change.{$resolves}.{$count + 1}">&#x2193;</a>
           </xsl:if>
           <xsl:text>&#160;</xsl:text>
         </div>
       </xsl:when>
       <xsl:otherwise>
         <xsl:if test="$count > 1">
-          <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count - 1}">&#x2191;</a>
+          <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-pref}change.{$resolves}.{$count - 1}">&#x2191;</a>
         </xsl:if>
-        <a title="resolves: {$resolves}" href="#{$anchor-prefix}.issue.{$resolves}">
+        <a title="resolves: {$resolves}" href="#{$anchor-pref}issue.{$resolves}">
           <xsl:if test="not($deleted-anchor)">
             <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
           </xsl:if>
@@ -7717,7 +7737,7 @@ dd, li, p {
           <xsl:text>&#160;I&#160;</xsl:text>
         </a>
         <xsl:if test="$count &lt; $total">
-          <a class="bg-issue" title="next change for {$resolves}" href="#{$anchor-prefix}.change.{$resolves}.{$count + 1}">&#x2193;</a>
+          <a class="bg-issue" title="next change for {$resolves}" href="#{$anchor-pref}change.{$resolves}.{$count + 1}">&#x2193;</a>
         </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
@@ -7841,44 +7861,52 @@ dd, li, p {
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
   <xsl:param name="inline"/>
+  <xsl:param name="lineno" select="true()"/>
   <xsl:call-template name="emit-message">
     <xsl:with-param name="level">TRACE</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
     <xsl:with-param name="msg2" select="$msg2"/>
     <xsl:with-param name="inline" select="$inline"/>
+    <xsl:with-param name="lineno" select="$lineno"/>
   </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="inline-warning">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
+  <xsl:param name="lineno" select="true()"/>
   <xsl:call-template name="emit-message">
     <xsl:with-param name="level">WARNING</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
     <xsl:with-param name="msg2" select="$msg2"/>
     <xsl:with-param name="inline" select="'yes'"/>
+    <xsl:with-param name="lineno" select="$lineno"/>
   </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="warning">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
+  <xsl:param name="lineno" select="true()"/>
   <xsl:call-template name="emit-message">
     <xsl:with-param name="level">WARNING</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
     <xsl:with-param name="msg2" select="$msg2"/>
     <xsl:with-param name="inline" select="'no'"/>
+    <xsl:with-param name="lineno" select="$lineno"/>
   </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="info">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
+  <xsl:param name="lineno" select="true()"/>
   <xsl:call-template name="emit-message">
     <xsl:with-param name="level">INFO</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
     <xsl:with-param name="msg2" select="$msg2"/>
     <xsl:with-param name="inline" select="'no'"/>
+    <xsl:with-param name="lineno" select="$lineno"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -7886,11 +7914,13 @@ dd, li, p {
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
   <xsl:param name="inline"/>
+  <xsl:param name="lineno" select="true()"/>
   <xsl:call-template name="emit-message">
     <xsl:with-param name="level">ERROR</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
     <xsl:with-param name="msg2" select="$msg2"/>
     <xsl:with-param name="inline" select="$inline"/>
+    <xsl:with-param name="lineno" select="$lineno"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -7899,7 +7929,8 @@ dd, li, p {
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
   <xsl:param name="inline"/>
-  <xsl:variable name="message"><xsl:value-of select="$level"/>: <xsl:value-of select="$msg"/><xsl:if test="$msg2!=''"> - <xsl:value-of select="$msg2"/></xsl:if><xsl:call-template name="lineno"/></xsl:variable>
+  <xsl:param name="lineno" select="true()"/>
+  <xsl:variable name="message"><xsl:value-of select="$level"/>: <xsl:value-of select="$msg"/><xsl:if test="$msg2!=''"> - <xsl:value-of select="$msg2"/></xsl:if><xsl:if test="$lineno"><xsl:call-template name="lineno"/></xsl:if></xsl:variable>
   <xsl:choose>
     <xsl:when test="$inline!='no'">
       <xsl:choose>
@@ -8042,8 +8073,8 @@ dd, li, p {
       <xsl:value-of select="@anchor"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$anchor-prefix"/>
-      <xsl:text>.comment.</xsl:text>
+      <xsl:value-of select="$anchor-pref"/>
+      <xsl:text>comment.</xsl:text>
       <xsl:number count="cref[not(@anchor)]" level="any"/>
     </xsl:otherwise>
   </xsl:choose>
@@ -8095,7 +8126,7 @@ dd, li, p {
 
   <h2>
     <xsl:call-template name="insert-conditional-pagebreak"/>
-    <a id="{$anchor-prefix}.comments" href="#{$anchor-prefix}.comments">Editorial Comments</a>
+    <a id="{$anchor-pref}comments" href="#{$anchor-pref}comments">Editorial Comments</a>
   </h2>
 
   <dl>
@@ -8106,8 +8137,8 @@ dd, li, p {
             <xsl:value-of select="@anchor"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="$anchor-prefix"/>
-            <xsl:text>.comment.</xsl:text>
+            <xsl:value-of select="$anchor-pref"/>
+            <xsl:text>comment.</xsl:text>
             <xsl:number count="cref[not(@anchor)]" level="any"/>
           </xsl:otherwise>
         </xsl:choose>
@@ -8148,7 +8179,7 @@ dd, li, p {
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <link rel="Chapter" title="{$title}" href="#{$anchor-prefix}.section.{$sectionNumber}"/>
+  <link rel="Chapter" title="{$title}" href="#{$anchor-pref}section.{$sectionNumber}"/>
   <xsl:apply-templates mode="links" />
 </xsl:template>
 
@@ -8171,13 +8202,13 @@ dd, li, p {
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <link rel="Appendix" title="{$title}" href="#{$anchor-prefix}.section.{$sectionNumber}"/>
+  <link rel="Appendix" title="{$title}" href="#{$anchor-pref}section.{$sectionNumber}"/>
   <xsl:apply-templates mode="links" />
 </xsl:template>
 
 <xsl:template match="/*/back/references[position()=1]" mode="links">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-references-section-number" /></xsl:variable>
-  <link rel="Chapter" href="#{$anchor-prefix}.section.{$sectionNumber}">
+  <link rel="Chapter" href="#{$anchor-pref}section.{$sectionNumber}">
     <xsl:choose>
       <xsl:when test="@title and count(/*/back/references)=1">
         <xsl:attribute name="title">
@@ -8262,11 +8293,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.787 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.787 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.788 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.788 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/03/04 09:58:30 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/04 09:58:30 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/03/04 15:13:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/04 15:13:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8391,8 +8422,8 @@ dd, li, p {
 </xsl:template>
 
 <xsl:template name="get-table-anchor">
-  <xsl:value-of select="$anchor-prefix"/>
-  <xsl:text>.table.</xsl:text>
+  <xsl:value-of select="$anchor-pref"/>
+  <xsl:text>table.</xsl:text>
   <xsl:call-template name="get-table-number"/>
 </xsl:template>
 
@@ -8409,8 +8440,8 @@ dd, li, p {
 </xsl:template>
 
 <xsl:template name="get-figure-anchor">
-  <xsl:value-of select="$anchor-prefix"/>
-  <xsl:text>.figure.</xsl:text>
+  <xsl:value-of select="$anchor-pref"/>
+  <xsl:text>figure.</xsl:text>
   <xsl:call-template name="get-figure-number"/>
 </xsl:template>
 
