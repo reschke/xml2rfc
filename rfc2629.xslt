@@ -1357,6 +1357,13 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:variable name="all-notes" select="/rfc/front/note"/>
+<xsl:variable name="all-edited-notes" select="/rfc/front/ed:replace[.//note]"/>
+<xsl:variable name="notes-not-in-boilerplate" select="$all-notes[@title!='IESG Note' or $xml2rfc-private!='']"/>
+<xsl:variable name="edited-notes-not-in-boilerplate" select="$all-edited-notes[.//note/@title!='IESG Note' or $xml2rfc-private!='']"/>
+<xsl:variable name="notes-in-boilerplate" select="$all-notes[not(@title!='IESG Note' or $xml2rfc-private!='')]"/>
+<xsl:variable name="edited-notes-in-boilerplate" select="$all-edited-notes[not(.//note/@title!='IESG Note' or $xml2rfc-private!='')]"/>
+
 <xsl:template match="front">
   <xsl:call-template name="check-no-text-content"/>
   <header>
@@ -1504,27 +1511,29 @@
 
   <xsl:if test="not($abstract-first)">
     <xsl:if test="$xml2rfc-private=''">
-      <xsl:call-template name="emit-ietf-preamble"/>
+      <xsl:call-template name="emit-ietf-preamble">
+        <xsl:with-param name="notes" select="$notes-in-boilerplate|$edited-notes-in-boilerplate"/>
+      </xsl:call-template>
     </xsl:if>
     <xsl:apply-templates select="x:boilerplate"/>
   </xsl:if>
   
   <xsl:apply-templates select="abstract" />
   <xsl:if test="$notes-follow-abstract">
-    <!-- Notes except IESG Notes -->
-    <xsl:apply-templates select="note[@title!='IESG Note' or $xml2rfc-private!='']|ed:replace[.//note[@title!='IESG Note' or $xml2rfc-private!='']]" />
+    <xsl:apply-templates select="$notes-not-in-boilerplate|$edited-notes-not-in-boilerplate" />
   </xsl:if>
 
   <xsl:if test="$abstract-first">
     <xsl:if test="$xml2rfc-private=''">
-      <xsl:call-template name="emit-ietf-preamble"/>
+      <xsl:call-template name="emit-ietf-preamble">
+        <xsl:with-param name="notes" select="$notes-in-boilerplate|$edited-notes-in-boilerplate"/>
+      </xsl:call-template>
     </xsl:if>
     <xsl:apply-templates select="x:boilerplate"/>
   </xsl:if>
 
   <xsl:if test="not($notes-follow-abstract)">
-    <!-- Notes except IESG Notes -->
-    <xsl:apply-templates select="note[@title!='IESG Note' or $xml2rfc-private!='']|ed:replace[.//note[@title!='IESG Note' or $xml2rfc-private!='']]" />
+    <xsl:apply-templates select="$notes-not-in-boilerplate|$edited-notes-not-in-boilerplate" />
   </xsl:if>
 
   <xsl:if test="$xml2rfc-toc='yes'">
@@ -1535,9 +1544,13 @@
 </xsl:template>
 
 <xsl:template name="emit-ietf-preamble">
+  <xsl:param name="notes"/>
+
   <!-- Get status info formatted as per RFC2629-->
   <xsl:variable name="preamble">
-    <xsl:call-template name="insertPreamble" />
+    <xsl:call-template name="insertPreamble">
+      <xsl:with-param name="notes" select="$notes"/>
+    </xsl:call-template>
   </xsl:variable>
 
   <!-- emit it -->
@@ -5870,6 +5883,8 @@ dd, li, p {
 
 <xsl:template name="insertPreamble" myns:namespaceless-elements="xml2rfc">
 
+  <xsl:param name="notes"/>
+
   <!-- TLP4, Section 6.c.iii -->
   <xsl:variable name="pre5378EscapeClause">
     This document may contain material from IETF Documents or IETF Contributions published or
@@ -6284,8 +6299,8 @@ dd, li, p {
 
   </section>
 
-  <!-- IESG Note goes here; see http://www.rfc-editor.org/rfc-style-guide/rfc-style -->
-  <xsl:copy-of select="/rfc/front/note[@title='IESG Note']"/>
+  <!-- some notes might go here; see http://www.rfc-editor.org/rfc-style-guide/rfc-style -->
+  <xsl:copy-of select="$notes"/>
 
   <xsl:choose>
     <xsl:when test="$ipr-2008-11">
@@ -8317,11 +8332,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.791 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.791 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.792 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.792 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/03/07 12:24:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/07 12:24:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/03/07 18:39:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/07 18:39:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

@@ -365,27 +365,29 @@
  
   <xsl:if test="not($abstract-first)">
     <xsl:if test="$xml2rfc-private=''">
-      <xsl:call-template name="emit-ietf-preamble"/>
+      <xsl:call-template name="emit-ietf-preamble">
+        <xsl:with-param name="notes" select="$notes-in-boilerplate"/>
+      </xsl:call-template>
     </xsl:if>
     <xsl:apply-templates select="x:boilerplate"/>
   </xsl:if>
   
   <xsl:apply-templates select="abstract" />
   <xsl:if test="$notes-follow-abstract">
-    <!-- Notes except IESG Notes -->
-    <xsl:apply-templates select="note[@title!='IESG Note' or $xml2rfc-private!='']|ed:replace[.//note[@title!='IESG Note' or $xml2rfc-private!='']]" />
+    <xsl:apply-templates select="$notes-not-in-boilerplate" />
   </xsl:if>
 
   <xsl:if test="$abstract-first">
     <xsl:if test="$xml2rfc-private=''">
-      <xsl:call-template name="emit-ietf-preamble"/>
+      <xsl:call-template name="emit-ietf-preamble">
+        <xsl:with-param name="notes" select="$notes-in-boilerplate"/>
+      </xsl:call-template>
     </xsl:if>
     <xsl:apply-templates select="x:boilerplate"/>
   </xsl:if>
 
   <xsl:if test="not($notes-follow-abstract)">
-    <!-- Notes except IESG Notes -->
-    <xsl:apply-templates select="note[@title!='IESG Note' or $xml2rfc-private!='']|ed:replace[.//note[@title!='IESG Note' or $xml2rfc-private!='']]" />
+    <xsl:apply-templates select="$notes-not-in-boilerplate" />
   </xsl:if>
 
   <xsl:if test="$xml2rfc-toc='yes'">
