@@ -801,6 +801,13 @@
     (not(/rfc/@number) and $pub-yearmonth >= 200911)
   )" />
 
+<!-- RFC 7322 changed the placement of notes -->
+<xsl:variable name="notes-follow-abstract" select="(
+    (/rfc/@number and /rfc/@number >= 7200)
+    or
+    ($pub-yearmonth >= 201409)
+  )" />
+
 <!-- funding switch -->
 <xsl:variable name="funding0" select="(
   $rfcno &gt; 2499) or
@@ -1495,20 +1502,29 @@
     </xsl:otherwise>
   </xsl:choose>
 
-  <xsl:if test="$xml2rfc-private='' and not($abstract-first)">
-    <xsl:call-template name="emit-ietf-preamble"/>
+  <xsl:if test="not($abstract-first)">
+    <xsl:if test="$xml2rfc-private=''">
+      <xsl:call-template name="emit-ietf-preamble"/>
+    </xsl:if>
+    <xsl:apply-templates select="x:boilerplate"/>
+  </xsl:if>
+  
+  <xsl:apply-templates select="abstract" />
+  <xsl:if test="$notes-follow-abstract">
+    <!-- Notes except IESG Notes -->
+    <xsl:apply-templates select="note[@title!='IESG Note' or $xml2rfc-private!='']|ed:replace[.//note[@title!='IESG Note' or $xml2rfc-private!='']]" />
   </xsl:if>
 
-  <xsl:apply-templates select="x:boilerplate"/>
-  <xsl:apply-templates select="abstract" />
+  <xsl:if test="$abstract-first">
+    <xsl:if test="$xml2rfc-private=''">
+      <xsl:call-template name="emit-ietf-preamble"/>
+    </xsl:if>
+    <xsl:apply-templates select="x:boilerplate"/>
+  </xsl:if>
 
-  <!-- Notes except IESG Notes -->
-  <xsl:apply-templates select="note[@title!='IESG Note' or $xml2rfc-private!='']" />
-  <!-- show notes inside change tracking as well -->
-  <xsl:apply-templates select="ed:replace[.//note[@title!='IESG Note' or $xml2rfc-private!='']]" />
-
-  <xsl:if test="$xml2rfc-private='' and $abstract-first">
-    <xsl:call-template name="emit-ietf-preamble"/>
+  <xsl:if test="not($notes-follow-abstract)">
+    <!-- Notes except IESG Notes -->
+    <xsl:apply-templates select="note[@title!='IESG Note' or $xml2rfc-private!='']|ed:replace[.//note[@title!='IESG Note' or $xml2rfc-private!='']]" />
   </xsl:if>
 
   <xsl:if test="$xml2rfc-toc='yes'">
@@ -8301,11 +8317,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.790 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.790 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.791 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.791 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/03/06 14:47:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/06 14:47:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/03/07 12:24:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/07 12:24:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
