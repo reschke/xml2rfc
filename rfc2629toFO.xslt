@@ -1,4 +1,4 @@
-<!-- 
+<!--
     XSLT transformation from RFC2629 XML format to XSL-FO
       
     Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
@@ -1272,8 +1272,7 @@
 <xsl:template name="section-maker">
   <xsl:variable name="sectionNumber">
     <xsl:choose>
-      <xsl:when test="@myns:unnumbered"></xsl:when>
-      <xsl:when test="ancestor::x:boilerplate"></xsl:when>
+      <xsl:when test="ancestor::x:boilerplate or ancestor::boilerplate"></xsl:when>
       <xsl:otherwise><xsl:call-template name="get-section-number" /></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -1311,7 +1310,7 @@
 <!-- handled in section-maker -->
 <xsl:template match="section/name"/>
 
-<xsl:template match="section[count(ancestor::section) = 0 and (@myns:notoclink or ancestor::x:boilerplate)]">
+<xsl:template match="section[count(ancestor::section) = 0 and (@myns:notoclink or ancestor::x:boilerplate or ancestor::boilerplate)]">
 
   <fo:block xsl:use-attribute-sets="h1">
     <xsl:call-template name="section-maker" />
@@ -1322,7 +1321,7 @@
   <xsl:apply-templates select="iref" mode="iref-end"/>
 </xsl:template>
 
-<xsl:template match="section[count(ancestor::section) = 0 and not(@myns:notoclink or ancestor::x:boilerplate)]">
+<xsl:template match="section[count(ancestor::section) = 0 and not(@myns:notoclink or ancestor::x:boilerplate or ancestor::boilerplate)]">
 
   <fo:block xsl:use-attribute-sets="h1 newpage">
     <xsl:call-template name="section-maker" />
@@ -2548,7 +2547,7 @@
   </fo:bookmark>
 </xsl:template>
 
-<xsl:template match="section[not(@myns:unnumbered)]" mode="bookmarks">
+<xsl:template match="section[not(ancestor::boilerplate)]" mode="bookmarks">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
   <fo:bookmark internal-destination="{$anchor-pref}section.{$sectionNumber}">
     <fo:bookmark-title>
@@ -2573,7 +2572,7 @@
   </fo:bookmark>
 </xsl:template>
 
-<xsl:template match="section[@myns:unnumbered]" mode="bookmarks">
+<xsl:template match="section[ancestor::boilerplate]" mode="bookmarks">
   <fo:bookmark internal-destination="{@anchor}">
     <fo:bookmark-title><xsl:value-of select="@title"/></fo:bookmark-title>
     <xsl:apply-templates mode="bookmarks"/>
@@ -2727,7 +2726,9 @@
 
 <xsl:template name="emit-ietf-preamble-bookmarks">
   <!-- Get status info formatted as per RFC2629-->
-  <xsl:variable name="preamble"><xsl:call-template name="insertPreamble" /></xsl:variable>
+  <xsl:variable name="preamble">
+    <xsl:call-template name="insertPreamble" />
+  </xsl:variable>
   
   <!-- emit it -->
   <xsl:choose>
@@ -3170,7 +3171,7 @@
 </xsl:template>
 
 <!-- boilerplate -->
-<xsl:template match="x:boilerplate">
+<xsl:template match="x:boilerplate|boilerplate">
   <xsl:apply-templates/>
 </xsl:template>
 

@@ -1286,7 +1286,9 @@
 
   <xsl:if test="$xml2rfc-private=''">
     <!-- copyright statements -->
-    <xsl:variable name="copyright"><xsl:call-template name="insertCopyright" /></xsl:variable>
+    <xsl:variable name="copyright">
+      <xsl:call-template name="insertCopyright" />
+    </xsl:variable>
 
     <!-- emit it -->
     <xsl:choose>
@@ -2996,8 +2998,7 @@
 
   <xsl:variable name="sectionNumber">
     <xsl:choose>
-      <xsl:when test="@myns:unnumbered"></xsl:when>
-      <xsl:when test="ancestor::x:boilerplate"></xsl:when>
+      <xsl:when test="ancestor::x:boilerplate or ancestor::boilerplate"></xsl:when>
       <xsl:otherwise><xsl:call-template name="get-section-number" /></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -4257,8 +4258,9 @@
 
 <xsl:template name="insertCopyright" myns:namespaceless-elements="xml2rfc">
 
+<boilerplate>
   <xsl:if test="not($no-copylong)">
-    <section title="Full Copyright Statement" anchor="{$anchor-pref}copyright" myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+    <section title="Full Copyright Statement" anchor="{$anchor-pref}copyright" myns:notoclink="notoclink">
       <xsl:choose>
         <xsl:when test="$ipr-rfc3667">
           <t>
@@ -4324,7 +4326,7 @@
       </xsl:choose>
     </section>
 
-    <section title="Intellectual Property" anchor="{$anchor-pref}ipr" myns:unnumbered="unnumbered">
+    <section title="Intellectual Property" anchor="{$anchor-pref}ipr">
       <xsl:choose>
         <xsl:when test="$ipr-rfc3667">
           <t>
@@ -4392,7 +4394,7 @@
     <xsl:choose>
       <xsl:when test="$no-funding"/>
       <xsl:when test="$funding1 and /rfc/@number">
-        <section myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+        <section myns:notoclink="notoclink">
           <xsl:attribute name="title">
             <xsl:choose>
               <xsl:when test="$xml2rfc-rfcedstyle='yes'">Acknowledgement</xsl:when>
@@ -4406,7 +4408,7 @@
         </section>
       </xsl:when>
       <xsl:when test="$funding0 and /rfc/@number">
-        <section myns:unnumbered="unnumbered" myns:notoclink="notoclink">
+        <section myns:notoclink="notoclink">
           <xsl:attribute name="title">
             <xsl:choose>
               <xsl:when test="$xml2rfc-rfcedstyle='yes'">Acknowledgement</xsl:when>
@@ -4422,7 +4424,7 @@
       <xsl:otherwise/>
     </xsl:choose>
   </xsl:if>
-
+</boilerplate>
 </xsl:template>
 
 <!-- optional scripts -->
@@ -5885,6 +5887,7 @@ dd, li, p {
 
   <xsl:param name="notes"/>
 
+<boilerplate>
   <!-- TLP4, Section 6.c.iii -->
   <xsl:variable name="pre5378EscapeClause">
     This document may contain material from IETF Documents or IETF Contributions published or
@@ -5917,7 +5920,7 @@ dd, li, p {
     created, and it may not be published except as an Internet-Draft.
   </xsl:variable>
 
-  <section myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-pref}status">
+  <section myns:notoclink="notoclink" anchor="{$anchor-pref}status">
   <xsl:attribute name="title">
     <xsl:choose>
       <xsl:when test="$xml2rfc-rfcedstyle='yes'">Status of This Memo</xsl:when>
@@ -6304,7 +6307,7 @@ dd, li, p {
 
   <xsl:choose>
     <xsl:when test="$ipr-2008-11">
-      <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
+      <section title="Copyright Notice" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
         <t>
           Copyright &#169; <xsl:value-of select="$xml2rfc-ext-pub-year" /> IETF Trust and the persons identified
           as the document authors.  All rights reserved.
@@ -6441,20 +6444,21 @@ dd, li, p {
       <!-- no copyright notice -->
     </xsl:when>
     <xsl:when test="$ipr-rfc4748">
-      <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
+      <section title="Copyright Notice" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
         <t>
           Copyright &#169; The IETF Trust (<xsl:value-of select="$xml2rfc-ext-pub-year" />).  All Rights Reserved.
         </t>
       </section>
     </xsl:when>
     <xsl:otherwise>
-      <section title="Copyright Notice" myns:unnumbered="unnumbered" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
+      <section title="Copyright Notice" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
         <t>
           Copyright &#169; The Internet Society (<xsl:value-of select="$xml2rfc-ext-pub-year" />).  All Rights Reserved.
         </t>
       </section>
     </xsl:otherwise>
   </xsl:choose>
+</boilerplate>
 
 </xsl:template>
 
@@ -7000,7 +7004,7 @@ dd, li, p {
 
 <xsl:template name="get-paragraph-number">
   <!-- get section number of ancestor section element, then add t number -->
-  <xsl:if test="ancestor::section and not(ancestor::section[@myns:unnumbered='unnumbered']) and not(ancestor::x:blockquote) and not(ancestor::blockquote) and not(ancestor::x:note) and not(ancestor::aside) and not(ancestor::ul) and not(ancestor::dl) and not(ancestor>ol)">
+  <xsl:if test="ancestor::section and (not(ancestor::boilerplate) and not(ancestor::x:blockquote) and not(ancestor::blockquote) and not(ancestor::x:note) and not(ancestor::aside) and not(ancestor::ul) and not(ancestor::dl) and not(ancestor::ol))">
     <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol" />
   </xsl:if>
 </xsl:template>
@@ -7405,7 +7409,7 @@ dd, li, p {
 </xsl:template>
 
 <!-- boilerplate -->
-<xsl:template match="x:boilerplate">
+<xsl:template match="x:boilerplate|boilerplate">
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -8199,7 +8203,7 @@ dd, li, p {
 <xsl:template match="*" mode="links"><xsl:apply-templates mode="links"/></xsl:template>
 <xsl:template match="text()" mode="links" />
 
-<xsl:template match="/*/middle//section[not(myns:unnumbered) and not(ancestor::section)]" mode="links">
+<xsl:template match="/*/middle//section[not(ancestor::section)]" mode="links">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
   <xsl:variable name="title">
     <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
@@ -8222,7 +8226,7 @@ dd, li, p {
   <xsl:apply-templates mode="links" />
 </xsl:template>
 
-<xsl:template match="/*/back//section[not(myns:unnumbered) and not(ancestor::section)]" mode="links">
+<xsl:template match="/*/back//section[not(ancestor::section)]" mode="links">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
   <xsl:variable name="title">
     <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
@@ -8332,11 +8336,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.793 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.793 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.794 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.794 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/03/08 06:02:49 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/08 06:02:49 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/03/08 20:13:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/08 20:13:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
