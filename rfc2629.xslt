@@ -3003,7 +3003,7 @@
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:if test="not(ancestor::section) and not(ancestor::x:boilerplate) and not(@myns:notoclink)">
+  <xsl:if test="not(ancestor::section) and not(ancestor::x:boilerplate) and not(ancestor::boilerplate)">
     <xsl:call-template name="insert-conditional-hrule"/>
   </xsl:if>
 
@@ -3035,7 +3035,7 @@
           <!-- pagebreak, this the first section -->
           <xsl:attribute name="class">np</xsl:attribute>
         </xsl:when>
-        <xsl:when test="not(ancestor::section) and not(@myns:notoclink)">
+        <xsl:when test="not(ancestor::section) and not(ancestor::boilerplate)">
           <xsl:call-template name="insert-conditional-pagebreak"/>
         </xsl:when>
         <xsl:otherwise/>
@@ -4260,7 +4260,7 @@
 
 <boilerplate>
   <xsl:if test="not($no-copylong)">
-    <section title="Full Copyright Statement" anchor="{$anchor-pref}copyright" myns:notoclink="notoclink">
+    <section title="Full Copyright Statement" anchor="{$anchor-pref}copyright">
       <xsl:choose>
         <xsl:when test="$ipr-rfc3667">
           <t>
@@ -4394,7 +4394,7 @@
     <xsl:choose>
       <xsl:when test="$no-funding"/>
       <xsl:when test="$funding1 and /rfc/@number">
-        <section myns:notoclink="notoclink">
+        <section>
           <xsl:attribute name="title">
             <xsl:choose>
               <xsl:when test="$xml2rfc-rfcedstyle='yes'">Acknowledgement</xsl:when>
@@ -4408,7 +4408,7 @@
         </section>
       </xsl:when>
       <xsl:when test="$funding0 and /rfc/@number">
-        <section myns:notoclink="notoclink">
+        <section>
           <xsl:attribute name="title">
             <xsl:choose>
               <xsl:when test="$xml2rfc-rfcedstyle='yes'">Acknowledgement</xsl:when>
@@ -5920,7 +5920,7 @@ dd, li, p {
     created, and it may not be published except as an Internet-Draft.
   </xsl:variable>
 
-  <section myns:notoclink="notoclink" anchor="{$anchor-pref}status">
+  <section anchor="{$anchor-pref}status">
   <xsl:attribute name="title">
     <xsl:choose>
       <xsl:when test="$xml2rfc-rfcedstyle='yes'">Status of This Memo</xsl:when>
@@ -6307,7 +6307,7 @@ dd, li, p {
 
   <xsl:choose>
     <xsl:when test="$ipr-2008-11">
-      <section title="Copyright Notice" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
+      <section title="Copyright Notice" anchor="{$anchor-pref}copyrightnotice">
         <t>
           Copyright &#169; <xsl:value-of select="$xml2rfc-ext-pub-year" /> IETF Trust and the persons identified
           as the document authors.  All rights reserved.
@@ -6444,14 +6444,14 @@ dd, li, p {
       <!-- no copyright notice -->
     </xsl:when>
     <xsl:when test="$ipr-rfc4748">
-      <section title="Copyright Notice" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
+      <section title="Copyright Notice" anchor="{$anchor-pref}copyrightnotice">
         <t>
           Copyright &#169; The IETF Trust (<xsl:value-of select="$xml2rfc-ext-pub-year" />).  All Rights Reserved.
         </t>
       </section>
     </xsl:when>
     <xsl:otherwise>
-      <section title="Copyright Notice" myns:notoclink="notoclink" anchor="{$anchor-pref}copyrightnotice">
+      <section title="Copyright Notice" anchor="{$anchor-pref}copyrightnotice">
         <t>
           Copyright &#169; The Internet Society (<xsl:value-of select="$xml2rfc-ext-pub-year" />).  All Rights Reserved.
         </t>
@@ -8336,11 +8336,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.795 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.795 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.796 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.796 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/03/09 20:26:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/09 20:26:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/03/11 15:57:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/11 15:57:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

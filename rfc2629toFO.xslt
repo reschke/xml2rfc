@@ -1310,7 +1310,7 @@
 <!-- handled in section-maker -->
 <xsl:template match="section/name"/>
 
-<xsl:template match="section[count(ancestor::section) = 0 and (@myns:notoclink or ancestor::x:boilerplate or ancestor::boilerplate)]">
+<xsl:template match="section[count(ancestor::section) = 0 and (ancestor::x:boilerplate or ancestor::boilerplate)]">
 
   <fo:block xsl:use-attribute-sets="h1">
     <xsl:call-template name="section-maker" />
@@ -1321,7 +1321,7 @@
   <xsl:apply-templates select="iref" mode="iref-end"/>
 </xsl:template>
 
-<xsl:template match="section[count(ancestor::section) = 0 and not(@myns:notoclink or ancestor::x:boilerplate or ancestor::boilerplate)]">
+<xsl:template match="section[count(ancestor::section) = 0 and not(ancestor::x:boilerplate or ancestor::boilerplate)]">
 
   <fo:block xsl:use-attribute-sets="h1 newpage">
     <xsl:call-template name="section-maker" />
