@@ -929,21 +929,6 @@ mkepub.sh rfc2616.xml
   </t>
 </section>
 
-<section title="&lt;boilerplate> element" anchor="ext.element.boilerplate">
-  <iref item="Extension Elements" subitem="boilerplate" primary="true"/>
-  <iref item="boilerplate Extension Element" primary="true"/>
-  <x:anchor-alias value="boilerplate"/>
-  <t>
-    Can be used to include boilerplate (status, copyright, ...) into the
-    front or back section. &lt;section> elements within &lt;x:boilerplate>
-    appear as unnumbered sections in the output.
-  </t>
-  <t>
-    <em>This element currently can not be "down-translated" for use
-    in xml2rfc!</em>
-  </t>
-</section>
-
 <section title="&lt;bt> element" anchor="ext.element.bt">
   <iref item="Extension Elements" subitem="bt" primary="true"/>
   <iref item="bt Extension Element" primary="true"/>
@@ -1348,6 +1333,14 @@ Content-Length: &lt;x:length-of target="req"/>
 <section title="blockquote Element" anchor="v3.blockquote">
   <iref item="V3 Extension Elements" subitem="blockquote" primary="true"/>
   <iref item="blockquote V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.blockquote"/>.
+</t>
+</section>
+
+<section title="boilerplate Element" anchor="v3.boilerplate">
+  <iref item="V3 Extension Elements" subitem="boilerplate" primary="true"/>
+  <iref item="boilerplate V3 Extension Element" primary="true"/>
 <t>
   See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.blockquote"/>.
 </t>
@@ -2413,14 +2406,13 @@ include "rfc2629.rnc" {
         )
     }
 
-  <em># Redefine &lt;back> to allow boilerplate</em>
+  <em># Redefine &lt;back> to allow displayreference</em>
   back =
     element back {
       attlist.back,
       <strong><x:ref>v3_displayreference</x:ref>*</strong>,
       references*,
-      section*,
-      <strong><x:ref>x_boilerplate</x:ref>?</strong>
+      section*
     }
 
   <em># Redefine &lt;c> to allow our extension elements</em>
@@ -2468,8 +2460,8 @@ include "rfc2629.rnc" {
       area*,
       workgroup*,
       keyword*,
-      <strong><x:ref>x_boilerplate</x:ref>?,</strong>
       abstract?,
+      <strong><x:ref>v3_boilerplate</x:ref>?,</strong>
       note*
     }
   
@@ -2719,6 +2711,13 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute cite { URI }?,
     t+
+  }
+
+<em anchor="v3_boilerplate"><iref item="boilerplate V3 Extension Element"/><iref item="V3 Extension Elements" subitem="boilerplate"
+/># Boilerplate (see <xref target="v3.blockquote"/>)</em>
+<x:ref>v3_boilerplate</x:ref> =
+  element boilerplate {
+    section+
   }
 
 <em anchor="v3_displayreference"><iref item="displayreference V3 Extension Element"/><iref item="V3 Extension Elements" subitem="displayreference"
@@ -2993,13 +2992,6 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute cite { URI }?,
     t+
-  }
-
-<em anchor="x_boilerplate"><iref item="boilerplate Extension Element"/><iref item="Extension Elements" subitem="boilerplate"
-/># Boilerplate (see <xref target="ext.element.blockquote"/>)</em>
-<x:ref>x_boilerplate</x:ref> =
-  element x:boilerplate {
-    section+
   }
 
 <em anchor="x_bt"><iref item="bt Extension Element"/><iref item="Extension Elements" subitem="bt"

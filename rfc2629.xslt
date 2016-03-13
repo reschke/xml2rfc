@@ -1517,7 +1517,6 @@
         <xsl:with-param name="notes" select="$notes-in-boilerplate|$edited-notes-in-boilerplate"/>
       </xsl:call-template>
     </xsl:if>
-    <xsl:apply-templates select="x:boilerplate"/>
   </xsl:if>
   
   <xsl:apply-templates select="abstract" />
@@ -1531,7 +1530,6 @@
         <xsl:with-param name="notes" select="$notes-in-boilerplate|$edited-notes-in-boilerplate"/>
       </xsl:call-template>
     </xsl:if>
-    <xsl:apply-templates select="x:boilerplate"/>
   </xsl:if>
 
   <xsl:if test="not($notes-follow-abstract)">
@@ -1555,10 +1553,23 @@
     </xsl:call-template>
   </xsl:variable>
 
+  <!-- get document-supplied boilerplate -->
+  <xsl:variable name="userboiler" select="/rfc/front/boilerplate"/>
+
   <!-- emit it -->
   <xsl:choose>
     <xsl:when test="function-available('exslt:node-set')">
+      <xsl:variable name="differ" select="$userboiler and translate(normalize-space(string($userboiler)),' ','')!=translate(normalize-space(string($preamble)),' ','')"/>
+      <!--<xsl:if test="$differ">
+        <xsl:message>1: <xsl:value-of select="normalize-space(string($userboiler))"/></xsl:message>
+        <xsl:message>2: <xsl:value-of select="normalize-space(string($preamble))"/></xsl:message>
+      </xsl:if>-->
       <xsl:apply-templates select="exslt:node-set($preamble)" />
+      <xsl:if test="$differ">
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg" select="'user-supplied boilerplate differs from auto-generated boilerplate (inserting auto-generated)'"/>
+        </xsl:call-template>
+      </xsl:if>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
@@ -2998,12 +3009,12 @@
 
   <xsl:variable name="sectionNumber">
     <xsl:choose>
-      <xsl:when test="ancestor::x:boilerplate or ancestor::boilerplate"></xsl:when>
+      <xsl:when test="ancestor::boilerplate"></xsl:when>
       <xsl:otherwise><xsl:call-template name="get-section-number" /></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:if test="not(ancestor::section) and not(ancestor::x:boilerplate) and not(ancestor::boilerplate)">
+  <xsl:if test="not(ancestor::section) and not(ancestor::boilerplate)">
     <xsl:call-template name="insert-conditional-hrule"/>
   </xsl:if>
 
@@ -5921,12 +5932,12 @@ dd, li, p {
   </xsl:variable>
 
   <section anchor="{$anchor-pref}status">
-  <xsl:attribute name="title">
+  <name>
     <xsl:choose>
       <xsl:when test="$xml2rfc-rfcedstyle='yes'">Status of This Memo</xsl:when>
       <xsl:otherwise>Status of this Memo</xsl:otherwise>
     </xsl:choose>
-  </xsl:attribute>
+  </name>
 
   <xsl:choose>
     <xsl:when test="/rfc/@ipr and not(/rfc/@number)">
@@ -6307,7 +6318,8 @@ dd, li, p {
 
   <xsl:choose>
     <xsl:when test="$ipr-2008-11">
-      <section title="Copyright Notice" anchor="{$anchor-pref}copyrightnotice">
+      <section anchor="{$anchor-pref}copyrightnotice">
+        <name>Copyright Notice</name>
         <t>
           Copyright &#169; <xsl:value-of select="$xml2rfc-ext-pub-year" /> IETF Trust and the persons identified
           as the document authors.  All rights reserved.
@@ -6444,14 +6456,16 @@ dd, li, p {
       <!-- no copyright notice -->
     </xsl:when>
     <xsl:when test="$ipr-rfc4748">
-      <section title="Copyright Notice" anchor="{$anchor-pref}copyrightnotice">
+      <section anchor="{$anchor-pref}copyrightnotice">
+        <name>Copyright Notice</name>
         <t>
           Copyright &#169; The IETF Trust (<xsl:value-of select="$xml2rfc-ext-pub-year" />).  All Rights Reserved.
         </t>
       </section>
     </xsl:when>
     <xsl:otherwise>
-      <section title="Copyright Notice" anchor="{$anchor-pref}copyrightnotice">
+      <section anchor="{$anchor-pref}copyrightnotice">
+        <name>Copyright Notice</name>
         <t>
           Copyright &#169; The Internet Society (<xsl:value-of select="$xml2rfc-ext-pub-year" />).  All Rights Reserved.
         </t>
@@ -7409,7 +7423,7 @@ dd, li, p {
 </xsl:template>
 
 <!-- boilerplate -->
-<xsl:template match="x:boilerplate|boilerplate">
+<xsl:template match="boilerplate">
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -8336,11 +8350,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.796 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.796 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.797 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.797 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/03/11 15:57:42 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/11 15:57:42 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/03/13 15:46:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/13 15:46:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

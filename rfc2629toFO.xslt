@@ -369,7 +369,6 @@
         <xsl:with-param name="notes" select="$notes-in-boilerplate"/>
       </xsl:call-template>
     </xsl:if>
-    <xsl:apply-templates select="x:boilerplate"/>
   </xsl:if>
   
   <xsl:apply-templates select="abstract" />
@@ -383,7 +382,6 @@
         <xsl:with-param name="notes" select="$notes-in-boilerplate"/>
       </xsl:call-template>
     </xsl:if>
-    <xsl:apply-templates select="x:boilerplate"/>
   </xsl:if>
 
   <xsl:if test="not($notes-follow-abstract)">
@@ -1272,7 +1270,7 @@
 <xsl:template name="section-maker">
   <xsl:variable name="sectionNumber">
     <xsl:choose>
-      <xsl:when test="ancestor::x:boilerplate or ancestor::boilerplate"></xsl:when>
+      <xsl:when test="ancestor::boilerplate"></xsl:when>
       <xsl:otherwise><xsl:call-template name="get-section-number" /></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -1310,7 +1308,7 @@
 <!-- handled in section-maker -->
 <xsl:template match="section/name"/>
 
-<xsl:template match="section[count(ancestor::section) = 0 and (ancestor::x:boilerplate or ancestor::boilerplate)]">
+<xsl:template match="section[count(ancestor::section) = 0 and (ancestor::boilerplate)]">
 
   <fo:block xsl:use-attribute-sets="h1">
     <xsl:call-template name="section-maker" />
@@ -1321,7 +1319,7 @@
   <xsl:apply-templates select="iref" mode="iref-end"/>
 </xsl:template>
 
-<xsl:template match="section[count(ancestor::section) = 0 and not(ancestor::x:boilerplate or ancestor::boilerplate)]">
+<xsl:template match="section[count(ancestor::section) = 0 and not(ancestor::boilerplate)]">
 
   <fo:block xsl:use-attribute-sets="h1 newpage">
     <xsl:call-template name="section-maker" />
@@ -2542,7 +2540,7 @@
     <xsl:number count="note" />
   </xsl:variable>
   <fo:bookmark internal-destination="{concat($anchor-pref,'note.',$num)}">
-    <fo:bookmark-title><xsl:value-of select="@title"/></fo:bookmark-title>
+    <fo:bookmark-title><xsl:value-of select="@title|name"/></fo:bookmark-title>
     <xsl:apply-templates mode="bookmarks"/>
   </fo:bookmark>
 </xsl:template>
@@ -2574,7 +2572,7 @@
 
 <xsl:template match="section[ancestor::boilerplate]" mode="bookmarks">
   <fo:bookmark internal-destination="{@anchor}">
-    <fo:bookmark-title><xsl:value-of select="@title"/></fo:bookmark-title>
+    <fo:bookmark-title><xsl:value-of select="@title|name"/></fo:bookmark-title>
     <xsl:apply-templates mode="bookmarks"/>
   </fo:bookmark>
 </xsl:template>
@@ -3171,7 +3169,7 @@
 </xsl:template>
 
 <!-- boilerplate -->
-<xsl:template match="x:boilerplate|boilerplate">
+<xsl:template match="boilerplate">
   <xsl:apply-templates/>
 </xsl:template>
 
