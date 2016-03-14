@@ -3067,11 +3067,18 @@
       <xsl:if test="@ed:resolves">
         <xsl:call-template name="insert-issue-pointer"/>
       </xsl:if>
-  
+
+      <xsl:call-template name="check-anchor"/>
+      <xsl:variable name="anchor">
+        <xsl:choose>
+          <xsl:when test="@anchor"><xsl:value-of select="@anchor"/></xsl:when>
+          <xsl:otherwise><xsl:call-template name="sluggy-anchor"/></xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      
       <xsl:choose>
-        <xsl:when test="@anchor">
-          <xsl:call-template name="check-anchor"/>
-          <a href="#{@anchor}"><xsl:call-template name="insertTitle"/></a>
+        <xsl:when test="$anchor!=''">
+          <a href="#{$anchor}"><xsl:call-template name="insertTitle"/></a>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="insertTitle"/>
@@ -6992,11 +6999,43 @@ dd, li, p {
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="sluggy-anchor">
+  <xsl:if test="self::section and (not(@anchor) or @anchor='')">
+    <xsl:variable name="fr">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_ :%,/=&lt;&gt;</xsl:variable>
+    <xsl:variable name="to">abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789.--------=-</xsl:variable>
+    <xsl:variable name="canslug" select="translate(normalize-space(concat(@title,name)),$fr,'')=''"/>
+    <xsl:if test="$canslug">
+      <xsl:variable name="slug" select="translate(normalize-space(concat(@title,name)),$fr,$to)"/>
+      <xsl:variable name="conflicts" select="//section[not(@anchor) and $slug=translate(normalize-space(concat(@title,name)),$fr,$to)]"/>
+      <xsl:choose>
+        <xsl:when test="count($conflicts)>1">
+          <xsl:variable name="c" select="preceding::*[not(@anchor) and $slug=translate(normalize-space(concat(@title,name)),$fr,$to)]"/>
+          <xsl:value-of select="concat('n-',$slug,'_',(1+count($c)))"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="concat('n-',$slug)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template name="copy-anchor">
   <xsl:call-template name="check-anchor"/>
-  <xsl:if test="@anchor and @anchor!=''">
-    <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
-  </xsl:if>
+  <xsl:choose>
+    <xsl:when test="@anchor and @anchor!=''">
+      <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
+    </xsl:when>
+    <xsl:when test="self::section">
+      <xsl:variable name="slug">
+        <xsl:call-template name="sluggy-anchor"/>
+      </xsl:variable>
+      <xsl:if test="$slug!=''">
+        <xsl:attribute name="id"><xsl:value-of select="$slug"/></xsl:attribute>
+      </xsl:if>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="rfclist-for-dcmeta">
@@ -8350,11 +8389,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.797 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.797 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.798 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.798 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/03/13 15:46:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/13 15:46:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/03/14 15:49:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/03/14 15:49:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
