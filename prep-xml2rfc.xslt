@@ -340,6 +340,14 @@
     <xsl:when test="self::figure">f-<xsl:number count="figure" level="any"/></xsl:when>
     <xsl:when test="self::note">s-note-<xsl:number count="note"/></xsl:when>
     <xsl:when test="self::table">t-<xsl:number count="table" level="any"/></xsl:when>
+    <xsl:when test="self::references">
+      <xsl:text>s-</xsl:text>
+      <xsl:value-of select="1 + count(../../middle/section)"/>
+      <xsl:if test="count(../references)!=1">
+        <xsl:text>.</xsl:text>
+        <xsl:value-of select="1 + count(preceding-sibling::references)"/>
+      </xsl:if>
+    </xsl:when>
     <xsl:when test="self::section and parent::back">s-<xsl:number count="section" format="a"/></xsl:when>
     <xsl:when test="self::section and parent::middle">s-<xsl:number count="section"/></xsl:when>
     <xsl:when test="self::section"><xsl:for-each select=".."><xsl:call-template name="pn-sn"/></xsl:for-each>.<xsl:number count="section"/></xsl:when>
@@ -347,7 +355,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="abstract|boilerplate|figure|note|section|table" mode="prep-pn">
+<xsl:template match="abstract|boilerplate|figure|note|references|section|table" mode="prep-pn">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-ser"/>
     <xsl:attribute name="pn"><xsl:call-template name="pn-sn"/></xsl:attribute>
