@@ -280,8 +280,8 @@
       <xsl:with-param name="root" select="$root"/>
     </xsl:apply-templates>
     <xsl:if test="not(../@anchor)">
-      <xsl:variable name="fr">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_ :%,/=&lt;&gt;</xsl:variable>
-      <xsl:variable name="to">abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789.--------=-</xsl:variable>
+      <xsl:variable name="fr">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.()-_ :%,/=&lt;&gt;</xsl:variable>
+      <xsl:variable name="to">abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789.----------=-</xsl:variable>
       <xsl:variable name="canslug" select="translate(normalize-space(.),$fr,'')=''"/>
       <xsl:choose>
         <xsl:when test="$canslug">
@@ -358,7 +358,8 @@
 <!--<xsl:template match="section/*[not(self::figure or self::iref or self::name or self::table)]" mode="prep-pn">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-ser"/>
-    <xsl:attribute name="pn">p-<xsl:call-template name="pn-sn"/>-<xsl:number count="*[not(self::figure or self::iref or self::name or self::table)]"/></xsl:attribute>
+    <xsl:variable name="parent"><xsl:for-each select=".."><xsl:call-template name="pn-sn"/></xsl:for-each></xsl:variable>
+    <xsl:attribute name="pn">p<xsl:value-of select="substring($parent,2)"/>-<xsl:number count="*[not(self::figure or self::iref or self::name or self::table)]"/></xsl:attribute>
     <xsl:apply-templates select="node()|@*" mode="prep-pn"/>
   </xsl:copy>
 </xsl:template>-->
