@@ -34,9 +34,9 @@
                exclude-result-prefixes="f"
 >
 
-<xsl:import href="rfc2629-no-doctype.xslt" />
+<xsl:import href="rfc2629.xslt" />
 
-<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes"/>
+<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" doctype-system=""/>
 
 <xsl:param name="steps" select="'boilerplate deprecation slug pn'"/>
 
