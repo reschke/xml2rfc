@@ -38,7 +38,7 @@
 
 <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" doctype-system=""/>
 
-<xsl:param name="steps" select="'boilerplate deprecation slug pn'"/>
+<xsl:param name="steps" select="'boilerplate tables deprecation slug pn'"/>
 
 <xsl:template match="/">
   <xsl:variable name="n" select="f:apply-steps($steps,.)"/>
@@ -77,6 +77,10 @@
           <xsl:apply-templates select="$nodes" mode="prep-slug">
             <xsl:with-param name="root" select="$nodes"/>
           </xsl:apply-templates>
+        </xsl:when>
+        <xsl:when test="$s='tables'">
+          <xsl:message>Step: tables</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-tables"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="error">
@@ -371,6 +375,63 @@
     <xsl:apply-templates select="node()|@*" mode="prep-pn"/>
   </xsl:copy>
 </xsl:template>-->
+
+<!-- tables step -->
+
+<xsl:template match="node()|@*" mode="prep-tables">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-tables"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="texttable/@title" mode="prep-tables"/>
+
+<xsl:template match="texttable" mode="prep-tables">
+  <xsl:for-each select="preamble">
+    <t>
+      <xsl:apply-templates select="node()|@*" mode="prep-tables"/>
+    </t>
+  </xsl:for-each>
+  <table>
+    <xsl:apply-templates select="@anchor" mode="prep-tables"/>
+    <xsl:apply-templates select="iref" mode="prep-tables"/>
+    <xsl:choose>
+      <xsl:when test="not(name) and @title!=''">
+        <name><xsl:value-of select="@title"/></name>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="name" mode="prep-tables"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:if test="ttcol/text()!=''">
+      <thead>
+        <tr>
+          <xsl:for-each select="ttcol">
+            <th><xsl:value-of select="."/></th>
+          </xsl:for-each>
+        </tr>
+      </thead>
+    </xsl:if>
+    <xsl:if test="c">
+      <xsl:variable name="columns" select="count(ttcol)"/>
+      <xsl:variable name="fields" select="c"/>
+      <tbody>
+        <xsl:for-each select="$fields[$columns=1 or (position() mod $columns) = 1]">
+          <tr>
+            <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
+              <td>
+                <xsl:apply-templates select="node()" mode="prep-tables"/>
+              </td>
+            </xsl:for-each>
+          </tr>
+        </xsl:for-each>
+      </tbody>
+    </xsl:if>
+  </table>
+  <xsl:for-each select="postamble">
+    <t>
+      <xsl:apply-templates select="node()|@*" mode="prep-tables"/>
+    </t>
+  </xsl:for-each>
+</xsl:template>
 
 <!-- final serialization step -->
 
