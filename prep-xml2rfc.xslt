@@ -405,7 +405,12 @@
       <thead>
         <tr>
           <xsl:for-each select="ttcol">
-            <th><xsl:value-of select="."/></th>
+            <th>
+              <xsl:if test="@align and @align!='left'">
+                <xsl:copy-of select="@align"/>
+              </xsl:if>
+              <xsl:value-of select="."/>
+            </th>
           </xsl:for-each>
         </tr>
       </thead>
@@ -417,7 +422,12 @@
         <xsl:for-each select="$fields[$columns=1 or (position() mod $columns) = 1]">
           <tr>
             <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
+              <xsl:variable name="p" select="position()"/>
+              <xsl:variable name="col" select="../ttcol[$p]"/>
               <td>
+                <xsl:if test="$col/@align and $col/@align!='left'">
+                  <xsl:copy-of select="$col/@align"/>
+                </xsl:if>
                 <xsl:apply-templates select="node()" mode="prep-tables"/>
               </td>
             </xsl:for-each>
