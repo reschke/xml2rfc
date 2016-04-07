@@ -355,7 +355,7 @@
     <xsl:when test="self::section and parent::back">s-<xsl:number count="section" format="a"/></xsl:when>
     <xsl:when test="self::section and parent::middle">s-<xsl:number count="section"/></xsl:when>
     <xsl:when test="self::section"><xsl:for-each select=".."><xsl:call-template name="pn-sn"/></xsl:for-each>.<xsl:number count="section"/></xsl:when>
-    <xsl:when test="self::t or self::ul or self::dl or self::ol or self::aside or self::blockquote or self::li or self::dd">
+    <xsl:when test="self::aside or self::blockquote or self::dd or self::dl or self::li or self::t or self::ol or self::ul">
       <xsl:for-each select="..">
         <xsl:call-template name="pn-sn"/>
         <xsl:choose>
@@ -363,7 +363,7 @@
           <xsl:otherwise>.</xsl:otherwise>
         </xsl:choose>
       </xsl:for-each>
-      <xsl:number count="t|ul|dl|ol|aside|blockquote|li|dd"/>
+      <xsl:number count="aside|blockquote|dd|dl|li|t|ul|ol"/>
     </xsl:when>
     <xsl:otherwise/>
   </xsl:choose>
@@ -377,7 +377,7 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="t|ul|dl|ol|aside|blockquote|li|dd" mode="prep-pn">
+<xsl:template match="aside|blockquote|dd|dl|li|t|ol|ul" mode="prep-pn">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-pn"/>
     <xsl:attribute name="pn"><xsl:call-template name="pn-sn"/></xsl:attribute>
