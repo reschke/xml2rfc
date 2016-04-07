@@ -361,7 +361,7 @@
 
 <xsl:template match="abstract|boilerplate|figure|note|references|section|table" mode="prep-pn">
   <xsl:copy>
-    <xsl:apply-templates select="@*" mode="prep-ser"/>
+    <xsl:apply-templates select="@*" mode="prep-pn"/>
     <xsl:attribute name="pn"><xsl:call-template name="pn-sn"/></xsl:attribute>
     <xsl:apply-templates select="node()|@*" mode="prep-pn"/>
   </xsl:copy>
