@@ -355,6 +355,16 @@
     <xsl:when test="self::section and parent::back">s-<xsl:number count="section" format="a"/></xsl:when>
     <xsl:when test="self::section and parent::middle">s-<xsl:number count="section"/></xsl:when>
     <xsl:when test="self::section"><xsl:for-each select=".."><xsl:call-template name="pn-sn"/></xsl:for-each>.<xsl:number count="section"/></xsl:when>
+    <xsl:when test="self::t or self::ul or self::dl or self::ol or self::aside or self::blockquote or self::li or self::dd">
+      <xsl:for-each select="..">
+        <xsl:call-template name="pn-sn"/>
+        <xsl:choose>
+          <xsl:when test="self::section or self::boilerplate or self::abstract or self::note">-</xsl:when>
+          <xsl:otherwise>.</xsl:otherwise>
+        </xsl:choose>
+      </xsl:for-each>
+      <xsl:number count="t|ul|dl|ol|aside|blockquote|li|dd"/>
+    </xsl:when>
     <xsl:otherwise/>
   </xsl:choose>
 </xsl:template>
@@ -367,14 +377,13 @@
   </xsl:copy>
 </xsl:template>
 
-<!--<xsl:template match="section/*[not(self::figure or self::iref or self::name or self::table)]" mode="prep-pn">
+<xsl:template match="t|ul|dl|ol|aside|blockquote|li|dd" mode="prep-pn">
   <xsl:copy>
-    <xsl:apply-templates select="@*" mode="prep-ser"/>
-    <xsl:variable name="parent"><xsl:for-each select=".."><xsl:call-template name="pn-sn"/></xsl:for-each></xsl:variable>
-    <xsl:attribute name="pn">p<xsl:value-of select="substring($parent,2)"/>-<xsl:number count="*[not(self::figure or self::iref or self::name or self::table)]"/></xsl:attribute>
+    <xsl:apply-templates select="@*" mode="prep-pn"/>
+    <xsl:attribute name="pn"><xsl:call-template name="pn-sn"/></xsl:attribute>
     <xsl:apply-templates select="node()|@*" mode="prep-pn"/>
   </xsl:copy>
-</xsl:template>-->
+</xsl:template>
 
 <!-- tables step -->
 
