@@ -38,7 +38,8 @@
 
 <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" doctype-system=""/>
 
-<xsl:param name="steps" select="'boilerplate tables deprecation slug pn'"/>
+<xsl:param name="steps" select="'boilerplate tables deprecation slug pn preptime'"/>
+<xsl:param name="skip-steps" select="''"/>
 
 <xsl:template match="/">
   <xsl:variable name="n" select="f:apply-steps($steps,.)"/>
@@ -56,6 +57,9 @@
     </xsl:when>
     <xsl:otherwise>
       <xsl:choose>
+        <xsl:when test="contains(concat(' ',$skip-steps,' '),concat(' ',$s,' '))">
+          <xsl:copy-of select="$nodes"/>
+        </xsl:when>
         <xsl:when test="$s='boilerplate'">
           <xsl:message>Step: boilerplate</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-boilerplate"/>
@@ -71,6 +75,10 @@
         <xsl:when test="$s='pn'">
           <xsl:message>Step: pn</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-pn"/>
+        </xsl:when>
+        <xsl:when test="$s='preptime'">
+          <xsl:message>Step: preptime</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-preptime"/>
         </xsl:when>
         <xsl:when test="$s='slug'">
           <xsl:message>Step: slug</xsl:message>
@@ -382,6 +390,22 @@
     <xsl:apply-templates select="@*" mode="prep-pn"/>
     <xsl:attribute name="pn"><xsl:call-template name="pn-sn"/></xsl:attribute>
     <xsl:apply-templates select="node()|@*" mode="prep-pn"/>
+  </xsl:copy>
+</xsl:template>
+
+<!-- preptime step -->
+
+<xsl:template match="node()|@*" mode="prep-preptime">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-preptime"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="/rfc/@prepTime" mode="prep-preptime"/>
+
+<xsl:template match="rfc" mode="prep-preptime">
+  <xsl:copy>
+    <xsl:attribute name="prepTime" select="current-dateTime()"/>
+    <xsl:apply-templates select="@*" mode="prep-preptime"/>
+    <xsl:apply-templates select="node()" mode="prep-preptime"/>
   </xsl:copy>
 </xsl:template>
 
