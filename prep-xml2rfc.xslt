@@ -31,7 +31,8 @@
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                version="2.0"
                xmlns:f="mailto:julian.reschke@greenbytes?subject=preptool"
-               exclude-result-prefixes="f"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               exclude-result-prefixes="f xs"
 >
 
 <xsl:import href="rfc2629.xslt" />
@@ -403,7 +404,7 @@
 
 <xsl:template match="rfc" mode="prep-preptime">
   <xsl:copy>
-    <xsl:attribute name="prepTime" select="current-dateTime()"/>
+    <xsl:attribute name="prepTime" select="adjust-dateTime-to-timezone(current-dateTime(),xs:dayTimeDuration('PT0H'))"/>
     <xsl:apply-templates select="@*" mode="prep-preptime"/>
     <xsl:apply-templates select="node()" mode="prep-preptime"/>
   </xsl:copy>
