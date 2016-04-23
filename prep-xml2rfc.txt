@@ -1,0 +1,11 @@
+Running prep-xml2rfc using Saxon9:
+
+1) Install Java
+
+2) Get Saxon 9.7 HE JAR file from https://oss.sonatype.org/content/repositories/releases/net/sf/saxon/Saxon-HE/9.7.0-4/Saxon-HE-9.7.0-4.jar (see Saxonica.net for additional information)
+
+3) Run the tool (make sure you have both prep-xml2rfc.xslt, rfc2629.xslt and the JAR file): 
+
+java -jar Saxon-HE-9.7.0-4.jar prep-xml2rfc.xslt
+
+(output goes to stdout)
