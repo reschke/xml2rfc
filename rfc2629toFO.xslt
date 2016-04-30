@@ -2778,6 +2778,9 @@
 
 -->
 
+<!--TODO -->
+<xsl:template match="table" />
+
 <xsl:template match="texttable">
 
   <xsl:variable name="style">

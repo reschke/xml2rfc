@@ -1112,6 +1112,24 @@
   </xsl:choose>
 </xsl:template>
 
+<!-- Tables -->
+<xsl:template match="table" mode="cleanup">
+  <t>
+    <texttable>
+      <xsl:for-each select="thead/tr/*">
+        <ttcol>
+          <xsl:apply-templates mode="cleanup"/>
+        </ttcol>
+      </xsl:for-each>
+      <xsl:for-each select="tbody/tr/*">
+        <c>
+          <xsl:apply-templates mode="cleanup"/>
+        </c>
+      </xsl:for-each>
+    </texttable>
+  </t>
+</xsl:template>
+
 <!-- date formats -->
 <xsl:template match="/rfc/front/date/@month" mode="cleanup">
   <xsl:attribute name="month">
