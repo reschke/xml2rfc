@@ -50,6 +50,7 @@
   <xsl:text>boilerplate tables deprecation slug pn preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
+<xsl:variable name="rfcnumber" select="/rfc/@number"/>
 
 
 <xsl:template match="/">
@@ -431,6 +432,22 @@
 </xsl:template>
 
 <xsl:template match="cref|comment()" mode="prep-rfccleanup"/>
+
+<xsl:template match="link[@rel='alternate']" mode="prep-rfccleanup"/>
+
+<xsl:template match="rfc" mode="prep-rfccleanup">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-rfccleanup"/>
+    <xsl:if test="not(link[@rel='item' and lower-case(@href)='urn:issn:2070-1721'])">
+      <link rel="item" href="urn:issn:2070-1721"/>
+    </xsl:if>
+    <xsl:variable name="doi" select="concat('https://dx.doi.org/10.17487/RFC',format-number($rfcnumber,'#0000'))"/>
+    <xsl:if test="not(link[@rel='describedBy' and lower-case(@href)=$doi])">
+      <link rel="describedBy" href="{$doi}"/>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-rfccleanup"/>
+  </xsl:copy>
+</xsl:template>
 
 <!-- tables step -->
 
