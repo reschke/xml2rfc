@@ -39,8 +39,18 @@
 
 <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" doctype-system=""/>
 
-<xsl:param name="steps" select="'boilerplate tables deprecation slug pn preptime'"/>
 <xsl:param name="skip-steps" select="''"/>
+<xsl:param name="mode">
+  <xsl:choose>
+    <xsl:when test="/rfc/@number">rfc</xsl:when>
+    <xsl:otherwise>id</xsl:otherwise>
+  </xsl:choose>
+</xsl:param>
+<xsl:param name="steps">
+  <xsl:text>boilerplate tables deprecation slug pn preptime</xsl:text>
+  <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
+</xsl:param>
+
 
 <xsl:template match="/">
   <xsl:variable name="n" select="f:apply-steps($steps,.)"/>
@@ -80,6 +90,10 @@
         <xsl:when test="$s='preptime'">
           <xsl:message>Step: preptime</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-preptime"/>
+        </xsl:when>
+        <xsl:when test="$s='rfccleanup'">
+          <xsl:message>Step: rfccleanup</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-rfccleanup"/>
         </xsl:when>
         <xsl:when test="$s='slug'">
           <xsl:message>Step: slug</xsl:message>
@@ -409,6 +423,14 @@
     <xsl:apply-templates select="node()" mode="prep-preptime"/>
   </xsl:copy>
 </xsl:template>
+
+<!-- rfccleanup step -->
+
+<xsl:template match="*|text()|processing-instruction()|@*" mode="prep-rfccleanup">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-rfccleanup"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="cref|comment()" mode="prep-rfccleanup"/>
 
 <!-- tables step -->
 
