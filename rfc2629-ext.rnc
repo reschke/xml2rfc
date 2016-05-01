@@ -220,6 +220,7 @@ include "rfc2629.rnc" {
        | v3_name
        | v3_ol
        | v3_sourcecode
+       | v3_table
        | v3_ul
        | x_anchor-alias
        | x_blockquote
@@ -501,7 +502,48 @@ v3_sup =
     (TEXT)*
   }
 
-# Monospaced Text (see Section 12.22)
+# Table (see Section 12.22)
+v3_table =
+  element table {
+    attribute anchor { xsd:ID }?,
+    v3_thead,
+    v3_tbody
+  }
+
+# Table Body (see Section 12.23)
+v3_tbody =
+  element tbody {
+    v3_tr+
+  }
+
+# Table Contents Cell (see Section 12.24)
+v3_td =
+  element td {
+    TEXT
+  }
+
+# Table Header Cell (see Section 12.25)
+v3_th =
+  element th {
+    TEXT
+  }
+
+# Table Head (see Section 12.26)
+v3_thead =
+  element thead {
+    v3_tr
+  }
+
+# Table Row (see Section 12.27)
+v3_tr =
+  element tr {
+    (
+      v3_td
+      | v3_th
+    )+
+  }
+
+# Monospaced Text (see Section 12.28)
 v3_tt =
   element tt {
     (TEXT
@@ -510,7 +552,7 @@ v3_tt =
       | x_ref)*
   }
 
-# Unordered List (see Section 12.23)
+# Unordered List (see Section 12.29)
 v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,

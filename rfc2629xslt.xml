@@ -1501,6 +1501,54 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="table Element" anchor="v3.table">
+  <iref item="V3 Extension Elements" subitem="table" primary="true"/>
+  <iref item="table V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.table"/>.
+</t>
+</section>
+
+<section title="tbody Element" anchor="v3.tbody">
+  <iref item="V3 Extension Elements" subitem="tbody" primary="true"/>
+  <iref item="tbody V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.tbody"/>.
+</t>
+</section>
+
+<section title="td Element" anchor="v3.td">
+  <iref item="V3 Extension Elements" subitem="td" primary="true"/>
+  <iref item="td V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.td"/>.
+</t>
+</section>
+
+<section title="th Element" anchor="v3.th">
+  <iref item="V3 Extension Elements" subitem="th" primary="true"/>
+  <iref item="th V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.th"/>.
+</t>
+</section>
+
+<section title="thead Element" anchor="v3.thead">
+  <iref item="V3 Extension Elements" subitem="thead" primary="true"/>
+  <iref item="thead V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.thead"/>.
+</t>
+</section>
+
+<section title="tr Element" anchor="v3.tr">
+  <iref item="V3 Extension Elements" subitem="tr" primary="true"/>
+  <iref item="tr V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.tr"/>.
+</t>
+</section>
+
 <section title="tt Element" anchor="v3.tt">
   <iref item="V3 Extension Elements" subitem="tt" primary="true"/>
   <iref item="tt V3 Extension Element" primary="true"/>
@@ -2566,6 +2614,7 @@ include "rfc2629.rnc" {
        <strong>| <x:ref>v3_name</x:ref></strong>
        <strong>| <x:ref>v3_ol</x:ref></strong>
        <strong>| <x:ref>v3_sourcecode</x:ref></strong>
+       <strong>| <x:ref>v3_table</x:ref></strong>
        <strong>| <x:ref>v3_ul</x:ref></strong>
        <strong>| <x:ref>x_anchor-alias</x:ref></strong>
        <strong>| <x:ref>x_blockquote</x:ref></strong>
@@ -2863,6 +2912,53 @@ attlist.xref &amp;=
 <x:ref>v3_sup</x:ref> =
   element sup {
     (TEXT)*
+  }
+
+<em anchor="v3_table"><iref item="table V3 Extension Element"/><iref item="V3 Extension Elements" subitem="table"
+/># Table (see <xref target="v3.table"/>)</em>
+<x:ref>v3_table</x:ref> =
+  element table {
+    attribute anchor { xsd:ID }?,
+    <x:ref>v3_thead</x:ref>,
+    <x:ref>v3_tbody</x:ref>
+  }
+
+<em anchor="v3_tbody"><iref item="tbody V3 Extension Element"/><iref item="V3 Extension Elements" subitem="tbody"
+/># Table Body (see <xref target="v3.tbody"/>)</em>
+<x:ref>v3_tbody</x:ref> =
+  element tbody {
+    <x:ref>v3_tr</x:ref>+
+  }
+
+<em anchor="v3_td"><iref item="td V3 Extension Element"/><iref item="V3 Extension Elements" subitem="td"
+/># Table Contents Cell (see <xref target="v3.td"/>)</em>
+<x:ref>v3_td</x:ref> =
+  element td {
+    TEXT
+  }
+
+<em anchor="v3_th"><iref item="th V3 Extension Element"/><iref item="V3 Extension Elements" subitem="th"
+/># Table Header Cell (see <xref target="v3.th"/>)</em>
+<x:ref>v3_th</x:ref> =
+  element th {
+    TEXT
+  }
+
+<em anchor="v3_thead"><iref item="thead V3 Extension Element"/><iref item="V3 Extension Elements" subitem="thead"
+/># Table Head (see <xref target="v3.thead"/>)</em>
+<x:ref>v3_thead</x:ref> =
+  element thead {
+    <x:ref>v3_tr</x:ref>
+  }
+
+<em anchor="v3_tr"><iref item="tre V3 Extension Element"/><iref item="V3 Extension Elements" subitem="tr"
+/># Table Row (see <xref target="v3.tr"/>)</em>
+<x:ref>v3_tr</x:ref> =
+  element tr {
+    (
+      <x:ref>v3_td</x:ref>
+      | <x:ref>v3_th</x:ref>
+    )+
   }
 
 <em anchor="v3_tt"><iref item="tt V3 Extension Element"/><iref item="V3 Extension Elements" subitem="tt"
