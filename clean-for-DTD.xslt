@@ -1116,6 +1116,22 @@
 <xsl:template match="table" mode="cleanup">
   <t>
     <texttable>
+      <xsl:variable name="title">
+        <xsl:choose>
+          <xsl:when test="name">
+            <xsl:variable name="hold">
+              <xsl:apply-templates select="name/node()"/>
+            </xsl:variable>
+            <xsl:value-of select="normalize-space($hold)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="@title"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:if test="$title!=''">
+        <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+      </xsl:if>
       <xsl:for-each select="thead/tr/*">
         <ttcol>
           <xsl:apply-templates mode="cleanup"/>
@@ -1129,6 +1145,7 @@
     </texttable>
   </t>
 </xsl:template>
+<xsl:template match="table/name" mode="cleanup"/>
 
 <!-- date formats -->
 <xsl:template match="/rfc/front/date/@month" mode="cleanup">

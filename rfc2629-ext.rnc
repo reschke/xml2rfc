@@ -506,6 +506,7 @@ v3_sup =
 v3_table =
   element table {
     attribute anchor { xsd:ID }?,
+    v3_name?,
     v3_thead,
     v3_tbody
   }

@@ -2782,10 +2782,17 @@
 <xsl:template match="table">
   <fo:block space-before=".5em" space-after=".5em" start-indent="2em">
     <fo:table>
+      <!-- FOP doesn't have table-and-caption-->
       <xsl:apply-templates/>
     </fo:table>
+    <xsl:if test="name">
+      <fo:block text-align="center" space-before="1em" space-after="1em">
+        <xsl:apply-templates select="name/node()"/>
+      </fo:block>
+    </xsl:if>
   </fo:block>
 </xsl:template>
+<xsl:template match="table/name"/>
 
 <xsl:template match="tbody">
   <fo:table-body>
