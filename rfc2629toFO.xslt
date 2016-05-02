@@ -2779,7 +2779,48 @@
 -->
 
 <!--TODO -->
-<xsl:template match="table" />
+<xsl:template match="table">
+  <fo:block space-before=".5em" space-after=".5em" start-indent="2em">
+    <fo:table>
+      <xsl:apply-templates/>
+    </fo:table>
+  </fo:block>
+</xsl:template>
+
+<xsl:template match="tbody">
+  <fo:table-body>
+    <xsl:apply-templates/>
+  </fo:table-body>
+</xsl:template>
+
+<xsl:template match="td">
+  <fo:table-cell>
+    <fo:block>
+      <xsl:apply-templates/>
+    </fo:block>
+  </fo:table-cell>
+</xsl:template>
+
+<xsl:template match="th">
+  <fo:table-cell>
+    <fo:block font-weight="bold">
+      <xsl:apply-templates/>
+    </fo:block>
+  </fo:table-cell>
+</xsl:template>
+
+<xsl:template match="thead">
+  <fo:table-header>
+    <xsl:apply-templates/>
+  </fo:table-header>
+</xsl:template>
+
+<xsl:template match="tr">
+  <fo:table-row>
+    <xsl:apply-templates/>
+  </fo:table-row>
+</xsl:template>
+
 
 <xsl:template match="texttable">
 
