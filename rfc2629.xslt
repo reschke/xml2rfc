@@ -8431,11 +8431,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.801 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.801 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.802 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.802 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/05/02 17:18:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/05/02 17:18:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/05/03 14:25:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/05/03 14:25:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8550,11 +8550,11 @@ dd, li, p {
 <xsl:template name="get-table-number">
   <xsl:choose>
     <xsl:when test="@anchor!=''">
-      <xsl:number level="any" count="texttable[@anchor!='']" />
+      <xsl:number level="any" count="texttable[@anchor!='']|table[@anchor!='']" />
     </xsl:when>
     <xsl:otherwise>
       <xsl:text>u.</xsl:text>
-      <xsl:number level="any" count="texttable[not(@anchor) or @anchor='']" />
+      <xsl:number level="any" count="texttable[not(@anchor) or @anchor='']|table[not(@anchor) or @anchor='']" />
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
