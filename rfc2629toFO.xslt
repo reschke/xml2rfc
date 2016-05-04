@@ -1585,7 +1585,7 @@
     </xsl:when>
 
     <!-- Table links -->
-    <xsl:when test="$node/self::texttable">
+    <xsl:when test="$node/self::texttable or $node/self::table">
       <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
         <xsl:variable name="tabcnt">
           <xsl:for-each select="$node">
@@ -2781,6 +2781,7 @@
 <!--TODO -->
 <xsl:template match="table">
   <fo:block space-before=".5em" space-after=".5em" start-indent="2em">
+    <xsl:call-template name="copy-anchor"/>
     <fo:table>
       <!-- FOP doesn't have table-and-caption-->
       <xsl:apply-templates/>

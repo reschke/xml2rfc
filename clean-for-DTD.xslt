@@ -1116,6 +1116,7 @@
 <xsl:template match="table" mode="cleanup">
   <t>
     <texttable>
+      <xsl:apply-templates select="@anchor" mode="cleanup"/>
       <xsl:variable name="title">
         <xsl:choose>
           <xsl:when test="name">
