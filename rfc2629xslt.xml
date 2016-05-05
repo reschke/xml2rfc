@@ -2920,6 +2920,7 @@ attlist.xref &amp;=
   element table {
     attribute anchor { xsd:ID }?,
     <x:ref>v3_name</x:ref>?,
+    iref*,
     <x:ref>v3_thead</x:ref>,
     <x:ref>v3_tbody</x:ref>
   }

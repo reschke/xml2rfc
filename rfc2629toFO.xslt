@@ -2781,10 +2781,11 @@
 <!--TODO -->
 <xsl:template match="table">
   <fo:block space-before=".5em" space-after=".5em" start-indent="2em">
+    <xsl:apply-templates select="iref"/>
     <xsl:call-template name="copy-anchor"/>
     <fo:table>
       <!-- FOP doesn't have table-and-caption-->
-      <xsl:apply-templates/>
+      <xsl:apply-templates select="*[not(self::iref)]"/>
     </fo:table>
     <xsl:if test="name">
       <fo:block text-align="center" space-before="1em" space-after="1em">
