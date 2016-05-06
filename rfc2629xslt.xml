@@ -2937,6 +2937,7 @@ attlist.xref &amp;=
 <x:ref>v3_td</x:ref> =
   element td {
     attribute align { "left" | "center" | "right" }?,
+    attribute colspan { text }?,
     TEXT
   }
 
@@ -2945,6 +2946,7 @@ attlist.xref &amp;=
 <x:ref>v3_th</x:ref> =
   element th {
     attribute align { "left" | "center" | "right" }?,
+    attribute colspan { text }?,
     TEXT
   }
 

@@ -1154,6 +1154,13 @@
           <xsl:copy-of select="../../../iref"/>
         </xsl:if>
       </c>
+      <xsl:if test="@colspan and @colspan > 1">
+        <xsl:variable name="cnt" select="@colspan"/>
+        <xsl:message><xsl:value-of select="$cnt"/></xsl:message>
+        <xsl:for-each select="/*/*[position() &lt; $cnt]">
+          <c>(see left cell)</c>
+        </xsl:for-each>
+      </xsl:if>
     </xsl:for-each>
   </texttable>
 </xsl:template>

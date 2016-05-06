@@ -522,6 +522,7 @@ v3_tbody =
 v3_td =
   element td {
     attribute align { "left" | "center" | "right" }?,
+    attribute colspan { text }?,
     TEXT
   }
 
@@ -529,6 +530,7 @@ v3_td =
 v3_th =
   element th {
     attribute align { "left" | "center" | "right" }?,
+    attribute colspan { text }?,
     TEXT
   }
 
