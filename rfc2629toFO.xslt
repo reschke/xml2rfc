@@ -2804,6 +2804,14 @@
 
 <xsl:template match="td">
   <fo:table-cell>
+    <xsl:choose>
+      <xsl:when test="@align">
+        <xsl:attribute name="text-align"><xsl:value-of select="@align" /></xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:attribute name="text-align">left</xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
     <fo:block>
       <xsl:apply-templates/>
     </fo:block>
@@ -2812,6 +2820,14 @@
 
 <xsl:template match="th">
   <fo:table-cell>
+    <xsl:choose>
+      <xsl:when test="@align">
+        <xsl:attribute name="text-align"><xsl:value-of select="@align" /></xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:attribute name="text-align">left</xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
     <fo:block font-weight="bold">
       <xsl:apply-templates/>
     </fo:block>

@@ -1133,7 +1133,17 @@
       <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
     </xsl:if>
     <xsl:for-each select="thead/tr/*">
-      <ttcol>
+      <xsl:variable name="p" select="position()"/>
+      <!-- in texttable the whole column has the same alignment; we try
+      either the first non-header row or the header itself-->
+      <xsl:variable name="align">
+        <xsl:choose>
+          <xsl:when test="tbody/tr[1]/*[1] and tbody/tr[1]/*[1]/@align"><xsl:value-of select="tbody/tr[1]/*[1]/@align"/></xsl:when>
+          <xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+          <xsl:otherwise>center</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <ttcol align="{$align}">
         <xsl:apply-templates mode="cleanup"/>
       </ttcol>
     </xsl:for-each>

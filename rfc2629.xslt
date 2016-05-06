@@ -8091,14 +8091,33 @@ dd, li, p {
   </tr>
 </xsl:template>
 
+<xsl:template name="t-alignment">
+  <xsl:if test="@align and @align!=''">
+    <xsl:attribute name="class">
+      <xsl:choose>
+        <xsl:when test="@align='left'"><xsl:value-of select="$css-left"/></xsl:when>
+        <xsl:when test="@align='right'"><xsl:value-of select="$css-right"/></xsl:when>
+        <xsl:when test="@align='center'">center</xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">Unknown align attribute: <xsl:value-of select="@align"/></xsl:with-param>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:attribute>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template match="td">
   <td>
+    <xsl:call-template name="t-alignment"/>
     <xsl:apply-templates select="node()"/>
   </td>
 </xsl:template>
 
 <xsl:template match="th">
   <th>
+    <xsl:call-template name="t-alignment"/>
     <xsl:apply-templates select="node()"/>
   </th>
 </xsl:template>
@@ -8444,11 +8463,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.804 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.804 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.805 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.805 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/05/05 18:59:24 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/05/05 18:59:24 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/05/06 10:34:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/05/06 10:34:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

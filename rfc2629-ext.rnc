@@ -521,12 +521,14 @@ v3_tbody =
 # Table Contents Cell (see Section 12.24)
 v3_td =
   element td {
+    attribute align { "left" | "center" | "right" }?,
     TEXT
   }
 
 # Table Header Cell (see Section 12.25)
 v3_th =
   element th {
+    attribute align { "left" | "center" | "right" }?,
     TEXT
   }
 

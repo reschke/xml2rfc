@@ -2936,6 +2936,7 @@ attlist.xref &amp;=
 /># Table Contents Cell (see <xref target="v3.td"/>)</em>
 <x:ref>v3_td</x:ref> =
   element td {
+    attribute align { "left" | "center" | "right" }?,
     TEXT
   }
 
@@ -2943,6 +2944,7 @@ attlist.xref &amp;=
 /># Table Header Cell (see <xref target="v3.th"/>)</em>
 <x:ref>v3_th</x:ref> =
   element th {
+    attribute align { "left" | "center" | "right" }?,
     TEXT
   }
 
