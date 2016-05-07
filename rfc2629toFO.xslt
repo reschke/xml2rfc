@@ -1500,6 +1500,12 @@
       </xsl:choose>
     </xsl:when>
     
+    <xsl:when test="$node/self::cref and $xml2rfc-comments='no'">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg">xref to cref, but comments aren't included in the output</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    
     <xsl:otherwise>
       <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
         <xsl:value-of select="." />
@@ -1693,27 +1699,36 @@
 
     <!-- Comment links -->
     <xsl:when test="$node/self::cref">
-      <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-        <xsl:variable name="name">
-          <xsl:for-each select="$node">
-            <xsl:call-template name="get-comment-name" />
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:choose>
-          <xsl:when test="@format='counter'">
-            <xsl:value-of select="$name" />
-          </xsl:when>
-          <xsl:when test="@format='none'">
-            <!-- Nothing to do -->
-          </xsl:when>
-          <xsl:when test="@format='title'">
-            <xsl:value-of select="$node/@title" />
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="normalize-space(concat('Comment&#160;',$name))"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </fo:basic-link>
+      <xsl:choose>
+        <xsl:when test="$xml2rfc-comments!='no'">
+          <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
+            <xsl:variable name="name">
+              <xsl:for-each select="$node">
+                <xsl:call-template name="get-comment-name" />
+              </xsl:for-each>
+            </xsl:variable>
+            <xsl:choose>
+              <xsl:when test="@format='counter'">
+                <xsl:value-of select="$name" />
+              </xsl:when>
+              <xsl:when test="@format='none'">
+                <!-- Nothing to do -->
+              </xsl:when>
+              <xsl:when test="@format='title'">
+                <xsl:value-of select="$node/@title" />
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="normalize-space(concat('Comment&#160;',$name))"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </fo:basic-link>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg">xref to cref, but comments aren't included in the output</xsl:with-param>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:when>
 
     <!-- Reference links -->
