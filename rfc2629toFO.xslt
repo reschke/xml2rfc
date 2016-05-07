@@ -1600,7 +1600,14 @@
             <!-- Nothing to do -->
           </xsl:when>
           <xsl:when test="@format='title'">
-            <xsl:value-of select="$node/@title" />
+            <xsl:choose>
+              <xsl:when test="$node/self::table">
+                <xsl:apply-templates select="$node/name/node()"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$node/@title" />
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="normalize-space(concat('Table&#160;',$tabcnt))"/>
@@ -2787,9 +2794,17 @@
       <!-- FOP doesn't have table-and-caption-->
       <xsl:apply-templates select="*[not(self::iref)]"/>
     </fo:table>
-    <xsl:if test="name">
+    <xsl:if test="name or @anchor!=''">
+      <xsl:variable name="n"><xsl:call-template name="get-table-number"/></xsl:variable>
       <fo:block text-align="center" space-before="1em" space-after="1em">
-        <xsl:apply-templates select="name/node()"/>
+        <xsl:if test="not(starts-with($n,'u'))">
+          <xsl:text>Table </xsl:text>
+          <xsl:value-of select="$n"/>
+          <xsl:if test="name">: </xsl:if>
+        </xsl:if>
+        <xsl:if test="name">
+          <xsl:apply-templates select="name/node()"/>
+        </xsl:if>
       </fo:block>
     </xsl:if>
   </fo:block>
