@@ -515,12 +515,14 @@ v3_table =
 # Table Body (see Section 12.23)
 v3_tbody =
   element tbody {
+    attribute anchor { xsd:ID }?,
     v3_tr+
   }
 
 # Table Contents Cell (see Section 12.24)
 v3_td =
   element td {
+    attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
     TEXT
@@ -529,6 +531,7 @@ v3_td =
 # Table Header Cell (see Section 12.25)
 v3_th =
   element th {
+    attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
     TEXT
@@ -537,12 +540,14 @@ v3_th =
 # Table Head (see Section 12.26)
 v3_thead =
   element thead {
+    attribute anchor { xsd:ID }?,
     v3_tr
   }
 
 # Table Row (see Section 12.27)
 v3_tr =
   element tr {
+    attribute anchor { xsd:ID }?,
     (
       v3_td
       | v3_th

@@ -2929,6 +2929,7 @@ attlist.xref &amp;=
 /># Table Body (see <xref target="v3.tbody"/>)</em>
 <x:ref>v3_tbody</x:ref> =
   element tbody {
+    attribute anchor { xsd:ID }?,
     <x:ref>v3_tr</x:ref>+
   }
 
@@ -2936,6 +2937,7 @@ attlist.xref &amp;=
 /># Table Contents Cell (see <xref target="v3.td"/>)</em>
 <x:ref>v3_td</x:ref> =
   element td {
+    attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
     TEXT
@@ -2945,6 +2947,7 @@ attlist.xref &amp;=
 /># Table Header Cell (see <xref target="v3.th"/>)</em>
 <x:ref>v3_th</x:ref> =
   element th {
+    attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
     TEXT
@@ -2954,6 +2957,7 @@ attlist.xref &amp;=
 /># Table Head (see <xref target="v3.thead"/>)</em>
 <x:ref>v3_thead</x:ref> =
   element thead {
+    attribute anchor { xsd:ID }?,
     <x:ref>v3_tr</x:ref>
   }
 
@@ -2961,6 +2965,7 @@ attlist.xref &amp;=
 /># Table Row (see <xref target="v3.tr"/>)</em>
 <x:ref>v3_tr</x:ref> =
   element tr {
+    attribute anchor { xsd:ID }?,
     (
       <x:ref>v3_td</x:ref>
       | <x:ref>v3_th</x:ref>

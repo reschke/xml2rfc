@@ -2798,12 +2798,14 @@
 
 <xsl:template match="tbody">
   <fo:table-body>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates/>
   </fo:table-body>
 </xsl:template>
 
 <xsl:template match="td">
   <fo:table-cell>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:choose>
       <xsl:when test="@align">
         <xsl:attribute name="text-align"><xsl:value-of select="@align" /></xsl:attribute>
@@ -2823,6 +2825,7 @@
 
 <xsl:template match="th">
   <fo:table-cell>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:choose>
       <xsl:when test="@align">
         <xsl:attribute name="text-align"><xsl:value-of select="@align" /></xsl:attribute>
@@ -2842,12 +2845,14 @@
 
 <xsl:template match="thead">
   <fo:table-header>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates/>
   </fo:table-header>
 </xsl:template>
 
 <xsl:template match="tr">
   <fo:table-row>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates/>
   </fo:table-row>
 </xsl:template>
