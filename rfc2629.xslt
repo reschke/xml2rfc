@@ -8465,11 +8465,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.806 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.806 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.807 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.807 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/05/06 16:17:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/05/06 16:17:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/05/07 12:34:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/05/07 12:34:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -9281,7 +9281,7 @@ prev: <xsl:value-of select="$prev"/>
   </xsl:choose>
   <!-- month or 00 -->
   <xsl:choose>
-    <xsl:when test="$pub-month-numeric &gt; 0">
+    <xsl:when test="number($pub-month-numeric) &gt; 0">
       <xsl:value-of select="format-number($pub-month-numeric,'00')"/>
     </xsl:when>
     <xsl:otherwise>00</xsl:otherwise>
