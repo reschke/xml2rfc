@@ -448,6 +448,7 @@ v3_li =
 v3_name =
   element name {
     (TEXT
+      | cref
       | v3_tt
       | xref)*
   }

@@ -2853,6 +2853,7 @@ attlist.xref &amp;=
 <x:ref>v3_name</x:ref> =
   element name {
     (TEXT
+      | cref
       | <x:ref>v3_tt</x:ref>
       | xref)*
   }
