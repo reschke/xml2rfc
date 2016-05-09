@@ -2577,10 +2577,9 @@
             <xsl:with-param name="msg">both @title attribute and name child node present</xsl:with-param>
           </xsl:call-template>
         </xsl:if>
-        <xsl:variable name="n">
-          <xsl:apply-templates select="name/node()"/>
-        </xsl:variable>
-        <xsl:apply-templates select="exslt:node-set($n)/node()" mode="strip-links"/>
+        <xsl:call-template name="render-name">
+          <xsl:with-param name="n" select="name/node()"/>
+        </xsl:call-template>
       </xsl:when>
       <xsl:when test="not(@title) or @title=''"><xsl:value-of select="$xml2rfc-refparent"/></xsl:when>
       <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
@@ -2983,10 +2982,9 @@
           <xsl:with-param name="msg">both @title attribute and name child node present</xsl:with-param>
         </xsl:call-template>
       </xsl:if>
-      <xsl:variable name="n">
-        <xsl:apply-templates select="name/node()"/>
-      </xsl:variable>
-      <xsl:apply-templates select="exslt:node-set($n)/node()" mode="strip-links"/>
+      <xsl:call-template name="render-name">
+        <xsl:with-param name="n" select="name/node()"/>
+      </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="@title"/>
@@ -3489,7 +3487,9 @@
             <xsl:when test="$xref/@format='title'">
               <xsl:choose>
                 <xsl:when test="$node/self::table">
-                  <xsl:apply-templates select="$node/name/node()"/>
+                  <xsl:call-template name="render-name-ref">
+                    <xsl:with-param name="n" select="$node/name/node()"/>
+                  </xsl:call-template>
                 </xsl:when>
                 <xsl:otherwise>
                   <xsl:value-of select="$node/@title" />
@@ -6578,10 +6578,9 @@ dd, li, p {
                 <del><xsl:value-of select="$oldtitle"/></del>
               </xsl:when>
               <xsl:when test="$name">
-                <xsl:variable name="n">
-                  <xsl:apply-templates select="$name/node()"/>
-                </xsl:variable>
-                <xsl:apply-templates select="exslt:node-set($n)/node()" mode="strip-links"/>
+                <xsl:call-template name="render-name-ref">
+                  <xsl:with-param name="n" select="$name/node()"/>
+                </xsl:call-template>
               </xsl:when>
               <xsl:otherwise>
                 <xsl:value-of select="$title"/>
@@ -8494,11 +8493,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.810 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.810 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.811 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.811 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/05/07 21:42:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/05/07 21:42:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/05/09 05:14:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/05/09 05:14:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -9405,11 +9404,25 @@ prev: <xsl:value-of select="$prev"/>
   </xsl:for-each>
 </xsl:template>
 
-<!-- clean up links from HTML -->
-<xsl:template match="processing-instruction()" mode="strip-links">
-  <xsl:text>&#10;</xsl:text>
-  <xsl:copy/>
+<xsl:template name="render-name">
+  <xsl:param name="n"/>
+  <xsl:variable name="t">
+    <xsl:apply-templates select="$n"/>
+  </xsl:variable>
+  <xsl:apply-templates select="exslt:node-set($t)" mode="strip-links"/>
 </xsl:template>
+
+<xsl:template name="render-name-ref">
+  <xsl:param name="n"/>
+  <xsl:variable name="t">
+    <xsl:call-template name="render-name">
+      <xsl:with-param name="n" select="$n"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:apply-templates select="exslt:node-set($t)" mode="strip-ids"/>
+</xsl:template>
+
+<!-- clean up links from HTML -->
 <xsl:template match="comment()|@*" mode="strip-links"><xsl:copy/></xsl:template>
 <xsl:template match="text()" mode="strip-links"><xsl:copy/></xsl:template>
 <xsl:template match="*" mode="strip-links">
@@ -9420,6 +9433,13 @@ prev: <xsl:value-of select="$prev"/>
 <xsl:template match="a|xhtml:a" mode="strip-links" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 	<xsl:apply-templates select="node()" mode="strip-links" />
 </xsl:template>
+<xsl:template match="node()|@*" mode="strip-ids">
+  <xsl:copy>
+	  <xsl:apply-templates select="node()|@*" mode="strip-ids" />
+  </xsl:copy>
+</xsl:template>
+<xsl:template match="@id" mode="strip-ids"/>
+
 
 <!-- customization: these templates can be overridden in an XSLT that imports from this one -->
 <xsl:template name="add-start-material"/>

@@ -2313,7 +2313,9 @@
         <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
           <xsl:choose>
             <xsl:when test="$name">
-              <xsl:apply-templates select="$name/node()"/>
+              <xsl:call-template name="render-name-ref">
+                <xsl:with-param name="n" select="$name/node()"/>
+              </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
               <xsl:value-of select="$title"/>
@@ -2334,7 +2336,9 @@
         <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
           <xsl:choose>
             <xsl:when test="$name">
-              <xsl:apply-templates select="$name/node()"/>
+              <xsl:call-template name="render-name-ref">
+                <xsl:with-param name="n" select="$name/node()"/>
+              </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
               <xsl:value-of select="$title"/>
@@ -2356,7 +2360,9 @@
         <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
           <xsl:choose>
             <xsl:when test="$name">
-              <xsl:apply-templates select="$name/node()"/>
+              <xsl:call-template name="render-name-ref">
+                <xsl:with-param name="n" select="$name/node()"/>
+              </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
               <xsl:value-of select="$title"/>
@@ -3070,7 +3076,7 @@
         </fo:footnote>
       </xsl:when>
       <xsl:otherwise>
-        <fo:inline xsl:use-attribute-sets="comment">
+        <fo:inline xsl:use-attribute-sets="comment" id="{$cid}">
           <xsl:text>[</xsl:text>
           <xsl:value-of select="$cid"/>
           <xsl:text>: </xsl:text>
@@ -3324,5 +3330,39 @@
     </xsl:choose>
     
   </xsl:template>
+
+<xsl:template name="render-name">
+  <xsl:param name="n"/>
+  <xsl:variable name="t">
+    <xsl:apply-templates select="$n"/>
+  </xsl:variable>
+  <xsl:apply-templates select="exslt:node-set($t)" mode="strip-links"/>
+</xsl:template>
+
+<xsl:template name="render-name-ref">
+  <xsl:param name="n"/>
+  <xsl:variable name="t">
+    <xsl:call-template name="render-name">
+      <xsl:with-param name="n" select="$n"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:apply-templates select="exslt:node-set($t)" mode="strip-ids"/>
+</xsl:template>
+
+<!-- clean up links from HTML -->
+<xsl:template match="node()|@*" mode="strip-links">
+  <xsl:copy>
+	  <xsl:apply-templates select="node()|@*" mode="strip-links" />
+  </xsl:copy>
+</xsl:template>
+<xsl:template match="fo:basic-link" mode="strip-links">
+	<xsl:apply-templates select="node()" mode="strip-links" />
+</xsl:template>
+<xsl:template match="node()|@*" mode="strip-ids">
+  <xsl:copy>
+	  <xsl:apply-templates select="node()|@*" mode="strip-ids" />
+  </xsl:copy>
+</xsl:template>
+<xsl:template match="@id" mode="strip-ids"/>
 
 </xsl:transform>
