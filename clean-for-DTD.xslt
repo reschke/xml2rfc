@@ -399,7 +399,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref[node() and (@target=//preamble/@anchor or @target=//spanx/@anchor)]" mode="cleanup">
+<xsl:template match="xref[node() and (@target=//preamble/@anchor or @target=//spanx/@anchor or @target=//name//@anchor)]" mode="cleanup">
   <!-- remove the link -->
   <xsl:apply-templates select="node()" mode="cleanup"/>
 </xsl:template>
