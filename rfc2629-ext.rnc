@@ -526,7 +526,16 @@ v3_td =
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
-    TEXT
+    (TEXT
+      | v3_bcp14
+      | cref
+      | v3_em
+      | eref
+      | v3_strong
+      | v3_sub
+      | v3_sup
+      | v3_tt
+      | xref)*
   }
 
 # Table Header Cell (see Section 12.25)
@@ -535,7 +544,16 @@ v3_th =
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
-    TEXT
+    (TEXT
+      | v3_bcp14
+      | cref
+      | v3_em
+      | eref
+      | v3_strong
+      | v3_sub
+      | v3_sup
+      | v3_tt
+      | xref)*
   }
 
 # Table Head (see Section 12.26)

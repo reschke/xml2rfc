@@ -2941,7 +2941,16 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
-    TEXT
+    (TEXT
+      | <x:ref>v3_bcp14</x:ref>
+      | cref
+      | <x:ref>v3_em</x:ref>
+      | eref
+      | <x:ref>v3_strong</x:ref>
+      | <x:ref>v3_sub</x:ref>
+      | <x:ref>v3_sup</x:ref>
+      | <x:ref>v3_tt</x:ref>
+      | xref)*
   }
 
 <em anchor="v3_th"><iref item="th V3 Extension Element"/><iref item="V3 Extension Elements" subitem="th"
@@ -2951,7 +2960,16 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
-    TEXT
+    (TEXT
+      | <x:ref>v3_bcp14</x:ref>
+      | cref
+      | <x:ref>v3_em</x:ref>
+      | eref
+      | <x:ref>v3_strong</x:ref>
+      | <x:ref>v3_sub</x:ref>
+      | <x:ref>v3_sup</x:ref>
+      | <x:ref>v3_tt</x:ref>
+      | xref)*
   }
 
 <em anchor="v3_thead"><iref item="thead V3 Extension Element"/><iref item="V3 Extension Elements" subitem="thead"
