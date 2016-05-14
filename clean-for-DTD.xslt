@@ -1149,10 +1149,17 @@
     </xsl:for-each>
     <xsl:for-each select="tbody/tr/*">
       <c>
-        <xsl:apply-templates mode="cleanup"/>
         <xsl:if test="position()=1">
           <xsl:copy-of select="../../../iref"/>
         </xsl:if>
+        <xsl:choose>
+          <xsl:when test="t">
+            <xsl:apply-templates select="t/node()" mode="cleanup"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates mode="cleanup"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </c>
       <xsl:if test="@colspan and @colspan > 1">
         <xsl:variable name="cnt" select="@colspan"/>
