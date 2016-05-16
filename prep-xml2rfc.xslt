@@ -393,15 +393,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="abstract|boilerplate|figure|note|references|section|table" mode="prep-pn">
-  <xsl:copy>
-    <xsl:apply-templates select="@*" mode="prep-pn"/>
-    <xsl:attribute name="pn"><xsl:call-template name="pn-sn"/></xsl:attribute>
-    <xsl:apply-templates select="node()|@*" mode="prep-pn"/>
-  </xsl:copy>
-</xsl:template>
-
-<xsl:template match="artwork|aside|blockquote|dd|dl|dt|li|sourcecode|t|ol|ul" mode="prep-pn">
+<xsl:template match="abstract|artwork|aside|blockquote|boilerplate|dd|dl|dt|figure|li|note|ol|references|section|sourcecode|t|table|ul" mode="prep-pn">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-pn"/>
     <xsl:attribute name="pn"><xsl:call-template name="pn-sn"/></xsl:attribute>
