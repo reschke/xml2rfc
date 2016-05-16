@@ -527,7 +527,10 @@ v3_td =
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
     ( (t
+       | v3_dl
+       | v3_ol
        | v3_sourcecode
+       | v3_ul
       )+
       | (TEXT
          | v3_bcp14
@@ -549,7 +552,10 @@ v3_th =
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
     ( (t
+       | v3_dl
+       | v3_ol
        | v3_sourcecode
+       | v3_ul
       )+
       | (TEXT
          | v3_bcp14

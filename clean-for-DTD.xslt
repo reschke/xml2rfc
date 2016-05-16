@@ -1153,8 +1153,8 @@
           <xsl:copy-of select="../../../iref"/>
         </xsl:if>
         <xsl:choose>
-          <xsl:when test="t|sourcecode">
-            <xsl:apply-templates select="t/node()|sourcecode/node()" mode="cleanup"/>
+          <xsl:when test="t|sourcecode|ol|dl|uo">
+            <xsl:apply-templates select="t/node()|sourcecode/node()|ol/li/node()|ul/li/node()|dl/*/node()" mode="cleanup"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:apply-templates mode="cleanup"/>

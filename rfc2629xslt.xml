@@ -2942,7 +2942,10 @@ attlist.xref &amp;=
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
     ( (t
+       | <x:ref>v3_dl</x:ref>
+       | <x:ref>v3_ol</x:ref>
        | <x:ref>v3_sourcecode</x:ref>
+       | <x:ref>v3_ul</x:ref>
       )+
       | (TEXT
          | <x:ref>v3_bcp14</x:ref>
@@ -2965,7 +2968,10 @@ attlist.xref &amp;=
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
     ( (t
+       | <x:ref>v3_dl</x:ref>
+       | <x:ref>v3_ol</x:ref>
        | <x:ref>v3_sourcecode</x:ref>
+       | <x:ref>v3_ul</x:ref>
       )+
       | (TEXT
          | <x:ref>v3_bcp14</x:ref>
