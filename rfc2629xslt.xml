@@ -2941,7 +2941,9 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
-    (t+
+    ( (t
+       | <x:ref>v3_sourcecode</x:ref>
+      )+
       | (TEXT
          | <x:ref>v3_bcp14</x:ref>
          | cref
@@ -2962,7 +2964,9 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
-    (t+
+    ( (t
+       | <x:ref>v3_sourcecode</x:ref>
+      )+
       | (TEXT
          | <x:ref>v3_bcp14</x:ref>
          | cref
