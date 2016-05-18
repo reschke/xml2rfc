@@ -2879,6 +2879,11 @@
   </fo:table-cell>
 </xsl:template>
 
+<xsl:template match="td/br|th/br">
+  <fo:block/>
+</xsl:template>
+
+
 <xsl:template match="thead">
   <fo:table-header>
     <xsl:call-template name="copy-anchor"/>

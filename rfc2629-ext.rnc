@@ -299,7 +299,7 @@ attlist.preamble &=
 
 # Extend attribute set for <reference>
 attlist.reference &=
-  attribute quoteTitle { "false" | "true" }? # see Section 12.16.1
+  attribute quoteTitle { "false" | "true" }? # see Section 12.17.1
 
 # Extend attribute set for <rfc>
 attlist.rfc &=
@@ -311,8 +311,8 @@ attlist.x_section &=
   attribute anchor { xsd:ID }?,
   attribute title { ATEXT }?,
   attribute toc { "include" | "exclude" | "default" }?,
-  attribute numbered { "false" | "true" }?, # see Section 12.17.1
-  attribute removeInRFC { "false" | "true" }?, # see Section 12.17.2
+  attribute numbered { "false" | "true" }?, # see Section 12.18.1
+  attribute removeInRFC { "false" | "true" }?, # see Section 12.18.2
   attribute x:fixed-section-number { ATEXT }?
 
 # Allow anchor attribute on <spanx>
@@ -371,14 +371,20 @@ v3_boilerplate =
     section+
   }
 
-# Mapping of reference names to display names (see Section 12.5)
+# Line Break (see Section 12.5)
+v3_br =
+  element br {
+    empty
+  }
+
+# Mapping of reference names to display names (see Section 12.6)
 v3_displayreference =
   element displayreference {
     attribute target { xsd:IDREF },
     attribute to { ATEXT }
   }
 
-# Definition List Description Element (see Section 12.6)
+# Definition List Description Element (see Section 12.7)
 v3_dd =
   element dd {
     (t
@@ -393,7 +399,7 @@ v3_dd =
       | v3_strong)*
   }
 
-# Definition List (see Section 12.7)
+# Definition List (see Section 12.8)
 v3_dl =
   element dl {
        attribute spacing { "normal" | "compact" }?,
@@ -401,7 +407,7 @@ v3_dl =
        (v3_dt, v3_dd)+
   }
 
-# Definition List Description Term (see Section 12.8)
+# Definition List Description Term (see Section 12.9)
 v3_dt =
   element dt {
     attribute anchor { xsd:ID }?,
@@ -415,7 +421,7 @@ v3_dt =
       | v3_strong)*
   }
 
-# Emphasized Text (see Section 12.9)
+# Emphasized Text (see Section 12.10)
 v3_em =
   element em {
     (TEXT
@@ -424,7 +430,7 @@ v3_em =
       | x_ref)*
   }
 
-# Definition List (see Section 12.10)
+# Definition List (see Section 12.11)
 v3_li =
   element li {
     attribute anchor { xsd:ID }?,
@@ -444,7 +450,7 @@ v3_li =
     )
   }
 
-# Section/Figure/Table Name (see Section 12.11)
+# Section/Figure/Table Name (see Section 12.12)
 v3_name =
   element name {
     (TEXT
@@ -453,7 +459,7 @@ v3_name =
       | xref)*
   }
 
-# Ordered List (see Section 12.12)
+# Ordered List (see Section 12.13)
 v3_ol =
   element ol {
     attribute anchor { xsd:ID }?,
@@ -461,20 +467,20 @@ v3_ol =
     v3_li+
   }
 
-# Line in postal address (see Section 12.13)
+# Line in postal address (see Section 12.14)
 v3_postalLine =
   element postalLine {
     TEXT
   }
 
-# additional content for references (see Section 12.14)
+# additional content for references (see Section 12.15)
 v3_refcontent =
   element refcontent {
     (TEXT
       | v3_em)*
   }
 
-# Source Code (see Section 12.15)
+# Source Code (see Section 12.16)
 v3_sourcecode =
   element sourcecode {
     attribute anchor { xsd:ID }?,
@@ -482,7 +488,7 @@ v3_sourcecode =
     TEXT
   }
 
-# Emphasized Text (see Section 12.18)
+# Emphasized Text (see Section 12.19)
 v3_strong =
   element strong {
     (TEXT
@@ -491,19 +497,19 @@ v3_strong =
       | x_ref)*
   }
 
-# Subscript (see Section 12.19)
+# Subscript (see Section 12.20)
 v3_sub =
   element sub {
     (TEXT)*
   }
 
-# Superscript (see Section 12.20)
+# Superscript (see Section 12.21)
 v3_sup =
   element sup {
     (TEXT)*
   }
 
-# Table (see Section 12.22)
+# Table (see Section 12.23)
 v3_table =
   element table {
     attribute anchor { xsd:ID }?,
@@ -513,14 +519,14 @@ v3_table =
     v3_tbody
   }
 
-# Table Body (see Section 12.23)
+# Table Body (see Section 12.24)
 v3_tbody =
   element tbody {
     attribute anchor { xsd:ID }?,
     v3_tr+
   }
 
-# Table Contents Cell (see Section 12.24)
+# Table Contents Cell (see Section 12.25)
 v3_td =
   element td {
     attribute anchor { xsd:ID }?,
@@ -534,6 +540,7 @@ v3_td =
       )+
       | (TEXT
          | v3_bcp14
+         | v3_br
          | cref
          | v3_em
          | eref
@@ -545,7 +552,7 @@ v3_td =
     )
   }
 
-# Table Header Cell (see Section 12.25)
+# Table Header Cell (see Section 12.26)
 v3_th =
   element th {
     attribute anchor { xsd:ID }?,
@@ -559,6 +566,7 @@ v3_th =
       )+
       | (TEXT
          | v3_bcp14
+         | v3_br
          | cref
          | v3_em
          | eref
@@ -570,14 +578,14 @@ v3_th =
     )
   }
 
-# Table Head (see Section 12.26)
+# Table Head (see Section 12.27)
 v3_thead =
   element thead {
     attribute anchor { xsd:ID }?,
     v3_tr
   }
 
-# Table Row (see Section 12.27)
+# Table Row (see Section 12.28)
 v3_tr =
   element tr {
     attribute anchor { xsd:ID }?,
@@ -587,7 +595,7 @@ v3_tr =
     )+
   }
 
-# Monospaced Text (see Section 12.28)
+# Monospaced Text (see Section 12.29)
 v3_tt =
   element tt {
     (TEXT
@@ -596,7 +604,7 @@ v3_tt =
       | x_ref)*
   }
 
-# Unordered List (see Section 12.29)
+# Unordered List (see Section 12.30)
 v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,
@@ -604,7 +612,7 @@ v3_ul =
     v3_li+
   }
 
-# SVG (see Section 12.21)
+# SVG (see Section 12.22)
 v3_svg =
   element svg:svg {
     (attribute * { text }

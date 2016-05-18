@@ -1171,7 +1171,10 @@
     </xsl:for-each>
   </texttable>
 </xsl:template>
-<xsl:template match="table/name" mode="cleanup"/>
+
+<xsl:template match="td/br|th/br" mode="cleanup">
+  <vspace blankLines="0"/>
+</xsl:template>
 
 <!-- date formats -->
 <xsl:template match="/rfc/front/date/@month" mode="cleanup">
