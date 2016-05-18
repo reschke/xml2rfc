@@ -2956,6 +2956,7 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
+    attribute rowspan { text }?,
     ( (t
        | <x:ref>v3_dl</x:ref>
        | <x:ref>v3_ol</x:ref>
@@ -2983,6 +2984,7 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
+    attribute rowspan { text }?,
     ( (t
        | <x:ref>v3_dl</x:ref>
        | <x:ref>v3_ol</x:ref>

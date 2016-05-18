@@ -1161,19 +1161,24 @@
           </xsl:otherwise>
         </xsl:choose>
       </c>
-      <xsl:if test="@colspan and @colspan > 1">
-        <xsl:variable name="cnt" select="@colspan"/>
-        <xsl:message><xsl:value-of select="$cnt"/></xsl:message>
-        <xsl:for-each select="/*/*[position() &lt; $cnt]">
-          <c>(see left cell)</c>
-        </xsl:for-each>
+      <xsl:if test="@rowspan and @rowspan!='1'">
+        <xsl:call-template name="error">
+          <xsl:with-param name="inline">no</xsl:with-param>
+          <xsl:with-param name="msg">rowspan attribute not supported (dropped, table will be ugly)</xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="@colspan and @colspan!='1'">
+        <xsl:call-template name="error">
+          <xsl:with-param name="inline">no</xsl:with-param>
+          <xsl:with-param name="msg">colspan attribute not supported (dropped, table will be ugly)</xsl:with-param>
+        </xsl:call-template>
       </xsl:if>
     </xsl:for-each>
   </texttable>
 </xsl:template>
 
 <xsl:template match="td/br|th/br" mode="cleanup">
-  <vspace blankLines="0"/>
+  <xsl:text> </xsl:text>
 </xsl:template>
 
 <!-- date formats -->

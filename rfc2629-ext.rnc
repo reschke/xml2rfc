@@ -532,6 +532,7 @@ v3_td =
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
+    attribute rowspan { text }?,
     ( (t
        | v3_dl
        | v3_ol
@@ -558,6 +559,7 @@ v3_th =
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
+    attribute rowspan { text }?,
     ( (t
        | v3_dl
        | v3_ol

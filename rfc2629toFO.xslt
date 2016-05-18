@@ -2853,6 +2853,9 @@
     <xsl:if test="@colspan">
       <xsl:attribute name="number-columns-spanned"><xsl:value-of select="@colspan" /></xsl:attribute>
     </xsl:if>
+    <xsl:if test="@rowspan">
+      <xsl:attribute name="number-rows-spanned"><xsl:value-of select="@rowspan" /></xsl:attribute>
+    </xsl:if>
     <fo:block>
       <xsl:apply-templates/>
     </fo:block>
@@ -2872,6 +2875,9 @@
     </xsl:choose>
     <xsl:if test="@colspan">
       <xsl:attribute name="number-columns-spanned"><xsl:value-of select="@colspan" /></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@rowspan">
+      <xsl:attribute name="number-rows-spanned"><xsl:value-of select="@rowspan" /></xsl:attribute>
     </xsl:if>
     <fo:block font-weight="bold">
       <xsl:apply-templates/>
