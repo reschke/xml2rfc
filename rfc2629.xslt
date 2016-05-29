@@ -720,6 +720,11 @@
   </xsl:choose>
 </xsl:variable>
 
+<!-- the reference to the latest and greatest headers-and-boilerplates document -->
+<xsl:variable name="hab-reference">
+  <xsl:text>Section 2 of RFC 5741</xsl:text>
+</xsl:variable>
+
 <xsl:variable name="id-boilerplate">
   <xsl:choose>
     <!-- ID boilerplate approved by IESG on Jan 14 2010-->
@@ -6325,15 +6330,14 @@ dd, li, p {
         <xsl:when test="$submissionType='IETF'">
           <xsl:choose>
             <xsl:when test="/rfc/@category='bcp'">
-              Further information on BCPs is available in Section 2 of RFC 5741.
+              Further information on BCPs is available in <xsl:value-of select="$hab-reference"/>.
             </xsl:when>
             <xsl:when test="/rfc/@category='std'">
-              Further information on Internet Standards is available in Section
-              2 of RFC 5741.
+              Further information on Internet Standards is available in <xsl:value-of select="$hab-reference"/>.
             </xsl:when>
             <xsl:otherwise>
               Not all documents approved by the IESG are a candidate for any
-              level of Internet Standard; see Section 2 of RFC 5741.
+              level of Internet Standard; see <xsl:value-of select="$hab-reference"/>.
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
@@ -6348,7 +6352,7 @@ dd, li, p {
 
           Documents approved for publication by the
           <xsl:value-of select="$approver"/> are not a candidate for any level
-          of Internet Standard; see Section 2 of RFC 5741.
+          of Internet Standard; see <xsl:value-of select="$hab-reference"/>.
         </xsl:otherwise>
       </xsl:choose>
     </t>
@@ -8514,11 +8518,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.816 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.816 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.817 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.817 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/05/18 20:57:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/05/18 20:57:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/05/29 12:39:06 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/05/29 12:39:06 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
