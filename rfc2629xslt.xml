@@ -1533,6 +1533,14 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="tfoot Element" anchor="v3.tfoot">
+  <iref item="V3 Extension Elements" subitem="tfoot" primary="true"/>
+  <iref item="tfoot V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.tfoot"/>.
+</t>
+</section>
+
 <section title="th Element" anchor="v3.th">
   <iref item="V3 Extension Elements" subitem="th" primary="true"/>
   <iref item="th V3 Extension Element" primary="true"/>
@@ -2938,7 +2946,8 @@ attlist.xref &amp;=
     <x:ref>v3_name</x:ref>?,
     iref*,
     <x:ref>v3_thead</x:ref>,
-    <x:ref>v3_tbody</x:ref>
+    <x:ref>v3_tbody</x:ref>,
+    <x:ref>v3_tfoot</x:ref>?
   }
 
 <em anchor="v3_tbody"><iref item="tbody V3 Extension Element"/><iref item="V3 Extension Elements" subitem="tbody"
@@ -2975,6 +2984,14 @@ attlist.xref &amp;=
          | <x:ref>v3_tt</x:ref>
          | xref)*
     )
+  }
+
+<em anchor="v3_tfoot"><iref item="tfoot V3 Extension Element"/><iref item="V3 Extension Elements" subitem="tfoot"
+/># Table Footer (see <xref target="v3.tfoot"/>)</em>
+<x:ref>v3_tfoot</x:ref> =
+  element tfoot {
+    attribute anchor { xsd:ID }?,
+    <x:ref>v3_tr</x:ref>
   }
 
 <em anchor="v3_th"><iref item="th V3 Extension Element"/><iref item="V3 Extension Elements" subitem="th"

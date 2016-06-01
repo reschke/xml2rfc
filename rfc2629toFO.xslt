@@ -2813,7 +2813,9 @@
     <xsl:call-template name="copy-anchor"/>
     <fo:table>
       <!-- FOP doesn't have table-and-caption-->
-      <xsl:apply-templates select="*[not(self::iref)]"/>
+      <xsl:apply-templates select="thead"/>
+      <xsl:apply-templates select="tfoot"/>
+      <xsl:apply-templates select="tbody"/>
     </fo:table>
     <xsl:if test="name or @anchor!=''">
       <xsl:variable name="n"><xsl:call-template name="get-table-number"/></xsl:variable>
@@ -2889,6 +2891,13 @@
   <fo:block/>
 </xsl:template>
 
+
+<xsl:template match="tfoot">
+  <fo:table-footer>
+    <xsl:call-template name="copy-anchor"/>
+    <xsl:apply-templates/>
+  </fo:table-footer>
+</xsl:template>
 
 <xsl:template match="thead">
   <fo:table-header>

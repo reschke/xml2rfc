@@ -516,7 +516,8 @@ v3_table =
     v3_name?,
     iref*,
     v3_thead,
-    v3_tbody
+    v3_tbody,
+    v3_tfoot?
   }
 
 # Table Body (see Section 12.24)
@@ -553,7 +554,14 @@ v3_td =
     )
   }
 
-# Table Header Cell (see Section 12.26)
+# Table Footer (see Section 12.26)
+v3_tfoot =
+  element tfoot {
+    attribute anchor { xsd:ID }?,
+    v3_tr
+  }
+
+# Table Header Cell (see Section 12.27)
 v3_th =
   element th {
     attribute anchor { xsd:ID }?,
@@ -580,14 +588,14 @@ v3_th =
     )
   }
 
-# Table Head (see Section 12.27)
+# Table Head (see Section 12.28)
 v3_thead =
   element thead {
     attribute anchor { xsd:ID }?,
     v3_tr
   }
 
-# Table Row (see Section 12.28)
+# Table Row (see Section 12.29)
 v3_tr =
   element tr {
     attribute anchor { xsd:ID }?,
@@ -597,7 +605,7 @@ v3_tr =
     )+
   }
 
-# Monospaced Text (see Section 12.29)
+# Monospaced Text (see Section 12.30)
 v3_tt =
   element tt {
     (TEXT
@@ -606,7 +614,7 @@ v3_tt =
       | x_ref)*
   }
 
-# Unordered List (see Section 12.30)
+# Unordered List (see Section 12.31)
 v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,

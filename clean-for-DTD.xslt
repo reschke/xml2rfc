@@ -1174,6 +1174,12 @@
         </xsl:call-template>
       </xsl:if>
     </xsl:for-each>
+    <xsl:if test="tfoot">
+      <xsl:call-template name="error">
+        <xsl:with-param name="inline">no</xsl:with-param>
+        <xsl:with-param name="msg">tfoot element not supported (dropped)</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
   </texttable>
 </xsl:template>
 
