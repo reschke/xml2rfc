@@ -723,7 +723,7 @@
 <!-- the reference to the latest and greatest headers-and-boilerplates document -->
 <xsl:variable name="hab-reference">
   <xsl:choose>
-    <xsl:when test="$pub-yearmonth >= 201606">Section 2 of RFC 7841</xsl:when>
+    <xsl:when test="$pub-yearmonth >= 201606 or ($rfcno=7846 or $rfcno=7865 or $rfcno=7866 or $rfcno=7873 or $rfcno=7879 or $rfcno=7892)">Section 2 of RFC 7841</xsl:when>
     <xsl:otherwise>Section 2 of RFC 5741</xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
@@ -8525,11 +8525,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.819 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.819 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.820 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.820 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/06/01 16:54:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/01 16:54:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/06/03 08:51:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/03 08:51:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
