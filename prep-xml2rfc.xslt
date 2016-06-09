@@ -47,11 +47,11 @@
   </xsl:choose>
 </xsl:param>
 <xsl:param name="steps">
-  <xsl:text>boilerplate tables deprecation slug pn preptime</xsl:text>
+  <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
+  <xsl:text>boilerplate pi tables deprecation slug pn preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
-
 
 <xsl:template match="/">
   <xsl:variable name="n" select="f:apply-steps($steps,.)"/>
@@ -72,7 +72,7 @@
         <xsl:when test="contains(concat(' ',$skip-steps,' '),concat(' ',$s,' '))">
           <xsl:copy-of select="$nodes"/>
         </xsl:when>
-        <xsl:when test="$s='boilerplate'">
+        <xsl:when test="$s='boilerplate'"> 
           <xsl:message>Step: boilerplate</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-boilerplate"/>
         </xsl:when>
@@ -83,6 +83,10 @@
         <xsl:when test="$s='listextract'">
           <xsl:message>Step: listextract</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-listextract"/>
+        </xsl:when>
+        <xsl:when test="$s='pi'">
+          <xsl:message>Step: pi</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-pi"/>
         </xsl:when>
         <xsl:when test="$s='pn'">
           <xsl:message>Step: pn</xsl:message>
@@ -119,7 +123,7 @@
 
 <!-- boilerplate step -->
 
-<xsl:template match="/rfc/front" mode="prep-boilerplate">
+<xsl:template match="rfc/front" mode="prep-boilerplate">
   <xsl:copy>
     <xsl:apply-templates select="node()|@*" mode="prep-boilerplate"/>
     <xsl:call-template name="insertPreamble"/>
@@ -353,6 +357,40 @@
   </xsl:copy>
 </xsl:template>
 
+<!-- pi step -->
+
+<xsl:template match="node()|@*" mode="prep-pi">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-pi"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="processing-instruction('rfc')|processing-instruction('rfc-ext')" mode="prep-pi" xmlns:pi="https://www.w3.org/TR/REC-xml/#sec-pi" priority="9">
+  <xsl:variable name="s" select="local-name()"/>
+  <xsl:analyze-string select="." regex='\s*([^=]*)\s*=\s*("([^"]*)"|&apos;([^&apos;]*)&apos;)\s*'>
+    <xsl:matching-substring>
+      <xsl:element name="pi:{$s}">
+        <xsl:attribute name="name">
+          <xsl:value-of select="regex-group(1)"/>
+        </xsl:attribute>
+        <xsl:attribute name="value">
+          <xsl:value-of select="concat(regex-group(3),regex-group(4))"/>
+        </xsl:attribute>
+        <!--<xsl:attribute name="g1">
+          <xsl:value-of select="regex-group(1)"/>
+        </xsl:attribute>
+        <xsl:attribute name="g2">
+          <xsl:value-of select="regex-group(2)"/>
+        </xsl:attribute>
+        <xsl:attribute name="g3">
+          <xsl:value-of select="regex-group(3)"/>
+        </xsl:attribute>
+        <xsl:attribute name="g4">
+          <xsl:value-of select="regex-group(4)"/>
+        </xsl:attribute>-->
+      </xsl:element>
+    </xsl:matching-substring>
+  </xsl:analyze-string>
+</xsl:template>
+
 <!-- pn step -->
 
 <xsl:template match="node()|@*" mode="prep-pn">
@@ -533,6 +571,19 @@
   <xsl:if test="$snode/self::element() and ends-with($ws,' ')">
     <xsl:text> </xsl:text>
   </xsl:if>
+</xsl:template>
+
+<xsl:template match="pi:rfc|pi:rfc-ext" mode="prep-ser" xmlns:pi="https://www.w3.org/TR/REC-xml/#sec-pi">
+  <xsl:processing-instruction name="{local-name()}">
+    <xsl:choose>
+      <xsl:when test="contains(@value,'&quot;')">
+        <xsl:value-of select="@name"/><xsl:text>='</xsl:text><xsl:value-of select="@value"/><xsl:text>'</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@name"/><xsl:text>="</xsl:text><xsl:value-of select="@value"/><xsl:text>"</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:processing-instruction>
 </xsl:template>
 
 </xsl:transform>
