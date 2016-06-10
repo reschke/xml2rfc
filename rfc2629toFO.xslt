@@ -2753,7 +2753,9 @@
 <xsl:template name="emit-ietf-preamble-bookmarks">
   <!-- Get status info formatted as per RFC2629-->
   <xsl:variable name="preamble">
-    <xsl:call-template name="insertPreamble" />
+    <xsl:for-each select="/rfc">
+      <xsl:call-template name="insertPreamble" />
+    </xsl:for-each>
   </xsl:variable>
   
   <!-- emit it -->

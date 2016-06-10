@@ -48,7 +48,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>boilerplate pi tables deprecation slug pn preptime</xsl:text>
+  <xsl:text>pi boilerplate tables deprecation slug pn preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -126,7 +126,9 @@
 <xsl:template match="rfc/front" mode="prep-boilerplate">
   <xsl:copy>
     <xsl:apply-templates select="node()|@*" mode="prep-boilerplate"/>
-    <xsl:call-template name="insertPreamble"/>
+    <xsl:for-each select="..">
+      <xsl:call-template name="insertPreamble"/>
+    </xsl:for-each>
   </xsl:copy>
 </xsl:template>
 
