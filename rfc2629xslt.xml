@@ -2900,6 +2900,7 @@ attlist.xref &amp;=
 /># Section/Figure/Table Name (see <xref target="v3.name"/>)</em>
 <x:ref>v3_name</x:ref> =
   element name {
+    attribute slugifiedName { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     (TEXT
       | cref
       | <x:ref>v3_tt</x:ref>

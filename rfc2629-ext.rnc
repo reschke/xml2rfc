@@ -478,6 +478,7 @@ v3_li =
 # Section/Figure/Table Name (see Section 12.12)
 v3_name =
   element name {
+    attribute slugifiedName { text }?, # (see [XML2RFCV3], Appendix B.2)
     (TEXT
       | cref
       | v3_tt
