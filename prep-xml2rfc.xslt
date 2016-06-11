@@ -32,7 +32,8 @@
                version="2.0"
                xmlns:f="mailto:julian.reschke@greenbytes?subject=preptool"
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
-               exclude-result-prefixes="f xs"
+               xmlns:pi="https://www.w3.org/TR/REC-xml/#sec-pi"
+               exclude-result-prefixes="f xs pi"
 >
 
 <xsl:import href="rfc2629.xslt" />
@@ -142,6 +143,8 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-deprecation"/></xsl:copy>
 </xsl:template>
 
+<xsl:template match="pi:rfc[@name='sortrefs']" mode="prep-deprecation"/>
+
 <xsl:template match="xref/@pageno" mode="prep-deprecation">
   <xsl:call-template name="info">
     <xsl:with-param name="msg" select="'pageno attribute removed'"/>
@@ -242,6 +245,16 @@
           <name><xsl:value-of select="@title"/></name>
         </xsl:otherwise>
       </xsl:choose>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="rfc" mode="prep-deprecation">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-deprecation"/>
+    <xsl:if test="not(@sortRefs) and $xml2rfc-sortrefs='yes'">
+      <xsl:attribute name="sortRefs">true</xsl:attribute>
     </xsl:if>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </xsl:copy>
@@ -365,7 +378,7 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-pi"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="processing-instruction('rfc')|processing-instruction('rfc-ext')" mode="prep-pi" xmlns:pi="https://www.w3.org/TR/REC-xml/#sec-pi" priority="9">
+<xsl:template match="processing-instruction('rfc')|processing-instruction('rfc-ext')" mode="prep-pi" priority="9">
   <xsl:variable name="s" select="local-name()"/>
   <xsl:analyze-string select="." regex='\s*([^=]*)\s*=\s*("([^"]*)"|&apos;([^&apos;]*)&apos;)\s*'>
     <xsl:matching-substring>
@@ -575,7 +588,7 @@
   </xsl:if>
 </xsl:template>
 
-<xsl:template match="pi:rfc|pi:rfc-ext" mode="prep-ser" xmlns:pi="https://www.w3.org/TR/REC-xml/#sec-pi">
+<xsl:template match="pi:rfc|pi:rfc-ext" mode="prep-ser">
   <xsl:processing-instruction name="{local-name()}">
     <xsl:choose>
       <xsl:when test="contains(@value,'&quot;')">

@@ -299,12 +299,13 @@ attlist.preamble &=
 
 # Extend attribute set for <reference>
 attlist.reference &=
-  attribute quoteTitle { "false" | "true" }? # see Section 12.17.1
+  attribute quoteTitle { "false" | "true" }? # (see Section 12.17.1)
 
 # Extend attribute set for <rfc>
 attlist.rfc &=
   attribute grddl:transformation { ATEXT }?,
-  attribute x:maturity-level { "proposed" | "draft" | "internet" }?
+  attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
+  attribute sortRefs { "true" | "false" } # (see [XML2RFCV3], Section 2.45.11)
 
 # Extend/Relax attribute set for <section> (see Section 11.26)
 attlist.x_section &=

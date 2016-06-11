@@ -815,6 +815,17 @@
 </xsl:template>
 
 <!-- v3 features -->
+<xsl:template match="rfc/@sortRefs" mode="cleanup"/>
+
+<xsl:template match="rfc" mode="cleanup">
+  <xsl:if test="@sortRefs='true'">
+    <xsl:processing-instruction name="rfc">sortrefs="yes"</xsl:processing-instruction>
+  </xsl:if>
+  <rfc>
+    <xsl:apply-templates select="@*|node()" mode="cleanup"/>
+  </rfc>
+</xsl:template>
+
 <xsl:template match="strong" mode="cleanup">
   <xsl:choose>
     <xsl:when test="*">
