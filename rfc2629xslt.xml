@@ -2448,6 +2448,7 @@ include "rfc2629.rnc" {
   artwork =
     element artwork {
       attlist.artwork,
+      attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
       ( <strong><x:ref>v3_svg</x:ref> |
         </strong>(TEXT
           <strong>| eref</strong> 
@@ -2507,7 +2508,8 @@ include "rfc2629.rnc" {
   <em># Redefine &lt;figure> to allow more child elements</em>
   figure =
     element figure {
-      attlist.cref,
+      attlist.figure,
+      attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
       iref*,
       preamble?,
       ( artwork | <strong><x:ref>v3_sourcecode</x:ref></strong>),
@@ -2598,6 +2600,7 @@ include "rfc2629.rnc" {
   references =
     element references {
       attribute title { text }?,
+      attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
       <strong><x:ref>v3_name</x:ref>?</strong>,
       (reference
        | <x:ref>xi_include</x:ref>)+
@@ -2680,6 +2683,10 @@ include "rfc2629.rnc" {
     }
 }
 
+<em># Extend attribute set for &lt;abstract></em>
+attlist.abstract &amp;=
+  attribute pn { text }? # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
+
 <em># Allow extension attributes on &lt;artwork> (<xref target="ext-rfc2629.artwork"/>)</em>
 attlist.artwork &amp;=
   attribute x:indent-with { ATEXT }?,
@@ -2711,6 +2718,10 @@ attlist.preamble &amp;=
 attlist.reference &amp;=
   attribute quoteTitle { "false" | "true" }? # (see <xref target="v3.reference.quoteTitle"/>)
 
+<em># Extend attribute set for &lt;references></em>
+attlist.references &amp;=
+  attribute pn { text }? # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
+
 <em># Extend attribute set for &lt;rfc></em>
 attlist.rfc &amp;=
   attribute grddl:transformation { ATEXT }?,
@@ -2724,11 +2735,16 @@ attlist.x_section &amp;=
   attribute toc { "include" | "exclude" | "default" }?,
   attribute numbered { "false" | "true" }?, # see <xref target="v3.section.numbered"/>
   attribute removeInRFC { "false" | "true" }?, # see <xref target="v3.section.removeInRFC"/>
+  attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
   attribute x:fixed-section-number { ATEXT }?
 
 <em># Allow anchor attribute on &lt;spanx></em>
 attlist.spanx &amp;=
   attribute anchor { xsd:ID }?
+
+<em># Extend attribute set for &lt;c> (see <xref target="ext-rfc2629.iref"/>)</em>
+attlist.t &amp;=
+  attribute pn { text }? # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
 
 <em># Allow x:quotes attribute on &lt;title></em>
 attlist.title &amp;=
@@ -2750,6 +2766,7 @@ attlist.xref &amp;=
 <x:ref>v3_aside</x:ref> =
   element aside {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     t+
   }
 
@@ -2776,6 +2793,7 @@ attlist.xref &amp;=
   element blockquote {
     attribute anchor { xsd:ID }?,
     attribute cite { URI }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     t+
   }
 
@@ -2783,6 +2801,7 @@ attlist.xref &amp;=
 /># Boilerplate (see <xref target="v3.blockquote"/>)</em>
 <x:ref>v3_boilerplate</x:ref> =
   element boilerplate {
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     section+
   }
 
@@ -2805,7 +2824,8 @@ attlist.xref &amp;=
 /># Definition List Description Element (see <xref target="v3.dd"/>)</em>
 <x:ref>v3_dd</x:ref> =
   element dd {
-    (t
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
+    ((t
       | <x:ref>v3_dl</x:ref>)+ | 
     (TEXT
       | cref
@@ -2815,15 +2835,17 @@ attlist.xref &amp;=
       | <x:ref>v3_em</x:ref>
       | <x:ref>v3_tt</x:ref>
       | <x:ref>v3_strong</x:ref>)*
+    )
   }
 
 <em anchor="v3_dl"><iref item="dl V3 Extension Element"/><iref item="V3 Extension Elements" subitem="dl"
 /># Definition List (see <xref target="v3.dl"/>)</em>
 <x:ref>v3_dl</x:ref> =
   element dl {
-       attribute spacing { "normal" | "compact" }?,
-       attribute hanging { "false" | "true" }?,
-       (<x:ref>v3_dt</x:ref>, <x:ref>v3_dd</x:ref>)+
+    attribute hanging { "false" | "true" }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
+    attribute spacing { "normal" | "compact" }?,
+    (<x:ref>v3_dt</x:ref>, <x:ref>v3_dd</x:ref>)+
   }
 
 <em anchor="v3_dt"><iref item="dt V3 Extension Element"/><iref item="V3 Extension Elements" subitem="dt"
@@ -2831,6 +2853,7 @@ attlist.xref &amp;=
 <x:ref>v3_dt</x:ref> =
   element dt {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     (TEXT
       | cref
       | eref
@@ -2856,6 +2879,7 @@ attlist.xref &amp;=
 <x:ref>v3_li</x:ref> =
   element li {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     ((<x:ref>v3_dl</x:ref> | <x:ref>v3_ol</x:ref>  | t | <x:ref>v3_ul</x:ref> )+ 
       | 
     (TEXT
@@ -2887,6 +2911,7 @@ attlist.xref &amp;=
 <x:ref>v3_ol</x:ref> =
   element ol {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     attribute start { TEXT }?,
     <x:ref>v3_li</x:ref>+
   }
@@ -2911,6 +2936,7 @@ attlist.xref &amp;=
 <x:ref>v3_sourcecode</x:ref> =
   element sourcecode {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     attribute x:lang { "" }?,
     TEXT
   }
@@ -2944,6 +2970,7 @@ attlist.xref &amp;=
 <x:ref>v3_table</x:ref> =
   element table {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     <x:ref>v3_name</x:ref>?,
     iref*,
     <x:ref>v3_thead</x:ref>,
@@ -2956,6 +2983,7 @@ attlist.xref &amp;=
 <x:ref>v3_tbody</x:ref> =
   element tbody {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     <x:ref>v3_tr</x:ref>+
   }
 
@@ -2966,6 +2994,7 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     attribute rowspan { text }?,
     ( (t
        | <x:ref>v3_dl</x:ref>
@@ -2992,6 +3021,7 @@ attlist.xref &amp;=
 <x:ref>v3_tfoot</x:ref> =
   element tfoot {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     <x:ref>v3_tr</x:ref>
   }
 
@@ -3002,6 +3032,7 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     attribute rowspan { text }?,
     ( (t
        | <x:ref>v3_dl</x:ref>
@@ -3028,6 +3059,7 @@ attlist.xref &amp;=
 <x:ref>v3_thead</x:ref> =
   element thead {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     <x:ref>v3_tr</x:ref>
   }
 
@@ -3036,6 +3068,7 @@ attlist.xref &amp;=
 <x:ref>v3_tr</x:ref> =
   element tr {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     (
       <x:ref>v3_td</x:ref>
       | <x:ref>v3_th</x:ref>
@@ -3058,6 +3091,7 @@ attlist.xref &amp;=
   element ul {
     attribute anchor { xsd:ID }?,
     attribute empty { TEXT }?,
+    attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     <x:ref>v3_li</x:ref>+
   }
 

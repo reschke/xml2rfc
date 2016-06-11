@@ -38,6 +38,7 @@ include "rfc2629.rnc" {
   artwork =
     element artwork {
       attlist.artwork,
+      attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
       ( v3_svg |
         (TEXT
           | eref 
@@ -97,7 +98,8 @@ include "rfc2629.rnc" {
   # Redefine <figure> to allow more child elements
   figure =
     element figure {
-      attlist.cref,
+      attlist.figure,
+      attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
       iref*,
       preamble?,
       ( artwork | v3_sourcecode),
@@ -188,6 +190,7 @@ include "rfc2629.rnc" {
   references =
     element references {
       attribute title { text }?,
+      attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
       v3_name?,
       (reference
        | xi_include)+
@@ -270,6 +273,10 @@ include "rfc2629.rnc" {
     }
 }
 
+# Extend attribute set for <abstract>
+attlist.abstract &=
+  attribute pn { text }? # (see [XML2RFCV3], Appendix B.2)
+
 # Allow extension attributes on <artwork> (Section 11.22)
 attlist.artwork &=
   attribute x:indent-with { ATEXT }?,
@@ -301,6 +308,10 @@ attlist.preamble &=
 attlist.reference &=
   attribute quoteTitle { "false" | "true" }? # (see Section 12.17.1)
 
+# Extend attribute set for <references>
+attlist.references &=
+  attribute pn { text }? # (see [XML2RFCV3], Appendix B.2)
+
 # Extend attribute set for <rfc>
 attlist.rfc &=
   attribute grddl:transformation { ATEXT }?,
@@ -314,11 +325,16 @@ attlist.x_section &=
   attribute toc { "include" | "exclude" | "default" }?,
   attribute numbered { "false" | "true" }?, # see Section 12.18.1
   attribute removeInRFC { "false" | "true" }?, # see Section 12.18.2
+  attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
   attribute x:fixed-section-number { ATEXT }?
 
 # Allow anchor attribute on <spanx>
 attlist.spanx &=
   attribute anchor { xsd:ID }?
+
+# Extend attribute set for <c> (see Section 11.23)
+attlist.t &=
+  attribute pn { text }? # (see [XML2RFCV3], Appendix B.2)
 
 # Allow x:quotes attribute on <title>
 attlist.title &=
@@ -339,6 +355,7 @@ attlist.xref &=
 v3_aside =
   element aside {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     t+
   }
 
@@ -363,12 +380,14 @@ v3_blockquote =
   element blockquote {
     attribute anchor { xsd:ID }?,
     attribute cite { URI }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     t+
   }
 
 # Boilerplate (see Section 12.3)
 v3_boilerplate =
   element boilerplate {
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     section+
   }
 
@@ -388,7 +407,8 @@ v3_displayreference =
 # Definition List Description Element (see Section 12.7)
 v3_dd =
   element dd {
-    (t
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
+    ((t
       | v3_dl)+ | 
     (TEXT
       | cref
@@ -398,20 +418,23 @@ v3_dd =
       | v3_em
       | v3_tt
       | v3_strong)*
+    )
   }
 
 # Definition List (see Section 12.8)
 v3_dl =
   element dl {
-       attribute spacing { "normal" | "compact" }?,
-       attribute hanging { "false" | "true" }?,
-       (v3_dt, v3_dd)+
+    attribute hanging { "false" | "true" }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
+    attribute spacing { "normal" | "compact" }?,
+    (v3_dt, v3_dd)+
   }
 
 # Definition List Description Term (see Section 12.9)
 v3_dt =
   element dt {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     (TEXT
       | cref
       | eref
@@ -435,6 +458,7 @@ v3_em =
 v3_li =
   element li {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     ((v3_dl | v3_ol  | t | v3_ul )+ 
       | 
     (TEXT
@@ -464,6 +488,7 @@ v3_name =
 v3_ol =
   element ol {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     attribute start { TEXT }?,
     v3_li+
   }
@@ -485,6 +510,7 @@ v3_refcontent =
 v3_sourcecode =
   element sourcecode {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     attribute x:lang { "" }?,
     TEXT
   }
@@ -514,6 +540,7 @@ v3_sup =
 v3_table =
   element table {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     v3_name?,
     iref*,
     v3_thead,
@@ -525,6 +552,7 @@ v3_table =
 v3_tbody =
   element tbody {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     v3_tr+
   }
 
@@ -534,6 +562,7 @@ v3_td =
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     attribute rowspan { text }?,
     ( (t
        | v3_dl
@@ -559,6 +588,7 @@ v3_td =
 v3_tfoot =
   element tfoot {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     v3_tr
   }
 
@@ -568,6 +598,7 @@ v3_th =
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     attribute rowspan { text }?,
     ( (t
        | v3_dl
@@ -593,6 +624,7 @@ v3_th =
 v3_thead =
   element thead {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     v3_tr
   }
 
@@ -600,6 +632,7 @@ v3_thead =
 v3_tr =
   element tr {
     attribute anchor { xsd:ID }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     (
       v3_td
       | v3_th
@@ -620,6 +653,7 @@ v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,
     attribute empty { TEXT }?,
+    attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     v3_li+
   }
 
