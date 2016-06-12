@@ -170,6 +170,8 @@ xsltproc --param xml2rfc-toc '"yes"' \
 
   <c>rfc</c>
   <c>include<iref item="include PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include"/></c>
+  <c/>
+  <c/>
   <c>only partly supported, use external entities instead (see <xref target="examples.internalsubset"/>) or other tools (<xref target="refreshing.inclusions"/>) instead</c>
 
   <c>rfc</c>
