@@ -2729,6 +2729,7 @@ attlist.rfc &amp;=
   attribute grddl:transformation { ATEXT }?,
   attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
   attribute sortRefs { "true" | "false" } # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.sortRefs"/>)
+  attribute symRefs { "true" | "false" } # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.symRefs"/>)
 
 <em># Extend/Relax attribute set for &lt;section> (see <xref target="ext-rfc2629.section"/>)</em>
 attlist.x_section &amp;=

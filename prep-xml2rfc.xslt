@@ -144,6 +144,7 @@
 </xsl:template>
 
 <xsl:template match="pi:rfc[@name='sortrefs']" mode="prep-deprecation"/>
+<xsl:template match="pi:rfc[@name='symrefs']" mode="prep-deprecation"/>
 
 <xsl:template match="xref/@pageno" mode="prep-deprecation">
   <xsl:call-template name="info">
@@ -255,6 +256,9 @@
     <xsl:apply-templates select="@*" mode="prep-deprecation"/>
     <xsl:if test="not(@sortRefs) and $xml2rfc-sortrefs='yes'">
       <xsl:attribute name="sortRefs">true</xsl:attribute>
+    </xsl:if>
+    <xsl:if test="not(@symRefs) and $xml2rfc-symrefs='no'">
+      <xsl:attribute name="symRefs">false</xsl:attribute>
     </xsl:if>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </xsl:copy>

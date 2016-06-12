@@ -167,11 +167,17 @@
      exists with contents symrefs="no". Can be overridden by an XSLT parameter -->
 
 <xsl:param name="xml2rfc-symrefs">
-  <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
-    <xsl:with-param name="attr" select="'symrefs'"/>
-    <xsl:with-param name="default" select="'yes'"/>
-  </xsl:call-template>
+  <xsl:choose>
+    <xsl:when test="/rfc/@symRefs='false'">no</xsl:when>
+    <xsl:when test="/rfc/@symRefs='true'">yes</xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="parse-pis">
+        <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+        <xsl:with-param name="attr" select="'symrefs'"/>
+        <xsl:with-param name="default" select="'yes'"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:param>
 
 <!-- sort references if a processing instruction <?rfc?>
@@ -180,7 +186,7 @@
 <xsl:param name="xml2rfc-sortrefs">
   <xsl:choose>
     <xsl:when test="/rfc/@sortRefs='true'">yes</xsl:when>
-    <xsl:when test="/rfc/@sortRefs">no</xsl:when>
+    <xsl:when test="/rfc/@sortRefs='false'">no</xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="parse-pis">
         <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
@@ -8533,11 +8539,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.822 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.822 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.823 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.823 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/06/11 09:34:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/11 09:34:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/06/12 11:58:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/12 11:58:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
