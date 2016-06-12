@@ -49,7 +49,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi boilerplate tables deprecation slug pn preptime</xsl:text>
+  <xsl:text>pi figextract boilerplate tables deprecation slug pn preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -80,6 +80,10 @@
         <xsl:when test="$s='deprecation'">
           <xsl:message>Step: deprecation</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-deprecation"/>
+        </xsl:when>
+        <xsl:when test="$s='figextract'">
+          <xsl:message>Step: figextract</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-figextract"/>
         </xsl:when>
         <xsl:when test="$s='listextract'">
           <xsl:message>Step: listextract</xsl:message>
@@ -300,6 +304,28 @@
     </xsl:if>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </xsl:copy>
+</xsl:template>
+
+<!-- figextract step -->
+
+<!-- https://www.w3.org/TR/xslt-30/#grouping-examples -->
+<xsl:template match="t[figure and not(parent::list)]" mode="prep-figextract">
+  <xsl:for-each-group select="node()[not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::figure)">
+    <xsl:choose>
+      <xsl:when test="current-grouping-key()">
+        <xsl:copy-of select="current-group()"/>  
+      </xsl:when>
+      <xsl:otherwise>
+        <t>
+          <xsl:copy-of select="current-group()"/>
+        </t>
+      </xsl:otherwise>  
+    </xsl:choose>
+  </xsl:for-each-group>
+</xsl:template>
+
+<xsl:template match="node()|@*" mode="prep-figextract">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-figextract"/></xsl:copy>
 </xsl:template>
 
 <!-- listextract step -->
