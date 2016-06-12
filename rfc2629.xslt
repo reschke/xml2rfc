@@ -439,11 +439,17 @@
 <!-- extension for excluding the index -->
 
 <xsl:param name="xml2rfc-ext-include-index">
-  <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
-    <xsl:with-param name="attr" select="'include-index'"/>
-    <xsl:with-param name="default" select="'yes'"/>
-  </xsl:call-template>
+  <xsl:choose>
+    <xsl:when test="/rfc/@indexInclude='false'">no</xsl:when>
+    <xsl:when test="/rfc/@indexInclude='true'">yes</xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="parse-pis">
+        <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+        <xsl:with-param name="attr" select="'include-index'"/>
+        <xsl:with-param name="default" select="'yes'"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:param>
 
 <!-- extension for inserting RFC metadata -->
@@ -1338,7 +1344,7 @@
 <xsl:template match="figure">
   <xsl:call-template name="check-no-text-content"/>
   <!-- warn about the attributes that we do not support -->
-  <xsl:for-each select="@*[local-name()!='title' and local-name()!='suppress-title' and local-name()!='anchor' and normalize-space(.)!='']">
+  <xsl:for-each select="@*[local-name()!='title' and local-name()!='suppress-title' and local-name()!='anchor' and local-name()!='pn' and normalize-space(.)!='']">
     <xsl:if test="local-name(.)!='align' or normalize-space(.)!='left'">
       <xsl:call-template name="warning">
         <xsl:with-param name="msg" select="concat('unsupported attribute ',local-name(.),' on figure element')"/>
@@ -8539,11 +8545,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.823 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.823 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.824 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.824 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/06/12 11:58:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/12 11:58:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/06/12 15:27:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/12 15:27:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

@@ -100,6 +100,7 @@ include "rfc2629.rnc" {
     element figure {
       attlist.figure,
       attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
+      v3_name?,
       iref*,
       preamble?,
       ( artwork | v3_sourcecode),
@@ -203,6 +204,7 @@ include "rfc2629.rnc" {
       x_link*,
       x_feedback?,
       x_assign-section-number*,
+      v3_link*,
       front,
       middle,
       back?
@@ -306,7 +308,7 @@ attlist.preamble &=
 
 # Extend attribute set for <reference>
 attlist.reference &=
-  attribute quoteTitle { "false" | "true" }? # (see Section 12.17.1)
+  attribute quoteTitle { "false" | "true" }? # (see Section 12.18.1)
 
 # Extend attribute set for <references>
 attlist.references &=
@@ -316,16 +318,17 @@ attlist.references &=
 attlist.rfc &=
   attribute grddl:transformation { ATEXT }?,
   attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
-  attribute sortRefs { "true" | "false" } # (see [XML2RFCV3], Section 2.45.11)
-  attribute symRefs { "true" | "false" } # (see [XML2RFCV3], Section 2.45.13)
+  attribute indexInclude { "true" | "false" }?, # (see [XML2RFCV3], Section 2.45.4)
+  attribute sortRefs { "true" | "false" }?, # (see [XML2RFCV3], Section 2.45.11)
+  attribute symRefs { "true" | "false" }? # (see [XML2RFCV3], Section 2.45.13)
 
 # Extend/Relax attribute set for <section> (see Section 11.26)
 attlist.x_section &=
   attribute anchor { xsd:ID }?,
   attribute title { ATEXT }?,
   attribute toc { "include" | "exclude" | "default" }?,
-  attribute numbered { "false" | "true" }?, # see Section 12.18.1
-  attribute removeInRFC { "false" | "true" }?, # see Section 12.18.2
+  attribute numbered { "false" | "true" }?, # see Section 12.19.1
+  attribute removeInRFC { "false" | "true" }?, # see Section 12.19.2
   attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
   attribute x:fixed-section-number { ATEXT }?
 
@@ -476,7 +479,14 @@ v3_li =
     )
   }
 
-# Section/Figure/Table Name (see Section 12.12)
+# Container for additional links (see Section 12.12)
+v3_link =
+  element link {
+    attribute href { text },
+    attribute rel { text }?
+  }
+
+# Section/Figure/Table Name (see Section 12.13)
 v3_name =
   element name {
     attribute slugifiedName { text }?, # (see [XML2RFCV3], Appendix B.2)
@@ -486,7 +496,7 @@ v3_name =
       | xref)*
   }
 
-# Ordered List (see Section 12.13)
+# Ordered List (see Section 12.14)
 v3_ol =
   element ol {
     attribute anchor { xsd:ID }?,
@@ -495,20 +505,20 @@ v3_ol =
     v3_li+
   }
 
-# Line in postal address (see Section 12.14)
+# Line in postal address (see Section 12.15)
 v3_postalLine =
   element postalLine {
     TEXT
   }
 
-# additional content for references (see Section 12.15)
+# additional content for references (see Section 12.16)
 v3_refcontent =
   element refcontent {
     (TEXT
       | v3_em)*
   }
 
-# Source Code (see Section 12.16)
+# Source Code (see Section 12.17)
 v3_sourcecode =
   element sourcecode {
     attribute anchor { xsd:ID }?,
@@ -517,7 +527,7 @@ v3_sourcecode =
     TEXT
   }
 
-# Emphasized Text (see Section 12.19)
+# Emphasized Text (see Section 12.20)
 v3_strong =
   element strong {
     (TEXT
@@ -526,19 +536,19 @@ v3_strong =
       | x_ref)*
   }
 
-# Subscript (see Section 12.20)
+# Subscript (see Section 12.21)
 v3_sub =
   element sub {
     (TEXT)*
   }
 
-# Superscript (see Section 12.21)
+# Superscript (see Section 12.22)
 v3_sup =
   element sup {
     (TEXT)*
   }
 
-# Table (see Section 12.23)
+# Table (see Section 12.24)
 v3_table =
   element table {
     attribute anchor { xsd:ID }?,
@@ -550,7 +560,7 @@ v3_table =
     v3_tfoot?
   }
 
-# Table Body (see Section 12.24)
+# Table Body (see Section 12.25)
 v3_tbody =
   element tbody {
     attribute anchor { xsd:ID }?,
@@ -558,7 +568,7 @@ v3_tbody =
     v3_tr+
   }
 
-# Table Contents Cell (see Section 12.25)
+# Table Contents Cell (see Section 12.26)
 v3_td =
   element td {
     attribute anchor { xsd:ID }?,
@@ -586,7 +596,7 @@ v3_td =
     )
   }
 
-# Table Footer (see Section 12.26)
+# Table Footer (see Section 12.27)
 v3_tfoot =
   element tfoot {
     attribute anchor { xsd:ID }?,
@@ -594,7 +604,7 @@ v3_tfoot =
     v3_tr
   }
 
-# Table Header Cell (see Section 12.27)
+# Table Header Cell (see Section 12.28)
 v3_th =
   element th {
     attribute anchor { xsd:ID }?,
@@ -622,7 +632,7 @@ v3_th =
     )
   }
 
-# Table Head (see Section 12.28)
+# Table Head (see Section 12.29)
 v3_thead =
   element thead {
     attribute anchor { xsd:ID }?,
@@ -630,7 +640,7 @@ v3_thead =
     v3_tr
   }
 
-# Table Row (see Section 12.29)
+# Table Row (see Section 12.30)
 v3_tr =
   element tr {
     attribute anchor { xsd:ID }?,
@@ -641,7 +651,7 @@ v3_tr =
     )+
   }
 
-# Monospaced Text (see Section 12.30)
+# Monospaced Text (see Section 12.31)
 v3_tt =
   element tt {
     (TEXT
@@ -650,7 +660,7 @@ v3_tt =
       | x_ref)*
   }
 
-# Unordered List (see Section 12.31)
+# Unordered List (see Section 12.32)
 v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,
@@ -659,7 +669,7 @@ v3_ul =
     v3_li+
   }
 
-# SVG (see Section 12.22)
+# SVG (see Section 12.23)
 v3_svg =
   element svg:svg {
     (attribute * { text }

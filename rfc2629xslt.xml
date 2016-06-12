@@ -1404,6 +1404,14 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="link Element" anchor="v3.link">
+  <iref item="V3 Extension Elements" subitem="link" primary="true"/>
+  <iref item="link V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="XML2RFCV3" x:fmt="of" x:rel="#element.link"/>.
+</t>
+</section>
+
 <section title="name Element" anchor="v3.name">
   <iref item="V3 Extension Elements" subitem="name" primary="true"/>
   <iref item="name V3 Extension Element" primary="true"/>
@@ -2512,6 +2520,7 @@ include "rfc2629.rnc" {
     element figure {
       attlist.figure,
       attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
+      <strong><x:ref>v3_name</x:ref>?</strong>,
       iref*,
       preamble?,
       ( artwork | <strong><x:ref>v3_sourcecode</x:ref></strong>),
@@ -2615,6 +2624,7 @@ include "rfc2629.rnc" {
       <strong><x:ref>x_link</x:ref>*,</strong>
       <strong><x:ref>x_feedback</x:ref>?,</strong>
       <strong><x:ref>x_assign-section-number</x:ref>*,</strong>
+      <strong><x:ref>v3_link</x:ref>*,</strong>
       front,
       middle,
       back?
@@ -2728,8 +2738,9 @@ attlist.references &amp;=
 attlist.rfc &amp;=
   attribute grddl:transformation { ATEXT }?,
   attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
-  attribute sortRefs { "true" | "false" } # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.sortRefs"/>)
-  attribute symRefs { "true" | "false" } # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.symRefs"/>)
+  attribute indexInclude { "true" | "false" }?, # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.indexInclude"/>)
+  attribute sortRefs { "true" | "false" }?, # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.sortRefs"/>)
+  attribute symRefs { "true" | "false" }? # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.symRefs"/>)
 
 <em># Extend/Relax attribute set for &lt;section> (see <xref target="ext-rfc2629.section"/>)</em>
 attlist.x_section &amp;=
@@ -2897,6 +2908,14 @@ attlist.xref &amp;=
       | <x:ref>v3_tt</x:ref>
       | <x:ref>x_ref</x:ref>)*
     )
+  }
+
+<em anchor="v3_link"><iref item="link V3 Extension Element"/><iref item="V3 Extension Elements" subitem="link"
+/># Container for additional links (see <xref target="v3.link"/>)</em>
+<x:ref>v3_link</x:ref> =
+  element link {
+    attribute href { text },
+    attribute rel { text }?
   }
 
 <em anchor="v3_name"><iref item="name V3 Extension Element"/><iref item="V3 Extension Elements" subitem="name"
