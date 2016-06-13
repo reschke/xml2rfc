@@ -300,18 +300,23 @@
       <xsl:attribute name="start-indent">2em</xsl:attribute>
     </xsl:if>
     <xsl:call-template name="add-anchor"/>
-    <xsl:apply-templates />
-    <xsl:if test="(@title!='') or (@anchor!='' and not(@suppress-title='true'))">
+    <xsl:apply-templates select="*[not(self::name)]"/>
+    <xsl:if test="(@title!='' or name) or (@anchor!='' and not(@suppress-title='true'))">
       <xsl:variable name="n"><xsl:call-template name="get-figure-number"/></xsl:variable>
       <fo:block text-align="center" space-before=".5em" space-after="1em">
         <xsl:if test="not(starts-with($n,'u'))">
           <xsl:text>Figure </xsl:text>
           <xsl:value-of select="$n"/>
-          <xsl:if test="@title!=''">: </xsl:if>
+          <xsl:if test="@title!='' or name">: </xsl:if>
         </xsl:if>
-        <xsl:if test="@title!=''">
-          <xsl:value-of select="@title" />
-        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="name">
+            <xsl:apply-templates select="name/node()"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="@title" />
+          </xsl:otherwise>
+        </xsl:choose>
       </fo:block>
     </xsl:if>
   </fo:block>

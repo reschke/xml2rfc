@@ -644,7 +644,7 @@
 
 <!-- markup inside artwork element -->
 
-<xsl:template match="figure[.//artwork//iref | .//artwork//xref]" mode="cleanup">
+<xsl:template match="figure" mode="cleanup">
   <!-- move up iref elements -->
   <xsl:for-each select=".//artwork//xref">
     <xsl:if test="not(ancestor::ed:del)">
@@ -652,11 +652,28 @@
     </xsl:if>
   </xsl:for-each>
   <figure>
-    <xsl:apply-templates select="@*" mode="cleanup" />
+    <xsl:apply-templates select="@align|@alt|@anchor|@height|@src|@suppress-title|@width" mode="cleanup" />
+    <xsl:variable name="title">
+      <xsl:choose>
+        <xsl:when test="name">
+          <xsl:variable name="hold">
+            <xsl:apply-templates select="name/node()"/>
+          </xsl:variable>
+          <xsl:value-of select="normalize-space($hold)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@title"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:if test="$title!=''">
+      <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+    </xsl:if>
     <xsl:apply-templates select=".//artwork//iref" mode="cleanup"/>
-    <xsl:apply-templates select="iref|preamble|artwork|postamble|ed:replace|ed:ins|ed:del" mode="cleanup" />
+    <xsl:apply-templates select="iref|preamble|artwork|sourcecode|postamble|ed:replace|ed:ins|ed:del" mode="cleanup" />
   </figure>
 </xsl:template>
+<xsl:template match="figure/name" mode="cleanup"/>
 
 <xsl:template name="insert-begin-code"/>
 <xsl:template name="insert-end-code"/>
