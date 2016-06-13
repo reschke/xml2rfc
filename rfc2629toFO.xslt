@@ -3353,24 +3353,6 @@
     
   </xsl:template>
 
-<xsl:template name="render-name">
-  <xsl:param name="n"/>
-  <xsl:variable name="t">
-    <xsl:apply-templates select="$n"/>
-  </xsl:variable>
-  <xsl:apply-templates select="exslt:node-set($t)" mode="strip-links"/>
-</xsl:template>
-
-<xsl:template name="render-name-ref">
-  <xsl:param name="n"/>
-  <xsl:variable name="t">
-    <xsl:call-template name="render-name">
-      <xsl:with-param name="n" select="$n"/>
-    </xsl:call-template>
-  </xsl:variable>
-  <xsl:apply-templates select="exslt:node-set($t)" mode="strip-ids"/>
-</xsl:template>
-
 <!-- clean up links from HTML -->
 <xsl:template match="node()|@*" mode="strip-links">
   <xsl:copy>
