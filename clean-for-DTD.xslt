@@ -834,6 +834,7 @@
 <!-- v3 features -->
 <xsl:template match="rfc/@sortRefs" mode="cleanup"/>
 <xsl:template match="rfc/@symRefs" mode="cleanup"/>
+<xsl:template match="rfc/@tocInclude" mode="cleanup"/>
 
 <xsl:template match="rfc" mode="cleanup">
   <xsl:if test="@sortRefs='true'">
@@ -841,6 +842,9 @@
   </xsl:if>
   <xsl:if test="@symRefs='false'">
     <xsl:processing-instruction name="rfc">symrefs="no"</xsl:processing-instruction>
+  </xsl:if>
+  <xsl:if test="@version and (not(@tocInclude) or @tocInclude='true')">
+    <xsl:processing-instruction name="rfc">toc="yes"</xsl:processing-instruction>
   </xsl:if>
   <rfc>
     <xsl:apply-templates select="@*|node()" mode="cleanup"/>

@@ -320,7 +320,8 @@ attlist.rfc &=
   attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
   attribute indexInclude { "true" | "false" }?, # (see [XML2RFCV3], Section 2.45.4)
   attribute sortRefs { "true" | "false" }?, # (see [XML2RFCV3], Section 2.45.11)
-  attribute symRefs { "true" | "false" }? # (see [XML2RFCV3], Section 2.45.13)
+  attribute symRefs { "true" | "false" }?, # (see [XML2RFCV3], Section 2.45.13)
+  attribute version { text }? # (see [XML2RFCV3], Section 2.45.13)
 
 # Extend/Relax attribute set for <section> (see Section 11.26)
 attlist.x_section &=

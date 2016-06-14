@@ -149,6 +149,7 @@
 
 <xsl:template match="pi:rfc[@name='sortrefs']" mode="prep-deprecation"/>
 <xsl:template match="pi:rfc[@name='symrefs']" mode="prep-deprecation"/>
+<xsl:template match="pi:rfc[@name='toc']" mode="prep-deprecation"/>
 <xsl:template match="pi:rfc-ext[@name='include-index']" mode="prep-deprecation"/>
 
 <xsl:template match="xref/@pageno" mode="prep-deprecation">
@@ -267,6 +268,9 @@
     </xsl:if>
     <xsl:if test="not(@indexInclude) and $xml2rfc-ext-include-index='no'">
       <xsl:attribute name="indexInclude">false</xsl:attribute>
+    </xsl:if>
+    <xsl:if test="not(@tocInclude) and $xml2rfc-toc='no'">
+      <xsl:attribute name="tocInclude">false</xsl:attribute>
     </xsl:if>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </xsl:copy>
@@ -599,6 +603,16 @@
 
 <xsl:template match="node()|@*" mode="prep-ser">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-ser"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="rfc" mode="prep-ser">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-ser"/>
+    <xsl:if test="not(@version)">
+      <xsl:attribute name="version">3</xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-ser"/>
+  </xsl:copy>
 </xsl:template>
 
 <xsl:template match="text()[not(ancestor::artwork or ancestor::sourcecode)]" mode="prep-ser">
