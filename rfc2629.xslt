@@ -120,11 +120,18 @@
 <!-- optional tocdepth-->
 
 <xsl:param name="xml2rfc-tocdepth">
-  <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
-    <xsl:with-param name="attr" select="'tocdepth'"/>
-    <xsl:with-param name="default" select="'3'"/>
-  </xsl:call-template>
+  <xsl:choose>
+    <xsl:when test="/rfc/@tocDepth">
+      <xsl:value-of select="/rfc/@tocDepth"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="parse-pis">
+        <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+        <xsl:with-param name="attr" select="'tocdepth'"/>
+        <xsl:with-param name="default" select="'3'"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:param>
 
 <xsl:variable name="parsedTocDepth">
@@ -8549,11 +8556,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.826 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.826 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.827 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.827 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/06/14 12:04:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/14 12:04:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/06/15 04:59:06 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/15 04:59:06 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

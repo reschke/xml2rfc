@@ -150,6 +150,7 @@
 <xsl:template match="pi:rfc[@name='sortrefs']" mode="prep-deprecation"/>
 <xsl:template match="pi:rfc[@name='symrefs']" mode="prep-deprecation"/>
 <xsl:template match="pi:rfc[@name='toc']" mode="prep-deprecation"/>
+<xsl:template match="pi:rfc[@name='tocdepth']" mode="prep-deprecation"/>
 <xsl:template match="pi:rfc-ext[@name='include-index']" mode="prep-deprecation"/>
 
 <xsl:template match="xref/@pageno" mode="prep-deprecation">
@@ -271,6 +272,9 @@
     </xsl:if>
     <xsl:if test="not(@tocInclude) and $xml2rfc-toc='no'">
       <xsl:attribute name="tocInclude">false</xsl:attribute>
+    </xsl:if>
+    <xsl:if test="not(@tocDepth) and $parsedTocDepth!=3">
+      <xsl:attribute name="tocDepth"><xsl:value-of select="$parsedTocDepth"/></xsl:attribute>
     </xsl:if>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </xsl:copy>
