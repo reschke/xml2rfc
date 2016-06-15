@@ -2739,6 +2739,8 @@ attlist.rfc &amp;=
   attribute grddl:transformation { ATEXT }?,
   attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
   attribute indexInclude { "true" | "false" }?, # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.indexInclude"/>)
+  attribute tocDepth { text }?, # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.tocDepth"/>)
+  attribute tocInclude { "true" | "false" }?, # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.tocInclude"/>)
   attribute sortRefs { "true" | "false" }?, # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.sortRefs"/>)
   attribute symRefs { "true" | "false" }?, # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.symRefs"/>)
   attribute version { text }? # (see <xref target="XML2RFCV3" x:rel="#element.rfc.attribute.symRefs"/>)
@@ -2997,7 +2999,7 @@ attlist.xref &amp;=
     attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     <x:ref>v3_name</x:ref>?,
     iref*,
-    <x:ref>v3_thead</x:ref>,
+    <x:ref>v3_thead</x:ref>?,
     <x:ref>v3_tbody</x:ref>,
     <x:ref>v3_tfoot</x:ref>?
   }

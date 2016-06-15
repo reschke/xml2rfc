@@ -319,6 +319,8 @@ attlist.rfc &=
   attribute grddl:transformation { ATEXT }?,
   attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
   attribute indexInclude { "true" | "false" }?, # (see [XML2RFCV3], Section 2.45.4)
+  attribute tocDepth { text }?, # (see [XML2RFCV3], Section 2.45.14)
+  attribute tocInclude { "true" | "false" }?, # (see [XML2RFCV3], Section 2.45.15)
   attribute sortRefs { "true" | "false" }?, # (see [XML2RFCV3], Section 2.45.11)
   attribute symRefs { "true" | "false" }?, # (see [XML2RFCV3], Section 2.45.13)
   attribute version { text }? # (see [XML2RFCV3], Section 2.45.13)
@@ -556,7 +558,7 @@ v3_table =
     attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     v3_name?,
     iref*,
-    v3_thead,
+    v3_thead?,
     v3_tbody,
     v3_tfoot?
   }
