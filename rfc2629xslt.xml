@@ -2928,6 +2928,7 @@ attlist.xref &amp;=
     attribute slugifiedName { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     (TEXT
       | cref
+      | <x:ref>v3_em</x:ref>
       | <x:ref>v3_tt</x:ref>
       | xref)*
   }
@@ -2971,6 +2972,7 @@ attlist.xref &amp;=
 /># Emphasized Text (see <xref target="v3.strong"/>)</em>
 <x:ref>v3_strong</x:ref> =
   element strong {
+    attribute anchor { xsd:ID }?,
     (TEXT
       | xref
       | <x:ref>v3_em</x:ref>
