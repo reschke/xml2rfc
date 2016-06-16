@@ -2533,7 +2533,7 @@ include "rfc2629.rnc" {
       attlist.front,
       title,
       author+,
-      date,
+      date?,
       area*,
       workgroup*,
       keyword*,
