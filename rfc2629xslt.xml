@@ -3246,6 +3246,13 @@ attlist.xref &amp;=
       | <x:ref>x_ref</x:ref>)* 
   }
 
+<em anchor="x_defines"><iref item="defines Extension Element"/><iref item="Extension Elements" subitem="defines"
+/># declaration of definition in external reference<!-- (see <xref target="ext.element.sup"/>)--></em>
+<x:ref>x_defines</x:ref> =
+  element x:defines {
+    TEXT
+  }
+
 <em anchor="x_dfn"><iref item="dfn Extension Element"/><iref item="Extension Elements" subitem="dfn"
 /># Definition (see <xref target="ext.element.dfn"/>)</em>
 <x:ref>x_dfn</x:ref> =
@@ -3342,7 +3349,7 @@ attlist.xref &amp;=
   element x:source {
     attribute basename { ATEXT }?,
     attribute href { URI },
-    empty
+    <x:ref>x_defines</x:ref>*
   }
 
 <em anchor="x_sup"><iref item="sup Extension Element"/><iref item="Extension Elements" subitem="sup"

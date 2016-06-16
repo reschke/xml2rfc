@@ -786,6 +786,12 @@ x_bt =
       | x_ref)* 
   }
 
+# declaration of definition in external reference
+x_defines =
+  element x:defines {
+    TEXT
+  }
+
 # Definition (see Section 11.8)
 x_dfn =
   element x:dfn {
@@ -870,7 +876,7 @@ x_source =
   element x:source {
     attribute basename { ATEXT }?,
     attribute href { URI },
-    empty
+    x_defines*
   }
 
 # superscript (see Section 11.21)
