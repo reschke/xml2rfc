@@ -2621,10 +2621,10 @@ include "rfc2629.rnc" {
   rfc =
     element rfc {
       attlist.rfc,
+      <strong><x:ref>v3_link</x:ref>*,</strong>
       <strong><x:ref>x_link</x:ref>*,</strong>
       <strong><x:ref>x_feedback</x:ref>?,</strong>
       <strong><x:ref>x_assign-section-number</x:ref>*,</strong>
-      <strong><x:ref>v3_link</x:ref>*,</strong>
       front,
       middle,
       back?
