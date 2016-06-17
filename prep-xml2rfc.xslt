@@ -241,6 +241,47 @@
   </xsl:copy>
 </xsl:template>
 
+<xsl:template match="reference" mode="prep-deprecation">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-deprecation"/>
+    <xsl:if test="@title!=''">
+      <xsl:choose>
+        <xsl:when test="name">
+          <!-- error -->
+        </xsl:when>
+        <xsl:otherwise>
+          <name><xsl:value-of select="@title"/></name>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
+    <xsl:apply-templates select="node()[not(self::seriesInfo)]" mode="prep-deprecation"/>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="reference/front" mode="prep-deprecation">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-deprecation"/>
+    <xsl:apply-templates select="title|author|date|area|workgroup|keyword|abstract" mode="prep-deprecation"/>
+    <xsl:choose>
+      <xsl:when test="seriesInfo and ../seriesInfo">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg" select="'seriesInfo present both under reference and reference/front, ignoring the former'"/>
+        </xsl:call-template>
+        <xsl:apply-templates select="seriesInfo" mode="prep-deprecation"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:if test="../seriesInfo">
+          <xsl:call-template name="info">
+            <xsl:with-param name="msg" select="'moving seriesInfo elements down from reference to reference/front'"/>
+          </xsl:call-template>
+          <xsl:apply-templates select="../seriesInfo" mode="prep-deprecation"/>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:apply-templates select="node()[not(self::title or self::author or self::date or self::area or self::workgroup or self::keyword or self::abstract)]" mode="prep-deprecation"/>
+  </xsl:copy>
+</xsl:template>
+
 <xsl:template match="references" mode="prep-deprecation">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-deprecation"/>

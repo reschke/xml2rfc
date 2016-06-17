@@ -2538,8 +2538,9 @@ include "rfc2629.rnc" {
       workgroup*,
       keyword*,
       abstract?,
-      <strong><x:ref>v3_boilerplate</x:ref>?,</strong>
-      note*
+      <strong>seriesInfo</strong>*,
+      note*,
+      <strong><x:ref>v3_boilerplate</x:ref>?</strong>
     }
   
   <em># Redefine &lt;list> element to allow &lt;x:<x:ref>lt</x:ref>> child elements</em>

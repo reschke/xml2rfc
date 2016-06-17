@@ -920,7 +920,7 @@
       <xsl:otherwise/>
     </xsl:choose>
     <xsl:apply-templates select="front" mode="cleanup"/>
-    <xsl:apply-templates select="seriesInfo" mode="cleanup"/>
+    <xsl:apply-templates select="seriesInfo|front/seriesInfo" mode="cleanup"/>
 
     <!-- Insert DOI for RFCs -->
     <xsl:variable name="doi">
@@ -943,6 +943,11 @@
       <seriesInfo name="{@name}" value="{@value}"/>
     </xsl:otherwise>
   </xsl:choose>
+</xsl:template>
+<xsl:template match="front" mode="cleanup">
+  <front>
+    <xsl:apply-templates select="text()|node()[not(self::seriesInfo)]" mode="cleanup"/>
+  </front>
 </xsl:template>
 
 <!-- References titles -->

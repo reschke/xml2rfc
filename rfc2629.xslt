@@ -2136,13 +2136,13 @@
       <xsl:value-of select="concat($bib/x:source/@basename,'.',$outputExtension,'#',$ref/@anchor)" />
     </xsl:when>
     <!-- tools.ietf.org won't have the "-latest" draft -->
-    <xsl:when test="$bib/seriesInfo/@name='Internet-Draft' and $bib/x:source/@href and $bib/x:source/@basename and substring($bib/x:source/@basename, (string-length($bib/x:source/@basename) - string-length('-latest')) + 1)='-latest'">
+    <xsl:when test="$bib//seriesInfo/@name='Internet-Draft' and $bib/x:source/@href and $bib/x:source/@basename and substring($bib/x:source/@basename, (string-length($bib/x:source/@basename) - string-length('-latest')) + 1)='-latest'">
       <xsl:value-of select="concat($bib/x:source/@basename,'.',$outputExtension)" />
     </xsl:when>
     <!-- TODO: this should handle the case where there's one BCP entry but
     multiple RFC entries in a more useful way-->
-    <xsl:when test="$bib/seriesInfo/@name='RFC'">
-      <xsl:variable name="rfcEntries" select="$bib/seriesInfo[@name='RFC']"/>
+    <xsl:when test="$bib//seriesInfo/@name='RFC'">
+      <xsl:variable name="rfcEntries" select="$bib//seriesInfo[@name='RFC']"/>
       <xsl:if test="count($rfcEntries)!=1">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg" select="concat('seriesInfo/@name=RFC encountered multiple times for reference ',$bib/@anchor,', will generate link to first entry only')"/>
@@ -2160,8 +2160,8 @@
         </xsl:choose>
       </xsl:if>
     </xsl:when>
-    <xsl:when test="$bib/seriesInfo/@name='Internet-Draft'">
-      <xsl:value-of select="concat($internetDraftUrlPrefix,$bib/seriesInfo[@name='Internet-Draft']/@value,$internetDraftUrlPostfix)" />
+    <xsl:when test="$bib//seriesInfo/@name='Internet-Draft'">
+      <xsl:value-of select="concat($internetDraftUrlPrefix,$bib//seriesInfo[@name='Internet-Draft']/@value,$internetDraftUrlPostfix)" />
       <xsl:if test="$ref and $sec!='' and $internetDraftUrlFragSection and $internetDraftUrlFragAppendix">
         <xsl:choose>
           <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
@@ -2259,9 +2259,9 @@
 <xsl:template name="compute-doi">
   <xsl:choose>
     <!-- xref seems to be for BCP, not RFC -->
-    <xsl:when test="seriesInfo[@name='BCP'] and starts-with(@anchor, 'BCP')" />
-    <xsl:when test="seriesInfo[@name='RFC']">
-      <xsl:variable name="rfc" select="seriesInfo[@name='RFC'][1]/@value"/>
+    <xsl:when test=".//seriesInfo[@name='BCP'] and starts-with(@anchor, 'BCP')" />
+    <xsl:when test=".//seriesInfo[@name='RFC']">
+      <xsl:variable name="rfc" select=".//seriesInfo[@name='RFC'][1]/@value"/>
       <xsl:value-of select="concat('10.17487/RFC', format-number($rfc,'#0000'))"/>
     </xsl:when>
     <xsl:otherwise/>
@@ -2440,13 +2440,20 @@
     </xsl:choose>
     <xsl:if test="$quoted">&#8221;</xsl:if>
 
-    <xsl:variable name="rfcs" select="count(seriesInfo[@name='RFC'])"/>
+    <xsl:variable name="si" select="seriesInfo|front/seriesInfo"/>
+    <xsl:if test="seriesInfo and front/seriesInfo">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">seriesInfo present both on reference and reference/front</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    
+    <xsl:variable name="rfcs" select="count($si[@name='RFC'])"/>
 
     <xsl:variable name="doi">
       <xsl:call-template name="compute-doi"/>
     </xsl:variable>
 
-    <xsl:for-each select="seriesInfo">
+    <xsl:for-each select="$si">
       <xsl:text>, </xsl:text>
       <xsl:choose>
         <xsl:when test="not(@name) and not(@value) and ./text()"><xsl:value-of select="." /></xsl:when>
@@ -2489,7 +2496,7 @@
     </xsl:for-each>
 
     <!-- Insert DOI for RFCs -->
-    <xsl:if test="$xml2rfc-ext-insert-doi='yes' and $doi!='' and not(seriesInfo[@name='DOI'])">
+    <xsl:if test="$xml2rfc-ext-insert-doi='yes' and $doi!='' and not($si[@name='DOI'])">
       <xsl:text>, </xsl:text>
       <a href="http://dx.doi.org/{$doi}">DOI&#160;<xsl:value-of select="$doi"/></a>
     </xsl:if>
@@ -2523,15 +2530,15 @@
         <a href="{normalize-space(@target)}"><xsl:value-of select="normalize-space(@target)"/></a>
         <xsl:text>&gt;</xsl:text>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and seriesInfo[@name='BCP'] and starts-with(@anchor, 'BCP')">
+      <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and $si[@name='BCP'] and starts-with(@anchor, 'BCP')">
         <xsl:text>, &lt;</xsl:text>
-        <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/bcp',seriesInfo[@name='BCP']/@value)"/>
+        <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/bcp',$si[@name='BCP']/@value)"/>
         <a href="{$uri}"><xsl:value-of select="$uri"/></a>
         <xsl:text>&gt;</xsl:text>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and seriesInfo[@name='RFC']">
+      <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and $si[@name='RFC']">
         <xsl:text>, &lt;</xsl:text>
-        <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/rfc',seriesInfo[@name='RFC']/@value)"/>
+        <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/rfc',$si[@name='RFC']/@value)"/>
         <a href="{$uri}"><xsl:value-of select="$uri"/></a>
         <xsl:text>&gt;</xsl:text>
       </xsl:when>
@@ -7008,14 +7015,14 @@ dd, li, p {
   <xsl:param name="name"/>
   <xsl:choose>
     <xsl:when test="starts-with($name,'draft-')">
-      <xsl:if test="not(//references//reference/seriesInfo[@name='Internet-Draft' and @value=$name])">
+      <xsl:if test="not(//references//reference//seriesInfo[@name='Internet-Draft' and @value=$name])">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg" select="concat('front matter mentions I-D ',$name,' for which there is no reference element')"/>
         </xsl:call-template>
       </xsl:if>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:if test="not(//references//reference/seriesInfo[@name='RFC' and @value=$name])">
+      <xsl:if test="not(//references//reference//seriesInfo[@name='RFC' and @value=$name])">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg" select="concat('front matter mentions RFC ',$name,' for which there is no reference element')"/>
         </xsl:call-template>
@@ -7782,7 +7789,7 @@ dd, li, p {
 
   <!-- check ABNF syntax references -->
   <xsl:if test="//artwork[@type='abnf2616' or @type='abnf7230']">
-    <xsl:if test="not(//reference/seriesInfo[@name='RFC' and (@value='2068' or @value='2616' or @value='7230')]) and not(//reference/seriesInfo[@name='Internet-Draft' and (starts-with(@value, 'draft-ietf-httpbis-p1-messaging-'))])">
+    <xsl:if test="not(//reference//seriesInfo[@name='RFC' and (@value='2068' or @value='2616' or @value='7230')]) and not(//reference//seriesInfo[@name='Internet-Draft' and (starts-with(@value, 'draft-ietf-httpbis-p1-messaging-'))])">
       <!-- check for draft-ietf-httpbis-p1-messaging- is for backwards compat -->
       <xsl:call-template name="warning">
         <xsl:with-param name="msg">document uses HTTP-style ABNF syntax, but doesn't reference RFC 2068, RFC 2616, or RFC 7230.</xsl:with-param>
@@ -7790,7 +7797,7 @@ dd, li, p {
     </xsl:if>
   </xsl:if>
   <xsl:if test="//artwork[@type='abnf']">
-    <xsl:if test="not(//reference/seriesInfo[@name='RFC' and (@value='2234' or @value='4234' or @value='5234')])">
+    <xsl:if test="not(//reference//seriesInfo[@name='RFC' and (@value='2234' or @value='4234' or @value='5234')])">
       <xsl:call-template name="warning">
         <xsl:with-param name="msg">document uses ABNF syntax, but doesn't reference RFC 2234, 4234 or 5234.</xsl:with-param>
       </xsl:call-template>
@@ -8556,11 +8563,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.827 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.827 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.828 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.828 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/06/15 04:59:06 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/15 04:59:06 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/06/17 07:00:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/17 07:00:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

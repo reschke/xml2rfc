@@ -826,11 +826,7 @@
   <xsl:variable name="target">
     <xsl:choose>
       <xsl:when test="@target"><xsl:value-of select="@target" /></xsl:when>
-      <xsl:when test="seriesInfo/@name='RFC'"><xsl:value-of select="concat($rfcUrlPrefix,seriesInfo[@name='RFC']/@value,'.txt')" /></xsl:when>
-      <xsl:when test="seriesInfo[starts-with(.,'RFC')]">
-        <xsl:variable name="rfcRef" select="seriesInfo[starts-with(.,'RFC')]" />
-        <xsl:value-of select="concat($rfcUrlPrefix,substring-after (normalize-space($rfcRef), ' '),'.txt')" />
-      </xsl:when>
+      <xsl:when test=".//seriesInfo/@name='RFC'"><xsl:value-of select="concat($rfcUrlPrefix,.//seriesInfo[@name='RFC']/@value,'.txt')" /></xsl:when>
       <xsl:otherwise />
     </xsl:choose>
   </xsl:variable>
@@ -916,13 +912,13 @@
       </xsl:choose>
       <xsl:if test="$quoted">"<!--&#8221;--></xsl:if>
       
-      <xsl:variable name="rfcs" select="count(seriesInfo[@name='RFC'])"/>
+      <xsl:variable name="rfcs" select="count(.//seriesInfo[@name='RFC'])"/>
 
       <xsl:variable name="doi">
         <xsl:call-template name="compute-doi"/>
       </xsl:variable>
 
-      <xsl:for-each select="seriesInfo">
+      <xsl:for-each select="seriesInfo|front/seriesInfo">
         <xsl:text>, </xsl:text>
         <xsl:choose>
           <xsl:when test="not(@name) and not(@value) and ./text()"><xsl:value-of select="." /></xsl:when>
@@ -957,7 +953,7 @@
       </xsl:for-each>
 
       <!-- Insert DOI for RFCs -->
-      <xsl:if test="$xml2rfc-ext-insert-doi='yes' and $doi!='' and not(seriesInfo[@name='DOI'])">
+      <xsl:if test="$xml2rfc-ext-insert-doi='yes' and $doi!='' and not(.//seriesInfo[@name='DOI'])">
         <xsl:text>, </xsl:text>
         <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="http://dx.doi.org/{$doi}">DOI&#160;<xsl:value-of select="$doi"/></fo:basic-link>
       </xsl:if>
@@ -981,17 +977,17 @@
             </xsl:call-template>
           <xsl:text>&gt;</xsl:text>
         </xsl:when>
-        <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and seriesInfo[@name='BCP'] and starts-with(@anchor, 'BCP')">
+        <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and .//seriesInfo[@name='BCP'] and starts-with(@anchor, 'BCP')">
           <xsl:text>, &lt;</xsl:text>
-          <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/bcp',seriesInfo[@name='BCP']/@value)"/>
+          <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/bcp',.//seriesInfo[@name='BCP']/@value)"/>
           <xsl:call-template name="format-uri">
             <xsl:with-param name="s" select="$uri"/>
           </xsl:call-template>
           <xsl:text>&gt;</xsl:text>
         </xsl:when>
-        <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and seriesInfo[@name='RFC']">
+        <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and .//seriesInfo[@name='RFC']">
           <xsl:text>, &lt;</xsl:text>
-          <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/rfc',seriesInfo[@name='RFC']/@value)"/>
+          <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/rfc',.//seriesInfo[@name='RFC']/@value)"/>
           <xsl:call-template name="format-uri">
             <xsl:with-param name="s" select="$uri"/>
           </xsl:call-template>
