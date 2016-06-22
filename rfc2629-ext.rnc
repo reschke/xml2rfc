@@ -112,13 +112,13 @@ include "rfc2629.rnc" {
     element front {
       attlist.front,
       title,
+      seriesInfo*,
       author+,
       date?,
       area*,
       workgroup*,
       keyword*,
       abstract?,
-      seriesInfo*,
       note*,
       v3_boilerplate?
     }

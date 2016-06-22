@@ -261,7 +261,7 @@
 <xsl:template match="reference/front" mode="prep-deprecation">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-deprecation"/>
-    <xsl:apply-templates select="title|author|date|area|workgroup|keyword|abstract" mode="prep-deprecation"/>
+    <xsl:apply-templates select="title" mode="prep-deprecation"/>
     <xsl:choose>
       <xsl:when test="seriesInfo and ../seriesInfo">
         <xsl:call-template name="warning">
@@ -278,7 +278,7 @@
         </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:apply-templates select="node()[not(self::title or self::author or self::date or self::area or self::workgroup or self::keyword or self::abstract)]" mode="prep-deprecation"/>
+    <xsl:apply-templates select="node()[not(self::title)]" mode="prep-deprecation"/>
   </xsl:copy>
 </xsl:template>
 
