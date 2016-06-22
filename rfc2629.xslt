@@ -8563,11 +8563,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.828 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.828 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.829 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.829 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/06/17 07:00:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/17 07:00:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/06/22 11:48:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/22 11:48:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8842,9 +8842,9 @@ prev: <xsl:value-of select="$prev"/>
 <!-- checking for email element -->
 <xsl:template name="extract-email">
   <xsl:variable name="email" select="normalize-space(.)"/>
-  <xsl:if test="string-length(.) != string-length($email) or contains($email,' ')">
-    <xsl:call-template name="warning">
-      <xsl:with-param name="msg">excessive whitespace in email address: '<xsl:value-of select="."/>'</xsl:with-param>
+  <xsl:if test="contains($email,' ')">
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg">whitespace in email address: '<xsl:value-of select="."/>'</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
 
@@ -8861,7 +8861,6 @@ prev: <xsl:value-of select="$prev"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-
   <xsl:value-of select="$email2"/>
 </xsl:template>
 
