@@ -2398,10 +2398,10 @@ done
   <front>
     <title>The "xml2rfc" version 3 Vocabulary</title>
     <author initials="P." surname="Hoffman" fullname="Paul Hoffman"/>
-    <date month="February" year="2016"/>
+    <date month="June" year="2016"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfc-03"/>
-  <x:source href="draft-iab-xml2rfc-03.xml"/>
+  <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfc-04"/>
+  <x:source href="draft-iab-xml2rfc-04.xml"/>
 </reference>
 
 </references>
