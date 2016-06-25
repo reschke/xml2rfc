@@ -207,7 +207,7 @@
   <xsl:text>: </xsl:text>
   <xsl:variable name="base" select="substring($name,1,string-length($name)-3)"/>
   <xsl:variable name="number" select="substring($name,string-length($name)-1)"/>
-  <xsl:variable name="stat" select="document(concat('http://tools.ietf.org/draft/',$base,'/state.xml'))" />
+  <xsl:variable name="stat" select="document(concat('https://tools.ietf.org/draft/',$base,'/state.xml'))" />
   
   <!--stat: <xsl:value-of select="$stat/ietfdoc/info/rev"/>
   number: <xsl:value-of select="$number"/>-->
