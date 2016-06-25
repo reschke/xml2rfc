@@ -49,7 +49,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi figextract boilerplate tables deprecation slug pn preptime</xsl:text>
+  <xsl:text>pi figextract boilerplate tables deprecation defaults slug pn preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -76,6 +76,10 @@
         <xsl:when test="$s='boilerplate'"> 
           <xsl:message>Step: boilerplate</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-boilerplate"/>
+        </xsl:when>
+        <xsl:when test="$s='defaults'">
+          <xsl:message>Step: defaults</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-defaults"/>
         </xsl:when>
         <xsl:when test="$s='deprecation'">
           <xsl:message>Step: deprecation</xsl:message>
@@ -139,6 +143,44 @@
 
 <xsl:template match="node()|@*" mode="prep-boilerplate">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-boilerplate"/></xsl:copy>
+</xsl:template>
+
+<!-- defaults step -->
+
+<xsl:template match="node()|@*" mode="prep-defaults">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-defaults"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="ol" mode="prep-defaults">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-defaults"/>
+    <xsl:if test="not(@start) and @group">
+      <xsl:attribute name="start">
+        <xsl:call-template name="ol-start">
+          <xsl:with-param name="node" select="."/>
+        </xsl:call-template>
+      </xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-defaults"/>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="rfc" mode="prep-defaults">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-defaults"/>
+    <xsl:choose>
+      <xsl:when test="not(@version)">
+        <xsl:attribute name="version">3</xsl:attribute>
+      </xsl:when>
+      <xsl:when test="@version!='3'">
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg" select="'/rfc/@version, when specified, should be 3'"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+    <xsl:apply-templates select="node()" mode="prep-defaults"/>
+  </xsl:copy>
 </xsl:template>
 
 <!-- deprecation step -->

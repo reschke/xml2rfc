@@ -1109,8 +1109,13 @@
 <xsl:template match="ol" mode="cleanup">
   <t>
     <xsl:if test="@start and @start!='1'">
-      <xsl:call-template name="warning">
+      <xsl:call-template name="error">
         <xsl:with-param name="msg">list start != 1 not supported</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:if test="@group">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg">ol/@group not supported</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
     <list style="numbers">

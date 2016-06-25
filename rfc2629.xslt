@@ -1809,17 +1809,53 @@
   </ol>
 </xsl:template>
 
+<xsl:template name="ol-start">
+  <xsl:param name="node"/>
+  <xsl:variable name="group" select="$node/@group"/>
+  <xsl:variable name="prec" select="$node/preceding::ol[@group=$group]"/>
+  <xsl:choose>
+    <xsl:when test="$node/@start">
+      <xsl:value-of select="$node/@start"/>
+    </xsl:when>
+    <xsl:when test="$prec">
+      <xsl:variable name="s">
+        <xsl:call-template name="ol-start">
+          <xsl:with-param name="node" select="$prec[last()]"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:value-of select="$s + count($prec[last()]/li)"/>
+    </xsl:when>
+    <xsl:otherwise>1</xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="ol">
   <xsl:call-template name="check-no-text-content"/>
+
   <xsl:variable name="p">
     <xsl:call-template name="get-paragraph-number" />
+  </xsl:variable>
+  <xsl:variable name="start">
+    <xsl:choose>
+      <xsl:when test="@group">
+        <xsl:call-template name="ol-start">
+          <xsl:with-param name="node" select="."/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="@start">
+        <xsl:value-of select="@start"/>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
   </xsl:variable>
   <xsl:choose>
     <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ul) and not(ancestor::dl) and not(ancestor::ol) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
       <div id="{$anchor-pref}section.{$p}">
         <ol>
+          <xsl:if test="$start!=''">
+            <xsl:attribute name="start"><xsl:value-of select="$start"/></xsl:attribute>
+          </xsl:if>
           <xsl:call-template name="copy-anchor"/>
-          <xsl:copy-of select="@start"/>
           <xsl:call-template name="insertInsDelClass"/>
           <xsl:apply-templates />
         </ol>
@@ -1827,8 +1863,10 @@
     </xsl:when>
     <xsl:otherwise>
       <ol>
+        <xsl:if test="$start!=''">
+          <xsl:attribute name="start"><xsl:value-of select="$start"/></xsl:attribute>
+        </xsl:if>
         <xsl:call-template name="copy-anchor"/>
-        <xsl:copy-of select="@start"/>
         <xsl:call-template name="insertInsDelClass"/>
         <xsl:apply-templates />
       </ol>
@@ -8562,11 +8600,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.830 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.830 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.831 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.831 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/06/25 08:24:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/25 08:24:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/06/25 16:05:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/06/25 16:05:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

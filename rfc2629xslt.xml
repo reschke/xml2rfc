@@ -2941,6 +2941,7 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="XML2RFCV3" x:rel="#anchorsandids"/>)
     attribute start { TEXT }?,
+    attribute group { TEXT }?,
     <x:ref>v3_li</x:ref>+
   }
 

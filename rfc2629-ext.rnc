@@ -507,6 +507,7 @@ v3_ol =
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [XML2RFCV3], Appendix B.2)
     attribute start { TEXT }?,
+    attribute group { TEXT }?,
     v3_li+
   }
 

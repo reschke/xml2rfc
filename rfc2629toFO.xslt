@@ -706,12 +706,26 @@
     <fo:list-item-label end-indent="label-end()">
       <fo:block>
         <xsl:choose>
-          <xsl:when test="ancestor::ol and ancestor::ol/@start">
+          <xsl:when test="ancestor::ol">
+            <xsl:variable name="s">
+              <xsl:variable name="node" select="ancestor::ol"/>
+              <xsl:choose>
+                <xsl:when test="$node/@group">
+                  <xsl:call-template name="ol-start">
+                    <xsl:with-param name="node" select="$node"/>
+                  </xsl:call-template>
+                </xsl:when>
+                <xsl:when test="$node/@start">
+                  <xsl:value-of select="$node/@start"/>
+                </xsl:when>
+                <xsl:otherwise>1</xsl:otherwise>
+              </xsl:choose>
+            </xsl:variable>
             <xsl:variable name="n"><xsl:number/></xsl:variable>
-            <xsl:value-of select="$n + ancestor::ol/@start - 1"/>
+            <xsl:value-of select="$n + $s - 1"/>
             <xsl:text>.</xsl:text>
           </xsl:when>
-          <xsl:when test="ancestor::list/@style='numbers' or ancestor::ol"><xsl:number/>.</xsl:when>
+          <xsl:when test="ancestor::list/@style='numbers'"><xsl:number/>.</xsl:when>
           <xsl:when test="ancestor::list/@style='letters'"><xsl:number format="a"/>.</xsl:when>
           <xsl:otherwise>???</xsl:otherwise>
         </xsl:choose>
