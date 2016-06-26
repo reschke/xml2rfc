@@ -707,8 +707,8 @@
       <fo:block>
         <xsl:choose>
           <xsl:when test="ancestor::ol">
+            <xsl:variable name="node" select="ancestor::ol"/>
             <xsl:variable name="s">
-              <xsl:variable name="node" select="ancestor::ol"/>
               <xsl:choose>
                 <xsl:when test="$node/@group">
                   <xsl:call-template name="ol-start">
@@ -722,7 +722,14 @@
               </xsl:choose>
             </xsl:variable>
             <xsl:variable name="n"><xsl:number/></xsl:variable>
-            <xsl:value-of select="$n + $s - 1"/>
+            <xsl:choose>
+              <xsl:when test="$node/@type='a' or $node/@type='A' or $node/@type='i' or $node/@type='I'">
+                <xsl:number value="$n + $s - 1" format="{$node/@type}"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$n + $s - 1"/>
+              </xsl:otherwise>
+            </xsl:choose>
             <xsl:text>.</xsl:text>
           </xsl:when>
           <xsl:when test="ancestor::list/@style='numbers'"><xsl:number/>.</xsl:when>
