@@ -713,15 +713,19 @@
 <!-- final serialization step -->
 
 <xsl:template match="node()|@*" mode="prep-ser">
-  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-ser"/></xsl:copy>
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-ser">
+      <xsl:sort select="name()"/>
+    </xsl:apply-templates>
+    <xsl:apply-templates select="node()" mode="prep-ser"/>
+  </xsl:copy>
 </xsl:template>
 
 <xsl:template match="rfc" mode="prep-ser">
   <xsl:copy>
-    <xsl:apply-templates select="@*" mode="prep-ser"/>
-    <xsl:if test="not(@version)">
-      <xsl:attribute name="version">3</xsl:attribute>
-    </xsl:if>
+    <xsl:apply-templates select="@*" mode="prep-ser">
+      <xsl:sort select="name()"/>
+    </xsl:apply-templates>
     <xsl:apply-templates select="node()" mode="prep-ser"/>
   </xsl:copy>
 </xsl:template>
