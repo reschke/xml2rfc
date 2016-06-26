@@ -183,6 +183,30 @@
   </xsl:copy>
 </xsl:template>
 
+<xsl:template match="section" mode="prep-defaults">
+  <xsl:copy>
+    <xsl:apply-templates select="@*[not(local-name()='toc')]" mode="prep-defaults"/>
+    <xsl:variable name="t">
+      <xsl:choose>
+        <xsl:when test="ancestor::boilerplate">exclude</xsl:when>
+        <xsl:when test=".//section[@toc='include']">
+            <xsl:if test="@toc='exclude'">
+              <xsl:call-template name="error">
+                <xsl:with-param name="msg" select="'section excluded from toc has descendant that his included'"/>
+              </xsl:call-template>
+            </xsl:if>
+            <xsl:text>include</xsl:text>
+          </xsl:when>
+        <xsl:when test="ancestor::section[@toc='exclude']">exclude</xsl:when>
+        <xsl:when test="count(ancestor::section) > $parsedTocDepth">exclude</xsl:when>
+        <xsl:otherwise>include</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:attribute name="toc" select="$t"/>
+    <xsl:apply-templates select="node()" mode="prep-defaults"/>
+  </xsl:copy>
+</xsl:template>
+
 <!-- deprecation step -->
 
 <xsl:template match="node()|@*" mode="prep-deprecation">
