@@ -49,7 +49,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi figextract boilerplate tables deprecation defaults slug pn preptime</xsl:text>
+  <xsl:text>pi figextract listextract boilerplate tables deprecation defaults slug pn preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -446,7 +446,7 @@
 <!-- listextract step -->
 
 <!-- https://www.w3.org/TR/xslt-30/#grouping-examples -->
-<xsl:template match="t[list]" mode="prep-listextract">
+<xsl:template match="t[list][not(ancestor::list)]" mode="prep-listextract">
   <xsl:for-each-group select="node()[not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::list)">
     <xsl:choose>
       <xsl:when test="current-grouping-key()">
