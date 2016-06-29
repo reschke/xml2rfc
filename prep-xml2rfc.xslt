@@ -422,7 +422,7 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="list[@style='letters' or @style='numbers']/x:lt" mode="prep-deprecation">
+<xsl:template match="list[@style='letters' or @style='numbers' or @style='symbols']/x:lt" mode="prep-deprecation">
   <li>
     <xsl:if test="@anchor">
       <xsl:copy-of select="@anchor"/>
@@ -431,7 +431,7 @@
   </li>
 </xsl:template>
 
-<xsl:template match="list[@style='letters' or @style='numbers']/t" mode="prep-deprecation">
+<xsl:template match="list[@style='letters' or @style='numbers' or @style='symbols']/t" mode="prep-deprecation">
   <li>
     <xsl:if test="@anchor">
       <xsl:copy-of select="@anchor"/>
@@ -459,6 +459,24 @@
     </xsl:choose>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </ol>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(text())='']/list[@style='symbols']" mode="prep-deprecation">
+  <xsl:if test="@anchor and ../@anchor">
+    <t anchor="{../@anchor}"/>
+  </xsl:if>
+  <ul>
+    <xsl:choose>
+      <xsl:when test="@anchor">
+        <xsl:copy-of select="@anchor"/>
+      </xsl:when>
+      <xsl:when test="../@anchor">
+        <xsl:copy-of select="../@anchor"/>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </ul>
 </xsl:template>
 
 <!-- figextract step -->
