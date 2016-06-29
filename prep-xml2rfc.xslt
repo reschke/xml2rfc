@@ -422,7 +422,7 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="list[@style='letters' or @style='numbers' or @style='symbols']/x:lt" mode="prep-deprecation">
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols']/x:lt" mode="prep-deprecation">
   <li>
     <xsl:if test="@anchor">
       <xsl:copy-of select="@anchor"/>
@@ -431,7 +431,7 @@
   </li>
 </xsl:template>
 
-<xsl:template match="list[@style='letters' or @style='numbers' or @style='symbols']/t" mode="prep-deprecation">
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols']/t" mode="prep-deprecation">
   <li>
     <xsl:if test="@anchor">
       <xsl:copy-of select="@anchor"/>
@@ -440,7 +440,19 @@
   </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(text())='']/list[@style='letters' or @style='numbers']" mode="prep-deprecation">
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='hanging']/t" mode="prep-deprecation">
+  <dt>
+    <xsl:if test="@anchor">
+      <xsl:copy-of select="@anchor"/>
+    </xsl:if>
+    <xsl:value-of select="@hangText"/>
+  </dt>
+  <dd>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </dd>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers']" mode="prep-deprecation">
   <xsl:if test="@anchor and ../@anchor">
     <t anchor="{../@anchor}"/>
   </xsl:if>
@@ -461,7 +473,7 @@
   </ol>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(text())='']/list[@style='symbols']" mode="prep-deprecation">
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='symbols']" mode="prep-deprecation">
   <xsl:if test="@anchor and ../@anchor">
     <t anchor="{../@anchor}"/>
   </xsl:if>
@@ -477,6 +489,24 @@
     </xsl:choose>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </ul>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='hanging']" mode="prep-deprecation">
+  <xsl:if test="@anchor and ../@anchor">
+    <t anchor="{../@anchor}"/>
+  </xsl:if>
+  <dl>
+    <xsl:choose>
+      <xsl:when test="@anchor">
+        <xsl:copy-of select="@anchor"/>
+      </xsl:when>
+      <xsl:when test="../@anchor">
+        <xsl:copy-of select="../@anchor"/>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </dl>
 </xsl:template>
 
 <!-- figextract step -->
