@@ -422,7 +422,7 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols']/x:lt" mode="prep-deprecation">
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols' or  @style='format %c.' or @style='format %C.' or @style='format %d.' or @style='format %i.' or @style='format %I.']/x:lt" mode="prep-deprecation">
   <li>
     <xsl:if test="@anchor">
       <xsl:copy-of select="@anchor"/>
@@ -431,7 +431,7 @@
   </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols']/t" mode="prep-deprecation">
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols' or @style='format %c.' or @style='format %C.' or @style='format %d.' or @style='format %i.' or @style='format %I.']/t" mode="prep-deprecation">
   <li>
     <xsl:if test="@anchor">
       <xsl:copy-of select="@anchor"/>
@@ -460,6 +460,42 @@
     <xsl:if test="list/@style='letters'">
       <xsl:attribute name="type">a</xsl:attribute>
     </xsl:if>
+    <xsl:choose>
+      <xsl:when test="list/@anchor">
+        <xsl:copy-of select="list/@anchor"/>
+      </xsl:when>
+      <xsl:when test="@anchor">
+        <xsl:copy-of select="@anchor"/>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
+  </ol>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='format %c.' or list/@style='format %C.' or list/@style='format %i.' or list/@style='format %I.' or list/@style='format %d.')]" mode="prep-deprecation">
+  <xsl:if test="@anchor and list/@anchor">
+    <t anchor="{@anchor}"/>
+  </xsl:if>
+  <ol>
+    <xsl:if test="list/@counter">
+      <xsl:attribute name="group"><xsl:value-of select="@counter"/></xsl:attribute>
+    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="list/@style='format %c.'">
+        <xsl:attribute name="type">a</xsl:attribute>
+      </xsl:when>
+      <xsl:when test="list/@style='format %C.'">
+        <xsl:attribute name="type">A</xsl:attribute>
+      </xsl:when>
+      <xsl:when test="list/@style='format %i.'">
+        <xsl:attribute name="type">i</xsl:attribute>
+      </xsl:when>
+      <xsl:when test="list/@style='format %I.'">
+        <xsl:attribute name="type">I</xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
     <xsl:choose>
       <xsl:when test="list/@anchor">
         <xsl:copy-of select="list/@anchor"/>
