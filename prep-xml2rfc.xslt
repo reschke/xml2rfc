@@ -31,9 +31,10 @@
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                version="2.0"
                xmlns:f="mailto:julian.reschke@greenbytes?subject=preptool"
+               xmlns:x="http://purl.org/net/xml2rfc/ext"
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:pi="https://www.w3.org/TR/REC-xml/#sec-pi"
-               exclude-result-prefixes="f xs pi"
+               exclude-result-prefixes="f x xs pi"
 >
 
 <xsl:import href="rfc2629.xslt" />
@@ -419,6 +420,45 @@
     </xsl:if>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </xsl:copy>
+</xsl:template>
+
+<xsl:template match="list[@style='letters' or @style='numbers']/x:lt" mode="prep-deprecation">
+  <li>
+    <xsl:if test="@anchor">
+      <xsl:copy-of select="@anchor"/>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </li>
+</xsl:template>
+
+<xsl:template match="list[@style='letters' or @style='numbers']/t" mode="prep-deprecation">
+  <li>
+    <xsl:if test="@anchor">
+      <xsl:copy-of select="@anchor"/>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </li>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(text())='']/list[@style='letters' or @style='numbers']" mode="prep-deprecation">
+  <xsl:if test="@anchor and ../@anchor">
+    <t anchor="{../@anchor}"/>
+  </xsl:if>
+  <ol>
+    <xsl:if test="@style='letters'">
+      <xsl:attribute name="type">a</xsl:attribute>
+    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="@anchor">
+        <xsl:copy-of select="@anchor"/>
+      </xsl:when>
+      <xsl:when test="../@anchor">
+        <xsl:copy-of select="../@anchor"/>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </ol>
 </xsl:template>
 
 <!-- figextract step -->
