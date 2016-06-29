@@ -452,60 +452,60 @@
   </dd>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers']" mode="prep-deprecation">
-  <xsl:if test="@anchor and ../@anchor">
-    <t anchor="{../@anchor}"/>
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='letters' or list/@style='numbers')]" mode="prep-deprecation">
+  <xsl:if test="@anchor and list/@anchor">
+    <t anchor="{@anchor}"/>
   </xsl:if>
   <ol>
-    <xsl:if test="@style='letters'">
+    <xsl:if test="list/@style='letters'">
       <xsl:attribute name="type">a</xsl:attribute>
     </xsl:if>
     <xsl:choose>
+      <xsl:when test="list/@anchor">
+        <xsl:copy-of select="list/@anchor"/>
+      </xsl:when>
       <xsl:when test="@anchor">
         <xsl:copy-of select="@anchor"/>
       </xsl:when>
-      <xsl:when test="../@anchor">
-        <xsl:copy-of select="../@anchor"/>
-      </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
   </ol>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='symbols']" mode="prep-deprecation">
-  <xsl:if test="@anchor and ../@anchor">
-    <t anchor="{../@anchor}"/>
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='symbols']" mode="prep-deprecation">
+  <xsl:if test="@anchor and list/@anchor">
+    <t anchor="{@anchor}"/>
   </xsl:if>
   <ul>
     <xsl:choose>
+      <xsl:when test="list/@anchor">
+        <xsl:copy-of select="list/@anchor"/>
+      </xsl:when>
       <xsl:when test="@anchor">
         <xsl:copy-of select="@anchor"/>
       </xsl:when>
-      <xsl:when test="../@anchor">
-        <xsl:copy-of select="../@anchor"/>
-      </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
   </ul>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='hanging']" mode="prep-deprecation">
-  <xsl:if test="@anchor and ../@anchor">
-    <t anchor="{../@anchor}"/>
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='hanging']" mode="prep-deprecation">
+  <xsl:if test="@anchor and list/@anchor">
+    <t anchor="{@anchor}"/>
   </xsl:if>
   <dl>
     <xsl:choose>
+      <xsl:when test="list/@anchor">
+        <xsl:copy-of select="list/@anchor"/>
+      </xsl:when>
       <xsl:when test="@anchor">
         <xsl:copy-of select="@anchor"/>
       </xsl:when>
-      <xsl:when test="../@anchor">
-        <xsl:copy-of select="../@anchor"/>
-      </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
   </dl>
 </xsl:template>
 
