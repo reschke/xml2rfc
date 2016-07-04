@@ -1664,17 +1664,31 @@
             <xsl:otherwise></xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
+        <xsl:variable name="s">
+          <xsl:choose>
+            <xsl:when test="$pparent/@group">
+              <xsl:call-template name="ol-start">
+                <xsl:with-param name="node" select="$pparent"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="$pparent/@start">
+              <xsl:value-of select="$pparent/@start"/>
+            </xsl:when>
+            <xsl:otherwise>1</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="n">
+          <xsl:for-each select="$node">
+            <xsl:number/>
+          </xsl:for-each>
+        </xsl:variable>
         <xsl:variable name="listindex">
           <xsl:choose>
             <xsl:when test="$listtype='numbers'">
-              <xsl:for-each select="$node">
-                <xsl:number/>
-              </xsl:for-each>
+              <xsl:number value="$n + $s - 1"/>
             </xsl:when>
             <xsl:when test="$listtype='letters'">
-              <xsl:for-each select="$node">
-                <xsl:number format="a"/>
-              </xsl:for-each>
+              <xsl:number value="$n + $s - 1" format="a"/>
             </xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
