@@ -1658,9 +1658,13 @@
             <xsl:when test="$pparent/self::list">
               <xsl:value-of select="$pparent/@style"/>
             </xsl:when>
-            <xsl:when test="$pparent/self::dl">definition</xsl:when> 
-            <xsl:when test="$pparent/self::ol">numbers</xsl:when> 
-            <xsl:when test="$pparent/self::ul">symbols</xsl:when> 
+            <xsl:when test="$pparent/self::dl">definition</xsl:when>
+              <xsl:when test="$pparent/self::ol[@type='a']">letters</xsl:when>
+              <xsl:when test="$pparent/self::ol[@type='A']">Letters</xsl:when>
+              <xsl:when test="$pparent/self::ol[@type='i']">rnumbers</xsl:when>
+              <xsl:when test="$pparent/self::ol[@type='I']">Rnumbers</xsl:when>
+            <xsl:when test="$pparent/self::ol">numbers</xsl:when>
+            <xsl:when test="$pparent/self::ul">symbols</xsl:when>
             <xsl:otherwise></xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
@@ -1682,16 +1686,17 @@
             <xsl:number/>
           </xsl:for-each>
         </xsl:variable>
-        <xsl:variable name="listindex">
+          <xsl:variable name="format">
           <xsl:choose>
-            <xsl:when test="$listtype='numbers'">
-              <xsl:number value="$n + $s - 1"/>
-            </xsl:when>
-            <xsl:when test="$listtype='letters'">
-              <xsl:number value="$n + $s - 1" format="a"/>
-            </xsl:when>
-            <xsl:otherwise/>
+            <xsl:when test="$listtype='letters'">a</xsl:when>
+            <xsl:when test="$listtype='Letters'">A</xsl:when>
+            <xsl:when test="$listtype='rnumbers'">i</xsl:when>
+            <xsl:when test="$listtype='Rnumbers'">I</xsl:when>
+            <xsl:otherwise>1</xsl:otherwise>
           </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="listindex">
+          <xsl:number value="$n + $s - 1" format="{$format}"/>
         </xsl:variable>
         <xsl:choose>
           <xsl:when test="@format='counter'">
