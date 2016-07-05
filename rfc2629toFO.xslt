@@ -221,7 +221,7 @@
   </fo:block>
 </xsl:template>
 
-<xsl:template match="author">
+<xsl:template match="author|x:contributor">
   <fo:block start-indent="2em" space-before=".5em" space-after=".5em">
     <fo:block>
       <fo:wrapper font-weight="bold"><xsl:value-of select="@fullname" /></fo:wrapper>

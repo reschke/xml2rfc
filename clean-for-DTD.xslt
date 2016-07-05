@@ -31,6 +31,7 @@
 
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
+                xmlns:exslt="http://exslt.org/common"
                 xmlns:ed="http://greenbytes.de/2002/rfcedit"
                 xmlns:grddl="http://www.w3.org/2003/g/data-view#"
                 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -38,7 +39,7 @@
                 xmlns:x="http://purl.org/net/xml2rfc/ext"
                 xmlns:xi="http://www.w3.org/2001/XInclude"
                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
-                exclude-result-prefixes="ed grddl rdf svg x xi xhtml"
+                exclude-result-prefixes="ed exslt grddl rdf svg x xi xhtml"
 >
 
 <!-- re-use some of the default RFC2629.xslt rules -->
@@ -1251,6 +1252,25 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:attribute>
+</xsl:template>
+
+<!-- x:contributor -->
+<xsl:template match="x:contributor" mode="cleanup">
+  <xsl:variable name="content">
+    <xsl:apply-templates select="."/>
+  </xsl:variable>
+  <t>
+    <xsl:apply-templates select="exslt:node-set($content)/*" mode="text"/>
+  </t>
+</xsl:template>
+<xsl:template match="*" mode="text">
+  <xsl:apply-templates mode="text"/>
+</xsl:template>
+<xsl:template match="text()" mode="text">
+  <xsl:value-of select="."/>
+</xsl:template>
+<xsl:template match="br" mode="text">
+  <vspace blankLines="0"/>
 </xsl:template>
 
 <!-- x:include -->
