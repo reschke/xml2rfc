@@ -422,6 +422,24 @@
   </xsl:copy>
 </xsl:template>
 
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='empty']/x:lt" mode="prep-deprecation">
+  <li>
+    <xsl:if test="@anchor">
+      <xsl:copy-of select="@anchor"/>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </li>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='empty']/t" mode="prep-deprecation">
+  <li>
+    <xsl:if test="@anchor">
+      <xsl:copy-of select="@anchor"/>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </li>
+</xsl:template>
+
 <xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols' or  @style='format %c.' or @style='format %C.' or @style='format %d.' or @style='format %i.' or @style='format %I.']/x:lt" mode="prep-deprecation">
   <li>
     <xsl:if test="@anchor">
@@ -450,6 +468,15 @@
   <dd>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </dd>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='empty')]" mode="prep-deprecation">
+  <xsl:if test="@anchor and list/@anchor">
+    <t anchor="{@anchor}"/>
+  </xsl:if>
+  <ul empty="true">
+    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
+  </ul>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='letters' or list/@style='numbers')]" mode="prep-deprecation">
