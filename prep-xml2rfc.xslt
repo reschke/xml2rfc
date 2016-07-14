@@ -31,7 +31,6 @@
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                version="2.0"
                xmlns:f="mailto:julian.reschke@greenbytes?subject=preptool"
-               xmlns:x="http://purl.org/net/xml2rfc/ext"
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:pi="https://www.w3.org/TR/REC-xml/#sec-pi"
                exclude-result-prefixes="f xs pi"
@@ -422,7 +421,7 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='empty']/x:lt" mode="prep-deprecation">
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='empty']/x:lt" xmlns:x="http://purl.org/net/xml2rfc/ext" mode="prep-deprecation">
   <li>
     <xsl:if test="@anchor">
       <xsl:copy-of select="@anchor"/>
@@ -440,7 +439,7 @@
   </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols' or  @style='format %c.' or @style='format %C.' or @style='format %d.' or @style='format %i.' or @style='format %I.']/x:lt" mode="prep-deprecation">
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols' or  @style='format %c.' or @style='format %C.' or @style='format %d.' or @style='format %i.' or @style='format %I.']/x:lt" xmlns:x="http://purl.org/net/xml2rfc/ext" mode="prep-deprecation">
   <li>
     <xsl:if test="@anchor">
       <xsl:copy-of select="@anchor"/>
