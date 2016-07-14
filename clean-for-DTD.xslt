@@ -1107,7 +1107,7 @@
 </xsl:template>
 
 <!-- Ordered Lists -->
-<xsl:template match="ol" mode="cleanup">
+<xsl:template match="ol[not(@type) or string-length(@type)=1]" mode="cleanup">
   <t>
     <xsl:if test="@start and @start!='1'">
       <xsl:call-template name="error">
@@ -1120,6 +1120,22 @@
       </xsl:call-template>
     </xsl:if>
     <list style="numbers">
+      <xsl:apply-templates mode="cleanup"/>
+    </list>
+  </t>
+</xsl:template>
+
+<xsl:template match="ol[string-length(@type)>1]" mode="cleanup">
+  <t>
+    <xsl:if test="@start and @start!='1'">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg">list start != 1 not supported</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <list style="format {@type}">
+      <xsl:if test="@group">
+        <xsl:attribute name="counter"><xsl:value-of select="@group"/></xsl:attribute>
+      </xsl:if>
       <xsl:apply-templates mode="cleanup"/>
     </list>
   </t>

@@ -1674,6 +1674,69 @@
   </ul>
 </xsl:template>
 
+<xsl:template match="ol[string-length(@type)>1]">
+  <xsl:variable name="p">
+    <xsl:call-template name="get-paragraph-number" />
+  </xsl:variable>
+  <xsl:variable name="start">
+    <xsl:choose>
+      <xsl:when test="@group">
+        <xsl:call-template name="ol-start">
+          <xsl:with-param name="node" select="."/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="@start">
+        <xsl:value-of select="@start"/>
+      </xsl:when>
+      <xsl:otherwise>1</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
+      <div id="{$anchor-pref}section.{$p}">
+        <dl>
+          <xsl:call-template name="copy-anchor"/>
+          <xsl:for-each select="li">
+            <xsl:variable name="label">
+              <xsl:call-template name="expand-format-percent">
+                <xsl:with-param name="format" select="../@type"/>
+                <xsl:with-param name="pos" select="$start - 1 + position()"/>
+              </xsl:call-template>
+            </xsl:variable>
+            <dt>
+              <xsl:call-template name="copy-anchor"/>
+              <xsl:value-of select="$label"/>
+            </dt>
+            <dd>
+              <xsl:apply-templates/>
+            </dd>
+          </xsl:for-each>
+        </dl>
+      </div>
+    </xsl:when>
+    <xsl:otherwise>
+      <dl>
+        <xsl:call-template name="copy-anchor"/>
+        <xsl:for-each select="li">
+          <xsl:variable name="label">
+            <xsl:call-template name="expand-format-percent">
+              <xsl:with-param name="format" select="../@type"/>
+              <xsl:with-param name="pos" select="$start - 1 + position()"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <dt>
+            <xsl:call-template name="copy-anchor"/>
+            <xsl:value-of select="$label"/>
+          </dt>
+          <dd>
+            <xsl:apply-templates/>
+          </dd>
+        </xsl:for-each>
+      </dl>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="dl">
   <xsl:variable name="hang" select="@hanging"/>
   <xsl:variable name="spac" select="@spacing"/>
@@ -1829,7 +1892,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="ol">
+<xsl:template match="ol[not(@type) or string-length(@type)=1]">
   <xsl:call-template name="check-no-text-content"/>
 
   <xsl:variable name="p">
@@ -3608,6 +3671,7 @@
               <xsl:when test="$pparent/self::ol[@type='A']">Letters</xsl:when> 
               <xsl:when test="$pparent/self::ol[@type='i']">rnumbers</xsl:when> 
               <xsl:when test="$pparent/self::ol[@type='I']">Rnumbers</xsl:when> 
+              <xsl:when test="$pparent/self::ol[string-length(@type)>1]">format <xsl:value-of select="$pparent/self::ol/@type"/></xsl:when> 
               <xsl:when test="$pparent/self::ol">numbers</xsl:when> 
               <xsl:otherwise></xsl:otherwise>
             </xsl:choose>
@@ -3640,7 +3704,17 @@
             </xsl:choose>
           </xsl:variable>
           <xsl:variable name="listindex">
-            <xsl:number value="$n + $s - 1" format="{$format}"/>
+            <xsl:choose>
+              <xsl:when test="starts-with($listtype,'format ')">
+                <xsl:call-template name="expand-format-percent">
+                  <xsl:with-param name="format" select="substring-after($listtype,'format ')"/>
+                  <xsl:with-param name="pos" select="$n + $s - 1"/>
+                </xsl:call-template>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:number value="$n + $s - 1" format="{$format}"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:variable>
           <xsl:choose>
             <xsl:when test="$xref/@format='counter'">
@@ -8621,11 +8695,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.836 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.836 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.837 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.837 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/07/06 15:10:35 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/07/06 15:10:35 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/07/14 14:06:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/07/14 14:06:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
