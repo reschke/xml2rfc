@@ -691,7 +691,7 @@
   </fo:list-item>
 </xsl:template>
 
-<xsl:template match="ol | list[@style='numbers' or @style='letters' or (not(@style) and ancestor::list[@style='numbers' or @style='letters'])]" priority="1">
+<xsl:template match="ol[not(@type) or string-length(@type)=1] | list[@style='numbers' or @style='letters' or (not(@style) and ancestor::list[@style='numbers' or @style='letters'])]" priority="1">
   <fo:list-block provisional-distance-between-starts="1.5em">
     <xsl:if test="self::ol and parent::section|parent::note|parent::abstract">
       <xsl:attribute name="start-indent">2em</xsl:attribute>
@@ -700,7 +700,7 @@
   </fo:list-block>
 </xsl:template>
 
-<xsl:template match="ol/li[not(t)] | list[@style='numbers' or @style='letters' or (not(@style) and ancestor::list[@style='numbers' or @style='letters'])]/t" priority="1">
+<xsl:template match="ol[not(@type) or string-length(@type)=1]/li[not(t)] | list[@style='numbers' or @style='letters' or (not(@style) and ancestor::list[@style='numbers' or @style='letters'])]/t" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
     <xsl:call-template name="copy-anchor"/>
     <fo:list-item-label end-indent="label-end()">
@@ -742,7 +742,7 @@
   </fo:list-item>
 </xsl:template>
 
-<xsl:template match="ol/li[t] | list[@style='numbers' or @style='letters' or (not(@style) and ancestor::list[@style='numbers' or @style='letters'])]/x:lt" priority="1">
+<xsl:template match="ol[not(@type) or string-length(@type)=1]/li[t] | list[@style='numbers' or @style='letters' or (not(@style) and ancestor::list[@style='numbers' or @style='letters'])]/x:lt" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
     <xsl:call-template name="copy-anchor"/>
     <fo:list-item-label end-indent="label-end()">
@@ -787,6 +787,12 @@
   </fo:list-block>
 </xsl:template>
 
+<xsl:template match="ol[string-length(@type)>1]">
+  <fo:list-block provisional-distance-between-starts="{string-length(@type) + 1}em">
+    <xsl:apply-templates />
+  </fo:list-block>
+</xsl:template>
+
 <xsl:template match="list[starts-with(@style,'format ')]/t" priority="1">
   <xsl:variable name="list" select=".." />
   <xsl:variable name="format" select="substring-after(../@style,'format ')" />
@@ -807,6 +813,40 @@
         <xsl:call-template name="expand-format-percent">
           <xsl:with-param name="format" select="$format"/>
           <xsl:with-param name="pos" select="$pos"/>
+        </xsl:call-template>
+      </fo:block>
+    </fo:list-item-label>
+    <fo:list-item-body start-indent="body-start()">
+      <fo:block>
+        <xsl:apply-templates />
+      </fo:block>
+    </fo:list-item-body>
+  </fo:list-item>
+</xsl:template>
+
+<xsl:template match="ol[string-length(@type)>1]/li">
+  <xsl:variable name="format" select="../@type" />
+  <xsl:variable name="start">
+    <xsl:choose>
+      <xsl:when test="../@group">
+        <xsl:call-template name="ol-start">
+          <xsl:with-param name="node" select=".."/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="../@start">
+        <xsl:value-of select="../@start"/>
+      </xsl:when>
+      <xsl:otherwise>1</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="pos"><xsl:number/></xsl:variable>
+  <fo:list-item space-before=".25em" space-after=".25em">
+    <xsl:call-template name="copy-anchor"/>
+    <fo:list-item-label end-indent="label-end()">
+      <fo:block>
+        <xsl:call-template name="expand-format-percent">
+          <xsl:with-param name="format" select="$format"/>
+          <xsl:with-param name="pos" select="$start - 1 + $pos"/>
         </xsl:call-template>
       </fo:block>
     </fo:list-item-label>
@@ -1659,10 +1699,11 @@
               <xsl:value-of select="$pparent/@style"/>
             </xsl:when>
             <xsl:when test="$pparent/self::dl">definition</xsl:when>
-              <xsl:when test="$pparent/self::ol[@type='a']">letters</xsl:when>
-              <xsl:when test="$pparent/self::ol[@type='A']">Letters</xsl:when>
-              <xsl:when test="$pparent/self::ol[@type='i']">rnumbers</xsl:when>
-              <xsl:when test="$pparent/self::ol[@type='I']">Rnumbers</xsl:when>
+            <xsl:when test="$pparent/self::ol[@type='a']">letters</xsl:when>
+            <xsl:when test="$pparent/self::ol[@type='A']">Letters</xsl:when>
+            <xsl:when test="$pparent/self::ol[@type='i']">rnumbers</xsl:when>
+            <xsl:when test="$pparent/self::ol[@type='I']">Rnumbers</xsl:when>
+            <xsl:when test="$pparent/self::ol[string-length(@type)>1]">format <xsl:value-of select="$pparent/self::ol/@type"/></xsl:when> 
             <xsl:when test="$pparent/self::ol">numbers</xsl:when>
             <xsl:when test="$pparent/self::ul">symbols</xsl:when>
             <xsl:otherwise></xsl:otherwise>
@@ -1696,7 +1737,17 @@
           </xsl:choose>
         </xsl:variable>
         <xsl:variable name="listindex">
-          <xsl:number value="$n + $s - 1" format="{$format}"/>
+          <xsl:choose>
+            <xsl:when test="starts-with($listtype,'format ')">
+              <xsl:call-template name="expand-format-percent">
+                <xsl:with-param name="format" select="substring-after($listtype,'format ')"/>
+                <xsl:with-param name="pos" select="$n + $s - 1"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:number value="$n + $s - 1" format="{$format}"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:variable>
         <xsl:choose>
           <xsl:when test="@format='counter'">
