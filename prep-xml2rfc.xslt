@@ -448,7 +448,25 @@
   </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols' or @style='format %c.' or @style='format %C.' or @style='format %d.' or @style='format %i.' or @style='format %I.']/t" mode="prep-deprecation">
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols' or @style='format %c.' or @style='format %C.' or @style='format %d.' or @style='format %i.' or @style='format %I.']/t" mode="prep-deprecation" priority="9">
+  <li>
+    <xsl:if test="@anchor">
+      <xsl:copy-of select="@anchor"/>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </li>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[starts-with(@style,'format ')]/t" mode="prep-deprecation" priority="9">
+  <li>
+    <xsl:if test="@anchor">
+      <xsl:copy-of select="@anchor"/>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </li>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[starts-with(@style,'format ')]/x:lt" xmlns:x="http://purl.org/net/xml2rfc/ext" mode="prep-deprecation" priority="9">
   <li>
     <xsl:if test="@anchor">
       <xsl:copy-of select="@anchor"/>
@@ -499,13 +517,13 @@
   </ol>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='format %c.' or list/@style='format %C.' or list/@style='format %i.' or list/@style='format %I.' or list/@style='format %d.')]" mode="prep-deprecation">
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='format %c.' or list/@style='format %C.' or list/@style='format %i.' or list/@style='format %I.' or list/@style='format %d.')]" mode="prep-deprecation" priority="9">
   <xsl:if test="@anchor and list/@anchor">
     <t anchor="{@anchor}"/>
   </xsl:if>
   <ol>
     <xsl:if test="list/@counter">
-      <xsl:attribute name="group"><xsl:value-of select="@counter"/></xsl:attribute>
+      <xsl:attribute name="group"><xsl:value-of select="list/@counter"/></xsl:attribute>
     </xsl:if>
     <xsl:choose>
       <xsl:when test="list/@style='format %c.'">
@@ -522,6 +540,27 @@
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
+    <xsl:choose>
+      <xsl:when test="list/@anchor">
+        <xsl:copy-of select="list/@anchor"/>
+      </xsl:when>
+      <xsl:when test="@anchor">
+        <xsl:copy-of select="@anchor"/>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
+  </ol>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and starts-with(list/@style,'format ')]" mode="prep-deprecation">
+  <xsl:if test="@anchor and list/@anchor">
+    <t anchor="{@anchor}"/>
+  </xsl:if>
+  <ol type="{substring-after(list/@style,'format ')}">
+    <xsl:if test="list/@counter">
+      <xsl:attribute name="group"><xsl:value-of select="list/@counter"/></xsl:attribute>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="list/@anchor">
         <xsl:copy-of select="list/@anchor"/>
