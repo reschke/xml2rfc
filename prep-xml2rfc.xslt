@@ -652,26 +652,6 @@
   </xsl:for-each-group>
 </xsl:template>
 
-<xsl:template match="list/t[list]" mode="prep-listextract">
-  <FOO>
-    <xsl:copy-of select="@anchor"/>
-    <xsl:for-each-group select="node()[not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::list)">
-      <xsl:choose>
-        <xsl:when test="current-grouping-key()">
-          <t>
-            <xsl:copy-of select="current-group()"/>  
-          </t>
-        </xsl:when>
-        <xsl:otherwise>
-          <t>
-            <xsl:copy-of select="current-group()"/>
-          </t>
-        </xsl:otherwise>  
-      </xsl:choose>
-    </xsl:for-each-group>
-  </FOO>
-</xsl:template>
-
 <xsl:template match="node()|@*" mode="prep-listextract">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-listextract"/></xsl:copy>
 </xsl:template>
