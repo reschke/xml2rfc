@@ -49,7 +49,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi figextract listextract boilerplate tables deprecation defaults slug pn preptime</xsl:text>
+  <xsl:text>pi figextract listdefaultstyle listextract boilerplate tables deprecation defaults slug pn preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -88,6 +88,10 @@
         <xsl:when test="$s='figextract'">
           <xsl:message>Step: figextract</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-figextract"/>
+        </xsl:when>
+        <xsl:when test="$s='listdefaultstyle'">
+          <xsl:message>Step: listdefaultstyleract</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-listdefaultstyle"/>
         </xsl:when>
         <xsl:when test="$s='listextract'">
           <xsl:message>Step: listextract</xsl:message>
@@ -630,6 +634,24 @@
 
 <xsl:template match="node()|@*" mode="prep-figextract">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-figextract"/></xsl:copy>
+</xsl:template>
+
+<!-- listdefaultstyle step -->
+
+<xsl:template match="list[not(@style)]" mode="prep-listdefaultstyle">
+  <xsl:copy>
+    <xsl:attribute name="style">
+      <xsl:choose>
+        <xsl:when test="ancestor::list[@style]"><xsl:value-of select="ancestor::list[@style][1]/@style"/></xsl:when>
+        <xsl:otherwise>empty</xsl:otherwise>
+      </xsl:choose>
+    </xsl:attribute>
+    <xsl:apply-templates select="node()|@*" mode="prep-listdefaultstyle"/>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="node()|@*" mode="prep-listdefaultstyle">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-listdefaultstyle"/></xsl:copy>
 </xsl:template>
 
 <!-- listextract step -->
