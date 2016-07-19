@@ -477,40 +477,44 @@
   </dd>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='empty')]" mode="prep-deprecation">
+<xsl:template name="deprecation-insert-t-holding-surplus-anchor">
   <xsl:if test="@anchor and list/@anchor">
     <t anchor="{@anchor}"/>
   </xsl:if>
+</xsl:template>
+
+<xsl:template name="deprecation-insert-list-anchor">
+  <xsl:choose>
+    <xsl:when test="list/@anchor">
+      <xsl:copy-of select="list/@anchor"/>
+    </xsl:when>
+    <xsl:when test="@anchor">
+      <xsl:copy-of select="@anchor"/>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='empty')]" mode="prep-deprecation">
+  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
   <ul empty="true">
     <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
   </ul>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='letters' or list/@style='numbers')]" mode="prep-deprecation">
-  <xsl:if test="@anchor and list/@anchor">
-    <t anchor="{@anchor}"/>
-  </xsl:if>
+  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
   <ol>
     <xsl:if test="list/@style='letters'">
       <xsl:attribute name="type">a</xsl:attribute>
     </xsl:if>
-    <xsl:choose>
-      <xsl:when test="list/@anchor">
-        <xsl:copy-of select="list/@anchor"/>
-      </xsl:when>
-      <xsl:when test="@anchor">
-        <xsl:copy-of select="@anchor"/>
-      </xsl:when>
-      <xsl:otherwise/>
-    </xsl:choose>
+    <xsl:call-template name="deprecation-insert-list-anchor"/>
     <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
   </ol>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='format %c.' or list/@style='format %C.' or list/@style='format %i.' or list/@style='format %I.' or list/@style='format %d.')]" mode="prep-deprecation" priority="9">
-  <xsl:if test="@anchor and list/@anchor">
-    <t anchor="{@anchor}"/>
-  </xsl:if>
+  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
   <ol>
     <xsl:if test="list/@counter">
       <xsl:attribute name="group"><xsl:value-of select="list/@counter"/></xsl:attribute>
@@ -530,72 +534,34 @@
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
-    <xsl:choose>
-      <xsl:when test="list/@anchor">
-        <xsl:copy-of select="list/@anchor"/>
-      </xsl:when>
-      <xsl:when test="@anchor">
-        <xsl:copy-of select="@anchor"/>
-      </xsl:when>
-      <xsl:otherwise/>
-    </xsl:choose>
+    <xsl:call-template name="deprecation-insert-list-anchor"/>
     <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
   </ol>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and starts-with(list/@style,'format ')]" mode="prep-deprecation">
-  <xsl:if test="@anchor and list/@anchor">
-    <t anchor="{@anchor}"/>
-  </xsl:if>
+  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
   <ol type="{substring-after(list/@style,'format ')}">
     <xsl:if test="list/@counter">
       <xsl:attribute name="group"><xsl:value-of select="list/@counter"/></xsl:attribute>
     </xsl:if>
-    <xsl:choose>
-      <xsl:when test="list/@anchor">
-        <xsl:copy-of select="list/@anchor"/>
-      </xsl:when>
-      <xsl:when test="@anchor">
-        <xsl:copy-of select="@anchor"/>
-      </xsl:when>
-      <xsl:otherwise/>
-    </xsl:choose>
+    <xsl:call-template name="deprecation-insert-list-anchor"/>
     <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
   </ol>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='symbols']" mode="prep-deprecation">
-  <xsl:if test="@anchor and list/@anchor">
-    <t anchor="{@anchor}"/>
-  </xsl:if>
+  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
   <ul>
-    <xsl:choose>
-      <xsl:when test="list/@anchor">
-        <xsl:copy-of select="list/@anchor"/>
-      </xsl:when>
-      <xsl:when test="@anchor">
-        <xsl:copy-of select="@anchor"/>
-      </xsl:when>
-      <xsl:otherwise/>
-    </xsl:choose>
+    <xsl:call-template name="deprecation-insert-list-anchor"/>
     <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
   </ul>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='hanging']" mode="prep-deprecation">
-  <xsl:if test="@anchor and list/@anchor">
-    <t anchor="{@anchor}"/>
-  </xsl:if>
+  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
   <dl>
-    <xsl:choose>
-      <xsl:when test="list/@anchor">
-        <xsl:copy-of select="list/@anchor"/>
-      </xsl:when>
-      <xsl:when test="@anchor">
-        <xsl:copy-of select="@anchor"/>
-      </xsl:when>
-      <xsl:otherwise/>
-    </xsl:choose>
+    <xsl:call-template name="deprecation-insert-list-anchor"/>
     <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
   </dl>
 </xsl:template>
