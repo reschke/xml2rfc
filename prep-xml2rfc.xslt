@@ -461,7 +461,7 @@
   </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[starts-with(@style,'format ')]/t" mode="prep-deprecation" priority="9">
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[starts-with(@style,'format ')]/t" mode="prep-deprecation" priority="8">
   <li>
     <xsl:if test="@anchor">
       <xsl:copy-of select="@anchor"/>
@@ -470,7 +470,7 @@
   </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[starts-with(@style,'format ')]/x:lt" xmlns:x="http://purl.org/net/xml2rfc/ext" mode="prep-deprecation" priority="9">
+<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[starts-with(@style,'format ')]/x:lt" xmlns:x="http://purl.org/net/xml2rfc/ext" mode="prep-deprecation" priority="8">
   <li>
     <xsl:if test="@anchor">
       <xsl:copy-of select="@anchor"/>
