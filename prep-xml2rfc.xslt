@@ -427,63 +427,49 @@
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='empty']/x:lt" xmlns:x="http://purl.org/net/xml2rfc/ext" mode="prep-deprecation">
   <li>
-    <xsl:if test="@anchor">
-      <xsl:copy-of select="@anchor"/>
-    </xsl:if>
+    <xsl:copy-of select="@anchor"/>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </li>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='empty']/t" mode="prep-deprecation">
   <li>
-    <xsl:if test="@anchor">
-      <xsl:copy-of select="@anchor"/>
-    </xsl:if>
+    <xsl:copy-of select="@anchor"/>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </li>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols' or  @style='format %c.' or @style='format %C.' or @style='format %d.' or @style='format %i.' or @style='format %I.']/x:lt" xmlns:x="http://purl.org/net/xml2rfc/ext" mode="prep-deprecation">
   <li>
-    <xsl:if test="@anchor">
-      <xsl:copy-of select="@anchor"/>
-    </xsl:if>
+    <xsl:copy-of select="@anchor"/>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </li>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols' or @style='format %c.' or @style='format %C.' or @style='format %d.' or @style='format %i.' or @style='format %I.']/t" mode="prep-deprecation" priority="9">
   <li>
-    <xsl:if test="@anchor">
-      <xsl:copy-of select="@anchor"/>
-    </xsl:if>
+    <xsl:copy-of select="@anchor"/>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </li>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[starts-with(@style,'format ')]/t" mode="prep-deprecation" priority="8">
   <li>
-    <xsl:if test="@anchor">
-      <xsl:copy-of select="@anchor"/>
-    </xsl:if>
+    <xsl:copy-of select="@anchor"/>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </li>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[starts-with(@style,'format ')]/x:lt" xmlns:x="http://purl.org/net/xml2rfc/ext" mode="prep-deprecation" priority="8">
   <li>
-    <xsl:if test="@anchor">
-      <xsl:copy-of select="@anchor"/>
-    </xsl:if>
+    <xsl:copy-of select="@anchor"/>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </li>
 </xsl:template>
 
 <xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='hanging']/t" mode="prep-deprecation">
   <dt>
-    <xsl:if test="@anchor">
-      <xsl:copy-of select="@anchor"/>
-    </xsl:if>
+    <xsl:copy-of select="@anchor"/>
     <xsl:value-of select="@hangText"/>
   </dt>
   <dd>
