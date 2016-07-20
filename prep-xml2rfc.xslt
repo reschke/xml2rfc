@@ -324,7 +324,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
-    <xsl:apply-templates select="node()[not(self::seriesInfo)]" mode="prep-deprecation"/>
+    <xsl:apply-templates select="node() except seriesInfo" mode="prep-deprecation"/>
   </xsl:copy>
 </xsl:template>
 
@@ -348,7 +348,7 @@
         </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:apply-templates select="node()[not(self::title)]" mode="prep-deprecation"/>
+    <xsl:apply-templates select="node() except title" mode="prep-deprecation"/>
   </xsl:copy>
 </xsl:template>
 
