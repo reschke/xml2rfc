@@ -49,7 +49,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi figextract listdefaultstyle listextract lists listextract lists tables boilerplate deprecation defaults slug pn preptime</xsl:text>
+  <xsl:text>pi figextract listdefaultstyle listextract lists listextract lists listextract lists tables boilerplate deprecation defaults slug pn preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
