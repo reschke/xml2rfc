@@ -505,7 +505,9 @@
   </ol>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='symbols']" mode="prep-deprecation">
+<!-- convert symbol lists -->
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='symbols']" mode="prep-deprecation" priority="9">
   <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
   <ul>
     <xsl:call-template name="deprecation-insert-list-anchor"/>
