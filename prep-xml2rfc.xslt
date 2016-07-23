@@ -446,16 +446,6 @@
   </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='hanging']/t" mode="prep-deprecation">
-  <dt>
-    <xsl:copy-of select="@anchor"/>
-    <xsl:value-of select="@hangText"/>
-  </dt>
-  <dd>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
-  </dd>
-</xsl:template>
-
 <xsl:template name="deprecation-insert-t-holding-surplus-anchor">
   <xsl:if test="@anchor and list/@anchor">
     <t anchor="{@anchor}"/>
@@ -537,7 +527,19 @@
   </ul>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='hanging']" mode="prep-deprecation">
+<!-- convert hanging lists -->
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='hanging']/t" mode="prep-deprecation" priority="8">
+  <dt>
+    <xsl:copy-of select="@anchor"/>
+    <xsl:value-of select="@hangText"/>
+  </dt>
+  <dd>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </dd>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='hanging']" mode="prep-deprecation" priority="9">
   <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
   <dl>
     <xsl:call-template name="deprecation-insert-list-anchor"/>
