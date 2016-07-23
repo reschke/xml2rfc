@@ -474,18 +474,9 @@
 <!-- https://www.w3.org/TR/xslt-30/#grouping-examples -->
 <xsl:template match="t[list][not(ancestor::list)]" mode="prep-listextract">
   <xsl:for-each-group select="node()[not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::list)">
-    <xsl:choose>
-      <xsl:when test="current-grouping-key()">
-        <t>
-          <xsl:copy-of select="current-group()"/>  
-        </t>
-      </xsl:when>
-      <xsl:otherwise>
-        <t>
-          <xsl:copy-of select="current-group()"/>
-        </t>
-      </xsl:otherwise>  
-    </xsl:choose>
+    <t>
+      <xsl:copy-of select="current-group()"/>  
+    </t>
   </xsl:for-each-group>
 </xsl:template>
 
