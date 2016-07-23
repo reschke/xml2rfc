@@ -49,7 +49,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi figextract listdefaultstyle listextract boilerplate tables deprecation defaults slug pn preptime</xsl:text>
+  <xsl:text>pi figextract listdefaultstyle listextract lists tables boilerplate deprecation defaults slug pn preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -96,6 +96,10 @@
         <xsl:when test="$s='listextract'">
           <xsl:message>Step: listextract</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-listextract"/>
+        </xsl:when>
+        <xsl:when test="$s='lists'">
+          <xsl:message>Step: lists</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-lists"/>
         </xsl:when>
         <xsl:when test="$s='pi'">
           <xsl:message>Step: pi</xsl:message>
@@ -425,116 +429,6 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template name="deprecation-insert-t-holding-surplus-anchor">
-  <xsl:if test="@anchor and list/@anchor">
-    <t anchor="{@anchor}"/>
-  </xsl:if>
-</xsl:template>
-
-<xsl:template name="deprecation-insert-list-anchor">
-  <xsl:choose>
-    <xsl:when test="list/@anchor">
-      <xsl:copy-of select="list/@anchor"/>
-    </xsl:when>
-    <xsl:when test="@anchor">
-      <xsl:copy-of select="@anchor"/>
-    </xsl:when>
-    <xsl:otherwise/>
-  </xsl:choose>
-</xsl:template>
-
-<!-- convert numbers/letters lists -->
-
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='letters' or list/@style='numbers')]" mode="prep-deprecation">
-  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
-  <ol>
-    <xsl:if test="list/@style='letters'">
-      <xsl:attribute name="type">a</xsl:attribute>
-    </xsl:if>
-    <xsl:call-template name="deprecation-insert-list-anchor"/>
-    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
-  </ol>
-</xsl:template>
-
-<!-- convert 'format ' lists -->
-
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='letters' or @style='numbers' or @style='symbols' or starts-with(@style,'format ')]/*[self::t or (local-name()='lt') and namespace-uri()='http://purl.org/net/xml2rfc/ext']" mode="prep-deprecation" priority="5">
-  <li>
-    <xsl:copy-of select="@anchor"/>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
-  </li>
-</xsl:template>
-
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and starts-with(list/@style,'format ')]" mode="prep-deprecation" priority="9">
-  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
-  <xsl:variable name="type">
-    <xsl:choose>
-      <xsl:when test="list/@style='format %c.'">a</xsl:when>
-      <xsl:when test="list/@style='format %C.'">A</xsl:when>
-      <xsl:when test="list/@style='format %i.'">i</xsl:when>
-      <xsl:when test="list/@style='format %I.'">I</xsl:when>
-      <xsl:when test="list/@style='format %d.'"></xsl:when>
-      <xsl:otherwise><xsl:value-of select="substring-after(list/@style,'format ')"/></xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <ol>
-    <xsl:if test="$type!=''">
-      <xsl:attribute name="type"><xsl:value-of select="$type"/></xsl:attribute>
-    </xsl:if>
-    <xsl:if test="list/@counter">
-      <xsl:attribute name="group"><xsl:value-of select="list/@counter"/></xsl:attribute>
-    </xsl:if>
-    <xsl:call-template name="deprecation-insert-list-anchor"/>
-    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
-  </ol>
-</xsl:template>
-
-<!-- convert symbol lists -->
-
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='symbols']" mode="prep-deprecation" priority="9">
-  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
-  <ul>
-    <xsl:call-template name="deprecation-insert-list-anchor"/>
-    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
-  </ul>
-</xsl:template>
-
-<!-- convert empty lists -->
-
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='empty']/*[self::t or (local-name()='lt') and namespace-uri()='http://purl.org/net/xml2rfc/ext']" mode="prep-deprecation" priority="5">
-  <li>
-    <xsl:copy-of select="@anchor"/>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
-  </li>
-</xsl:template>
-
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='empty')]" mode="prep-deprecation" priority="9">
-  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
-  <ul empty="true">
-    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
-  </ul>
-</xsl:template>
-
-<!-- convert hanging lists -->
-
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='hanging']/t" mode="prep-deprecation" priority="5">
-  <dt>
-    <xsl:copy-of select="@anchor"/>
-    <xsl:value-of select="@hangText"/>
-  </dt>
-  <dd>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
-  </dd>
-</xsl:template>
-
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='hanging']" mode="prep-deprecation" priority="9">
-  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
-  <dl>
-    <xsl:call-template name="deprecation-insert-list-anchor"/>
-    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
-  </dl>
-</xsl:template>
-
 <!-- figextract step -->
 
 <!-- https://www.w3.org/TR/xslt-30/#grouping-examples -->
@@ -597,6 +491,122 @@
 
 <xsl:template match="node()|@*" mode="prep-listextract">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-listextract"/></xsl:copy>
+</xsl:template>
+
+<!-- lists step -->
+
+<xsl:template match="node()|@*" mode="prep-lists">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-lists"/></xsl:copy>
+</xsl:template>
+
+<xsl:template name="lists-insert-t-holding-surplus-anchor">
+  <xsl:if test="@anchor and list/@anchor">
+    <t anchor="{@anchor}"/>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="lists-insert-list-anchor">
+  <xsl:choose>
+    <xsl:when test="list/@anchor">
+      <xsl:copy-of select="list/@anchor"/>
+    </xsl:when>
+    <xsl:when test="@anchor">
+      <xsl:copy-of select="@anchor"/>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+</xsl:template>
+
+<!-- convert numbers/letters lists -->
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='letters' or list/@style='numbers')]" mode="prep-lists">
+  <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
+  <ol>
+    <xsl:if test="list/@style='letters'">
+      <xsl:attribute name="type">a</xsl:attribute>
+    </xsl:if>
+    <xsl:call-template name="lists-insert-list-anchor"/>
+    <xsl:apply-templates select="list/node()" mode="prep-lists"/>
+  </ol>
+</xsl:template>
+
+<!-- convert 'format ' lists -->
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='letters' or @style='numbers' or @style='symbols' or starts-with(@style,'format ')]/*[self::t or (local-name()='lt') and namespace-uri()='http://purl.org/net/xml2rfc/ext']" mode="prep-lists" priority="5">
+  <li>
+    <xsl:copy-of select="@anchor"/>
+    <xsl:apply-templates select="node()" mode="prep-lists"/>
+  </li>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and starts-with(list/@style,'format ')]" mode="prep-lists" priority="9">
+  <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
+  <xsl:variable name="type">
+    <xsl:choose>
+      <xsl:when test="list/@style='format %c.'">a</xsl:when>
+      <xsl:when test="list/@style='format %C.'">A</xsl:when>
+      <xsl:when test="list/@style='format %i.'">i</xsl:when>
+      <xsl:when test="list/@style='format %I.'">I</xsl:when>
+      <xsl:when test="list/@style='format %d.'"></xsl:when>
+      <xsl:otherwise><xsl:value-of select="substring-after(list/@style,'format ')"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <ol>
+    <xsl:if test="$type!=''">
+      <xsl:attribute name="type"><xsl:value-of select="$type"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="list/@counter">
+      <xsl:attribute name="group"><xsl:value-of select="list/@counter"/></xsl:attribute>
+    </xsl:if>
+    <xsl:call-template name="lists-insert-list-anchor"/>
+    <xsl:apply-templates select="list/node()" mode="prep-lists"/>
+  </ol>
+</xsl:template>
+
+<!-- convert symbol lists -->
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='symbols']" mode="prep-lists" priority="9">
+  <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
+  <ul>
+    <xsl:call-template name="lists-insert-list-anchor"/>
+    <xsl:apply-templates select="list/node()" mode="prep-lists"/>
+  </ul>
+</xsl:template>
+
+<!-- convert empty lists -->
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='empty']/*[self::t or (local-name()='lt') and namespace-uri()='http://purl.org/net/xml2rfc/ext']" mode="prep-lists" priority="5">
+  <li>
+    <xsl:copy-of select="@anchor"/>
+    <xsl:apply-templates select="node()" mode="prep-lists"/>
+  </li>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='empty')]" mode="prep-lists" priority="9">
+  <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
+  <ul empty="true">
+    <xsl:apply-templates select="list/node()" mode="prep-lists"/>
+  </ul>
+</xsl:template>
+
+<!-- convert hanging lists -->
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='hanging']/t" mode="prep-lists" priority="5">
+  <dt>
+    <xsl:copy-of select="@anchor"/>
+    <xsl:value-of select="@hangText"/>
+  </dt>
+  <dd>
+    <xsl:apply-templates select="node()" mode="prep-lists"/>
+  </dd>
+</xsl:template>
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='hanging']" mode="prep-lists" priority="9">
+  <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
+  <dl>
+    <xsl:call-template name="lists-insert-list-anchor"/>
+    <xsl:apply-templates select="list/node()" mode="prep-lists"/>
+  </dl>
 </xsl:template>
 
 <!-- slug step -->
