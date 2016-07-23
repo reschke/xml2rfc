@@ -425,20 +425,6 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[@style='letters' or @style='numbers' or @style='symbols' or  @style='format %c.' or @style='format %C.' or @style='format %d.' or @style='format %i.' or @style='format %I.']/*[self::t or (local-name()='lt') and namespace-uri()='http://purl.org/net/xml2rfc/ext']"  mode="prep-deprecation">
-  <li>
-    <xsl:copy-of select="@anchor"/>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
-  </li>
-</xsl:template>
-
-<xsl:template match="t[normalize-space(.)=normalize-space(list)]/list[starts-with(@style,'format ')]/*[self::t or (local-name()='lt') and namespace-uri()='http://purl.org/net/xml2rfc/ext']" mode="prep-deprecation" priority="8">
-  <li>
-    <xsl:copy-of select="@anchor"/>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
-  </li>
-</xsl:template>
-
 <xsl:template name="deprecation-insert-t-holding-surplus-anchor">
   <xsl:if test="@anchor and list/@anchor">
     <t anchor="{@anchor}"/>
@@ -468,35 +454,31 @@
   </ol>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='format %c.' or list/@style='format %C.' or list/@style='format %i.' or list/@style='format %I.' or list/@style='format %d.')]" mode="prep-deprecation" priority="9">
-  <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
-  <ol>
-    <xsl:if test="list/@counter">
-      <xsl:attribute name="group"><xsl:value-of select="list/@counter"/></xsl:attribute>
-    </xsl:if>
-    <xsl:choose>
-      <xsl:when test="list/@style='format %c.'">
-        <xsl:attribute name="type">a</xsl:attribute>
-      </xsl:when>
-      <xsl:when test="list/@style='format %C.'">
-        <xsl:attribute name="type">A</xsl:attribute>
-      </xsl:when>
-      <xsl:when test="list/@style='format %i.'">
-        <xsl:attribute name="type">i</xsl:attribute>
-      </xsl:when>
-      <xsl:when test="list/@style='format %I.'">
-        <xsl:attribute name="type">I</xsl:attribute>
-      </xsl:when>
-      <xsl:otherwise/>
-    </xsl:choose>
-    <xsl:call-template name="deprecation-insert-list-anchor"/>
-    <xsl:apply-templates select="list/node()" mode="prep-deprecation"/>
-  </ol>
+<!-- convert 'format ' lists -->
+
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='letters' or @style='numbers' or @style='symbols' or starts-with(@style,'format ')]/*[self::t or (local-name()='lt') and namespace-uri()='http://purl.org/net/xml2rfc/ext']" mode="prep-deprecation" priority="5">
+  <li>
+    <xsl:copy-of select="@anchor"/>
+    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and starts-with(list/@style,'format ')]" mode="prep-deprecation">
+<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and starts-with(list/@style,'format ')]" mode="prep-deprecation" priority="9">
   <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
-  <ol type="{substring-after(list/@style,'format ')}">
+  <xsl:variable name="type">
+    <xsl:choose>
+      <xsl:when test="list/@style='format %c.'">a</xsl:when>
+      <xsl:when test="list/@style='format %C.'">A</xsl:when>
+      <xsl:when test="list/@style='format %i.'">i</xsl:when>
+      <xsl:when test="list/@style='format %I.'">I</xsl:when>
+      <xsl:when test="list/@style='format %d.'"></xsl:when>
+      <xsl:otherwise><xsl:value-of select="substring-after(list/@style,'format ')"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <ol>
+    <xsl:if test="$type!=''">
+      <xsl:attribute name="type"><xsl:value-of select="$type"/></xsl:attribute>
+    </xsl:if>
     <xsl:if test="list/@counter">
       <xsl:attribute name="group"><xsl:value-of select="list/@counter"/></xsl:attribute>
     </xsl:if>
