@@ -443,6 +443,8 @@
   </xsl:choose>
 </xsl:template>
 
+<!-- convert numbers/letters lists -->
+
 <xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='letters' or list/@style='numbers')]" mode="prep-deprecation">
   <xsl:call-template name="deprecation-insert-t-holding-surplus-anchor"/>
   <ol>
