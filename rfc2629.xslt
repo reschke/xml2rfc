@@ -2372,7 +2372,14 @@
 </xsl:template>
 
 <!-- processed elsewhere -->
-<xsl:template match="displayreference"/>
+<xsl:template match="displayreference">
+  <xsl:variable name="t" select="@to"/>
+  <xsl:if test="//reference/@anchor=$t or count(//displayreference[@to=$t])!=1">
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg">displayreference <xsl:value-of select="$t"/> will create non-unique reference name.</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+</xsl:template>
 
 <xsl:template match="reference">
   <xsl:call-template name="check-no-text-content"/>
@@ -8673,11 +8680,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.838 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.838 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.839 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.839 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/07/26 07:58:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/07/26 07:58:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/07/27 09:00:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/07/27 09:00:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

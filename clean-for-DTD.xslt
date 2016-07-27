@@ -1312,6 +1312,12 @@
     <xsl:value-of select="/rfc/back/displayreference[@target=current()]/@to"/>
   </xsl:variable>
   <xsl:choose>
+    <xsl:when test="count(/rfc/back/displayreference[@to=current()])>1 or //reference[@anchor=$tnewname]">
+      <xsl:value-of select="current()"/>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">Not rewriting reference name <xsl:value-of select="current()"/> as it would conflict</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
     <xsl:when test="translate(substring($tnewname,1,1),$digits,'')=''">
       <xsl:value-of select="concat('_',$tnewname)"/>
       <xsl:call-template name="warning">
