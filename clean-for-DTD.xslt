@@ -92,6 +92,29 @@
 <xsl:template match="processing-instruction('BEGININC')" mode="cleanup"/>
 <xsl:template match="processing-instruction('ENDINC')" mode="cleanup"/>
 
+<!-- process include PI -->
+<xsl:template match="processing-instruction('rfc')" mode="cleanup">
+  <xsl:variable name="include">
+    <xsl:call-template name="parse-pis">
+      <xsl:with-param name="nodes" select="."/>
+      <xsl:with-param name="attr" select="'include'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="$include=''">
+      <xsl:text>&#10;</xsl:text>
+      <xsl:copy/>
+    </xsl:when>
+    <xsl:when test="substring($include, string-length($include) - 3) != '.xml'">
+      <xsl:copy-of select="document(concat($include,'.xml'))"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:copy-of select="document($include)"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+
 <!-- add issues appendix -->
 
 <xsl:template match="back" mode="cleanup">
