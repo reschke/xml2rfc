@@ -711,7 +711,7 @@
 </xsl:template>
 
 <xsl:template match="artwork" mode="cleanup">
-  <xsl:variable name="content2"><xsl:apply-templates select="."/></xsl:variable>
+  <xsl:variable name="content2"><xsl:apply-templates select="node()"/></xsl:variable>
   <xsl:variable name="content" select="translate($content2,'&#160;&#x2500;&#x2502;&#x2508;&#x250c;&#x2510;&#x2514;&#x2518;&#x251c;&#x2524;',' -|+++++++')"/>
   <artwork>
     <xsl:apply-templates select="@*" mode="cleanup" />
