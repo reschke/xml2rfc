@@ -5323,6 +5323,9 @@ sub {
 table {
   margin-left: 2em;
 }<xsl:if test="//texttable|//table">
+div.<xsl:value-of select="$css-tt"/> {
+  margin-left: 2em;
+} 
 table.<xsl:value-of select="$css-tt"/> {
   border-collapse: collapse;
   border-color: gray;
@@ -8346,7 +8349,7 @@ dd, li, p {
     <xsl:call-template name="get-table-anchor"/>
   </xsl:variable>
 
-  <div id="{$anch}">
+  <div id="{$anch}" class="{$css-tt}">
 
     <xsl:if test="@anchor!=''">
       <div id="{@anchor}"/>
@@ -8680,11 +8683,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.839 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.839 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.840 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.840 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/07/27 09:00:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/07/27 09:00:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2016/11/16 05:32:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/11/16 05:32:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
