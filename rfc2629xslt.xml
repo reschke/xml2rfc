@@ -2401,7 +2401,7 @@ done
     <date month="December" year="2016"/>
   </front>
   <seriesInfo name="RFC" value="7991"/>
-  <x:source href="rfc7991.xml"/>
+  <x:source href="rfc7991.xml" basename="rfc7991"/>
 </reference>
 
 </references>
