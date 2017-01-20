@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to XSL-FO
       
-    Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2017, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -224,7 +224,16 @@
 <xsl:template match="author|x:contributor">
   <fo:block start-indent="2em" space-before=".5em" space-after=".5em">
     <fo:block>
-      <fo:wrapper font-weight="bold"><xsl:value-of select="@fullname" /></fo:wrapper>
+      <fo:wrapper font-weight="bold">
+        <xsl:choose>
+          <xsl:when test="@asciiFullname!=''">
+            <xsl:value-of select="@asciiFullname" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="@fullname" />
+          </xsl:otherwise>
+        </xsl:choose>
+      </fo:wrapper>
       <xsl:if test="@role">
         <fo:wrapper> (<xsl:value-of select="@role" />)</fo:wrapper>
       </xsl:if>
@@ -281,6 +290,22 @@
         </xsl:if>
       </fo:block>
     </xsl:for-each>
+
+    <xsl:if test="@asciiFullname!=''">
+      <fo:block space-before=".5em">
+        Additional contact information:
+      </fo:block>
+      <xsl:if test="@asciiFullname!='' and @asciiFullname!=@fullname">
+        <fo:block>
+          <fo:wrapper font-weight="bold">
+             <xsl:value-of select="@fullname" />
+          </fo:wrapper>
+          <xsl:if test="@role">
+            <fo:wrapper> (<xsl:value-of select="@role" />)</fo:wrapper>
+          </xsl:if>
+        </fo:block>
+      </xsl:if>
+    </xsl:if>
   </fo:block>
 </xsl:template>
 

@@ -1,7 +1,7 @@
 <!--
     Strip rfc2629.xslt extensions, generating XML input for MTR's xml2rfc
 
-    Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2017, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -308,6 +308,46 @@
   <xsl:apply-templates mode="cleanup" />
 </xsl:template>
 <xsl:template match="x:span/@anchor" mode="cleanup"/>
+
+<xsl:template match="author/@asciiFullname" mode="cleanup"/>
+<xsl:template match="author/@asciiInitials" mode="cleanup"/>
+<xsl:template match="author/@asciiSurname" mode="cleanup"/>
+
+<xsl:template match="author/@surname" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="../@asciiSurname!=''">
+      <xsl:attribute name="surname"><xsl:value-of select="../@asciiSurname"/></xsl:attribute>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">Replacing surname <xsl:value-of select="../@surname"/> by <xsl:value-of select="../@asciiSurname"/>.</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise><xsl:copy/></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="author/@fullname" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="../@asciiFullname!=''">
+      <xsl:attribute name="fullname"><xsl:value-of select="../@asciiFullname"/></xsl:attribute>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">Replacing fullname <xsl:value-of select="../@fullname"/> by <xsl:value-of select="../@asciiFullname"/>.</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise><xsl:copy/></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="author/@initials" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="../@asciiInitials!=''">
+      <xsl:attribute name="initials"><xsl:value-of select="../@asciiInitials"/></xsl:attribute>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">Replacing initials <xsl:value-of select="../@initials"/> by <xsl:value-of select="../@asciiInitials"/>.</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise><xsl:copy/></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 <xsl:template match="author/@anchor" mode="cleanup"/>
 <xsl:template match="x:include-author" mode="cleanup">

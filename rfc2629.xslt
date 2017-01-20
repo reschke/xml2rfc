@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2017, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1144,7 +1144,16 @@
   <xsl:call-template name="check-no-text-content"/>
 
   <address>
-    <b><xsl:value-of select="@fullname" /></b>
+    <b>
+      <xsl:choose>
+        <xsl:when test="@asciiFullname!=''">
+          <xsl:value-of select="@asciiFullname" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@fullname" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </b>
     <xsl:if test="@role">
       (<xsl:value-of select="@role" />)
     </xsl:if>
@@ -1292,6 +1301,20 @@
         </xsl:if>
       </xsl:if>
     </xsl:for-each>
+    
+    <xsl:if test="@asciiFullname!=''">
+      <br/><br/>
+      <em>Additional contact information:</em>
+      <xsl:if test="@asciiFullname!='' and @asciiFullname!=@fullname">
+        <br/>
+        <b>
+          <xsl:value-of select="@fullname"/>
+          <xsl:if test="@role">
+            (<xsl:value-of select="@role" />)
+          </xsl:if>
+        </b>
+      </xsl:if>
+    </xsl:if>
   </address>
 </xsl:template>
 
@@ -4218,7 +4241,18 @@
     </xsl:variable>
     <xsl:if test="@surname">
       <myns:item>
-        <xsl:value-of select="concat($truncated-initials,' ',@surname)" />
+        <xsl:value-of select="$truncated-initials"/>
+        <xsl:if test="$truncated-initials!=''">
+          <xsl:text> </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="@surname" />
+        <xsl:if test="@asciiInitials!='' or @asciiSurname!=''">
+          <xsl:text> (</xsl:text>
+            <xsl:value-of select="@asciiInitials"/>
+            <xsl:if test="@asciiInitials!='' and @asciiSurname!=''"> </xsl:if>
+            <xsl:value-of select="@asciiSurname"/>
+          <xsl:text>)</xsl:text>
+        </xsl:if>
         <xsl:if test="@role">
           <xsl:choose>
             <xsl:when test="@role='editor'">
@@ -8683,11 +8717,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.840 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.840 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.841 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.841 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2016/11/16 05:32:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2016/11/16 05:32:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/01/20 19:24:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/20 19:24:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

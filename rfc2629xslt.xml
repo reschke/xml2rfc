@@ -2708,6 +2708,9 @@ attlist.artwork &amp;=
 
 <em># Allow anchor and x:annotation attributes on &lt;author></em>
 attlist.author &amp;=
+  attribute asciiFullname { ATEXT }?,
+  attribute asciiInitials { ATEXT }?,
+  attribute asciiSurname { ATEXT }?,
   attribute anchor { xsd:ID }?,
   attribute x:annotation { ATEXT }?
   
@@ -3573,7 +3576,7 @@ rdf_content =
 
   <section title="License" anchor="license">
   <t>
-Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
+Copyright (c) 2006-2017, Julian Reschke (julian.reschke@greenbytes.de)
   </t>
   <t>
 All rights reserved.

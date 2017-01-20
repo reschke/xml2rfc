@@ -288,6 +288,9 @@ attlist.artwork &=
 
 # Allow anchor and x:annotation attributes on <author>
 attlist.author &=
+  attribute asciiFullname { ATEXT }?,
+  attribute asciiInitials { ATEXT }?,
+  attribute asciiSurname { ATEXT }?,
   attribute anchor { xsd:ID }?,
   attribute x:annotation { ATEXT }?
   
