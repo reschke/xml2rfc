@@ -312,6 +312,7 @@
 <xsl:template match="author/@asciiFullname" mode="cleanup"/>
 <xsl:template match="author/@asciiInitials" mode="cleanup"/>
 <xsl:template match="author/@asciiSurname" mode="cleanup"/>
+<xsl:template match="organization/@ascii" mode="cleanup"/>
 
 <xsl:template match="author/@surname" mode="cleanup">
   <xsl:choose>
@@ -357,6 +358,20 @@
   <t>
     (see Authors Section)
   </t>
+</xsl:template>
+
+<xsl:template match="organization" mode="cleanup">
+  <organization>
+    <xsl:apply-templates select="@*" mode="cleanup"/>
+    <xsl:choose>
+      <xsl:when test="@ascii!=''">
+        <xsl:value-of select="@ascii"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="text()"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </organization>
 </xsl:template>
 
 <xsl:template match="xref[(@x:fmt or @x:sec or @x:rel or @section or @sectionFormat or @relative) and not(node())]" mode="cleanup">

@@ -223,90 +223,100 @@
 
 <xsl:template match="author|x:contributor">
   <fo:block start-indent="2em" space-before=".5em" space-after=".5em">
-    <fo:block>
-      <fo:wrapper font-weight="bold">
-        <xsl:choose>
-          <xsl:when test="@asciiFullname!=''">
-            <xsl:value-of select="@asciiFullname" />
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="@fullname" />
-          </xsl:otherwise>
-        </xsl:choose>
-      </fo:wrapper>
-      <xsl:if test="@role">
-        <fo:wrapper> (<xsl:value-of select="@role" />)</fo:wrapper>
+
+    <xsl:call-template name="emit-author"/>
+
+    <xsl:if test="@asciiFullname!='' or organization/@ascii!=''">
+      <fo:block space-before=".5em">
+        Additional contact information:
+      </fo:block>
+      <xsl:if test="@asciiFullname!='' and @asciiFullname!=@fullname">
+        <xsl:call-template name="emit-author">
+          <xsl:with-param name="ascii" select="false()"/>
+        </xsl:call-template>
       </xsl:if>
-      <!-- annotation support for Martin "uuml" Duerst -->
+    </xsl:if>
+  </fo:block>
+</xsl:template>
+
+<xsl:template name="emit-author">
+  <xsl:param name="ascii" select="true()"/>
+  <fo:block>
+    <fo:wrapper font-weight="bold">
+      <xsl:choose>
+        <xsl:when test="@asciiFullname!='' and $ascii">
+          <xsl:value-of select="@asciiFullname" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@fullname" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </fo:wrapper>
+    <xsl:if test="@role">
+      <fo:wrapper> (<xsl:value-of select="@role" />)</fo:wrapper>
+    </xsl:if>
+    <!-- annotation support for Martin "uuml" Duerst -->
+    <xsl:if test="@x:annotation">
+      <xsl:text> </xsl:text> 
+      <fo:wrapper font-style="italic"><xsl:value-of select="@x:annotation"/></fo:wrapper>
+    </xsl:if>
+  </fo:block>
+  <fo:block>
+    <xsl:choose>
+      <xsl:when test="organization/@ascii!='' and $ascii">
+        <xsl:value-of select="organization/@ascii" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="organization" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </fo:block>
+  <xsl:for-each select="address/postal/street">
+    <fo:block><xsl:value-of select="." /></fo:block>
+  </xsl:for-each>
+  <xsl:for-each select="address/postal/postalLine">
+    <fo:block><xsl:value-of select="." /></fo:block>
+  </xsl:for-each>
+  <xsl:if test="address/postal/city">
+    <fo:block><xsl:value-of select="concat(address/postal/city,', ',address/postal/region,' ',address/postal/code)" /></fo:block>
+  </xsl:if>
+  <xsl:if test="address/postal/country">
+    <fo:block><xsl:value-of select="address/postal/country" /></fo:block>
+  </xsl:if>
+  <xsl:if test="address/phone">
+    <fo:block>Phone:&#0160;<fo:basic-link external-destination="url('tel:{translate(address/phone,' ','')}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="address/phone" /></fo:basic-link></fo:block>
+  </xsl:if>
+  <xsl:if test="address/facsimile">
+    <fo:block>Fax:&#0160;<fo:basic-link external-destination="url('tel:{translate(address/facsimile,' ','')}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="address/facsimile" /></fo:basic-link></fo:block>
+  </xsl:if>
+  <xsl:for-each select="address/email">
+    <xsl:variable name="email">
+      <xsl:call-template name="extract-email"/>
+    </xsl:variable>
+    <fo:block>EMail:&#0160;
+      <xsl:choose>
+        <xsl:when test="$xml2rfc-linkmailto='no'">
+            <xsl:value-of select="$email" />
+        </xsl:when>
+        <xsl:otherwise>
+          <fo:basic-link external-destination="url('mailto:{$email}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="$email" /></fo:basic-link>
+        </xsl:otherwise>
+      </xsl:choose>
+    </fo:block>
+  </xsl:for-each>
+  <xsl:for-each select="address/uri">
+    <xsl:variable name="uri">
+      <xsl:call-template name="extract-uri"/>
+    </xsl:variable>
+    <fo:block>
+      <xsl:text>URI:&#0160;</xsl:text>
+      <fo:basic-link external-destination="url('{$uri}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="$uri" /></fo:basic-link>
       <xsl:if test="@x:annotation">
         <xsl:text> </xsl:text> 
         <fo:wrapper font-style="italic"><xsl:value-of select="@x:annotation"/></fo:wrapper>
       </xsl:if>
     </fo:block>
-    <fo:block><xsl:value-of select="organization" /></fo:block>
-    <xsl:for-each select="address/postal/street">
-      <fo:block><xsl:value-of select="." /></fo:block>
-    </xsl:for-each>
-    <xsl:for-each select="address/postal/postalLine">
-      <fo:block><xsl:value-of select="." /></fo:block>
-    </xsl:for-each>
-    <xsl:if test="address/postal/city">
-      <fo:block><xsl:value-of select="concat(address/postal/city,', ',address/postal/region,' ',address/postal/code)" /></fo:block>
-    </xsl:if>
-    <xsl:if test="address/postal/country">
-      <fo:block><xsl:value-of select="address/postal/country" /></fo:block>
-    </xsl:if>
-    <xsl:if test="address/phone">
-      <fo:block>Phone:&#0160;<fo:basic-link external-destination="url('tel:{translate(address/phone,' ','')}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="address/phone" /></fo:basic-link></fo:block>
-    </xsl:if>
-    <xsl:if test="address/facsimile">
-      <fo:block>Fax:&#0160;<fo:basic-link external-destination="url('tel:{translate(address/facsimile,' ','')}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="address/facsimile" /></fo:basic-link></fo:block>
-    </xsl:if>
-    <xsl:for-each select="address/email">
-      <xsl:variable name="email">
-        <xsl:call-template name="extract-email"/>
-      </xsl:variable>
-      <fo:block>EMail:&#0160;
-        <xsl:choose>
-          <xsl:when test="$xml2rfc-linkmailto='no'">
-              <xsl:value-of select="$email" />
-          </xsl:when>
-          <xsl:otherwise>
-            <fo:basic-link external-destination="url('mailto:{$email}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="$email" /></fo:basic-link>
-          </xsl:otherwise>
-        </xsl:choose>
-      </fo:block>
-    </xsl:for-each>
-    <xsl:for-each select="address/uri">
-      <xsl:variable name="uri">
-        <xsl:call-template name="extract-uri"/>
-      </xsl:variable>
-      <fo:block>
-        <xsl:text>URI:&#0160;</xsl:text>
-        <fo:basic-link external-destination="url('{$uri}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="$uri" /></fo:basic-link>
-        <xsl:if test="@x:annotation">
-          <xsl:text> </xsl:text> 
-          <fo:wrapper font-style="italic"><xsl:value-of select="@x:annotation"/></fo:wrapper>
-        </xsl:if>
-      </fo:block>
-    </xsl:for-each>
-
-    <xsl:if test="@asciiFullname!=''">
-      <fo:block space-before=".5em">
-        Additional contact information:
-      </fo:block>
-      <xsl:if test="@asciiFullname!='' and @asciiFullname!=@fullname">
-        <fo:block>
-          <fo:wrapper font-weight="bold">
-             <xsl:value-of select="@fullname" />
-          </fo:wrapper>
-          <xsl:if test="@role">
-            <fo:wrapper> (<xsl:value-of select="@role" />)</fo:wrapper>
-          </xsl:if>
-        </fo:block>
-      </xsl:if>
-    </xsl:if>
-  </fo:block>
+  </xsl:for-each>
 </xsl:template>
 
 <xsl:template match="back">
