@@ -272,17 +272,90 @@
     </xsl:choose>
   </fo:block>
   <xsl:for-each select="address/postal/street">
-    <fo:block><xsl:value-of select="." /></fo:block>
+    <fo:block>
+      <xsl:choose>
+        <xsl:when test="$ascii and @ascii!=''">
+          <xsl:value-of select="@ascii"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="." />
+        </xsl:otherwise>
+      </xsl:choose>
+    </fo:block>
   </xsl:for-each>
   <xsl:for-each select="address/postal/postalLine">
-    <fo:block><xsl:value-of select="." /></fo:block>
+    <fo:block>
+      <xsl:choose>
+        <xsl:when test="$ascii and @ascii!=''">
+          <xsl:value-of select="@ascii"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="." />
+        </xsl:otherwise>
+      </xsl:choose>
+    </fo:block>
   </xsl:for-each>
-  <xsl:if test="address/postal/city">
-    <fo:block><xsl:value-of select="concat(address/postal/city,', ',address/postal/region,' ',address/postal/code)" /></fo:block>
+  <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
+    <xsl:variable name="city">
+      <xsl:if test="address/postal/city">
+        <xsl:call-template name="extract-normalized">
+          <xsl:with-param name="node" select="address/postal/city"/>
+          <xsl:with-param name="name" select="'address/postal/city'"/>
+          <xsl:with-param name="ascii" select="$ascii"/>
+        </xsl:call-template>
+      </xsl:if>
+    </xsl:variable>
+    <xsl:variable name="region">
+      <xsl:if test="address/postal/region">
+        <xsl:call-template name="extract-normalized">
+          <xsl:with-param name="node" select="address/postal/region"/>
+          <xsl:with-param name="name" select="'address/postal/region'"/>
+          <xsl:with-param name="ascii" select="$ascii"/>
+        </xsl:call-template>
+      </xsl:if>
+    </xsl:variable>
+    <xsl:variable name="code">
+      <xsl:if test="address/postal/code">
+        <xsl:call-template name="extract-normalized">
+          <xsl:with-param name="node" select="address/postal/code"/>
+          <xsl:with-param name="name" select="'address/postal/code'"/>
+          <xsl:with-param name="ascii" select="$ascii"/>
+        </xsl:call-template>
+      </xsl:if>
+    </xsl:variable>
+    <fo:block>
+      <xsl:if test="$city!=''">
+        <xsl:value-of select="$city"/>
+      </xsl:if>
+
+      <xsl:variable name="region-and-code">
+        <xsl:value-of select="$region"/>
+        <xsl:if test="$region!='' and $code!=''">
+          <xsl:text>&#160;</xsl:text>
+        </xsl:if>
+        <xsl:value-of select="$code"/>
+      </xsl:variable>
+      
+      <xsl:if test="$region-and-code!=''">
+        <xsl:if test="$city!=''">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="$region-and-code"/>
+      </xsl:if>
+    </fo:block>
   </xsl:if>
-  <xsl:if test="address/postal/country">
-    <fo:block><xsl:value-of select="address/postal/country" /></fo:block>
-  </xsl:if>
+  <xsl:for-each select="address/postal/country">
+    <fo:block>
+      <xsl:choose>
+        <xsl:when test="$ascii and @ascii!=''">
+          <xsl:value-of select="@ascii"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="." />
+        </xsl:otherwise>
+      </xsl:choose>
+    </fo:block>
+  </xsl:for-each>
   <xsl:if test="address/phone">
     <fo:block>Phone:&#0160;<fo:basic-link external-destination="url('tel:{translate(address/phone,' ','')}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="address/phone" /></fo:basic-link></fo:block>
   </xsl:if>

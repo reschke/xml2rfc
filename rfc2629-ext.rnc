@@ -298,6 +298,18 @@ attlist.author &=
 attlist.c &=
   attribute anchor { xsd:ID }?
 
+# Extend attribute set for <city>
+attlist.city &=
+  attribute ascii { ATEXT }?
+
+# Extend attribute set for <code>
+attlist.code &=
+  attribute ascii { ATEXT }?
+
+# Extend attribute set for <country>
+attlist.country &=
+  attribute ascii { ATEXT }?
+
 # Extend attribute set for <iref> (see Section 11.23)
 attlist.iref &=
   attribute x:for-anchor { ATEXT }?
@@ -321,6 +333,10 @@ attlist.reference &=
 # Extend attribute set for <references>
 attlist.references &=
   attribute pn { text }? # (see [RFC7991], Appendix B.2)
+
+# Extend attribute set for <region>
+attlist.region &=
+  attribute ascii { ATEXT }?
 
 # Extend attribute set for <rfc>
 attlist.rfc &=
@@ -346,6 +362,10 @@ attlist.x_section &=
 # Allow anchor attribute on <spanx>
 attlist.spanx &=
   attribute anchor { xsd:ID }?
+
+# Extend attribute set for <street>
+attlist.street &=
+  attribute ascii { ATEXT }?
 
 # Extend attribute set for <c> (see Section 11.23)
 attlist.t &=
@@ -522,6 +542,7 @@ v3_ol =
 # Line in postal address (see Section 12.15)
 v3_postalLine =
   element postalLine {
+    attribute ascii { TEXT }?,
     TEXT
   }
 

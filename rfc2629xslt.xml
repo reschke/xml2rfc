@@ -2718,6 +2718,18 @@ attlist.author &amp;=
 attlist.c &amp;=
   attribute anchor { xsd:ID }?
 
+<em># Extend attribute set for &lt;city></em>
+attlist.city &amp;=
+  attribute ascii { ATEXT }?
+
+<em># Extend attribute set for &lt;code></em>
+attlist.code &amp;=
+  attribute ascii { ATEXT }?
+
+<em># Extend attribute set for &lt;country></em>
+attlist.country &amp;=
+  attribute ascii { ATEXT }?
+
 <em># Extend attribute set for &lt;iref> (see <xref target="ext-rfc2629.iref"/>)</em>
 attlist.iref &amp;=
   attribute x:for-anchor { ATEXT }?
@@ -2741,6 +2753,10 @@ attlist.reference &amp;=
 <em># Extend attribute set for &lt;references></em>
 attlist.references &amp;=
   attribute pn { text }? # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+
+<em># Extend attribute set for &lt;region></em>
+attlist.region &amp;=
+  attribute ascii { ATEXT }?
 
 <em># Extend attribute set for &lt;rfc></em>
 attlist.rfc &amp;=
@@ -2766,6 +2782,10 @@ attlist.x_section &amp;=
 <em># Allow anchor attribute on &lt;spanx></em>
 attlist.spanx &amp;=
   attribute anchor { xsd:ID }?
+
+<em># Extend attribute set for &lt;street></em>
+attlist.street &amp;=
+  attribute ascii { ATEXT }?
 
 <em># Extend attribute set for &lt;c> (see <xref target="ext-rfc2629.iref"/>)</em>
 attlist.t &amp;=
@@ -2957,6 +2977,7 @@ attlist.xref &amp;=
 /># Line in postal address (see <xref target="v3.postalLine"/>)</em>
 <x:ref>v3_postalLine</x:ref> =
   element postalLine {
+    attribute ascii { TEXT }?,
     TEXT
   }
 

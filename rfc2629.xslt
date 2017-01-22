@@ -1146,7 +1146,7 @@
   <address>
     <xsl:call-template name="emit-author"/>
 
-    <xsl:if test="@asciiFullname!='' or organization/@ascii!=''">
+    <xsl:if test="@asciiFullname!='' or organization/@ascii!='' or postal/*/@ascii">
       <br/><br/>
       <em>Additional contact information:</em>
       <br/>
@@ -1197,6 +1197,7 @@
       <xsl:variable name="street">
         <xsl:call-template name="extract-normalized">
           <xsl:with-param name="name" select="'street'"/>
+          <xsl:with-param name="ascii" select="$ascii"/>
         </xsl:call-template>
       </xsl:variable>
       <xsl:if test="$street!=''">
@@ -1208,6 +1209,7 @@
       <xsl:variable name="line">
         <xsl:call-template name="extract-normalized">
           <xsl:with-param name="name" select="'postalLine'"/>
+          <xsl:with-param name="ascii" select="$ascii"/>
         </xsl:call-template>
       </xsl:variable>
       <xsl:if test="$line!=''">
@@ -1217,40 +1219,51 @@
     </xsl:for-each>
     <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
       <br/>
-      <xsl:if test="address/postal/city">
-        <xsl:variable name="city">
+      <xsl:variable name="city">
+        <xsl:if test="address/postal/city">
           <xsl:call-template name="extract-normalized">
             <xsl:with-param name="node" select="address/postal/city"/>
             <xsl:with-param name="name" select="'address/postal/city'"/>
+            <xsl:with-param name="ascii" select="$ascii"/>
           </xsl:call-template>
-        </xsl:variable>
-        <xsl:if test="$city!=''">
-          <xsl:value-of select="$city"/>
-          <xsl:text>, </xsl:text>
         </xsl:if>
-      </xsl:if>
-      <xsl:if test="address/postal/region">
-        <xsl:variable name="region">
+      </xsl:variable>
+      <xsl:variable name="region">
+        <xsl:if test="address/postal/region">
           <xsl:call-template name="extract-normalized">
             <xsl:with-param name="node" select="address/postal/region"/>
             <xsl:with-param name="name" select="'address/postal/region'"/>
+            <xsl:with-param name="ascii" select="$ascii"/>
           </xsl:call-template>
-        </xsl:variable>
-        <xsl:if test="$region!=''">
-          <xsl:value-of select="$region"/>
-          <xsl:text>&#160;</xsl:text>
         </xsl:if>
-      </xsl:if>
-      <xsl:if test="address/postal/code">
-        <xsl:variable name="code">
+      </xsl:variable>
+      <xsl:variable name="code">
+        <xsl:if test="address/postal/code">
           <xsl:call-template name="extract-normalized">
             <xsl:with-param name="node" select="address/postal/code"/>
             <xsl:with-param name="name" select="'address/postal/code'"/>
+            <xsl:with-param name="ascii" select="$ascii"/>
           </xsl:call-template>
-        </xsl:variable>
-        <xsl:if test="$code!=''">
-          <xsl:value-of select="$code"/>
         </xsl:if>
+      </xsl:variable>
+
+      <xsl:if test="$city!=''">
+        <xsl:value-of select="$city"/>
+      </xsl:if>
+
+      <xsl:variable name="region-and-code">
+        <xsl:value-of select="$region"/>
+        <xsl:if test="$region!='' and $code!=''">
+          <xsl:text>&#160;</xsl:text>
+        </xsl:if>
+        <xsl:value-of select="$code"/>
+      </xsl:variable>
+      
+      <xsl:if test="$region-and-code!=''">
+        <xsl:if test="$city!=''">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="$region-and-code"/>
       </xsl:if>
     </xsl:if>
     <xsl:if test="address/postal/country">
@@ -1258,6 +1271,7 @@
         <xsl:call-template name="extract-normalized">
           <xsl:with-param name="node" select="address/postal/country"/>
           <xsl:with-param name="name" select="'address/postal/country'"/>
+          <xsl:with-param name="ascii" select="$ascii"/>
         </xsl:call-template>
       </xsl:variable>
       <xsl:if test="$country!=''">
@@ -8731,11 +8745,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.842 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.842 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.843 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.843 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/01/21 15:33:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/21 15:33:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/01/22 08:11:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/22 08:11:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -8993,15 +9007,28 @@ prev: <xsl:value-of select="$prev"/>
 <xsl:template name="extract-normalized">
   <xsl:param name="node" select="."/>
   <xsl:param name="name"/>
-  <xsl:variable name="text" select="normalize-space($node)"/>
-  <xsl:if test="string-length($node) != string-length($text)">
+  <xsl:param name="ascii" select="false()"/>
+
+  <xsl:variable name="n">
+    <xsl:choose>
+      <xsl:when test="$ascii and $node/@ascii!=''">
+        <xsl:value-of select="$node/@ascii"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$node"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  
+  <xsl:variable name="text" select="normalize-space($n)"/>
+  <xsl:if test="string-length($n) != string-length($text)">
     <xsl:call-template name="warning">
-      <xsl:with-param name="msg">excessive whitespace in <xsl:value-of select="$name"/>: '<xsl:value-of select="$node"/>'</xsl:with-param>
+      <xsl:with-param name="msg">excessive whitespace in <xsl:value-of select="$name"/>: '<xsl:value-of select="$n"/>'</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
   <xsl:if test="$text=''">
     <xsl:call-template name="warning">
-      <xsl:with-param name="msg">missing text in <xsl:value-of select="$name"/></xsl:with-param>
+      <xsl:with-param name="msg">missing text in <xsl:value-of select="$n"/></xsl:with-param>
     </xsl:call-template>
   </xsl:if>
   <xsl:value-of select="$text"/>
