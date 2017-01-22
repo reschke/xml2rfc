@@ -49,7 +49,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi figextract listdefaultstyle listextract lists listextract lists listextract lists tables boilerplate deprecation defaults slug pn preptime</xsl:text>
+  <xsl:text>pi figextract listdefaultstyle listextract lists listextract lists listextract lists tables boilerplate deprecation defaults slug pn scripts preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -116,6 +116,12 @@
         <xsl:when test="$s='rfccleanup'">
           <xsl:message>Step: rfccleanup</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-rfccleanup"/>
+        </xsl:when>
+        <xsl:when test="$s='scripts'">
+          <xsl:message>Step: scripts</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-scripts">
+            <xsl:with-param name="root" select="$nodes"/>
+          </xsl:apply-templates>
         </xsl:when>
         <xsl:when test="$s='slug'">
           <xsl:message>Step: slug</xsl:message>
@@ -659,6 +665,192 @@
   <xsl:param name="root"/>
   <xsl:copy>
     <xsl:apply-templates select="node()|@*" mode="prep-slug">
+      <xsl:with-param name="root" select="$root"/>
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
+
+<!-- scripts step -->
+
+<xsl:template name="get-script-names">
+  <xsl:param name="node"/>
+
+  <!-- Early replace Common/Latin code points with a single one -->
+  <xsl:variable name="common">&#9;&#10;&#13;&#x20;&#x21;&#x22;&#x23;&#x24;&#x25;&#x26;&#x27;&#x28;&#x29;&#x2a;&#x2b;&#x2c;&#x2d;&#x2e;&#x2f;0123456789&#x3a;&#x3b;&#x3c;&#x3d;&#x3e;&#x3f;&#x40;&#x5b;&#x5c;&#x5d;&#x5e;&#x5f;&#x60;&#x7b;&#x7c;&#x7d;&#x7e;&#x7f;</xsl:variable>
+  <xsl:variable name="commonr">00000000000000000000000000000000000000000000000</xsl:variable>
+  <xsl:variable name="latin">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</xsl:variable>
+  <xsl:variable name="latinr">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</xsl:variable>
+  
+  <xsl:if test="string-length($common)!=string-length($commonr)">
+    <xsl:message terminate="yes"><xsl:value-of select="string-length($common)"/>:<xsl:value-of select="string-length($commonr)"/></xsl:message>
+  </xsl:if>
+  <xsl:if test="string-length($latin)!=string-length($latinr)">
+    <xsl:message terminate="yes"><xsl:value-of select="string-length($latin)"/>:<xsl:value-of select="string-length($latinr)"/></xsl:message>
+  </xsl:if>
+
+  <xsl:variable name="text">
+    <xsl:for-each select="$node//text()|$node//@*">
+      <xsl:variable name="t" select="translate(translate(.,$common,$commonr),$latin,$latinr)"/>
+      <xsl:variable name="t2">
+        <xsl:call-template name="remove-duplicates">
+          <xsl:with-param name="s" select="$t"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:value-of select="$t2"/>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:variable name="text-shrunk">
+    <xsl:variable name="t2">
+      <xsl:call-template name="remove-duplicates">
+        <xsl:with-param name="s" select="$text"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="$t2"/>
+  </xsl:variable>
+  <xsl:variable name="out">
+    <xsl:call-template name="dump-string">
+      <xsl:with-param name="s" select="$text-shrunk"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="scriptlist">
+    <xsl:for-each-group select="$out/c" group-by=".">
+      <xsl:sort select="."/>
+      <c cp="{string-to-codepoints(.)}" sc="{f:get-script(string-to-codepoints(.))}"><xsl:value-of select="."/></c>
+      <!--<xsl:message><xsl:value-of select="."/> <xsl:value-of select="f:get-script(string-to-codepoints(.))"/></xsl:message>-->
+    </xsl:for-each-group>
+  </xsl:variable>
+  <xsl:for-each-group select="$scriptlist/c" group-by="@sc">
+    <xsl:sort select="@sc"/>
+    <xsl:value-of select="@sc"/>
+    <xsl:if test="position()!=last()">
+      <xsl:text>,</xsl:text>
+    </xsl:if>
+  </xsl:for-each-group>
+</xsl:template>
+
+<xsl:template name="remove-duplicates">
+  <xsl:param name="s"/>
+  <xsl:param name="p" select="1"/>
+  <xsl:choose>
+    <xsl:when test="$p &lt;= string-length($s)">
+      <xsl:variable name="c" select="substring($s, $p, 1)"/>
+      <xsl:if test="not(contains(substring($s, 1, $p - 1), $c))">
+        <xsl:value-of select="$c"/>
+      </xsl:if>
+      <xsl:call-template name="remove-duplicates">
+        <xsl:with-param name="s" select="$s"/>
+        <xsl:with-param name="p" select="$p + 1"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="dump-string">
+  <xsl:param name="s"/>
+  <xsl:param name="p" select="1"/>
+  <xsl:choose>
+    <xsl:when test="$p &lt;= string-length($s)">
+      <c><xsl:value-of select="substring($s,$p,1)"/></c>
+      <xsl:call-template name="dump-string">
+        <xsl:with-param name="s" select="$s"/>
+        <xsl:with-param name="p" select="$p + 1"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+</xsl:template>
+
+<!-- Read information from ftp://www.unicode.org/Public/UCD/latest/ucd/Scripts.txt
+     and parse it into a list of range/script mappings -->
+
+<xsl:template name="getscripts">
+  <xsl:variable name="raw" select="unparsed-text('Scripts.txt')"/>
+
+  <xsl:analyze-string select="$raw" regex="(.*);(.*)#(.*)">
+    <xsl:matching-substring>
+      <xsl:variable name="p1" select="normalize-space(regex-group(1))"/>
+      <xsl:variable name="p2" select="normalize-space(regex-group(2))"/>
+      <xsl:choose>
+        <xsl:when test="contains($p1,'..')">
+          <range script="{$p2}" from="{f:parse-hex(substring-before($p1,'..'))}" to="{f:parse-hex(substring-after($p1,'..'))}"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:variable name="v" select="f:parse-hex($p1)"/>
+          <range script="{$p2}" from="{$v}" to="{$v}"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:matching-substring>
+    <xsl:non-matching-substring/>
+  </xsl:analyze-string>
+</xsl:template>
+
+<!-- given a code point return the name of the Unicode script -->
+
+<xsl:function name="f:get-script">
+  <xsl:param name="cp"/>
+
+  <xsl:variable name="ranges">
+    <xsl:call-template name="getscripts"/>
+  </xsl:variable>  
+
+  <xsl:variable name="entry" select="$ranges/range[@from &lt;= $cp and $cp &lt;= @to]"/>
+  <xsl:choose>
+    <xsl:when test="$entry">
+      <xsl:value-of select="$entry/@script"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:message>ERROR: no script found for codepoint <xsl:value-of select="$cp"/></xsl:message>
+      <xsl:text>???</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:function>
+
+<!-- utilities for parsing hex numbers -->
+
+<xsl:function name="f:parse-hex">
+  <xsl:param name="hex"/>
+  <xsl:value-of select="f:parse-hex-internal($hex,0)"/>
+</xsl:function>
+
+<xsl:function name="f:parse-hex-internal">
+  <xsl:param name="hex"/>
+  <xsl:param name="num"/>
+  <xsl:variable name="MSB" select="translate(substring($hex, 1, 1), 'abcdef', 'ABCDEF')"/>
+  <xsl:variable name="value" select="string-length(substring-before('0123456789ABCDEF', $MSB))"/>
+  <xsl:variable name="result" select="16 * $num + $value"/>
+  <xsl:choose>
+    <xsl:when test="string-length($hex) > 1">
+      <xsl:value-of select="f:parse-hex-internal(substring($hex, 2),$result)"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$result"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:function>
+
+<xsl:template match="rfc/@scripts" mode="prep-scripts"/>
+<xsl:template match="rfc" mode="prep-scripts">
+  <xsl:param name="root"/>
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-scripts">
+      <xsl:with-param name="root" select="$root"/>
+    </xsl:apply-templates>
+    <xsl:attribute name="scripts">
+      <xsl:call-template name="get-script-names">
+        <xsl:with-param name="node" select="$root"/>
+      </xsl:call-template>
+    </xsl:attribute>
+    <xsl:apply-templates select="node()" mode="prep-scripts">
+      <xsl:with-param name="root" select="$root"/>
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="node()|@*" mode="prep-scripts">
+  <xsl:param name="root"/>
+  <xsl:copy>
+    <xsl:apply-templates select="node()|@*" mode="prep-scripts">
       <xsl:with-param name="root" select="$root"/>
     </xsl:apply-templates>
   </xsl:copy>
