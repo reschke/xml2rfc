@@ -675,22 +675,11 @@
 <xsl:template name="get-script-names">
   <xsl:param name="node"/>
 
-  <!-- Early replace Common/Latin code points with a single one -->
-  <xsl:variable name="common">&#9;&#10;&#13;&#x20;&#x21;&#x22;&#x23;&#x24;&#x25;&#x26;&#x27;&#x28;&#x29;&#x2a;&#x2b;&#x2c;&#x2d;&#x2e;&#x2f;0123456789&#x3a;&#x3b;&#x3c;&#x3d;&#x3e;&#x3f;&#x40;&#x5b;&#x5c;&#x5d;&#x5e;&#x5f;&#x60;&#x7b;&#x7c;&#x7d;&#x7e;&#x7f;</xsl:variable>
-  <xsl:variable name="commonr">00000000000000000000000000000000000000000000000</xsl:variable>
-  <xsl:variable name="latin">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</xsl:variable>
-  <xsl:variable name="latinr">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</xsl:variable>
-  
-  <xsl:if test="string-length($common)!=string-length($commonr)">
-    <xsl:message terminate="yes"><xsl:value-of select="string-length($common)"/>:<xsl:value-of select="string-length($commonr)"/></xsl:message>
-  </xsl:if>
-  <xsl:if test="string-length($latin)!=string-length($latinr)">
-    <xsl:message terminate="yes"><xsl:value-of select="string-length($latin)"/>:<xsl:value-of select="string-length($latinr)"/></xsl:message>
-  </xsl:if>
+  <xsl:variable name="common-and-latin">&#9;&#10;&#13;&#x20;&#x21;&#x22;&#x23;&#x24;&#x25;&#x26;&#x27;&#x28;&#x29;&#x2a;&#x2b;&#x2c;&#x2d;&#x2e;&#x2f;0123456789&#x3a;&#x3b;&#x3c;&#x3d;&#x3e;&#x3f;&#x40;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x5b;&#x5c;&#x5d;&#x5e;&#x5f;&#x60;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x7b;&#x7c;&#x7d;&#x7e;&#x7f;&#xa0;&#x2014;</xsl:variable>
 
   <xsl:variable name="text">
     <xsl:for-each select="$node//text()|$node//@*">
-      <xsl:variable name="t" select="translate(translate(.,$common,$commonr),$latin,$latinr)"/>
+      <xsl:variable name="t" select="translate(.,$common-and-latin,'')"/>
       <xsl:variable name="t2">
         <xsl:call-template name="remove-duplicates">
           <xsl:with-param name="s" select="$t"/>
@@ -699,33 +688,41 @@
       <xsl:value-of select="$t2"/>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:variable name="text-shrunk">
-    <xsl:variable name="t2">
-      <xsl:call-template name="remove-duplicates">
-        <xsl:with-param name="s" select="$text"/>
-      </xsl:call-template>
-    </xsl:variable>
-    <xsl:value-of select="$t2"/>
-  </xsl:variable>
-  <xsl:variable name="out">
-    <xsl:call-template name="dump-string">
-      <xsl:with-param name="s" select="$text-shrunk"/>
-    </xsl:call-template>
-  </xsl:variable>
-  <xsl:variable name="scriptlist">
-    <xsl:for-each-group select="$out/c" group-by=".">
-      <xsl:sort select="."/>
-      <c cp="{string-to-codepoints(.)}" sc="{f:get-script(string-to-codepoints(.))}"><xsl:value-of select="."/></c>
-      <!--<xsl:message><xsl:value-of select="."/> <xsl:value-of select="f:get-script(string-to-codepoints(.))"/></xsl:message>-->
-    </xsl:for-each-group>
-  </xsl:variable>
-  <xsl:for-each-group select="$scriptlist/c" group-by="@sc">
-    <xsl:sort select="@sc"/>
-    <xsl:value-of select="@sc"/>
-    <xsl:if test="position()!=last()">
-      <xsl:text>,</xsl:text>
-    </xsl:if>
-  </xsl:for-each-group>
+  <xsl:choose>
+    <xsl:when test="$text=''">
+      <xsl:text>Common,Latin</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="text-shrunk">
+        <xsl:variable name="t2">
+          <xsl:call-template name="remove-duplicates">
+            <!-- Always include Common and Latin -->
+            <xsl:with-param name="s" select="concat('0A',$text)"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:value-of select="$t2"/>
+      </xsl:variable>
+      <xsl:variable name="out">
+        <xsl:call-template name="dump-string">
+          <xsl:with-param name="s" select="$text-shrunk"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:variable name="scriptlist">
+        <xsl:for-each-group select="$out/c" group-by=".">
+          <xsl:sort select="."/>
+          <c cp="{string-to-codepoints(.)}" sc="{f:get-script(string-to-codepoints(.))}"><xsl:value-of select="."/></c>
+          <!--<xsl:message><xsl:value-of select="."/> <xsl:value-of select="f:get-script(string-to-codepoints(.))"/></xsl:message>-->
+        </xsl:for-each-group>
+      </xsl:variable>
+      <xsl:for-each-group select="$scriptlist/c" group-by="@sc">
+        <xsl:sort select="@sc"/>
+        <xsl:value-of select="@sc"/>
+        <xsl:if test="position()!=last()">
+          <xsl:text>,</xsl:text>
+        </xsl:if>
+      </xsl:for-each-group>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="remove-duplicates">
