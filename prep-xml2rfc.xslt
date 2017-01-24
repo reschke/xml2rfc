@@ -675,7 +675,7 @@
 <xsl:template name="get-script-names">
   <xsl:param name="node"/>
 
-  <xsl:variable name="common-and-latin">&#9;&#10;&#13;&#x20;&#x21;&#x22;&#x23;&#x24;&#x25;&#x26;&#x27;&#x28;&#x29;&#x2a;&#x2b;&#x2c;&#x2d;&#x2e;&#x2f;0123456789&#x3a;&#x3b;&#x3c;&#x3d;&#x3e;&#x3f;&#x40;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x5b;&#x5c;&#x5d;&#x5e;&#x5f;&#x60;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x7b;&#x7c;&#x7d;&#x7e;&#x7f;&#xa0;&#x2014;</xsl:variable>
+  <xsl:variable name="common-and-latin">&#9;&#10;&#13;&#x20;&#x21;&#x22;&#x23;&#x24;&#x25;&#x26;&#x27;&#x28;&#x29;&#x2a;&#x2b;&#x2c;&#x2d;&#x2e;&#x2f;0123456789&#x3a;&#x3b;&#x3c;&#x3d;&#x3e;&#x3f;&#x40;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x5b;&#x5c;&#x5d;&#x5e;&#x5f;&#x60;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x7b;&#x7c;&#x7d;&#x7e;&#x7f;&#xa0;&#xa9;&#x200a;&#x2011;&#x2014;&#x201c;&#x201d;</xsl:variable>
 
   <xsl:variable name="text">
     <xsl:for-each select="$node//text()|$node//@*">
@@ -702,17 +702,35 @@
         </xsl:variable>
         <xsl:value-of select="$t2"/>
       </xsl:variable>
-      <xsl:variable name="out">
+      <xsl:variable name="out2">
         <xsl:call-template name="dump-string">
           <xsl:with-param name="s" select="$text-shrunk"/>
         </xsl:call-template>
       </xsl:variable>
-      <xsl:variable name="scriptlist">
-        <xsl:for-each-group select="$out/c" group-by=".">
+      <xsl:variable name="unique-codepoints">
+        <xsl:for-each-group select="$out2/c" group-by=".">
           <xsl:sort select="."/>
-          <c cp="{string-to-codepoints(.)}" sc="{f:get-script(string-to-codepoints(.))}"><xsl:value-of select="."/></c>
-          <!--<xsl:message><xsl:value-of select="."/> <xsl:value-of select="f:get-script(string-to-codepoints(.))"/></xsl:message>-->
+          <c cp="{string-to-codepoints(.)}"><xsl:value-of select="."/></c>
         </xsl:for-each-group>
+      </xsl:variable>
+      <xsl:variable name="codepoints-message">
+        <xsl:for-each select="$unique-codepoints/c[@cp > 127]">
+          <xsl:value-of select="@cp"/>
+          <xsl:if test="position()!=last()">
+            <xsl:text> </xsl:text>
+          </xsl:if>
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:call-template name="info">
+        <xsl:with-param name="msg" select="concat('Need to lookup Unicode script names for codepoints: ', $codepoints-message)"/>
+      </xsl:call-template>
+      <xsl:call-template name="info">
+        <xsl:with-param name="msg">(will need a local copy of ftp://www.unicode.org/Public/UCD/latest/ucd/Scripts.txt)</xsl:with-param>
+      </xsl:call-template>
+      <xsl:variable name="scriptlist">
+        <xsl:for-each select="$unique-codepoints/c">
+          <c sc="{f:get-script(number(@cp))}"/>
+        </xsl:for-each>
       </xsl:variable>
       <xsl:for-each-group select="$scriptlist/c" group-by="@sc">
         <xsl:sort select="@sc"/>
