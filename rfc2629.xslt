@@ -8788,11 +8788,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.844 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.844 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.845 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.845 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/01/25 07:18:39 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/25 07:18:39 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/01/25 21:37:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/25 21:37:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -9071,7 +9071,7 @@ prev: <xsl:value-of select="$prev"/>
   </xsl:if>
   <xsl:if test="$text=''">
     <xsl:call-template name="warning">
-      <xsl:with-param name="msg">missing text in <xsl:value-of select="$n"/></xsl:with-param>
+      <xsl:with-param name="msg">missing text in <xsl:value-of select="$name"/></xsl:with-param>
     </xsl:call-template>
   </xsl:if>
   <xsl:value-of select="$text"/>
