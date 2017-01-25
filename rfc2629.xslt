@@ -2427,6 +2427,70 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:template name="displayname-for-author">
+  <xsl:param name="not-reversed"/>
+
+  <xsl:variable name="initials">
+    <xsl:call-template name="format-initials"/>
+  </xsl:variable>
+  <xsl:variable name="truncated-initials">
+    <xsl:call-template name="truncate-initials">
+      <xsl:with-param name="initials" select="$initials"/>
+    </xsl:call-template>
+  </xsl:variable>
+
+  <!-- surname/initials is reversed for last author except when it's the only one -->
+  <xsl:choose>
+    <xsl:when test="$truncated-initials='' and @surname">
+      <xsl:value-of select="@surname"/>
+    </xsl:when>
+    <xsl:when test="position()=last() and position()!=1">
+      <xsl:value-of select="concat($truncated-initials,' ',@surname)" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="concat(@surname,', ',$truncated-initials)" />
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:if test="@asciiSurname!='' or @asciiInitials!=''">
+    <xsl:text> (</xsl:text>
+    <xsl:variable name="i">
+      <xsl:choose>
+        <xsl:when test="@asciiInitials!=''">
+          <xsl:value-of select="@asciiInitials"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$truncated-initials"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="s">
+      <xsl:choose>
+        <xsl:when test="@asciiSurname!=''">
+          <xsl:value-of select="@asciiSurname"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@surname"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="$i=''">
+        <xsl:value-of select="$s"/>
+      </xsl:when>
+      <xsl:when test="$not-reversed">
+        <xsl:value-of select="concat($i,' ',$s)" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="concat($s,', ',$i)" />
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>)</xsl:text>
+  </xsl:if> 
+  <xsl:if test="@role='editor'">
+    <xsl:text>, Ed.</xsl:text>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template match="reference">
   <xsl:call-template name="check-no-text-content"/>
 
@@ -2513,33 +2577,12 @@
   <dd>
     <xsl:call-template name="insertInsDelClass"/>
     <xsl:for-each select="front/author">
-      <xsl:variable name="initials">
-        <xsl:call-template name="format-initials"/>
-      </xsl:variable>
-      <xsl:variable name="truncated-initials">
-        <xsl:call-template name="truncate-initials">
-          <xsl:with-param name="initials" select="$initials"/>
-        </xsl:call-template>
-      </xsl:variable>
-
       <xsl:choose>
         <xsl:when test="@surname and @surname!=''">
           <xsl:variable name="displayname">
-            <!-- surname/initials is reversed for last author except when it's the only one -->
-            <xsl:choose>
-              <xsl:when test="$truncated-initials='' and @surname">
-                <xsl:value-of select="@surname"/>
-              </xsl:when>
-              <xsl:when test="position()=last() and position()!=1">
-                <xsl:value-of select="concat($truncated-initials,' ',@surname)" />
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="concat(@surname,', ',$truncated-initials)" />
-              </xsl:otherwise>
-            </xsl:choose>
-            <xsl:if test="@role='editor'">
-              <xsl:text>, Ed.</xsl:text>
-            </xsl:if>
+            <xsl:call-template name="displayname-for-author">
+              <xsl:with-param name="not-reversed" select="position()=last() and position()!=1"/>
+            </xsl:call-template>
           </xsl:variable>
           <xsl:choose>
             <xsl:when test="address/email and $xml2rfc-linkmailto!='no'">
@@ -8745,11 +8788,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.843 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.843 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.844 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.844 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/01/22 08:11:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/22 08:11:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/01/25 07:18:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/25 07:18:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

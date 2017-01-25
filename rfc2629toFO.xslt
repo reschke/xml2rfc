@@ -1025,24 +1025,9 @@
         </xsl:variable>
         <xsl:choose>
           <xsl:when test="@surname and @surname!=''">
-            <xsl:choose>
-              <xsl:when test="$truncated-initials='' and @surname">
-                <xsl:value-of select="@surname"/>
-              </xsl:when>
-              <xsl:when test="@surname and position()=last() and position()!=1">
-                <xsl:value-of select="concat($truncated-initials,' ',@surname)" />
-              </xsl:when>
-              <xsl:when test="@surname">
-                <xsl:value-of select="concat(@surname,', ',$truncated-initials)" />
-              </xsl:when>
-              <xsl:when test="organization/text()">
-                <xsl:value-of select="organization" />
-              </xsl:when>
-              <xsl:otherwise />
-            </xsl:choose>
-            <xsl:if test="@role='editor'">
-              <xsl:text>, Ed.</xsl:text>
-            </xsl:if>
+            <xsl:call-template name="displayname-for-author">
+              <xsl:with-param name="not-reversed" select="position()=last() and position()!=1"/>
+            </xsl:call-template>
             <xsl:choose>
               <xsl:when test="position()=last() - 1">
                 <xsl:if test="last() &gt; 2">,</xsl:if>
