@@ -1207,8 +1207,11 @@ Content-Length: &lt;x:length-of target="req"/>
 <t>
   Finally, when allowing pretty-printing of code (see "html-pretty-print" in
   <xref target="extension.pis"/>, the "x:lang" attribute can used to explicitly
-  opt into pretty-printing (the value is currently unused and ought to be set
-  to an empty string).
+  opt into pretty-printing. If the pretty printer can figure out the code
+  type without assistance, an empty value will be sufficient. Otherwise,
+  the language can be specified in the attribute (such as "html"), which 
+  will in turn be coded into the CSS class as "lang-" concatenated with the
+  language name.
 </t>
 </section>
 

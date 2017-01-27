@@ -926,7 +926,12 @@
       <xsl:when test="starts-with(@type,'text/plain') or @type='example' or @type='code' or @type='application/xml-dtd' or @type='application/json'">text</xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
-    <xsl:if test="@x:lang and $prettyprint-class!=''"><xsl:value-of select="concat(' ',$prettyprint-class)"/></xsl:if>
+    <xsl:if test="@x:lang and $prettyprint-class!=''">
+      <xsl:value-of select="concat(' ',$prettyprint-class)"/>
+      <xsl:if test="@x:lang!=''">
+        <xsl:value-of select="concat(' lang-',@x:lang)"/>
+      </xsl:if>
+    </xsl:if>
   </xsl:variable>
   <xsl:if test="normalize-space($v)!=''">
     <xsl:attribute name="class"><xsl:value-of select="normalize-space($v)"/></xsl:attribute>
@@ -8788,11 +8793,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.845 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.845 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.846 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.846 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/01/25 21:37:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/25 21:37:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/01/27 10:27:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/27 10:27:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
