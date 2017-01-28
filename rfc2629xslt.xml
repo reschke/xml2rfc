@@ -2603,6 +2603,7 @@ include "rfc2629.rnc" {
     element reference {
       attlist.reference,
       front,
+      <strong><x:ref>v3_refcontent</x:ref>?</strong>,
       seriesInfo*,
       <strong><x:ref>x_prose</x:ref>?</strong>,
       <strong><x:ref>v3_refcontent</x:ref>?</strong>,
@@ -2796,6 +2797,7 @@ attlist.t &amp;=
 
 <em># Allow x:quotes attribute on &lt;title></em>
 attlist.title &amp;=
+  attribute ascii { ATEXT }?,
   attribute x:quotes { "true" | "false" }?
 
 <em># Allow annotation attribute on &lt;uri></em>

@@ -1040,6 +1040,9 @@
           </xsl:when>
           <xsl:when test="organization/text()">
             <xsl:value-of select="organization" />
+            <xsl:if test="organization/@ascii">
+              <xsl:value-of select="concat(' (',normalize-space(organization/@ascii),')')"/>
+            </xsl:if>
             <xsl:choose>
               <xsl:when test="position()=last() - 1">
                 <xsl:if test="last() &gt; 2">,</xsl:if>
@@ -1066,6 +1069,14 @@
       </xsl:choose>
       <xsl:if test="$quoted">"<!--&#8221;--></xsl:if>
       
+      <xsl:if test="front/title/@ascii!=''">
+        <xsl:text> (</xsl:text>
+        <xsl:if test="$quoted">"<!--&#8220;--></xsl:if>
+        <xsl:value-of select="normalize-space(front/title/@ascii)" />
+        <xsl:if test="$quoted">"<!--&#8221;--></xsl:if>
+        <xsl:text>)</xsl:text>
+      </xsl:if> 
+
       <xsl:variable name="rfcs" select="count(.//seriesInfo[@name='RFC'])"/>
 
       <xsl:variable name="doi">

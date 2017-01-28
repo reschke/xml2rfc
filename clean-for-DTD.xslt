@@ -374,6 +374,21 @@
   </organization>
 </xsl:template>
 
+<xsl:template match="title/@ascii" mode="cleanup"/>
+<xsl:template match="title" mode="cleanup">
+  <title>
+    <xsl:apply-templates select="@*" mode="cleanup"/>
+    <xsl:choose>
+      <xsl:when test="@ascii!=''">
+        <xsl:value-of select="@ascii"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="text()"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </title>
+</xsl:template>
+
 <xsl:template match="@ascii" mode="cleanup"/>
 <xsl:template match="postal/*" mode="cleanup">
   <xsl:element name="{local-name()}">
