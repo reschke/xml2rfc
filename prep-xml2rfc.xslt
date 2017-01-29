@@ -1095,14 +1095,14 @@
   <!--<xsl:if test="$pnode">
     <xsl:comment>p: <xsl:value-of select="name($pnode)"/><xsl:text> </xsl:text><xsl:value-of select="starts-with($ws,' ')"/><xsl:text> """</xsl:text><xsl:value-of select="."/>"""</xsl:comment>
   </xsl:if>-->
-  <xsl:if test="$pnode/self::element() and starts-with($ws,' ')">
+  <xsl:if test="$pnode/self::element() and starts-with($ws,' ') and $t!=''">
     <xsl:text> </xsl:text>
   </xsl:if>
   <xsl:value-of select="$t"/>
   <!--<xsl:if test="$snode">
     <xsl:comment>s: <xsl:value-of select="name($snode)"/><xsl:text> </xsl:text><xsl:value-of select="ends-with($ws,' ')"/></xsl:comment>
   </xsl:if>-->
-  <xsl:if test="$snode/self::element() and ends-with($ws,' ')">
+  <xsl:if test="$snode/self::element() and ends-with($ws,' ') and $t!=''">
     <xsl:text> </xsl:text>
   </xsl:if>
 </xsl:template>
