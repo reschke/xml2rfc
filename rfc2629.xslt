@@ -48,7 +48,7 @@
                 exclude-result-prefixes="date ed exslt msxsl myns rdf saxon saxon-old svg x xi xhtml"
                 >
 
-<xsl:strip-space elements="abstract author back figure front list middle note postal reference references rfc section table tbody thead tr texttable"/>
+<xsl:strip-space elements="abstract address author back figure front list middle note postal reference references rfc section table tbody thead tr texttable"/>
 
 <xsl:output method="html" encoding="utf-8" doctype-system="about:legacy-compat" indent="no"/>
 
@@ -8809,11 +8809,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.848 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.848 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.849 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.849 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/01/29 11:39:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/29 11:39:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/01/29 14:24:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/29 14:24:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
