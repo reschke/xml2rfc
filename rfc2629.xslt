@@ -104,6 +104,12 @@
      exists with contents toc="yes". Can be overridden by an XSLT parameter -->
 
 <xsl:param name="xml2rfc-toc">
+  <xsl:variable name="default">
+    <xsl:choose>
+      <xsl:when test="/rfc/@version >= 3">yes</xsl:when>
+      <xsl:otherwise>no</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:choose>
     <xsl:when test="/rfc/@tocInclude='false'">no</xsl:when>
     <xsl:when test="/rfc/@tocInclude='true'">yes</xsl:when>
@@ -111,7 +117,7 @@
       <xsl:call-template name="parse-pis">
         <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
         <xsl:with-param name="attr" select="'toc'"/>
-        <xsl:with-param name="default" select="'no'"/>
+        <xsl:with-param name="default" select="$default"/>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -8803,11 +8809,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.847 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.847 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.848 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.848 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/01/28 07:32:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/28 07:32:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/01/29 11:39:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/01/29 11:39:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

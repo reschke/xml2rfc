@@ -225,7 +225,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>rfc</c>
   <c>toc<iref item="toc PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="toc"/></c>
   <c>xml2rfc-toc<iref item="xml2rfc-toc parameter"/> <iref item="Parameters" subitem="xml2rfc-toc"/></c>
-  <c>"no"</c>
+  <c>"no" ("yes" for documents specifying "3" as vocabulary version)</c>
   <c/>
   
   <c>rfc</c>
