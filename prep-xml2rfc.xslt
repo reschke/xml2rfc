@@ -146,6 +146,12 @@
 
 <!-- boilerplate step -->
 
+<xsl:template match="rfc/front/boilerplate" mode="prep-boilerplate">
+  <xsl:call-template name="info">
+    <xsl:with-param name="msg">removing existing boilerplate element</xsl:with-param>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template match="rfc/front" mode="prep-boilerplate">
   <xsl:copy>
     <xsl:apply-templates select="node()|@*" mode="prep-boilerplate"/>
