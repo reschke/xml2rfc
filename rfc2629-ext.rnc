@@ -130,6 +130,17 @@ include "rfc2629.rnc" {
       (t+ | x_lt+)
     }    
     
+  # Redefine <note> to allow <name> and not require title attribute
+  note =
+    element note {
+      attlist.x_note,
+      v3_name?,
+      (v3_dl
+        | v3_ol 
+        | t 
+        | v3_ul)+      
+    }
+
   # Redefine <preamble> to allow our extension elements
   preamble =
     element preamble {
@@ -318,6 +329,12 @@ attlist.iref &=
 # Extend attribute set for <list> (see Section 11.24)
 attlist.list &=
   attribute x:indent { ATEXT }?
+
+# Extend/Relax attribute set for <note>
+attlist.x_note &=
+  attribute anchor { xsd:ID }?,
+  attribute title { ATEXT }?,
+  attribute removeInRFC { "false" | "true" }? # see Section 12.19.2
 
 # Extend attribute set for <preamble>
 attlist.preamble &=

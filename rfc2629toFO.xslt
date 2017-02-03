@@ -972,9 +972,24 @@
                
 <xsl:template match="note">
   <xsl:variable name="num"><xsl:number count="note"/></xsl:variable>
-  <fo:block xsl:use-attribute-sets="h1" id="{concat($anchor-pref,'note.',$num)}"><xsl:value-of select="@title" /></fo:block>
+  <fo:block xsl:use-attribute-sets="h1" id="{concat($anchor-pref,'note.',$num)}">
+    <xsl:choose>
+      <xsl:when test="name">
+        <xsl:apply-templates select="name/node()"/>
+        <xsl:if test="@title">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">both @title attribute and name child node present</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@title" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </fo:block>
   <xsl:apply-templates />
 </xsl:template>
+<xsl:template match="note/name"/>
 
 <xsl:template match="preamble">
   <fo:block space-after=".5em">

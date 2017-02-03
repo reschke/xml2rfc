@@ -1059,6 +1059,31 @@
   </front>
 </xsl:template>
 
+<!-- Note titles -->
+<xsl:template match="note" mode="cleanup">
+  <note>
+    <xsl:copy-of select="@anchor"/>
+    <xsl:variable name="title">
+      <xsl:choose>
+        <xsl:when test="name">
+          <xsl:variable name="hold">
+            <xsl:apply-templates select="name/node()"/>
+          </xsl:variable>
+          <xsl:value-of select="normalize-space($hold)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@title"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:if test="$title!=''">
+      <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates mode="cleanup"/>
+  </note>
+</xsl:template>
+<xsl:template match="note/name" mode="cleanup"/>
+
 <!-- References titles -->
 <xsl:template match="references" mode="cleanup">
   <references>

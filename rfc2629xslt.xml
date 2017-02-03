@@ -2553,6 +2553,17 @@ include "rfc2629.rnc" {
       (t+ <strong>| <x:ref>x_lt</x:ref>+</strong>)
     }    
     
+  <em># Redefine &lt;note> to allow &lt;name> and not require title attribute</em>
+  note =
+    element note {
+      attlist.x_note,
+      <x:ref>v3_name</x:ref>?,
+      (<x:ref>v3_dl</x:ref>
+        <strong>| <x:ref>v3_ol</x:ref></strong> 
+        | t 
+        <strong>| <x:ref>v3_ul</x:ref></strong>)+      
+    }
+
   <em># Redefine &lt;preamble> to allow our extension elements</em>
   preamble =
     element preamble {
@@ -2741,6 +2752,12 @@ attlist.iref &amp;=
 <em># Extend attribute set for &lt;list> (see <xref target="ext-rfc2629.list"/>)</em>
 attlist.list &amp;=
   attribute x:indent { ATEXT }?
+
+<em># Extend/Relax attribute set for &lt;note></em>
+attlist.x_note &amp;=
+  attribute anchor { xsd:ID }?,
+  attribute title { ATEXT }?,
+  attribute removeInRFC { "false" | "true" }? # see <xref target="v3.section.removeInRFC"/>
 
 <em># Extend attribute set for &lt;preamble></em>
 attlist.preamble &amp;=
