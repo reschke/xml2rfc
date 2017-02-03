@@ -987,6 +987,11 @@
       </xsl:otherwise>
     </xsl:choose>
   </fo:block>
+  <xsl:if test="@removeInRFC='true' and t[1]!=$note-removeInRFC">
+    <fo:block font-style="italic" start-indent="2em">
+      <xsl:value-of select="$note-removeInRFC"/>
+    </fo:block>
+  </xsl:if>
   <xsl:apply-templates />
 </xsl:template>
 <xsl:template match="note/name"/>
@@ -1482,8 +1487,6 @@
       <xsl:value-of select="@title" />
     </xsl:otherwise>
   </xsl:choose>
-
-  <xsl:if test="@removeInRFC='yes'"><xsl:text> </xsl:text><fo:wrapper font-style="italic">(to be removed in RFC before publication)</fo:wrapper></xsl:if>
 </xsl:template>
 
 <!-- handled in section-maker -->
@@ -1494,6 +1497,12 @@
   <fo:block xsl:use-attribute-sets="h1">
     <xsl:call-template name="section-maker" />
   </fo:block>
+
+  <xsl:if test="@removeInRFC='true' and t[1]!=$section-removeInRFC">
+    <fo:block font-style="italic" start-indent="2em">
+      <xsl:value-of select="$section-removeInRFC"/>
+    </fo:block>
+  </xsl:if>
 
   <xsl:apply-templates select="iref" mode="iref-start"/>
   <xsl:apply-templates />
@@ -1506,6 +1515,12 @@
     <xsl:call-template name="section-maker" />
   </fo:block>
 
+  <xsl:if test="@removeInRFC='true' and t[1]!=$section-removeInRFC">
+    <fo:block font-style="italic" start-indent="2em">
+      <xsl:value-of select="$section-removeInRFC"/>
+    </fo:block>
+  </xsl:if>
+
   <xsl:apply-templates select="iref" mode="iref-start"/>
   <xsl:apply-templates />
   <xsl:apply-templates select="iref" mode="iref-end"/>
@@ -1515,6 +1530,12 @@
   <fo:block xsl:use-attribute-sets="h2">
     <xsl:call-template name="section-maker" />
   </fo:block>
+
+  <xsl:if test="@removeInRFC='true' and t[1]!=$section-removeInRFC">
+    <fo:block font-style="italic" start-indent="2em">
+      <xsl:value-of select="$section-removeInRFC"/>
+    </fo:block>
+  </xsl:if>
 
   <xsl:apply-templates select="iref" mode="iref-start"/>
   <xsl:apply-templates />

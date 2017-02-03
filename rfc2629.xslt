@@ -352,6 +352,11 @@
   </xsl:if>
 </xsl:variable>
 
+<!-- "remove in RFC phrases" -->
+<xsl:variable name="note-removeInRFC">This note is to be removed before publishing as an RFC.</xsl:variable>
+<xsl:variable name="section-removeInRFC">This section is to be removed before publishing as an RFC.</xsl:variable>
+
+
 <!-- CSS class name remapping -->
 
 <xsl:param name="xml2rfc-ext-css-map"/>
@@ -2241,6 +2246,11 @@
         <xsl:call-template name="insertTitle" />
       </a>
     </h2>
+    <xsl:if test="@removeInRFC='true'">
+      <p class="rfcEditorRemove">
+        <xsl:value-of select="$note-removeInRFC"/>
+      </p>
+    </xsl:if>
     <xsl:apply-templates />
   </section>
 </xsl:template>
@@ -3256,7 +3266,6 @@
       <xsl:value-of select="@title"/>
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:if test="@removeInRFC='true'"><xsl:text> </xsl:text><i>(to be removed in RFC before publication)</i></xsl:if>
 </xsl:template>
 
 <!-- irefs that are section-level thus can use the section anchor -->
@@ -3349,6 +3358,12 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:element>
+
+    <xsl:if test="@removeInRFC='true'">
+      <p class="rfcEditorRemove">
+        <xsl:value-of select="$section-removeInRFC"/>
+      </p>
+    </xsl:if>
 
     <!-- continue with all child elements but the irefs processed above -->
     <xsl:for-each select="*">
@@ -5609,7 +5624,9 @@ svg {
 .avoidbreakafter {
   page-break-after: avoid;
 }
-</xsl:if><xsl:if test="//x:bcp14|//bcp14">.bcp14 {
+</xsl:if><xsl:if test="//*[@removeInRFC='true']">.rfcEditorRemove {
+  font-style: italic;
+}</xsl:if><xsl:if test="//x:bcp14|//bcp14">.bcp14 {
   font-style: normal;
   text-transform: lowercase;
   font-variant: small-caps;
@@ -8810,11 +8827,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.851 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.851 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.852 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.852 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/02/03 16:55:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/03 16:55:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/02/03 20:29:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/03 20:29:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

@@ -1077,6 +1077,9 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+    <xsl:if test="@removeInRFC='true' and t[1]!=$note-removeInRFC">
+      <t><xsl:value-of select="$note-removeInRFC"/></t>
+    </xsl:if>
     <xsl:apply-templates mode="cleanup"/>
   </note>
 </xsl:template>
@@ -1123,8 +1126,10 @@
           <xsl:value-of select="@title"/>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:if test="@removeInRFC='yes'"> (to be removed in RFC before publication)</xsl:if>
     </xsl:attribute>
+    <xsl:if test="@removeInRFC='true' and t[1]!=$section-removeInRFC">
+      <t><xsl:value-of select="$section-removeInRFC"/></t>
+    </xsl:if>
     <xsl:apply-templates mode="cleanup"/>
   </section>
   <xsl:if test="@numbered='no'">
