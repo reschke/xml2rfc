@@ -1076,9 +1076,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:if test="$title!=''">
-      <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
-    </xsl:if>
+    <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
     <xsl:apply-templates mode="cleanup"/>
   </note>
 </xsl:template>
