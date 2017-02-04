@@ -49,7 +49,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi figextract listdefaultstyle listextract lists listextract lists listextract lists tables boilerplate deprecation defaults slug pn scripts preptime</xsl:text>
+  <xsl:text>pi figextract listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug pn scripts preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -112,6 +112,10 @@
         <xsl:when test="$s='preptime'">
           <xsl:message>Step: preptime</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-preptime"/>
+        </xsl:when>
+        <xsl:when test="$s='removeinrfc'">
+          <xsl:message>Step: removeinrfc</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-removeinrfc"/>
         </xsl:when>
         <xsl:when test="$s='rfccleanup'">
           <xsl:message>Step: rfccleanup</xsl:message>
@@ -973,6 +977,39 @@
     <xsl:apply-templates select="@*" mode="prep-preptime"/>
     <xsl:apply-templates select="node()" mode="prep-preptime"/>
   </xsl:copy>
+</xsl:template>
+
+<!-- removeinrfc step -->
+
+<xsl:template match="node()|@*" mode="prep-removeinrfc">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-removeinrfc"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="@removeInRFC" mode="prep-removeinrfc"/>
+<xsl:template match="section|note" mode="prep-removeinrfc">
+  <xsl:choose>
+    <xsl:when test="$mode!='rfc'">
+      <xsl:copy>
+        <xsl:apply-templates select="@*" mode="prep-removeinrfc"/>
+        <xsl:copy-of select="@removeInRFC"/>
+        <xsl:if test="self::section and @removeInRFC='true' and t[1]!=$section-removeInRFC">
+          <t><xsl:value-of select="$section-removeInRFC"/></t>
+        </xsl:if>
+        <xsl:if test="self::note and @removeInRFC='true' and t[1]!=$note-removeInRFC">
+          <t><xsl:value-of select="$note-removeInRFC"/></t>
+        </xsl:if>
+        <xsl:apply-templates select="node()" mode="prep-removeinrfc"/>
+      </xsl:copy>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:if test="not(@removeInRFC='true')">
+        <xsl:copy>
+          <xsl:apply-templates select="@*" mode="prep-removeinrfc"/>
+          <xsl:apply-templates select="node()" mode="prep-removeinrfc"/>
+        </xsl:copy>
+      </xsl:if>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- rfccleanup step -->

@@ -3154,8 +3154,18 @@
 <!-- ... otherwise group into p elements -->
 <xsl:template mode="t-content" match="*|node()">
   <xsl:param name="inherited-self-link"/>
+  <xsl:param name="classes"/>
   <xsl:variable name="p">
-    <xsl:call-template name="get-paragraph-number" />
+    <xsl:choose>
+      <xsl:when test="self::text()">
+        <xsl:for-each select="..">
+          <xsl:call-template name="get-paragraph-number" />
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="get-paragraph-number" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:variable>
 
   <!-- do not open a new p element if this is a whitespace-only text node and no siblings follow -->
@@ -3171,7 +3181,14 @@
             <xsl:value-of select="concat($anchor-pref,'section.',$p)"/>
           </xsl:if>
         </xsl:variable>
-        <xsl:call-template name="insertInsDelClass"/>
+        <xsl:choose>
+          <xsl:when test="$classes!=''">
+            <xsl:attribute name="class"><xsl:value-of select="$classes"/></xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:call-template name="insertInsDelClass"/>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:call-template name="editingMark" />
         <xsl:apply-templates mode="t-content2" select="." />
         <xsl:if test="$xml2rfc-ext-paragraph-links='yes'">
@@ -3360,9 +3377,16 @@
     </xsl:element>
 
     <xsl:if test="@removeInRFC='true'">
-      <p class="rfcEditorRemove">
-        <xsl:value-of select="$section-removeInRFC"/>
-      </p>
+      <xsl:variable name="t">
+        <t><xsl:value-of select="$section-removeInRFC"/></t>
+      </xsl:variable>
+      <xsl:variable name="link" select="concat($anchor-pref,'section.',$sectionNumber,'.p.1')"/>
+      <div id="{$link}">
+        <xsl:apply-templates mode="t-content" select="exslt:node-set($t)//text()">
+          <xsl:with-param name="inherited-self-link" select="$link"/>
+          <xsl:with-param name="classes" select="'rfcEditorRemove'"/>
+        </xsl:apply-templates>
+      </div>
     </xsl:if>
 
     <!-- continue with all child elements but the irefs processed above -->
@@ -7404,7 +7428,14 @@ dd, li, p {
 <xsl:template name="get-paragraph-number">
   <!-- get section number of ancestor section element, then add t number -->
   <xsl:if test="ancestor::section and (not(ancestor::boilerplate) and not(ancestor::x:blockquote) and not(ancestor::blockquote) and not(ancestor::x:note) and not(ancestor::aside) and not(ancestor::ul) and not(ancestor::dl) and not(ancestor::ol))">
-    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol" />
+    <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
+    <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/></xsl:variable>
+    <xsl:choose>
+      <xsl:when test="parent::section and ../@removeInRFC='true' and ../t[1]!=$section-removeInRFC">
+        <xsl:value-of select="1 + $b"/>
+      </xsl:when>
+      <xsl:otherwise><xsl:value-of select="$b"/></xsl:otherwise>
+    </xsl:choose>
   </xsl:if>
 </xsl:template>
 
@@ -8827,11 +8858,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.852 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.852 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.853 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.853 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/02/03 20:29:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/03 20:29:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/02/04 18:01:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/04 18:01:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
