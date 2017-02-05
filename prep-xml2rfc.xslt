@@ -992,13 +992,14 @@
       <xsl:copy>
         <xsl:apply-templates select="@*" mode="prep-removeinrfc"/>
         <xsl:copy-of select="@removeInRFC"/>
+        <xsl:apply-templates select="name" mode="prep-removeinrfc"/>
         <xsl:if test="self::section and @removeInRFC='true' and t[1]!=$section-removeInRFC">
           <t><xsl:value-of select="$section-removeInRFC"/></t>
         </xsl:if>
         <xsl:if test="self::note and @removeInRFC='true' and t[1]!=$note-removeInRFC">
           <t><xsl:value-of select="$note-removeInRFC"/></t>
         </xsl:if>
-        <xsl:apply-templates select="node()" mode="prep-removeinrfc"/>
+        <xsl:apply-templates select="node()[not(self::name)]" mode="prep-removeinrfc"/>
       </xsl:copy>
     </xsl:when>
     <xsl:otherwise>
