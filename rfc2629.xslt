@@ -5300,7 +5300,14 @@ function anchorRewrite() {
         } else if (fragid.indexOf("appendix-") == 0) {
           window.location.hash = prefix + "section." + fragid.substring(9);
         } else if (fragid.indexOf("s-") == 0) {
-          window.location.hash = prefix + "section." + fragid.substring(2);
+          var postfix = fragid.substring(2);
+          if (postfix.startsWith("abstract")) {
+            window.location.hash = prefix + postfix;
+          } else if (postfix.startsWith("note-")) {
+            window.location.hash = prefix + "note." + postfix.substring(5);
+          } else {
+            window.location.hash = prefix + "section." + postfix;
+          }
         } else if (fragid.indexOf("p-") == 0) {
           var r = fragid.substring(2);
           var p = r.indexOf("-");
@@ -8902,11 +8909,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.855 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.855 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.856 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.856 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/02/05 20:58:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/05 20:58:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/02/08 13:56:47 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/08 13:56:47 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
