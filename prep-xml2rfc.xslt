@@ -940,6 +940,7 @@
     </xsl:when>
     <xsl:when test="self::section and parent::back">s-<xsl:number count="section" format="a"/></xsl:when>
     <xsl:when test="self::section and parent::middle">s-<xsl:number count="section"/></xsl:when>
+    <xsl:when test="self::section and ancestor::boilerplate">s-boilerplate-<xsl:number count="section"/></xsl:when>
     <xsl:when test="self::section"><xsl:for-each select=".."><xsl:call-template name="pn-sn"/></xsl:for-each>.<xsl:number count="section"/></xsl:when>
     <xsl:when test="self::artwork or self::aside or self::blockquote or self::dd or self::dl or self::dt or self::li or self::ol or self::sourcecode or self::t or self::tbody or self::td or self::th or self::thead or self::tr or self::ul">
       <xsl:for-each select="..">
