@@ -3103,6 +3103,7 @@
   <xsl:variable name="stype">
     <xsl:choose>
       <xsl:when test="ancestor::abstract">abstract</xsl:when>
+      <xsl:when test="ancestor::boilerplate">boilerplate</xsl:when>
       <xsl:when test="ancestor::note">note</xsl:when>
       <xsl:otherwise>section</xsl:otherwise>
     </xsl:choose>
@@ -3194,6 +3195,7 @@
         <xsl:variable name="stype">
           <xsl:choose>
             <xsl:when test="ancestor::abstract">abstract</xsl:when>
+            <xsl:when test="ancestor::boilerplate">boilerplate</xsl:when>
             <xsl:when test="ancestor::note">note</xsl:when>
             <xsl:otherwise>section</xsl:otherwise>
           </xsl:choose>
@@ -4676,7 +4678,7 @@
 
 <boilerplate>
   <xsl:if test="not($no-copylong)">
-    <section title="Full Copyright Statement" anchor="{$anchor-pref}copyright">
+    <section title="Full Copyright Statement" anchor="{$anchor-pref}copyright" x:fixed-section-number="3">
       <xsl:choose>
         <xsl:when test="$ipr-rfc3667">
           <t>
@@ -4742,7 +4744,7 @@
       </xsl:choose>
     </section>
 
-    <section title="Intellectual Property" anchor="{$anchor-pref}ipr">
+    <section title="Intellectual Property" anchor="{$anchor-pref}ipr" x:fixed-section-number="4">
       <xsl:choose>
         <xsl:when test="$ipr-rfc3667">
           <t>
@@ -4810,7 +4812,7 @@
     <xsl:choose>
       <xsl:when test="$no-funding"/>
       <xsl:when test="$funding1 and /rfc/@number">
-        <section>
+        <section x:fixed-section-number="5">
           <xsl:attribute name="title">
             <xsl:choose>
               <xsl:when test="$xml2rfc-rfcedstyle='yes'">Acknowledgement</xsl:when>
@@ -4824,7 +4826,7 @@
         </section>
       </xsl:when>
       <xsl:when test="$funding0 and /rfc/@number">
-        <section>
+        <section x:fixed-section-number="5">
           <xsl:attribute name="title">
             <xsl:choose>
               <xsl:when test="$xml2rfc-rfcedstyle='yes'">Acknowledgement</xsl:when>
@@ -7456,7 +7458,7 @@ dd, li, p {
 
 <xsl:template name="get-paragraph-number">
   <!-- no paragraph numbers in certain containers -->
-  <xsl:if test="(not(ancestor::boilerplate) and not(ancestor::x:blockquote) and not(ancestor::blockquote) and not(ancestor::x:note) and not(ancestor::aside) and not(ancestor::ul) and not(ancestor::dl) and not(ancestor::ol))">
+  <xsl:if test="(not(ancestor::x:blockquote) and not(ancestor::blockquote) and not(ancestor::x:note) and not(ancestor::aside) and not(ancestor::ul) and not(ancestor::dl) and not(ancestor::ol))">
 
     <!-- get section number of ancestor section element, then add t number -->
     <xsl:if test="ancestor::section">
@@ -8909,11 +8911,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.856 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.856 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.857 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.857 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/02/08 13:56:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/08 13:56:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/02/09 16:09:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/09 16:09:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
