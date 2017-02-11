@@ -3340,7 +3340,7 @@
   </xsl:variable>
 
   <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!='' and @anchor='rfc.status'">
-    <div id="{$anchor-pref}meta" class="{$css-docstatus}"></div>
+    <aside id="{$anchor-pref}meta" class="{$css-docstatus}"></aside>
   </xsl:if>
   <section>
     <xsl:call-template name="copy-anchor"/>
@@ -5853,6 +5853,9 @@ dd, li, p {
   float: right;
   margin: 2em;
   padding: 1em;
+  -webkit-user-select: none;<!-- not std CSS yet--> 
+  -moz-user-select: none;
+  -ms-user-select: none;
 }</xsl:if><xsl:if test="$published-as-rfc">
 .<xsl:value-of select="$css-publishedasrfc"/> {
   background-color: yellow;
@@ -8911,11 +8914,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.857 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.857 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.858 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.858 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/02/09 16:09:22 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/09 16:09:22 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/02/11 07:24:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/11 07:24:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
