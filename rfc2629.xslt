@@ -3118,8 +3118,8 @@
   <xsl:variable name="stype">
     <xsl:choose>
       <xsl:when test="ancestor::abstract">abstract</xsl:when>
-      <xsl:when test="ancestor::boilerplate">boilerplate</xsl:when>
       <xsl:when test="ancestor::note">note</xsl:when>
+      <xsl:when test="ancestor::boilerplate">boilerplate</xsl:when>
       <xsl:otherwise>section</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -3210,8 +3210,8 @@
         <xsl:variable name="stype">
           <xsl:choose>
             <xsl:when test="ancestor::abstract">abstract</xsl:when>
-            <xsl:when test="ancestor::boilerplate">boilerplate</xsl:when>
             <xsl:when test="ancestor::note">note</xsl:when>
+            <xsl:when test="ancestor::boilerplate">boilerplate</xsl:when>
             <xsl:otherwise>section</xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
@@ -8973,11 +8973,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.859 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.859 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.860 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.860 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/02/11 12:04:49 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/11 12:04:49 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/02/11 17:28:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/11 17:28:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
