@@ -99,7 +99,7 @@
         <xsl:attribute name="type" select="regex-group(2)"/>
       </xsl:matching-substring>
     </xsl:analyze-string>
-    <xsl:analyze-string select="$s" regex="(.*)Section ([a-zA-Z0-9\.]+) says(.*)">
+    <xsl:analyze-string select="$s" regex="(.*)Section ([a-zA-Z0-9\.]+) (.*)says(.*)">
       <xsl:matching-substring>
         <xsl:variable name="m" select="regex-group(2)"/>
         <xsl:choose>
