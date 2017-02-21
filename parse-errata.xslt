@@ -111,19 +111,21 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:matching-substring>
-    </xsl:analyze-string>
-    <xsl:analyze-string select="$s" regex="(.*)Section [Aa]ppendix ([a-zA-Z0-9\.]*) says(.*)">
-      <xsl:matching-substring>
-        <xsl:variable name="m" select="regex-group(2)"/>
-        <xsl:choose>
-          <xsl:when test="ends-with($m,'.')">
-            <xsl:attribute name="section" select="substring($m,0,string-length($m))"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:attribute name="section" select="$m"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:matching-substring>
+      <xsl:non-matching-substring>
+        <xsl:analyze-string select="$s" regex="(.*)Section [Aa]ppendix ([a-zA-Z0-9\.]*) says(.*)">
+          <xsl:matching-substring>
+            <xsl:variable name="m" select="regex-group(2)"/>
+            <xsl:choose>
+              <xsl:when test="ends-with($m,'.')">
+                <xsl:attribute name="section" select="substring($m,0,string-length($m))"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:attribute name="section" select="$m"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:matching-substring>
+        </xsl:analyze-string>
+      </xsl:non-matching-substring>
     </xsl:analyze-string>
   </erratum>
 </xsl:template>
