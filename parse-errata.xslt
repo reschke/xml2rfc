@@ -29,7 +29,9 @@
     POSSIBILITY OF SUCH DAMAGE.
 -->
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+               xmlns:f="#foo"
                version="2.0"
+               exclude-result-prefixes="f"
 >
 
 <xsl:output encoding="UTF-8" indent="yes"/>
@@ -101,33 +103,32 @@
     </xsl:analyze-string>
     <xsl:analyze-string select="$s" regex="(.*)Section ([a-zA-Z0-9\.]+) (.*)says(.*)">
       <xsl:matching-substring>
-        <xsl:variable name="m" select="regex-group(2)"/>
-        <xsl:choose>
-          <xsl:when test="ends-with($m,'.')">
-            <xsl:attribute name="section" select="substring($m,0,string-length($m))"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:attribute name="section" select="$m"/>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:attribute name="section" select="f:secnum(regex-group(2))"/>
       </xsl:matching-substring>
-      <xsl:non-matching-substring>
-        <xsl:analyze-string select="$s" regex="(.*)Section [Aa]ppendix ([a-zA-Z0-9\.]*) says(.*)">
-          <xsl:matching-substring>
-            <xsl:variable name="m" select="regex-group(2)"/>
-            <xsl:choose>
-              <xsl:when test="ends-with($m,'.')">
-                <xsl:attribute name="section" select="substring($m,0,string-length($m))"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:attribute name="section" select="$m"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:matching-substring>
-        </xsl:analyze-string>
-      </xsl:non-matching-substring>
+    </xsl:analyze-string>
+    <xsl:analyze-string select="$s" regex="(.*)Section [Aa]ppendix ([a-zA-Z0-9\.]*) says(.*)">
+      <xsl:matching-substring>
+        <xsl:attribute name="section" select="f:secnum(regex-group(2))"/>
+      </xsl:matching-substring>
+    </xsl:analyze-string>
+    <xsl:analyze-string select="$s" regex="(.*)[Aa]ppendix ([a-zA-Z0-9\.]*) states(.*)">
+      <xsl:matching-substring>
+        <xsl:attribute name="section" select="f:secnum(regex-group(2))"/>
+      </xsl:matching-substring>
     </xsl:analyze-string>
   </erratum>
 </xsl:template>
+
+<xsl:function name="f:secnum">
+  <xsl:param name="s"/>
+  <xsl:choose>
+    <xsl:when test="ends-with($s,'.')">
+      <xsl:value-of select="substring($s,0,string-length($s))"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$s"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:function>
 
 </xsl:transform>
