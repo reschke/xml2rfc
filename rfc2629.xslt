@@ -52,11 +52,14 @@
 
 <xsl:output method="html" encoding="utf-8" doctype-system="about:legacy-compat" indent="no"/>
 
+<!-- PIs outside the root element, or inside the root element but before <front> -->
+<xsl:variable name="global-std-pis" select="/processing-instruction('rfc') | /*/processing-instruction('rfc')[following-sibling::front]"/>
+
 <!-- rfc comments PI -->
 
 <xsl:param name="xml2rfc-comments">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'comments'"/>
     <xsl:with-param name="default" select="'no'"/>
   </xsl:call-template>
@@ -66,7 +69,7 @@
 
 <xsl:param name="xml2rfc-compact">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'compact'"/>
     <xsl:with-param name="default" select="$xml2rfc-rfcedstyle"/>
   </xsl:call-template>
@@ -76,7 +79,7 @@
 
 <xsl:param name="xml2rfc-footer">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'footer'"/>
   </xsl:call-template>
 </xsl:param>
@@ -85,7 +88,7 @@
 
 <xsl:param name="xml2rfc-header">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'header'"/>
   </xsl:call-template>
 </xsl:param>
@@ -94,7 +97,7 @@
 
 <xsl:param name="xml2rfc-inline">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'inline'"/>
     <xsl:with-param name="default" select="'no'"/>
   </xsl:call-template>
@@ -115,7 +118,7 @@
     <xsl:when test="/rfc/@tocInclude='true'">yes</xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="parse-pis">
-        <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+        <xsl:with-param name="nodes" select="$global-std-pis"/>
         <xsl:with-param name="attr" select="'toc'"/>
         <xsl:with-param name="default" select="$default"/>
       </xsl:call-template>
@@ -132,7 +135,7 @@
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="parse-pis">
-        <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+        <xsl:with-param name="nodes" select="$global-std-pis"/>
         <xsl:with-param name="attr" select="'tocdepth'"/>
         <xsl:with-param name="default" select="'3'"/>
       </xsl:call-template>
@@ -156,7 +159,7 @@
 
 <xsl:param name="xml2rfc-topblock">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'topblock'"/>
     <xsl:with-param name="default" select="'yes'"/>
   </xsl:call-template>
@@ -166,7 +169,7 @@
 
 <xsl:param name="xml2rfc-rfcedstyle">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'rfcedstyle'"/>
     <xsl:with-param name="default" select="'no'"/>
   </xsl:call-template>
@@ -176,7 +179,7 @@
 
 <xsl:param name="xml2rfc-refparent">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'refparent'"/>
     <xsl:with-param name="default" select="'References'"/>
   </xsl:call-template>
@@ -191,7 +194,7 @@
     <xsl:when test="/rfc/@symRefs='true'">yes</xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="parse-pis">
-        <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+        <xsl:with-param name="nodes" select="$global-std-pis"/>
         <xsl:with-param name="attr" select="'symrefs'"/>
         <xsl:with-param name="default" select="'yes'"/>
       </xsl:call-template>
@@ -208,7 +211,7 @@
     <xsl:when test="/rfc/@sortRefs='false'">no</xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="parse-pis">
-        <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+        <xsl:with-param name="nodes" select="$global-std-pis"/>
         <xsl:with-param name="attr" select="'sortrefs'"/>
         <xsl:with-param name="default" select="'no'"/>
       </xsl:call-template>
@@ -221,7 +224,7 @@
 
 <xsl:param name="xml2rfc-editing">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'editing'"/>
     <xsl:with-param name="default" select="'no'"/>
   </xsl:call-template>
@@ -231,7 +234,7 @@
 
 <xsl:param name="xml2rfc-private">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'private'"/>
   </xsl:call-template>
 </xsl:param>
@@ -240,7 +243,7 @@
 
 <xsl:param name="xml2rfc-background">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'background'"/>
   </xsl:call-template>
 </xsl:param>
@@ -584,7 +587,7 @@
 
 <xsl:param name="xml2rfc-linkmailto">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'linkmailto'"/>
     <xsl:with-param name="default" select="'yes'"/>
   </xsl:call-template>
@@ -594,7 +597,7 @@
 
 <xsl:param name="xml2rfc-iprnotified">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
     <xsl:with-param name="attr" select="'iprnotified'"/>
     <xsl:with-param name="default" select="'no'"/>
   </xsl:call-template>
@@ -8973,11 +8976,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.862 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.862 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.863 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.863 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/02/20 19:24:31 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/02/20 19:24:31 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/05 14:00:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/05 14:00:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
