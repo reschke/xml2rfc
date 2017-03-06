@@ -116,6 +116,13 @@
         <xsl:attribute name="section" select="f:secnum(regex-group(2))"/>
       </xsl:matching-substring>
     </xsl:analyze-string>
+    <xsl:analyze-string select="$s" regex="&lt;p>((Section|Appendix)(.*))(says|states):&#10;&lt;/p>&#10;&lt;pre class=.rfctext.">
+      <xsl:matching-substring>
+        <raw-section>
+          <xsl:value-of select="normalize-space(regex-group(1))"/>
+        </raw-section>
+      </xsl:matching-substring>
+    </xsl:analyze-string>
   </erratum>
 </xsl:template>
 
