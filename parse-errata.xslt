@@ -75,6 +75,14 @@
 
 <xsl:template name="asxml">
   <xsl:param name="s"/>
+  <xsl:variable name="raw-reference">
+    <xsl:variable name="t" select="normalize-space(translate($s,'&#13;&#10;&#9;','   '))"/>
+    <xsl:analyze-string select="$t" regex="&lt;p>((Section|Appendix)(.*))(says|states): &lt;/p> &lt;pre class=.rfctext.">
+      <xsl:matching-substring>
+        <xsl:value-of select="normalize-space(regex-group(1))"/>
+      </xsl:matching-substring>
+    </xsl:analyze-string>
+  </xsl:variable>
   <erratum>
     <xsl:analyze-string select="$s" regex="(.*)Errata ID: ([0-9]+)(.*)">
       <xsl:matching-substring>
@@ -101,28 +109,28 @@
         <xsl:attribute name="type" select="regex-group(2)"/>
       </xsl:matching-substring>
     </xsl:analyze-string>
-    <xsl:analyze-string select="$s" regex="(.*)Section ([a-zA-Z0-9\.]+) (.*)says(.*)">
+
+    <!-- section reference -->
+    <xsl:analyze-string select="$raw-reference" regex="Section ([a-zA-Z0-9\.]+)(( )(.*))*">
       <xsl:matching-substring>
-        <xsl:attribute name="section" select="f:secnum(regex-group(2))"/>
+        <xsl:attribute name="section" select="f:secnum(regex-group(1))"/>
       </xsl:matching-substring>
     </xsl:analyze-string>
-    <xsl:analyze-string select="$s" regex="(.*)Section [Aa]ppendix ([a-zA-Z0-9\.]*) says(.*)">
+    <xsl:analyze-string select="$raw-reference" regex="Section [Aa]ppendix ([a-zA-Z0-9\.]*)">
       <xsl:matching-substring>
-        <xsl:attribute name="section" select="f:secnum(regex-group(2))"/>
+        <xsl:attribute name="section" select="f:secnum(regex-group(1))"/>
       </xsl:matching-substring>
     </xsl:analyze-string>
-    <xsl:analyze-string select="$s" regex="(.*)[Aa]ppendix ([a-zA-Z0-9\.]*) states(.*)">
+    <xsl:analyze-string select="$raw-reference" regex="[Aa]ppendix ([a-zA-Z0-9\.]*)">
       <xsl:matching-substring>
-        <xsl:attribute name="section" select="f:secnum(regex-group(2))"/>
+        <xsl:attribute name="section" select="f:secnum(regex-group(1))"/>
       </xsl:matching-substring>
     </xsl:analyze-string>
-    <xsl:analyze-string select="$s" regex="&lt;p>((Section|Appendix)(.*))(says|states):&#10;&lt;/p>&#10;&lt;pre class=.rfctext.">
-      <xsl:matching-substring>
-        <raw-section>
-          <xsl:value-of select="normalize-space(regex-group(1))"/>
-        </raw-section>
-      </xsl:matching-substring>
-    </xsl:analyze-string>
+    <xsl:if test="$raw-reference!=''">
+      <raw-section>
+        <xsl:value-of select="$raw-reference"/>
+      </raw-section>
+    </xsl:if>
   </erratum>
 </xsl:template>
 
