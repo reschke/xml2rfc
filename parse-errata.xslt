@@ -136,7 +136,11 @@
 
 <xsl:function name="f:secnum">
   <xsl:param name="s"/>
+  <xsl:variable name="l" select="translate($s,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
   <xsl:choose>
+    <xsl:when test="$l='toc' or $l='boilerplate'">
+      <xsl:value-of select="$l"/>
+    </xsl:when>
     <xsl:when test="ends-with($s,'.')">
       <xsl:value-of select="substring($s,0,string-length($s))"/>
     </xsl:when>

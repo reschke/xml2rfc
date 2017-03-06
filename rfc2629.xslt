@@ -1618,6 +1618,10 @@
     </xsl:otherwise>
   </xsl:choose>
 
+  <xsl:call-template name="insert-errata">
+    <xsl:with-param name="section" select="'boilerplate'"/>
+  </xsl:call-template>
+
   <xsl:if test="not($abstract-first)">
     <xsl:if test="$xml2rfc-private=''">
       <xsl:call-template name="emit-ietf-preamble">
@@ -6959,7 +6963,11 @@ dd, li, p {
     <h2 class="np"> <!-- this pagebreak occurs always -->
       <a href="#{$anchor-pref}toc">Table of Contents</a>
     </h2>
-  
+
+    <xsl:call-template name="insert-errata">
+      <xsl:with-param name="section" select="'toc'"/>
+    </xsl:call-template>
+
     <ul class="toc">
       <xsl:apply-templates mode="toc" />
     </ul>
@@ -8976,11 +8984,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.863 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.863 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.864 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.864 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/05 14:00:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/05 14:00:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/06 11:53:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/06 11:53:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
