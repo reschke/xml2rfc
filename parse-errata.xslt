@@ -115,20 +115,22 @@
       <raw-section>
         <xsl:value-of select="$raw-reference"/>
       </raw-section>
-      <xsl:analyze-string select="$raw-reference" regex="Section ([a-zA-Z0-9\.]+)(( )(.*))*">
-        <xsl:matching-substring>
-          <section><xsl:value-of select="f:secnum(regex-group(1))"/></section>
-        </xsl:matching-substring>
-      </xsl:analyze-string>
       <xsl:analyze-string select="$raw-reference" regex="Section [Aa]ppendix ([a-zA-Z0-9\.]*)">
         <xsl:matching-substring>
           <section><xsl:value-of select="f:secnum(regex-group(1))"/></section>
         </xsl:matching-substring>
-      </xsl:analyze-string>
-      <xsl:analyze-string select="$raw-reference" regex="[Aa]ppendix ([a-zA-Z0-9\.]*)">
-        <xsl:matching-substring>
-          <section><xsl:value-of select="f:secnum(regex-group(1))"/></section>
-        </xsl:matching-substring>
+        <xsl:non-matching-substring>
+          <xsl:analyze-string select="$raw-reference" regex="Section ([a-zA-Z0-9\.]+)(( )(.*))*">
+            <xsl:matching-substring>
+              <section><xsl:value-of select="f:secnum(regex-group(1))"/></section>
+            </xsl:matching-substring>
+          </xsl:analyze-string>
+          <xsl:analyze-string select="$raw-reference" regex="[Aa]ppendix ([a-zA-Z0-9\.]+)(( )(.*))*">
+            <xsl:matching-substring>
+              <section><xsl:value-of select="f:secnum(regex-group(1))"/></section>
+            </xsl:matching-substring>
+          </xsl:analyze-string>
+        </xsl:non-matching-substring>
       </xsl:analyze-string>
     </xsl:if>
   </erratum>
