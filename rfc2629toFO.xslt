@@ -1013,11 +1013,7 @@
 <xsl:template match="reference">
 
   <xsl:variable name="target">
-    <xsl:choose>
-      <xsl:when test="@target"><xsl:value-of select="@target" /></xsl:when>
-      <xsl:when test=".//seriesInfo/@name='RFC'"><xsl:value-of select="concat($rfcUrlPrefix,.//seriesInfo[@name='RFC']/@value,'.txt')" /></xsl:when>
-      <xsl:otherwise />
-    </xsl:choose>
+    <xsl:call-template name="link-ref-title-to"/>
   </xsl:variable>
 
   <fo:list-item space-after=".5em">

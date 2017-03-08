@@ -2449,7 +2449,7 @@
   <xsl:choose>
     <!-- xref seems to be for BCP, not RFC -->
     <xsl:when test=".//seriesInfo[@name='BCP'] and starts-with(@anchor, 'BCP')" />
-    <xsl:when test=".//seriesInfo[@name='RFC'] and not(.//organization='RFC Errata') and not(@target='http://www.rfc-editor.org')">
+    <xsl:when test=".//seriesInfo[@name='RFC'] and not(.//organization='RFC Errata') and not(@target='http://www.rfc-editor.org' or @target='https://www.rfc-editor.org')">
       <xsl:variable name="rfc" select=".//seriesInfo[@name='RFC'][1]/@value"/>
       <xsl:value-of select="concat('10.17487/RFC', format-number($rfc,'#0000'))"/>
     </xsl:when>
@@ -2531,6 +2531,37 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:template name="link-ref-title-to">
+  <xsl:choose>
+    <xsl:when test="starts-with(@target,'http://www.rfc-editor.org/info/rfc') or starts-with(@target,'https://www.rfc-editor.org/info/rfc')">
+      <xsl:call-template name="info">
+        <xsl:with-param name="msg">Ignoring @target <xsl:value-of select="@target"/> in link calculation</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="computed-auto-target">
+        <xsl:with-param name="bib" select="."/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test=".//seriesInfo/@name='RFC' and (@target='http://www.rfc-editor.org' or @target='https://www.rfc-editor.org') and starts-with(front/title,'Errata ID ') and front/author/organization='RFC Errata'">
+      <!-- check for erratum link -->
+      <xsl:variable name="eid" select="normalize-space(substring(front/title,string-length('Errata ID ')))"/>
+      <xsl:value-of select="concat('https://www.rfc-editor.org/errata_search.php?eid=',$eid)"/>
+    </xsl:when>
+    <xsl:when test="@target">
+      <xsl:if test="normalize-space(@target)=''">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">invalid (empty) target attribute in reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:value-of select="normalize-space(@target)" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="computed-auto-target">
+        <xsl:with-param name="bib" select="."/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="reference">
   <xsl:call-template name="check-no-text-content"/>
 
@@ -2576,29 +2607,7 @@
   <xsl:call-template name="check-anchor"/>
 
   <xsl:variable name="target">
-    <xsl:choose>
-      <xsl:when test="starts-with(@target,'http://www.rfc-editor.org/info/rfc') or starts-with(@target,'https://www.rfc-editor.org/info/rfc')">
-        <xsl:call-template name="info">
-          <xsl:with-param name="msg">Ignoring @target <xsl:value-of select="@target"/> in link calculation</xsl:with-param>
-        </xsl:call-template>
-        <xsl:call-template name="computed-auto-target">
-          <xsl:with-param name="bib" select="."/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="@target">
-        <xsl:if test="normalize-space(@target)=''">
-          <xsl:call-template name="warning">
-            <xsl:with-param name="msg">invalid (empty) target attribute in reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
-          </xsl:call-template>
-        </xsl:if>
-        <xsl:value-of select="normalize-space(@target)" />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="computed-auto-target">
-          <xsl:with-param name="bib" select="."/>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="link-ref-title-to"/>
   </xsl:variable>
 
   <dt id="{@anchor}">
@@ -8984,11 +8993,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.866 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.866 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.867 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.867 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/08 08:16:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/08 08:16:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/08 14:23:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/08 14:23:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
