@@ -113,15 +113,40 @@
       <raw-section>
         <xsl:value-of select="$raw-reference"/>
       </raw-section>
-      <xsl:analyze-string select="$raw-reference" regex="([a-zA-Z0-9\.]+)(( )(.*))*">
-        <xsl:matching-substring>
-          <xsl:call-template name="sec-insert">
-            <xsl:with-param name="s" select="regex-group(1)"/>
+      <xsl:choose>
+        <xsl:when test="contains($raw-reference,'&amp;amp;')">
+          <xsl:for-each select="tokenize($raw-reference,'&amp;amp;')">
+            <xsl:call-template name="raw-sec-insert">
+              <xsl:with-param name="s" select="."/>
+            </xsl:call-template>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:when test="contains($raw-reference,'and')">
+          <xsl:for-each select="tokenize($raw-reference,'and')">
+            <xsl:call-template name="raw-sec-insert">
+              <xsl:with-param name="s" select="."/>
+            </xsl:call-template>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="raw-sec-insert">
+            <xsl:with-param name="s" select="$raw-reference"/>
           </xsl:call-template>
-        </xsl:matching-substring>
-      </xsl:analyze-string>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:if>
   </erratum>
+</xsl:template>
+
+<xsl:template name="raw-sec-insert">
+  <xsl:param name="s"/>
+  <xsl:analyze-string select="normalize-space($s)" regex="(A. )?([a-zA-Z0-9\.]+)(( )(.*))*">
+    <xsl:matching-substring>
+      <xsl:call-template name="sec-insert">
+        <xsl:with-param name="s" select="regex-group(2)"/>
+      </xsl:call-template>
+    </xsl:matching-substring>
+  </xsl:analyze-string>
 </xsl:template>
 
 <xsl:template name="sec-insert">
