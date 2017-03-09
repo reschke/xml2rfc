@@ -75,7 +75,7 @@
   <xsl:param name="s"/>
   <xsl:variable name="raw-reference">
     <xsl:variable name="t" select="normalize-space(translate($s,'&#13;&#10;&#9;','   '))"/>
-    <xsl:analyze-string select="$t" regex="&lt;p>([iI]n )?((Section|Appendix)(.*))(, it )?(says|states):( )?&lt;/p> &lt;pre class=.rfctext.">
+    <xsl:analyze-string select="$t" regex="&lt;p>([iI]n )?((Section|Appendix)(.*?))(, it )?(says|states):( )?&lt;/p> &lt;pre class=.rfctext.">
       <xsl:matching-substring>
         <xsl:value-of select="normalize-space(regex-group(2))"/>
       </xsl:matching-substring>
