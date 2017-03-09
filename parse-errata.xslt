@@ -29,9 +29,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 -->
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-               xmlns:f="#foo"
                version="2.0"
-               exclude-result-prefixes="f"
 >
 
 <xsl:output encoding="UTF-8" indent="yes"/>
@@ -117,17 +115,23 @@
       </raw-section>
       <xsl:analyze-string select="$raw-reference" regex="Section [Aa]ppendix ([a-zA-Z0-9\.]*)">
         <xsl:matching-substring>
-          <section><xsl:value-of select="f:secnum(regex-group(1))"/></section>
+          <xsl:call-template name="sec-insert">
+            <xsl:with-param name="s" select="regex-group(1)"/>
+          </xsl:call-template>
         </xsl:matching-substring>
         <xsl:non-matching-substring>
           <xsl:analyze-string select="$raw-reference" regex="Section ([a-zA-Z0-9\.]+)(( )(.*))*">
             <xsl:matching-substring>
-              <section><xsl:value-of select="f:secnum(regex-group(1))"/></section>
+              <xsl:call-template name="sec-insert">
+                <xsl:with-param name="s" select="regex-group(1)"/>
+              </xsl:call-template>
             </xsl:matching-substring>
           </xsl:analyze-string>
           <xsl:analyze-string select="$raw-reference" regex="[Aa]ppendix ([a-zA-Z0-9\.]+)(( )(.*))*">
             <xsl:matching-substring>
-              <section><xsl:value-of select="f:secnum(regex-group(1))"/></section>
+              <xsl:call-template name="sec-insert">
+                <xsl:with-param name="s" select="regex-group(1)"/>
+              </xsl:call-template>
             </xsl:matching-substring>
           </xsl:analyze-string>
         </xsl:non-matching-substring>
@@ -136,20 +140,23 @@
   </erratum>
 </xsl:template>
 
-<xsl:function name="f:secnum">
+<xsl:template name="sec-insert">
   <xsl:param name="s"/>
   <xsl:variable name="l" select="translate($s,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
   <xsl:choose>
+    <xsl:when test="$l='nonspecific'">
+      <!-- not a section number -->
+    </xsl:when>
     <xsl:when test="$l='toc' or $l='boilerplate'">
-      <xsl:value-of select="$l"/>
+      <section><xsl:value-of select="$l"/></section>
     </xsl:when>
     <xsl:when test="ends-with($s,'.')">
-      <xsl:value-of select="substring($s,0,string-length($s))"/>
+      <section><xsl:value-of select="substring($s,0,string-length($s))"/></section>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$s"/>
+      <section><xsl:value-of select="$s"/></section>
     </xsl:otherwise>
   </xsl:choose>
-</xsl:function>
+</xsl:template>
 
 </xsl:transform>
