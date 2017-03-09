@@ -75,9 +75,9 @@
   <xsl:param name="s"/>
   <xsl:variable name="raw-reference">
     <xsl:variable name="t" select="normalize-space(translate($s,'&#13;&#10;&#9;','   '))"/>
-    <xsl:analyze-string select="$t" regex="&lt;p>([iI]n )?([Ss]ection|[Aa]ppendix) ((.*?))(, it )?(says|states):( )?&lt;/p> &lt;pre class=.rfctext.">
+    <xsl:analyze-string select="$t" regex="&lt;p>([iI]n )?([Ss]ection|[Aa]ppendix)( [Aa]ppendix)? ((.*?))(, it )?(says|states):( )?&lt;/p> &lt;pre class=.rfctext.">
       <xsl:matching-substring>
-        <xsl:value-of select="normalize-space(regex-group(3))"/>
+        <xsl:value-of select="normalize-space(regex-group(4))"/>
       </xsl:matching-substring>
     </xsl:analyze-string>
   </xsl:variable>
@@ -113,21 +113,12 @@
       <raw-section>
         <xsl:value-of select="$raw-reference"/>
       </raw-section>
-      <xsl:analyze-string select="$raw-reference" regex="[Aa]ppendix ([a-zA-Z0-9\.]*)">
+      <xsl:analyze-string select="$raw-reference" regex="([a-zA-Z0-9\.]+)(( )(.*))*">
         <xsl:matching-substring>
           <xsl:call-template name="sec-insert">
             <xsl:with-param name="s" select="regex-group(1)"/>
           </xsl:call-template>
         </xsl:matching-substring>
-        <xsl:non-matching-substring>
-          <xsl:analyze-string select="$raw-reference" regex="([a-zA-Z0-9\.]+)(( )(.*))*">
-            <xsl:matching-substring>
-              <xsl:call-template name="sec-insert">
-                <xsl:with-param name="s" select="regex-group(1)"/>
-              </xsl:call-template>
-            </xsl:matching-substring>
-          </xsl:analyze-string>
-        </xsl:non-matching-substring>
       </xsl:analyze-string>
     </xsl:if>
   </erratum>
