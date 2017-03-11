@@ -49,7 +49,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi figextract listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug pn scripts preptime</xsl:text>
+  <xsl:text>pi rfc2629ext figextract listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug pn scripts preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -116,6 +116,10 @@
         <xsl:when test="$s='removeinrfc'">
           <xsl:message>Step: removeinrfc</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-removeinrfc"/>
+        </xsl:when>
+        <xsl:when test="$s='rfc2629ext'"> 
+          <xsl:message>Step: rfc2629ext</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-rfc2629ext"/>
         </xsl:when>
         <xsl:when test="$s='rfccleanup'">
           <xsl:message>Step: rfccleanup</xsl:message>
@@ -1013,6 +1017,23 @@
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
+
+<!-- rrfc2629ext step -->
+
+<xsl:template match="node()|@*" mode="prep-rfc2629ext">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-rfc2629ext"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="reference" mode="prep-rfc2629ext">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-rfc2629ext"/>
+    <xsl:if test="not(@quoteTitle) and front/title[@x:quotes='false']" xmlns:x="http://purl.org/net/xml2rfc/ext">
+      <xsl:attribute name="quoteTitle">false</xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-rfc2629ext"/>
+  </xsl:copy>
+</xsl:template>
+<xsl:template match="@x:quotes" mode="prep-rfc2629ext" xmlns:x="http://purl.org/net/xml2rfc/ext"/>
 
 <!-- rfccleanup step -->
 
