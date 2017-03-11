@@ -389,10 +389,10 @@ attlist.street &=
 attlist.t &=
   attribute pn { text }? # (see [RFC7991], Appendix B.2)
 
-# Allow x:quotes attribute on <title>
+# Extend attribute set for <title>
 attlist.title &=
   attribute ascii { ATEXT }?,
-  attribute x:quotes { "true" | "false" }?
+  attribute x:quotes { "true" | "false" }? # (deprecated, see Section 12.18.1))
 
 # Allow annotation attribute on <uri>
 attlist.uri &=
