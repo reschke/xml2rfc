@@ -1104,7 +1104,12 @@
         <xsl:choose>
           <xsl:when test="not(@name) and not(@value) and ./text()"><xsl:value-of select="." /></xsl:when>
           <xsl:when test="@name='RFC' and $rfcs > 1">
-            <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="{concat($rfcUrlPrefix,@value,$rfcUrlPostfix)}">
+          <xsl:variable name="uri">
+            <xsl:call-template name="compute-doi-uri">
+              <xsl:with-param name="doi" select="@value"/>
+            </xsl:call-template>
+          </xsl:variable>
+            <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="{$uri}">
               <xsl:value-of select="@name" />
               <xsl:if test="@value!=''">&#0160;<xsl:value-of select="@value" /></xsl:if>
             </fo:basic-link>

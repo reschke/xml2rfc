@@ -356,6 +356,12 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>URI template for RFC Errata ("eid" is the "errata id").</c>
 
   <c>rfc-ext</c>
+  <c>rfc-uri<iref item="rfc-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-uri"/></c>
+  <c>xml2rfc-ext-rfc-uri<iref item="xml2rfc-ext-rfc-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-uri"/></c>
+  <c>"https://tools.ietf.org/html/rfc{rfc}"</c>
+  <c>URI template for RFC links.</c>
+
+  <c>rfc-ext</c>
   <c>sec-no-trailing-dots<iref item="sec-no-trailing-dots PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="sec-no-trailing-dots"/></c>
   <c>xml2rfc-ext-sec-no-trailing-dots<iref item="xml2rfc-ext-sec-no-trailing-dots parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-sec-no-trailing-dots"/></c>
   <c></c>
