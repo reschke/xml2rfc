@@ -1110,7 +1110,12 @@
             </fo:basic-link>
           </xsl:when>
           <xsl:when test="@name='DOI'">
-            <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="http://dx.doi.org/{@value}">
+            <xsl:variable name="uri">
+              <xsl:call-template name="compute-doi-uri">
+                <xsl:with-param name="doi" select="@value"/>
+              </xsl:call-template>
+            </xsl:variable>
+            <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="{$uri}">
               <xsl:value-of select="@name" />
               <xsl:if test="@value!=''">&#0160;<xsl:value-of select="@value" /></xsl:if>
             </fo:basic-link>
@@ -1135,8 +1140,13 @@
 
       <!-- Insert DOI for RFCs -->
       <xsl:if test="$xml2rfc-ext-insert-doi='yes' and $doi!='' and not(.//seriesInfo[@name='DOI'])">
+        <xsl:variable name="uri">
+          <xsl:call-template name="compute-doi-uri">
+            <xsl:with-param name="doi" select="$doi"/>
+          </xsl:call-template>
+        </xsl:variable>
         <xsl:text>, </xsl:text>
-        <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="http://dx.doi.org/{$doi}">DOI&#160;<xsl:value-of select="$doi"/></fo:basic-link>
+        <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="{$uri}">DOI&#160;<xsl:value-of select="$doi"/></fo:basic-link>
       </xsl:if>
 
       <!-- avoid hacks using seriesInfo when it's not really series information -->

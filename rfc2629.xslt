@@ -621,10 +621,27 @@
 
 <!--templates for URI calculation -->
 
+<xsl:param name="xml2rfc-ext-doi-uri">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'doi-uri'"/>
+    <xsl:with-param name="default">http://dx.doi.org/{doi}</xsl:with-param>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:template name="compute-doi-uri">
+  <xsl:param name="doi"/>
+  <xsl:call-template name="replace-substring">
+    <xsl:with-param name="string" select="$xml2rfc-ext-doi-uri"/>
+    <xsl:with-param name="replace" select="'{doi}'"/>
+    <xsl:with-param name="by" select="$doi"/>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:param name="xml2rfc-ext-rfc-errata-uri">
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
-    <xsl:with-param name="attr" select="'check-artwork-width'"/>
+    <xsl:with-param name="attr" select="'rfc-errata-uri'"/>
     <xsl:with-param name="default">https://www.rfc-editor.org/errata_search.php?eid={eid}</xsl:with-param>
   </xsl:call-template>
 </xsl:param>
@@ -2743,7 +2760,12 @@
           </a>
         </xsl:when>
         <xsl:when test="@name='DOI'">
-          <a href="http://dx.doi.org/{@value}">
+          <xsl:variable name="uri">
+            <xsl:call-template name="compute-doi-uri">
+              <xsl:with-param name="doi" select="@value"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <a href="{$uri}">
             <xsl:value-of select="@name" />
             <xsl:if test="@value!=''">&#0160;<xsl:value-of select="@value" /></xsl:if>
           </a>
@@ -2777,7 +2799,12 @@
     <!-- Insert DOI for RFCs -->
     <xsl:if test="$xml2rfc-ext-insert-doi='yes' and $doi!='' and not($si[@name='DOI'])">
       <xsl:text>, </xsl:text>
-      <a href="http://dx.doi.org/{$doi}">DOI&#160;<xsl:value-of select="$doi"/></a>
+      <xsl:variable name="uri">
+        <xsl:call-template name="compute-doi-uri">
+          <xsl:with-param name="doi" select="$doi"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <a href="{$uri}">DOI&#160;<xsl:value-of select="$doi"/></a>
     </xsl:if>
 
     <!-- avoid hacks using seriesInfo when it's not really series information -->
@@ -9019,11 +9046,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.869 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.869 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.870 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.870 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/12 10:19:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/12 10:19:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/12 15:19:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/12 15:19:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
