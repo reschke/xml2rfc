@@ -619,6 +619,9 @@
 <xsl:param name="internetDraftUrlFragSection" select="'section-'" />
 <xsl:param name="internetDraftUrlFragAppendix" select="'appendix-'" />
 
+<!--templates for URI calculation -->
+<xsl:param name="rfc-errata-uri">https://www.rfc-editor.org/errata_search.php?eid={eid}</xsl:param>
+
 <!-- the format we're producing -->
 <xsl:param name="outputExtension" select="'html'"/>
 
@@ -2544,7 +2547,11 @@
     <xsl:when test=".//seriesInfo/@name='RFC' and (@target='http://www.rfc-editor.org' or @target='https://www.rfc-editor.org') and starts-with(front/title,'Errata ID ') and front/author/organization='RFC Errata'">
       <!-- check for erratum link -->
       <xsl:variable name="eid" select="normalize-space(substring(front/title,string-length('Errata ID ')))"/>
-      <xsl:value-of select="concat('https://www.rfc-editor.org/errata_search.php?eid=',$eid)"/>
+      <xsl:call-template name="replace-substring">
+        <xsl:with-param name="string" select="$rfc-errata-uri"/>
+        <xsl:with-param name="replace" select="'{eid}'"/>
+        <xsl:with-param name="by" select="$eid"/>
+      </xsl:call-template>
     </xsl:when>
     <xsl:when test="@target">
       <xsl:if test="normalize-space(@target)=''">
@@ -3475,7 +3482,14 @@
             <xsl:value-of select="@reported"/>
             <xsl:if test="@type"> (<xsl:value-of select="@type"/>)</xsl:if>
           </xsl:variable>
-          <a href="https://www.rfc-editor.org/errata_search.php?eid={@eid}" title="{$tooltip}">Erratum <xsl:value-of select="@eid"/></a>
+          <xsl:variable name="uri">
+            <xsl:call-template name="replace-substring">
+              <xsl:with-param name="string" select="$rfc-errata-uri"/>
+              <xsl:with-param name="replace" select="'{eid}'"/>
+              <xsl:with-param name="by" select="@eid"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <a href="{$uri}" title="{$tooltip}">Erratum <xsl:value-of select="@eid"/></a>
           <xsl:choose>
             <xsl:when test="@status='Verified'"><xsl:text> </xsl:text><span title="verified">&#x2714;</span></xsl:when>
             <xsl:when test="@status='Reported'"><xsl:text> </xsl:text><span title="reported">&#x2709;</span></xsl:when>
@@ -8993,11 +9007,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.867 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.867 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.868 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.868 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/08 14:23:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/08 14:23:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/12 09:01:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/12 09:01:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
