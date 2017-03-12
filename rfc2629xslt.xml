@@ -338,6 +338,12 @@ xsltproc --param xml2rfc-toc '"yes"' \
   inserts it into the front page (standards track, obsoletion, updates, errata).</c>
 
   <c>rfc-ext</c>
+  <c>internet-draft-uri<iref item="internet-draft-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="internet-draft-uri"/></c>
+  <c>xml2rfc-ext-internet-draft-uri<iref item="xml2rfc-ext-internet-draft-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-internet-draft-uri"/></c>
+  <c>"https://tools.ietf.org/html/{internet-draft}"</c>
+  <c>URI template for Internet-Draft links.</c>
+
+  <c>rfc-ext</c>
   <c>justification<iref item="justification PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="justification"/></c>
   <c>xml2rfc-ext-justification<iref item="xml2rfc-ext-justification parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-justification"/></c>
   <c>"never"</c>

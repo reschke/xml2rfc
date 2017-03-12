@@ -612,8 +612,6 @@
 <!-- Reference the marked up versions over on https://tools.ietf.org/html. -->
 <xsl:param name="rfcUrlFragSection" select="'section-'" />
 <xsl:param name="rfcUrlFragAppendix" select="'appendix-'" />
-<xsl:param name="internetDraftUrlPrefix" select="'https://tools.ietf.org/html/'" />
-<xsl:param name="internetDraftUrlPostfix" select="''" />
 <xsl:param name="internetDraftUrlFragSection" select="'section-'" />
 <xsl:param name="internetDraftUrlFragAppendix" select="'appendix-'" />
 
@@ -633,6 +631,23 @@
     <xsl:with-param name="string" select="$xml2rfc-ext-rfc-uri"/>
     <xsl:with-param name="replace" select="'{rfc}'"/>
     <xsl:with-param name="by" select="$rfc"/>
+  </xsl:call-template>
+</xsl:template>
+
+<xsl:param name="xml2rfc-ext-internet-draft-uri">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'internet-draft-uri'"/>
+    <xsl:with-param name="default">https://tools.ietf.org/html/{internet-draft}</xsl:with-param>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:template name="compute-internet-draft-uri">
+  <xsl:param name="internet-draft"/>
+  <xsl:call-template name="replace-substring">
+    <xsl:with-param name="string" select="$xml2rfc-ext-internet-draft-uri"/>
+    <xsl:with-param name="replace" select="'{internet-draft}'"/>
+    <xsl:with-param name="by" select="$internet-draft"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -2403,7 +2418,9 @@
       </xsl:if>
     </xsl:when>
     <xsl:when test="$bib//seriesInfo/@name='Internet-Draft'">
-      <xsl:value-of select="concat($internetDraftUrlPrefix,$bib//seriesInfo[@name='Internet-Draft']/@value,$internetDraftUrlPostfix)" />
+      <xsl:call-template name="compute-internet-draft-uri">
+        <xsl:with-param name="internet-draft" select="$bib//seriesInfo[@name='Internet-Draft']/@value"/>
+      </xsl:call-template>
       <xsl:if test="$ref and $sec!='' and $internetDraftUrlFragSection and $internetDraftUrlFragAppendix">
         <xsl:choose>
           <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
@@ -7445,7 +7462,12 @@ dd, li, p {
 
   <xsl:choose>
     <xsl:when test="starts-with($name,'draft-')">
-      <a href="{concat($internetDraftUrlPrefix,$name,$internetDraftUrlPostfix)}"><xsl:value-of select="$name"/></a>
+      <xsl:variable name="uri">
+        <xsl:call-template name="compute-internet-draft-uri">
+          <xsl:with-param name="internet-draft" select="$name"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <a href="{$uri}"><xsl:value-of select="$name"/></a>
       <xsl:call-template name="check-front-matter-ref">
         <xsl:with-param name="name" select="$name"/>
       </xsl:call-template>
@@ -9073,11 +9095,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.871 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.871 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.872 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.872 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/12 16:19:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/12 16:19:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/12 17:08:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/12 17:08:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
