@@ -356,10 +356,16 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>May be used to enable parsing of XML content in figures (MSXML only).</c>
 
   <c>rfc-ext</c>
+  <c>rfc-errata-uri<iref item="rfc-errata-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-errata-uri"/></c>
+  <c>xml2rfc-ext-rfc-errata-uri<iref item="xml2rfc-ext-rfc-errata-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-errata-uri"/></c>
+  <c>"https://www.rfc-editor.org/errata_search.php?rfc={rfc}"</c>
+  <c>URI template for all RFC Errata for a given RFC ("rfc" is the RFC number).</c>
+
+  <c>rfc-ext</c>
   <c>rfc-erratum-uri<iref item="rfc-erratum-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-erratum-uri"/></c>
   <c>xml2rfc-ext-rfc-erratum-uri<iref item="xml2rfc-ext-rfc-erratum-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-erratum-uri"/></c>
   <c>"https://www.rfc-editor.org/errata_search.php?eid={eid}"</c>
-  <c>URI template for RFC Errata ("eid" is the "errata id").</c>
+  <c>URI template for a specific RFC erratum ("eid" is the "errata id").</c>
 
   <c>rfc-ext</c>
   <c>rfc-uri<iref item="rfc-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-uri"/></c>
