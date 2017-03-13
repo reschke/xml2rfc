@@ -3554,7 +3554,7 @@
   <xsl:if test="$es">
     <aside class="{$css-erratum}">
       <xsl:for-each select="$es">
-        <xsl:sort select="@eid"/>
+        <xsl:sort select="@eid" data-type="number"/>
         <div>
           <xsl:variable name="tooltip">
             <xsl:value-of select="@reported-by"/>
@@ -9101,11 +9101,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.873 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.873 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.874 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.874 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/12 18:44:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/12 18:44:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/13 06:28:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/13 06:28:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
