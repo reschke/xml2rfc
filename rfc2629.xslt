@@ -668,18 +668,18 @@
   </xsl:call-template>
 </xsl:template>
 
-<xsl:param name="xml2rfc-ext-rfc-errata-uri">
+<xsl:param name="xml2rfc-ext-rfc-erratum-uri">
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
-    <xsl:with-param name="attr" select="'rfc-errata-uri'"/>
+    <xsl:with-param name="attr" select="'rfc-erratum-uri'"/>
     <xsl:with-param name="default">https://www.rfc-editor.org/errata_search.php?eid={eid}</xsl:with-param>
   </xsl:call-template>
 </xsl:param>
 
-<xsl:template name="compute-rfc-errata-uri">
+<xsl:template name="compute-rfc-erratum-uri">
   <xsl:param name="eid"/>
   <xsl:call-template name="replace-substring">
-    <xsl:with-param name="string" select="$xml2rfc-ext-rfc-errata-uri"/>
+    <xsl:with-param name="string" select="$xml2rfc-ext-rfc-erratum-uri"/>
     <xsl:with-param name="replace" select="'{eid}'"/>
     <xsl:with-param name="by" select="$eid"/>
   </xsl:call-template>
@@ -2614,7 +2614,7 @@
     <xsl:when test=".//seriesInfo/@name='RFC' and (@target='http://www.rfc-editor.org' or @target='https://www.rfc-editor.org') and starts-with(front/title,'Errata ID ') and front/author/organization='RFC Errata'">
       <!-- check for erratum link -->
       <xsl:variable name="eid" select="normalize-space(substring(front/title,string-length('Errata ID ')))"/>
-      <xsl:call-template name="compute-rfc-errata-uri">
+      <xsl:call-template name="compute-rfc-erratum-uri">
         <xsl:with-param name="eid" select="$eid"/>
       </xsl:call-template>
     </xsl:when>
@@ -3563,7 +3563,7 @@
             <xsl:if test="@type"> (<xsl:value-of select="@type"/>)</xsl:if>
           </xsl:variable>
           <xsl:variable name="uri">
-            <xsl:call-template name="compute-rfc-errata-uri">
+            <xsl:call-template name="compute-rfc-erratum-uri">
               <xsl:with-param name="eid" select="@eid"/>
             </xsl:call-template>
           </xsl:variable>
@@ -9101,11 +9101,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.874 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.874 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.875 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.875 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/13 06:28:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/13 06:28:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/13 13:00:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/13 13:00:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
