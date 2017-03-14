@@ -272,6 +272,114 @@
   </xsl:choose>
 </xsl:variable>
 
+<!-- CSS styles -->
+
+<xsl:param name="xml2rfc-ext-styles">fft-sans-serif ffb-serif ff-cleartype</xsl:param>
+
+<xsl:variable name="styles" select="concat(' ',normalize-space($xml2rfc-ext-styles),' ')"/>
+
+<xsl:param name="xml2rfc-ext-ff-body">
+  <xsl:variable name="t">
+    <xsl:if test="contains($styles,' ff-noto ')">
+      <xsl:if test="contains($styles,' ffb-serif ')">
+        'Noto Serif', 
+      </xsl:if>
+      <xsl:if test="contains($styles,' ffb-sans-serif ')">
+        'Noto Sans',
+      </xsl:if>
+    </xsl:if>
+    <xsl:if test="contains($styles,' ff-cleartype ')">
+      <xsl:if test="contains($styles,' ffb-serif ')">
+        cambria, georgia, 
+      </xsl:if>
+      <xsl:if test="contains($styles,' ffb-sans-serif ')">
+        candara, calibri,
+      </xsl:if>
+    </xsl:if>
+    <xsl:if test="contains($styles,' ffb-sans-serif ')">
+      segoe, optima, arial, sans-serif,
+    </xsl:if>
+    serif
+  </xsl:variable>
+  <xsl:call-template name="ff-list">
+    <xsl:with-param name="s" select="normalize-space($t)"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:param name="xml2rfc-ext-ff-title">
+  <xsl:variable name="t">
+    <xsl:if test="contains($styles,' ff-noto ')">
+      <xsl:if test="contains($styles,' fft-serif ')">
+        'Noto Serif', 
+      </xsl:if>
+      <xsl:if test="contains($styles,' fft-sans-serif ')">
+        'Noto Sans',
+      </xsl:if>
+    </xsl:if>
+    <xsl:if test="contains($styles,' ff-cleartype ')">
+      <xsl:if test="contains($styles,' fft-serif ')">
+        cambria, georgia, 
+      </xsl:if>
+      <xsl:if test="contains($styles,' fft-sans-serif ')">
+        candara, calibri,
+      </xsl:if>
+    </xsl:if>
+    <xsl:if test="contains($styles,' fft-serif ')">
+      serif,
+    </xsl:if>
+    <xsl:if test="contains($styles,' fft-sans-serif ')">
+      segoe, optima, arial,
+    </xsl:if>
+    sans-serif
+  </xsl:variable>
+  <xsl:call-template name="ff-list">
+    <xsl:with-param name="s" select="normalize-space($t)"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:param name="xml2rfc-ext-ff-pre">
+  <xsl:variable name="t">
+    <xsl:if test="contains($styles,' ff-noto ')">
+      'Roboto Mono',
+    </xsl:if>
+    <xsl:if test="contains($styles,' ff-cleartype ')">
+      consolas, monaco,
+    </xsl:if>
+    monospace
+  </xsl:variable>
+  <xsl:call-template name="ff-list">
+    <xsl:with-param name="s" select="normalize-space($t)"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:param name="xml2rfc-ext-webfonts">
+  <xsl:if test="contains($styles,' ff-noto ')">
+    <xsl:if test="contains($styles,' ffb-sans-serif ') or contains($styles,' fft-sans-serif ')">
+      <xsl:text>@import url('https://fonts.googleapis.com/css?family=Noto+Sans');&#10;</xsl:text>
+    </xsl:if>
+    <xsl:if test="contains($styles,' ffb-serif ') or contains($styles,' fft-serif ')">
+      <xsl:text>@import url('https://fonts.googleapis.com/css?family=Noto+Serif');&#10;</xsl:text>
+    </xsl:if>
+      <xsl:text>@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');&#10;</xsl:text>
+  </xsl:if>
+</xsl:param>
+
+<xsl:template name="ff-list">
+  <xsl:param name="s"/>
+  <xsl:choose>
+    <xsl:when test="not(contains($s,','))">
+      <xsl:value-of select="normalize-space($s)"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="normalize-space(substring-before($s,','))"/>
+      <xsl:text>, </xsl:text>
+      <xsl:call-template name="ff-list">
+        <xsl:with-param name="s" select="substring-after($s,',')"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <!-- include PI -->
 
 <xsl:template name="getIncludes">
@@ -5508,7 +5616,8 @@ window.addEventListener('DOMContentLoaded', anchorRewrite);
 <!-- insert CSS style info -->
 
 <xsl:template name="insertCss">
-<style type="text/css" title="Xml2Rfc (sans serif)">
+<style type="text/css" title="rfc2629.xslt">
+<xsl:value-of select="$xml2rfc-ext-webfonts"/>
 a {
   text-decoration: none;
 }
@@ -5536,13 +5645,13 @@ blockquote {
 body {<xsl:if test="$xml2rfc-background!=''">
   background: url(<xsl:value-of select="$xml2rfc-background" />) #ffffff left top;</xsl:if>
   color: black;
-  font-family: cambria, georgia, serif;
+  font-family: <xsl:value-of select="$xml2rfc-ext-ff-body"/>;
   font-size: 12pt;
   margin: 2em auto;<xsl:if test="$parsedMaxwidth!=''">
   max-width: <xsl:value-of select="$parsedMaxwidth"/>px;</xsl:if>
 }
 samp, span.tt, code, pre {
-  font-family: consolas, monaco, monospace;
+  font-family: <xsl:value-of select="$xml2rfc-ext-ff-pre"/>;
 }<xsl:if test="//xhtml:p">
 br.p {
   line-height: 150%;
@@ -5826,7 +5935,7 @@ ul p {
   margin-left: 0em;
 }
 .filename, h1, h2, h3, h4 {
-  font-family: candara, calibri, segoe, optima, arial, sans-serif;
+  font-family: <xsl:value-of select="$xml2rfc-ext-ff-title"/>;
 }
 <xsl:if test="$has-index">ul.ind, ul.ind ul {
   list-style: none;
@@ -9115,11 +9224,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.876 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.876 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.877 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.877 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/13 13:29:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/13 13:29:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/14 06:13:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/14 06:13:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
