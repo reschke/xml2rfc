@@ -355,12 +355,12 @@
 <xsl:param name="xml2rfc-ext-webfonts">
   <xsl:if test="contains($styles,' ff-noto ')">
     <xsl:if test="contains($styles,' ffb-sans-serif ') or contains($styles,' fft-sans-serif ')">
-      <xsl:text>@import url('https://fonts.googleapis.com/css?family=Noto+Sans');&#10;</xsl:text>
+      <xsl:text>@import url('https://fonts.googleapis.com/css?family=Noto+Sans:r,b,i,bi');&#10;</xsl:text>
     </xsl:if>
     <xsl:if test="contains($styles,' ffb-serif ') or contains($styles,' fft-serif ')">
-      <xsl:text>@import url('https://fonts.googleapis.com/css?family=Noto+Serif');&#10;</xsl:text>
+      <xsl:text>@import url('https://fonts.googleapis.com/css?family=Noto+Serif:r,b,i,bi');&#10;</xsl:text>
     </xsl:if>
-      <xsl:text>@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');&#10;</xsl:text>
+    <xsl:text>@import url('https://fonts.googleapis.com/css?family=Roboto+Mono:r,b,i,bi');&#10;</xsl:text>
   </xsl:if>
 </xsl:param>
 
@@ -9224,11 +9224,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.877 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.877 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.878 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.878 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/14 06:13:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/14 06:13:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/14 17:48:27 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/14 17:48:27 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
