@@ -70,8 +70,9 @@
 
 <section title="Supported RFC2629 elements" anchor="supported.elements">
 <t>
-  <tt>rfc2629.xslt</tt> supports both all RFC2629 grammar elements and the extensions
-  implemented in xml2rfc 1.36.
+  <tt>rfc2629.xslt</tt> supports both all grammar elements defined in
+  <xref target="RFC7749"/>, plus a subset of the new elements defined
+  in <xref target="RFC7991"/>.
 </t>
 <section title="Extension elements">
 <t>
