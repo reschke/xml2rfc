@@ -2,7 +2,7 @@
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
 <?rfc header="Documentation"?>
-<?rfc private="RFC2629 through XSLT"?>
+<?rfc private="RFC7749through XSLT"?>
 <?rfc toc="yes"?>
 <!-- <?rfc topblock="no"?>  -->
 <?rfc strict="no"?>
@@ -15,7 +15,7 @@
 
 <rfc xmlns:x="http://purl.org/net/xml2rfc/ext">
 	<front>
-  	<title abbrev="RFC2629 through XSLT">Transforming RFC2629-formatted XML through XSLT</title>
+  	<title abbrev="RFC7749 through XSLT">Transforming RFC7749-formatted XML through XSLT</title>
 
   	<author initials="J. F." surname="Reschke" fullname="Julian F. Reschke">
   		<organization abbrev="greenbytes">greenbytes GmbH</organization>
@@ -33,6 +33,7 @@
     <date/>
 
     <keyword>RFC2629</keyword>
+    <keyword>RFC7749</keyword>
     <keyword>xml2rfc</keyword>
     <keyword>XSLT</keyword>
     <keyword>XSL-FO</keyword>
@@ -66,9 +67,15 @@
 <t>
   The full distribution is available at <eref target="http://greenbytes.de/tech/webdav/rfc2629xslt.zip"/>.
 </t>
+<aside>
+  <t>
+    <em>Note:</em> RFC 2629 was the initial specification of the XML vocabulary; that's why the "2629" 
+    lives on in various parts, such as filenames.
+  </t>
+</aside>
 </section>
 
-<section title="Supported RFC2629 elements" anchor="supported.elements">
+<section title="Supported RFC7749 elements" anchor="supported.elements">
 <t>
   <tt>rfc2629.xslt</tt> supports both all grammar elements defined in
   <xref target="RFC7749"/>, plus a subset of the new elements defined
@@ -290,7 +297,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>xml2rfc-allow-markup-in-artwork<iref item="xml2rfc-ext-allow-markup-in-artwork parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-allow-markup-in-artwork"/></c>
   <c>"no"</c>
   <c>Enables support for specific elements inside abstract elements (using this extension
-  makes the document incompatible to the RFC2629bis DTD; see description of
+  makes the document incompatible to the RFC7749 grammar; see description of
   conversion XSLT in <xref target="clean-for-dtd"/>).</c>
 
   <c>rfc-ext</c>
@@ -1211,7 +1218,7 @@ Content-Length: &lt;x:length-of target="req"/>
     This element is like the &lt;sup&gt; element in <xref target="HTML5" x:sec="4.5.16" x:rel="text-level-semantics.html#the-sub-and-sup-elements"/>.
   </t>
   <t>
-    Note: the down conversion to RFC2629 format replaces
+    Note: the down conversion to RFC7749 format replaces
     "x<x:sup>y</x:sup>" by "x^y".
   </t>
   <t>
@@ -1768,7 +1775,7 @@ The picture below shows the RFC dependencies in RFC2629.
 </t>
 </section>
 
-<section title="Down-converting to RFC2629bis DTD" anchor="clean-for-dtd">
+<section title="Down-converting to RFC7749 Grammar" anchor="clean-for-dtd">
 <t>
   <tt>clean-for-DTD.xslt</tt> can be used to down-convert
   some extensions to a format that is supported by the base xml2rfc
@@ -3618,7 +3625,7 @@ rdf_content =
   it is important to set the correct values.
 </t>
 <t>
-  Furthermore, the RFC Production Center uses RFC2629-based tools to 
+  Furthermore, the RFC Production Center uses RFC7749-based tools to 
   generate the final RFC text, so the more accurate the supplied information
   is, the less additional work is left, and the risk for errors in producing
   the final (and immutable!) document is reduced.
