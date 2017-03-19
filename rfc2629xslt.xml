@@ -2,7 +2,7 @@
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
 <?rfc header="Documentation"?>
-<?rfc private="RFC7749through XSLT"?>
+<?rfc private="RFC 7749 through XSLT"?>
 <?rfc toc="yes"?>
 <!-- <?rfc topblock="no"?>  -->
 <?rfc strict="no"?>
@@ -691,6 +691,39 @@ for rfc2396.xml.
   <c>DC.Relation.Replaces<iref item="Relation.Replaces DCMI property"/><iref item="DCMI properties" subitem="Relation.Replaces"/></c><c>from "obsoletes" attribute</c>
 
 </texttable>
+</section>
+
+<section title="Insertion of Live RFC Meta Data" anchor="rfc-editor.meta-data">
+  <iref item="insert-metadata PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="insert-metadata"/>
+  <iref item="xml2rfc-ext-insert-metadata parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-insert-metadata"/>
+<t>
+  RFCs are immutable; once published, they do not change anymore. What
+  <em>does</em> change though is their status, their relation to subsequent
+  RFCs (such as when they are updated), and errata.
+</t>
+<t>
+  <tt>rfc2629toXHTML.xslt</tt> by default inserts code that will pull the relevant
+  information from <eref target="https://tools.ietf.org"/>. This can be disabled
+  by specifying the parameter "xml2rfc-ext-insert-metadata=no" (or
+  by inserting the equivalent processing instruction into the source code).
+</t>
+<t>
+  An example for the generated information can be seen at <eref target="https://greenbytes.de/tech/webdav/rfc2616.html#rfc.meta"/>.
+</t>
+<aside>
+  <t>
+    <strong>Note:</strong> the status information really should be available from
+    the RFC Editor, right now it only exists only in HTML form (such as
+    in <eref target="https://www.rfc-editor.org/info/rfc2616"/>. Furthermore,
+    the service provided by <eref target="https://tools.ietf.org"/> is
+    considered experimental, so this feature might be changed or removed
+    without prior notice.
+  </t>
+  <t>
+    ...and no, we currently can't obtain the exact list of errata, just a flag
+    indicating whether errata exist.  
+  </t>
+</aside>
 </section>
 
 </section>
