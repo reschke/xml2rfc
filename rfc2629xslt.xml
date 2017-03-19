@@ -700,10 +700,6 @@ for rfc2396.xml.
   Transforming to XHTML requires slightly different XSLT output options and
   is implemented by the derived transformation script <tt>rfc2629toXHTML.xslt</tt>.
 </t>
-<t><list><t>
-  <x:h>Note:</x:h> Microsoft Internet Explorer does <em>not</em> support XHTML.
-  Therefore it usually makes more sense to generate plain old HTML.
-</t></list></t>
 </section>
 
 <section title="Transforming to CHM (Microsoft Compiled Help)" anchor="output.chm">
