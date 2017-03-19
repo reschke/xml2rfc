@@ -320,6 +320,12 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>When set to "yes", format the PDF output for doublesided printing.</c>
 
   <c>rfc-ext</c>
+  <c>errata<iref item="errata PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="errata"/></c>
+  <c>xml2rfc-ext-errata<iref item="xml2rfc-ext-errata"/> <iref item="Parameters" subitem="xml2rfc-ext-errata"/></c>
+  <c></c>
+  <c>Can be used to specify an errata file; output will link to individual errata when possible. See <xref target="rfc-editor.errata"/></c>
+
+  <c>rfc-ext</c>
   <c>html-pretty-print<iref item="html-pretty-print PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="html-pretty-print"/></c>
   <c>xml2rfc-ext-html-pretty-print<iref item="xml2rfc-ext-html-pretty-print"/> <iref item="Parameters" subitem="xml2rfc-ext-html-pretty-print"/></c>
   <c></c>
@@ -726,6 +732,58 @@ for rfc2396.xml.
 </aside>
 </section>
 
+<section title="Insertion of RFC Errata Links" anchor="rfc-editor.errata">
+  <iref item="errata PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="errata"/>
+  <iref item="xml2rfc-ext-errata"/> <iref item="Parameters" subitem="xml2rfc-ext-errata"/>
+<t>
+  Unfortunately, the RFC Editor does not provide errata information in a 
+  well-defined machine readable format. What's available is "regular"
+  HTML (and that could be the worst currently in use in standards bodies...).
+</t>
+<t>
+  <tt>parse-errata.xslt</tt> attempts to parse useful information out of these
+  pages.
+</t>
+<t>
+  It can be run like that (requires an XSLT2 processor):
+</t>
+<figure><artwork type="example">
+# get the raw html and strip form feed characters
+curl -s https://www.rfc-editor.org/errata_search.php?rfc=2616 \
+  | tr -d '\f' > rfc2616.rawerrata
+# regexps are your friend
+saxon97he parse-errata.xslt parse-errata.xslt doc=2616 > rfc2616.errata
+</artwork></figure>
+<t>
+  The code tries to make sense of the HTML, in particular it tries to
+  detect what RFC sections each erratum applies to.
+  The resulting XML format is work-in-progress and just contains the
+  information that will be useful in subsequent formatting of the RFC. 
+</t>
+<t>
+  When <em>formatting</em> the RFC for HTML output, the errata file can
+  be passed as stylesheet parameter ("xml2rfc-ext-errata"). The output
+  will include errata links at the beginnings of the section they apply
+  to, or at the beginning of Section 1 when the location is unknown.
+</t>
+<t>
+  For the sake of embedding, three types of errata are relevant; their
+  type is indicated with a symbol:
+</t>
+<ul>
+  <li>"held for update": reviewed and decided to be "held for document update" (these are mostly editorial); "scissors" symbol.</li>
+  <li>"submitted": submitted, but not reviewed; "letter" symbol.</li>
+  <li>"verified": reviewed and found to be correct; "checkmark" symbol.</li>
+</ul>
+<t>
+  To recap: the errata information is passed into the transformation as 
+  additional parameter. The errata information will <em>not</em> be 
+  automatically retrieved from the RFC Editor web site. 
+</t>
+<t>
+  Finally, here's an example for inserted errata links: <eref target="https://greenbytes.de/tech/webdav/rfc7230.html#transfer.codings"/>.
+</t>
+</section>
 </section>
 
 <section title="Transforming to XHTML" anchor="output.xhtml">
