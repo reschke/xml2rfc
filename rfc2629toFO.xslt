@@ -3366,7 +3366,7 @@
 
 <!-- Nothing to do for PDF output -->
 <xsl:template match="x:assign-section-number" />
-<xsl:template match="x:link" />
+<xsl:template match="x:link|link" />
 
 <!-- Nothing to do here -->
 <xsl:template match="x:anchor-alias" />

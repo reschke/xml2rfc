@@ -3203,10 +3203,10 @@
         <link rel="Index" href="#{$anchor-pref}index" />
       </xsl:if>
       <xsl:apply-templates select="/" mode="links" />
-      <xsl:for-each select="x:link">
+      <xsl:for-each select="x:link|link">
         <link>
           <xsl:choose>
-            <xsl:when test="@basename">
+            <xsl:when test="self::x:link and @basename">
               <xsl:attribute name="href">
                 <xsl:value-of select="concat(@basename,'.',$outputExtension)"/>
               </xsl:attribute>
@@ -9224,11 +9224,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.879 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.879 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.880 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.880 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/19 14:54:27 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/19 14:54:27 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/20 19:13:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/20 19:13:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

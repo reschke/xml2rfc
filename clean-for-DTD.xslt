@@ -165,7 +165,7 @@
 </xsl:template>
 
 <xsl:template match="x:assign-section-number" mode="cleanup"/>  
-<xsl:template match="x:link" mode="cleanup"/>
+<xsl:template match="link|x:link" mode="cleanup"/>
 <xsl:template match="x:source" mode="cleanup"/>
 <xsl:template match="x:feedback" mode="cleanup"/>
 
