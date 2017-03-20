@@ -689,7 +689,7 @@
 <xsl:template name="get-script-names">
   <xsl:param name="node"/>
 
-  <xsl:variable name="common-and-latin">&#9;&#10;&#13;&#x20;&#x21;&#x22;&#x23;&#x24;&#x25;&#x26;&#x27;&#x28;&#x29;&#x2a;&#x2b;&#x2c;&#x2d;&#x2e;&#x2f;0123456789&#x3a;&#x3b;&#x3c;&#x3d;&#x3e;&#x3f;&#x40;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x5b;&#x5c;&#x5d;&#x5e;&#x5f;&#x60;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x7b;&#x7c;&#x7d;&#x7e;&#x7f;&#xa0;&#xa9;&#xc9;&#x200a;&#x2011;&#x2014;&#x201c;&#x201d;</xsl:variable>
+  <xsl:variable name="common-and-latin">&#9;&#10;&#13;&#x20;&#x21;&#x22;&#x23;&#x24;&#x25;&#x26;&#x27;&#x28;&#x29;&#x2a;&#x2b;&#x2c;&#x2d;&#x2e;&#x2f;0123456789&#x3a;&#x3b;&#x3c;&#x3d;&#x3e;&#x3f;&#x40;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x5b;&#x5c;&#x5d;&#x5e;&#x5f;&#x60;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x7b;&#x7c;&#x7d;&#x7e;&#x7f;&#xa0;&#xa9;&#xe9;&#x200a;&#x2011;&#x2014;&#x201c;&#x201d;</xsl:variable>
 
   <xsl:variable name="text">
     <xsl:for-each select="$node//text()|$node//@*">
@@ -1040,7 +1040,6 @@
     <xsl:apply-templates select="@*" mode="prep-rfc2629ext"/>
   </link>
 </xsl:template>
-<xsl:template match="@x:quotes" mode="prep-rfc2629ext" xmlns:x="http://purl.org/net/xml2rfc/ext"/>
 
 <!-- rfccleanup step -->
 
