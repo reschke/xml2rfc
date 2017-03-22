@@ -49,7 +49,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi rfc2629ext figextract listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug pn scripts preptime</xsl:text>
+  <xsl:text>pi rfc2629ext figextract listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug derivedcontent pn scripts preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -84,6 +84,10 @@
         <xsl:when test="$s='deprecation'">
           <xsl:message>Step: deprecation</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-deprecation"/>
+        </xsl:when>
+        <xsl:when test="$s='derivedcontent'">
+          <xsl:message>Step: derivedcontent</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-derivedcontent"/>
         </xsl:when>
         <xsl:when test="$s='figextract'">
           <xsl:message>Step: figextract</xsl:message>
@@ -446,6 +450,36 @@
       </xsl:choose>
     </xsl:if>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+  </xsl:copy>
+</xsl:template>
+
+<!-- derivedcontent step -->
+
+<!-- Note that there are several issues with the definition of this,
+     see https://github.com/rfc-format/draft-iab-rfcv3-preptool-bis/issues -->
+
+<xsl:template match="node()|@*" mode="prep-derivedcontent">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-derivedcontent"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="xref[not(node())]/@derivedcontent" mode="prep-derivedcontent"/>
+
+<xsl:template match="xref[not(node())]" mode="prep-derivedcontent">
+  <xsl:variable name="d">
+    <xsl:variable name="t">
+      <xsl:apply-templates select="."/>
+    </xsl:variable>
+    <xsl:value-of select="normalize-space($t)"/>
+  </xsl:variable>
+  <xsl:if test="@derivedContent and @derivedContent!=$d">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg" select="concat('provided value for derivedContent does not match computed:', @derivedContent, ' vs ', $d)"/>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-derivedcontent"/>
+    <xsl:attribute name="derivedContent" select="$d"/>
+    <xsl:apply-templates select="node()" mode="prep-derivedcontent"/>
   </xsl:copy>
 </xsl:template>
 
