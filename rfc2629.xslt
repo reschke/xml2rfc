@@ -3031,6 +3031,11 @@
         <xsl:variable name="sectionNumber">
           <xsl:call-template name="get-references-section-number"/>
         </xsl:variable>
+        <xsl:if test="$sectionNumber!=''">
+          <xsl:call-template name="insert-errata">
+            <xsl:with-param name="section" select="$sectionNumber"/>
+          </xsl:call-template>
+        </xsl:if>
         <h2 id="{$anchor-pref}section.{$sectionNumber}">
           <a href="#{$anchor-pref}section.{$sectionNumber}">
             <xsl:call-template name="emit-section-number">
@@ -3040,11 +3045,6 @@
           <xsl:text> </xsl:text>
           <xsl:value-of select="$xml2rfc-refparent"/>
         </h2>
-        <xsl:if test="$sectionNumber!=''">
-          <xsl:call-template name="insert-errata">
-            <xsl:with-param name="section" select="$sectionNumber"/>
-          </xsl:call-template>
-        </xsl:if>
         <xsl:for-each select=".|following-sibling::references">
           <xsl:call-template name="make-references">
             <xsl:with-param name="nested" select="true()"/>
@@ -3110,6 +3110,11 @@
     <xsl:if test="$name='1'">
       <xsl:call-template name="insert-conditional-pagebreak"/>
     </xsl:if>
+    <xsl:if test="$sectionNumber!=''">
+      <xsl:call-template name="insert-errata">
+        <xsl:with-param name="section" select="$sectionNumber"/>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:element name="{$elemtype}">
       <xsl:attribute name="id"><xsl:value-of select="concat($anchor-pref,'section.',$sectionNumber)"/></xsl:attribute>
       <a href="#{$anchor-pref}section.{$sectionNumber}">
@@ -3120,11 +3125,6 @@
       <xsl:text> </xsl:text>
       <xsl:copy-of select="$title"/>
     </xsl:element>
-    <xsl:if test="$sectionNumber!=''">
-      <xsl:call-template name="insert-errata">
-        <xsl:with-param name="section" select="$sectionNumber"/>
-      </xsl:call-template>
-    </xsl:if>
   
     <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
     <dl class="{$css-reference}">
@@ -3580,12 +3580,12 @@
   <section>
     <xsl:call-template name="copy-anchor"/>
 
-    <!--<xsl:for-each select="iref">
-      <xsl:if test="count(.|$section-level-irefs)=count($section-level-irefs)">
-        <xsl:apply-templates select="."/>
-      </xsl:if>
-    </xsl:for-each>-->
-
+    <xsl:if test="$sectionNumber!=''">
+      <xsl:call-template name="insert-errata">
+        <xsl:with-param name="section" select="$sectionNumber"/>
+      </xsl:call-template>
+    </xsl:if>
+    
     <xsl:element name="{$elemtype}">
       <xsl:if test="$sectionNumber!=''">
         <xsl:attribute name="id"><xsl:value-of select="$anchor-pref"/>section.<xsl:value-of select="$sectionNumber"/></xsl:attribute>
@@ -3635,12 +3635,6 @@
       </xsl:choose>
     </xsl:element>
 
-    <xsl:if test="$sectionNumber!=''">
-      <xsl:call-template name="insert-errata">
-        <xsl:with-param name="section" select="$sectionNumber"/>
-      </xsl:call-template>
-    </xsl:if>
-    
     <xsl:if test="@removeInRFC='true'">
       <xsl:variable name="t">
         <t><xsl:value-of select="$section-removeInRFC"/></t>
@@ -7206,13 +7200,13 @@ dd, li, p {
   <hr class="{$css-noprint}"/>
 
   <nav id="{$anchor-pref}toc">
-    <h2 class="np"> <!-- this pagebreak occurs always -->
-      <a href="#{$anchor-pref}toc">Table of Contents</a>
-    </h2>
-
     <xsl:call-template name="insert-errata">
       <xsl:with-param name="section" select="'toc'"/>
     </xsl:call-template>
+
+    <h2 class="np"> <!-- this pagebreak occurs always -->
+      <a href="#{$anchor-pref}toc">Table of Contents</a>
+    </h2>
 
     <ul class="toc">
       <xsl:apply-templates mode="toc" />
@@ -9240,11 +9234,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.883 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.883 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.884 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.884 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/21 20:43:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/21 20:43:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/23 14:11:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/23 14:11:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
