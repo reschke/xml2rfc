@@ -54,6 +54,21 @@
 <!-- Workaround for http://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/297 -->
 <xsl:param name="xml2rfc-ext-strip-vbare">false</xsl:param>
 
+<!-- xml2rfc target -->
+<xsl:param name="xml2rfc-ext-xml2rfc-backend">
+  <xsl:variable name="default">
+    <xsl:choose>
+      <xsl:when test="$pub-yearmonth &gt; 201612">201510<!--FIXME--></xsl:when>
+      <xsl:otherwise>201510</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'xml2rfc-backend'"/>
+    <xsl:with-param name="default" select="$default"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- kick into cleanup mode -->
 <xsl:template match="/">
   <xsl:text>&#10;</xsl:text>
@@ -61,6 +76,8 @@
     This XML document is the output of clean-for-DTD.xslt; a tool that strips
     extensions to RFC2629(bis) from documents for processing with xml2rfc.
 </xsl:comment>
+<xsl:text>&#10;</xsl:text>
+<xsl:comment>TARGET-GENERATOR: <xsl:value-of select="$xml2rfc-ext-xml2rfc-backend"/></xsl:comment>
   <xsl:apply-templates select="/" mode="cleanup"/>
 </xsl:template>
 
@@ -1114,6 +1131,10 @@
 <xsl:template match="section" mode="cleanup">
   <section>
     <xsl:copy-of select="@anchor|@toc"/>
+    <xsl:if test="$xml2rfc-ext-xml2rfc-backend >= 201610 and @numbered='false'">
+      <!-- rewrite false to no, see https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/313 -->
+      <xsl:attribute name="numbered">no</xsl:attribute>
+    </xsl:if>
     <xsl:attribute name="title">
       <xsl:choose>
         <xsl:when test="name">
@@ -1132,7 +1153,7 @@
     </xsl:if>
     <xsl:apply-templates mode="cleanup"/>
   </section>
-  <xsl:if test="@numbered='no'">
+  <xsl:if test="(@numbered='no' or @numbered='false') and $xml2rfc-ext-xml2rfc-backend &lt; 201610">
     <xsl:call-template name="warning">
       <xsl:with-param name="msg">unnumbered sections not supported</xsl:with-param>
     </xsl:call-template>
