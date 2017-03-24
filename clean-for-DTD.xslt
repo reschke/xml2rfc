@@ -163,6 +163,7 @@
   <xsl:choose>
     <xsl:when test="substring(.,1,1) != '&quot;' or substring(.,string-length(.),1) != '&quot;'">
       <xsl:call-template name="error">
+        <xsl:with-param name="inline">no</xsl:with-param>
         <xsl:with-param name="msg" select="'contents of x:abnf-char-sequence needs to be quoted.'" />
       </xsl:call-template>
     </xsl:when>
@@ -1268,11 +1269,13 @@
   <t>
     <xsl:if test="@start and @start!='1'">
       <xsl:call-template name="error">
+        <xsl:with-param name="inline">no</xsl:with-param>
         <xsl:with-param name="msg">list start != 1 not supported</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
     <xsl:if test="@group">
       <xsl:call-template name="error">
+        <xsl:with-param name="inline">no</xsl:with-param>
         <xsl:with-param name="msg">ol/@group not supported</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
@@ -1286,6 +1289,7 @@
   <t>
     <xsl:if test="@start and @start!='1'">
       <xsl:call-template name="error">
+        <xsl:with-param name="inline">no</xsl:with-param>
         <xsl:with-param name="msg">list start != 1 not supported</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
