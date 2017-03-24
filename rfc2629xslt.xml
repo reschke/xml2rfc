@@ -592,7 +592,7 @@ saxon test.xml rfc2629.xslt | awk -f html5doctype.awk
 <t>
   with
 </t>
-<figure><artwork x:lang="" filename="html5doctype.awk" type="code">
+<figure><artwork x:lang="" name="html5doctype.awk" type="code">
 <?BEGINESCAPEDINC html5doctype.awk ?>
 #!/usr/bin/awk -f
 

@@ -58,7 +58,7 @@
 <xsl:param name="xml2rfc-ext-xml2rfc-backend">
   <xsl:variable name="default">
     <xsl:choose>
-      <xsl:when test="$pub-yearmonth &gt; 201612">201510<!--FIXME--></xsl:when>
+      <xsl:when test="$pub-yearmonth &gt; 201612">201610</xsl:when>
       <xsl:otherwise>201510</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
