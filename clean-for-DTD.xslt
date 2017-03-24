@@ -407,7 +407,7 @@
 </xsl:template>
 
 <xsl:template match="@ascii" mode="cleanup"/>
-<xsl:template match="postal/*" mode="cleanup">
+<xsl:template match="postal/*[@ascii]" mode="cleanup">
   <xsl:element name="{local-name()}">
     <xsl:apply-templates select="@*" mode="cleanup"/>
     <xsl:choose>
