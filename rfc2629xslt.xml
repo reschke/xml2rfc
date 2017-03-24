@@ -1868,7 +1868,7 @@ The picture below shows the RFC dependencies in RFC2629.
 </t>
 </section>
 
-<section title="Down-converting to RFC7749 Grammar" anchor="clean-for-dtd">
+<section title="Down-converting to RFC 7749 Grammar" anchor="clean-for-dtd">
 <t>
   <tt>clean-for-DTD.xslt</tt> can be used to down-convert
   some extensions to a format that is supported by the base xml2rfc
@@ -1933,6 +1933,13 @@ The picture below shows the RFC dependencies in RFC2629.
     </t>
   </list>
 </t>
+<aside>
+  <t>
+    <em>Note:</em> the above list is known to be incomplete and needs work.
+    For instance, most of the extensions described in <xref target="v3"/>
+    get some mapping as well.
+  </t>
+</aside>
 </section>
 
 <section title="Extracting artwork" anchor="extract-artwork">
