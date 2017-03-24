@@ -1871,8 +1871,9 @@ The picture below shows the RFC dependencies in RFC2629.
 <section title="Down-converting to RFC 7749 Grammar" anchor="clean-for-dtd">
 <t>
   <tt>clean-for-DTD.xslt</tt> can be used to down-convert
-  some extensions to a format that is supported by the base xml2rfc
-  distribution.  Note that these extensions are experimental (feedback
+  some extensions to a format that is supported by the existing xml2rfc
+  formatters, mainly for the purpose of generating plain-text output.
+  Note that these extensions are experimental (feedback
   appreciated).
 </t>
 <t>
@@ -1935,11 +1936,30 @@ The picture below shows the RFC dependencies in RFC2629.
 </t>
 <aside>
   <t>
-    <em>Note:</em> the above list is known to be incomplete and needs work.
+    <strong>Note:</strong> the above list is known to be incomplete and needs work.
     For instance, most of the extensions described in <xref target="v3"/>
     get some mapping as well.
   </t>
 </aside>
+<t>
+  As the output formatters evolve to support the V3 format (proposed in
+  <xref target="RFC7991"/>, <tt>clean-for-DTD.xslt</tt> will start taking
+  advantage of these changes. Right now, it supports exactly two modes,
+  one of which being used for the historic TCL processor, and the newer
+  one to be used for <tt>xml2rfv 2.5.2</tt> (see <eref target="https://pypi.python.org/pypi/xml2rfc/">https://pypi.python.org/pypi/xml2rfc/</eref>).
+</t>
+<t>
+  The modes can be selected using the <tt>xml2rfc-ext-xml2rfc-backend</tt>
+  parameter or the <tt>rfc-ext/xml2rfc-backend</tt> processing instruction.
+  The default mode is "201610" for documents with a publication date in 2017
+  or newer, and "201510" otherwise:
+</t>
+<dl>
+  <dt><em>201510</em></dt>
+  <dd>For <tt>xml2rfc.tcl</tt> and versions of the Python formatter before version 2.5.2.</dd>
+  <dt><em>201610</em></dt>
+  <dd>Maps the V3 extension for unnumbered section numbers to something the 2.5.2 version of the Python formatter understands (but note <eref target="https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/313">https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/313</eref>).</dd>
+</dl>
 </section>
 
 <section title="Extracting artwork" anchor="extract-artwork">
