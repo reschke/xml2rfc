@@ -1073,7 +1073,13 @@
 </xsl:template>
 <xsl:template match="front" mode="cleanup">
   <front>
-    <xsl:apply-templates select="text()|node()[not(self::seriesInfo)]" mode="cleanup"/>
+    <xsl:apply-templates select="title|author" mode="cleanup"/>
+    <xsl:apply-templates select="date" mode="cleanup"/>
+    <xsl:if test="not(date)">
+      <!-- mandatory in v2 -->
+      <date/>
+    </xsl:if>
+    <xsl:apply-templates select="text()|node()[not(self::seriesInfo or self::title or self::author or self::date)]" mode="cleanup"/>
   </front>
 </xsl:template>
 
