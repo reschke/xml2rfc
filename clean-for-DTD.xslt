@@ -422,6 +422,17 @@
   </xsl:element>
 </xsl:template>
 
+<xsl:template match="postal" mode="cleanup">
+  <postal>
+    <xsl:apply-templates select="@*" mode="cleanup"/>
+    <xsl:if test="not(street) and not(postalLine)">
+      <!-- street is mandatory in V2 -->
+      <street/>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="cleanup"/>
+  </postal>
+</xsl:template>
+
 <xsl:template match="xref[(@x:fmt or @x:sec or @x:rel or @section or @sectionFormat or @relative) and not(node())]" mode="cleanup">
   <xsl:call-template name="insert-iref-for-xref"/>
   <xsl:variable name="node" select="$src//*[@anchor=current()/@target]" />
