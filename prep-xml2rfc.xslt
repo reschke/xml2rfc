@@ -1001,10 +1001,14 @@
 <xsl:template match="abstract|artwork|aside|blockquote|boilerplate|dd|dl|dt|figure|li|note|ol|references|section|sourcecode|t|table|tbody|td|th|thead|tr|ul" mode="prep-pn">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-pn"/>
-    <xsl:attribute name="pn"><xsl:call-template name="pn-sn"/></xsl:attribute>
-    <xsl:apply-templates select="node()|@*" mode="prep-pn"/>
+    <!-- https://github.com/rfc-format/draft-iab-rfcv3-preptool-bis/issues/7 -->
+    <xsl:if test="not(ancestor::reference)">
+      <xsl:attribute name="pn"><xsl:call-template name="pn-sn"/></xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-pn"/>
   </xsl:copy>
 </xsl:template>
+<xsl:template match="@pn" mode="prep-pn"/>
 
 <!-- preptime step -->
 
