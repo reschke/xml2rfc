@@ -49,7 +49,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi rfc2629ext figextract listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug derivedcontent pn scripts preptime</xsl:text>
+  <xsl:text>pi xinclude rfc2629ext figextract listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug derivedcontent pn scripts preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -144,6 +144,10 @@
         <xsl:when test="$s='tables'">
           <xsl:message>Step: tables</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-tables"/>
+        </xsl:when>
+        <xsl:when test="$s='xinclude'">
+          <xsl:message>Step: xinclude</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-xinclude"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="error">
@@ -1085,6 +1089,8 @@
 
 <xsl:template match="link[@rel='alternate']" mode="prep-rfccleanup"/>
 
+<xsl:template match="@xml:base" mode="prep-rfccleanup"/>
+
 <xsl:template match="rfc" mode="prep-rfccleanup">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-rfccleanup"/>
@@ -1169,6 +1175,30 @@
     <t>
       <xsl:apply-templates select="node()|@*" mode="prep-tables"/>
     </t>
+  </xsl:for-each>
+</xsl:template>
+
+<!-- xinclude step -->
+
+<xsl:template match="node()|@*" mode="prep-xinclude">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-xinclude"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="xi:include" xmlns:xi="http://www.w3.org/2001/XInclude" mode="prep-xinclude">
+  <xsl:if test="@parse and @parse!='xml'">
+    <xsl:message terminate="yes">FATAL: &lt;xi:include> parse mode '<xsl:value-of select="@parse"/>' not supported.</xsl:message>
+  </xsl:if>
+  <xsl:if test="@xpointer">
+    <xsl:message terminate="yes">FATAL: &lt;xi:include> xpointer not supported.</xsl:message>
+  </xsl:if>
+  <xsl:variable name="content" select="document(@href)"/>
+  <xsl:variable name="href" select="@href"/>
+  <xsl:for-each select="$content/*">
+    <xsl:copy>
+      <xsl:attribute name="xml:base" select="$href"/>
+      <xsl:copy-of select="@*[not(name()='xml:base')]"/>
+      <xsl:copy-of select="node()"/>
+    </xsl:copy>
   </xsl:for-each>
 </xsl:template>
 
