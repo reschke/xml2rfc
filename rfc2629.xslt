@@ -3535,6 +3535,7 @@
       </xsl:if>
       <xsl:call-template name="render-name">
         <xsl:with-param name="n" select="name/node()"/>
+        <xsl:with-param name="strip-links" select="not(ancestor-or-self::figure)"/>
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
@@ -9234,11 +9235,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.884 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.884 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.885 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.885 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/23 14:11:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/23 14:11:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/25 22:23:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/25 22:23:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -10163,10 +10164,18 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:template name="render-name">
   <xsl:param name="n"/>
+  <xsl:param name="strip-links" select="true()"/>
   <xsl:variable name="t">
     <xsl:apply-templates select="$n"/>
   </xsl:variable>
-  <xsl:apply-templates select="exslt:node-set($t)" mode="strip-links"/>
+  <xsl:choose>
+    <xsl:when test="not($strip-links)">
+      <xsl:copy-of select="exslt:node-set($t)"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates select="exslt:node-set($t)" mode="strip-links"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="render-name-ref">
