@@ -1206,6 +1206,19 @@
   </xsl:for-each>
 </xsl:template>
 
+<!-- while we're doing xinclude we can do this as well, right? -->
+<xsl:template match="pi:rfc[@name='include']" mode="prep-xinclude">
+  <xsl:variable name="content" select="document(@value)"/>
+  <xsl:variable name="href" select="@href"/>
+  <xsl:for-each select="$content/*">
+    <xsl:copy>
+      <xsl:attribute name="xml:base" select="$href"/>
+      <xsl:copy-of select="@*[not(name()='xml:base')]"/>
+      <xsl:copy-of select="node()"/>
+    </xsl:copy>
+  </xsl:for-each>
+</xsl:template>
+
 <!-- final serialization step -->
 
 <xsl:template match="node()|@*" mode="prep-ser">
