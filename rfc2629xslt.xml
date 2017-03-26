@@ -3626,9 +3626,11 @@ rdf_content =
     <c>code</c><c>monospaced text (with outline)</c>
     <c>drawing</c><c>drawing (with outline)</c>
     <c>example</c><c>monospaced text (with outline)</c>
+    <c>image/*</c><c>images (to be used with "src" attribute)</c>
     <c>inline</c><c>monospaced text (no outline)</c>
     <c>message/http; msgtype="request"</c><c>HTTP message, as per <xref target="RFC7230" x:fmt="," x:sec="8.3.1" /></c>
     <c>message/http; msgtype="response"</c><c>HTTP message, as per <xref target="RFC7230" x:fmt="," x:sec="8.3.1" /></c>
+    <c>svg and image/svg+xml</c><c>SVG</c>
   </texttable>
   </section>
   

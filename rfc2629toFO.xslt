@@ -205,7 +205,7 @@
   </fo:block>
 </xsl:template>
 
-<xsl:template match="artwork[@src and starts-with(@type,'image/')]">
+<xsl:template match="artwork[@src and (starts-with(@type,'image/') or @type='svg')]">
   <fo:block>
     <xsl:choose>
       <xsl:when test="@align='center'">

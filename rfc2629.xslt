@@ -1287,7 +1287,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="artwork[@src and starts-with(@type,'image/')]">
+<xsl:template match="artwork[@src and starts-with(@type,'image/') or @type='svg']">
   <p>
     <xsl:choose>
       <xsl:when test="@align='center'">
@@ -1299,7 +1299,7 @@
       <xsl:otherwise/>
     </xsl:choose>
     <xsl:choose>
-      <xsl:when test="@type='image/svg+xml'">
+      <xsl:when test="@type='image/svg+xml' or @type='svg'">
         <object data="{@src}" type="image/svg+xml">
           <xsl:choose>
             <xsl:when test="@width!='' or @height!=''">
@@ -9235,11 +9235,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.885 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.885 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.886 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.886 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/25 22:23:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/25 22:23:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/26 10:26:06 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/26 10:26:06 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
