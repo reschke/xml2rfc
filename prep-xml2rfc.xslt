@@ -997,8 +997,6 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-pn"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="@pn" mode="prep-pn"/>
-
 <xsl:template name="pn-sn">
   <xsl:choose>
     <xsl:when test="self::abstract">s-abstract</xsl:when>
