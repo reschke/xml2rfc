@@ -33,7 +33,8 @@
                xmlns:f="mailto:julian.reschke@greenbytes?subject=preptool"
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:pi="https://www.w3.org/TR/REC-xml/#sec-pi"
-               exclude-result-prefixes="f xs pi"
+               xmlns:svg="http://www.w3.org/2000/svg"
+               exclude-result-prefixes="f pi svg xs"
 >
 
 <xsl:import href="rfc2629.xslt" />
@@ -49,7 +50,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi xinclude rfc2629ext figextract listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug derivedcontent pn scripts preptime</xsl:text>
+  <xsl:text>pi xinclude rfc2629ext figextract artwork listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug derivedcontent pn scripts preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -72,6 +73,10 @@
       <xsl:choose>
         <xsl:when test="contains(concat(' ',$skip-steps,' '),concat(' ',$s,' '))">
           <xsl:copy-of select="$nodes"/>
+        </xsl:when>
+        <xsl:when test="$s='artwork'"> 
+          <xsl:message>Step: artwork</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-artwork"/>
         </xsl:when>
         <xsl:when test="$s='boilerplate'"> 
           <xsl:message>Step: boilerplate</xsl:message>
@@ -159,6 +164,35 @@
     </xsl:otherwise>
   </xsl:choose>
 </xsl:function>
+
+<!-- artwork step -->
+
+<xsl:template match="node()|@*" mode="prep-artwork">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-artwork"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]" mode="prep-artwork">
+  <xsl:variable name="alt" select="@alt"/>
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-artwork"/>
+    <xsl:attribute name="type">svg</xsl:attribute>
+    <xsl:attribute name="originalSrc" select="@src"/>
+    <xsl:variable name="svg" select="document(@src)"/>
+    <xsl:for-each select="$svg/*">
+      <xsl:copy>
+        <xsl:copy-of select="@*"/>
+        <xsl:if test="$alt!='' and not(svg:desc)">
+          <desc xmlns="http://www.w3.org/2000/svg"><xsl:value-of select="$alt"/></desc>
+        </xsl:if>
+        <xsl:copy-of select="node()"/>
+      </xsl:copy>
+    </xsl:for-each>
+    <xsl:apply-templates select="node()" mode="prep-artwork"/>
+  </xsl:copy>
+</xsl:template>
+<xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]/@src" mode="prep-artwork"/>
+<xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]/@type" mode="prep-artwork"/>
+<xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]/@originalSrc" mode="prep-artwork"/>
 
 <!-- boilerplate step -->
 
