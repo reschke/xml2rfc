@@ -179,12 +179,6 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="artwork[svg:svg]">
-  <fo:instream-foreign-object>
-    <xsl:copy-of select="svg:svg"/>
-  </fo:instream-foreign-object>
-</xsl:template>
-
 <xsl:template match="artwork|sourcecode">
   <fo:block>
     <xsl:if test="not(ancestor::figure)">
@@ -205,7 +199,7 @@
   </fo:block>
 </xsl:template>
 
-<xsl:template match="artwork[@src and (starts-with(@type,'image/') or @type='svg')]">
+<xsl:template match="artwork[@src and (starts-with(@type,'image/') or @type='svg')]|artwork[svg:svg]">
   <fo:block>
     <xsl:choose>
       <xsl:when test="@align='center'">
@@ -216,8 +210,16 @@
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
-    <fo:external-graphic scaling-method="integer-pixels" src="url({@src})">
-    </fo:external-graphic>
+    <xsl:choose>
+      <xsl:when test="svg:svg">
+        <fo:instream-foreign-object>
+          <xsl:copy-of select="svg:svg"/>
+        </fo:instream-foreign-object>
+      </xsl:when>
+      <xsl:otherwise>
+        <fo:external-graphic scaling-method="integer-pixels" src="url({@src})"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </fo:block>
 </xsl:template>
 
