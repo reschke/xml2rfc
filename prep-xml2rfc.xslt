@@ -31,10 +31,11 @@
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                version="2.0"
                xmlns:f="mailto:julian.reschke@greenbytes?subject=preptool"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:pi="https://www.w3.org/TR/REC-xml/#sec-pi"
                xmlns:svg="http://www.w3.org/2000/svg"
-               exclude-result-prefixes="f pi svg xs"
+               exclude-result-prefixes="f pi svg xlink xs"
 >
 
 <xsl:import href="rfc2629.xslt" />
@@ -50,7 +51,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi xinclude rfc2629ext figextract artwork listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug derivedcontent pn scripts preptime</xsl:text>
+  <xsl:text>pi xinclude rfc2629ext figextract artwork cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug derivedcontent pn scripts preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -81,6 +82,10 @@
         <xsl:when test="$s='boilerplate'"> 
           <xsl:message>Step: boilerplate</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-boilerplate"/>
+        </xsl:when>
+        <xsl:when test="$s='cleansvg'"> 
+          <xsl:message>Step: cleansvg</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-cleansvg"/>
         </xsl:when>
         <xsl:when test="$s='defaults'">
           <xsl:message>Step: defaults</xsl:message>
@@ -214,6 +219,16 @@
 <xsl:template match="node()|@*" mode="prep-boilerplate">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-boilerplate"/></xsl:copy>
 </xsl:template>
+
+<!-- cleansvg step -->
+
+<xsl:template match="node()|@*" mode="prep-cleansvg">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-cleansvg"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="svg:*/@xlink:actuate[.='onRequest']" mode="prep-cleansvg"/>
+<xsl:template match="svg:*/@xlink:show[.='replace']" mode="prep-cleansvg"/>
+<xsl:template match="svg:*/@xlink:type[.='simple']" mode="prep-cleansvg"/>
 
 <!-- defaults step -->
 
