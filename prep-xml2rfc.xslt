@@ -176,13 +176,27 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-artwork"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]" mode="prep-artwork">
+<xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]|artwork[svg:svg]" mode="prep-artwork">
   <xsl:variable name="alt" select="@alt"/>
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-artwork"/>
-    <xsl:attribute name="type">svg</xsl:attribute>
-    <xsl:attribute name="originalSrc" select="@src"/>
-    <xsl:variable name="svg" select="document(@src)"/>
+    <xsl:if test="@type">
+      <!-- rewrites image/svg+xml to svg -->
+      <xsl:attribute name="type">svg</xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@src">
+      <xsl:attribute name="originalSrc" select="@src"/>
+    </xsl:if>
+    <xsl:variable name="svg">
+      <xsl:choose>
+        <xsl:when test="@src">
+          <xsl:copy-of select="document(@src)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:copy-of select="svg:svg"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:for-each select="$svg/*">
       <xsl:copy>
         <xsl:copy-of select="@*"/>
@@ -192,12 +206,24 @@
         <xsl:copy-of select="node()"/>
       </xsl:copy>
     </xsl:for-each>
-    <xsl:apply-templates select="node()" mode="prep-artwork"/>
+    <xsl:choose>
+      <xsl:when test="svg:svg">
+        <xsl:if test="*[not(self::svg:svg)]">
+          <xsl:message terminate="yes">FATAL: can't have non-svg child elements in artwork when one svg child is present.</xsl:message>
+        </xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:if test="*">
+          <xsl:message terminate="yes">FATAL: can't have child elements in artwork when @type='svg' and @src is present.</xsl:message>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:copy>
 </xsl:template>
 <xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]/@src" mode="prep-artwork"/>
 <xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]/@type" mode="prep-artwork"/>
 <xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]/@originalSrc" mode="prep-artwork"/>
+<xsl:template match="artwork/svg:svg" mode="prep-artwork"/>
 
 <!-- boilerplate step -->
 
