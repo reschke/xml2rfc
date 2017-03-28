@@ -726,8 +726,8 @@
       <xsl:with-param name="root" select="$root"/>
     </xsl:apply-templates>
     <xsl:if test="not(../@anchor)">
-      <xsl:variable name="fr">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.()-_ :%,/=&lt;&gt;</xsl:variable>
-      <xsl:variable name="to">abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789.----------=-</xsl:variable>
+      <xsl:variable name="fr">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.()-_ :%,/@=&lt;&gt;</xsl:variable>
+      <xsl:variable name="to">abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789.---_---------</xsl:variable>
       <xsl:variable name="canslug" select="translate(normalize-space(.),$fr,'')=''"/>
       <xsl:choose>
         <xsl:when test="$canslug">
