@@ -155,7 +155,13 @@
 </xsl:template>
 
 
+<!-- V3 features -->
 
+<xsl:template match="boilerplate" mode="cleanup"/>
+<xsl:template match="link" mode="cleanup"/>
+<xsl:template match="rfc/@scripts" mode="cleanup"/>
+<xsl:template match="rfc/@version" mode="cleanup"/>
+<xsl:template match="@pn" mode="cleanup"/>
 
 <!-- extensions -->
 
@@ -183,7 +189,7 @@
 </xsl:template>
 
 <xsl:template match="x:assign-section-number" mode="cleanup"/>  
-<xsl:template match="link|x:link" mode="cleanup"/>
+<xsl:template match="x:link" mode="cleanup"/>
 <xsl:template match="x:source" mode="cleanup"/>
 <xsl:template match="x:feedback" mode="cleanup"/>
 
