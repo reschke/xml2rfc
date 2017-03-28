@@ -491,7 +491,10 @@
 </xsl:template>
 
 <!-- WORK IN PROGRESS; ONLY A FEW CLASSES SUPPORTED FOR NOW -->
+<xsl:variable name="css-artwork"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'artwork'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-art-svg"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'art-svg'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-docstatus"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'docstatus'"/></xsl:call-template></xsl:variable>
+<xsl:variable name="css-center"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'center'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-erratum"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'erratum'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-error"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'error'"/></xsl:call-template></xsl:variable>
 <xsl:variable name="css-fbbutton"><xsl:call-template name="generate-css-class"><xsl:with-param name="name" select="'fbbutton'"/></xsl:call-template></xsl:variable>
@@ -1284,16 +1287,19 @@
 </xsl:template>
 
 <xsl:template match="artwork[@src and starts-with(@type,'image/') or @type='svg']|artwork[svg:svg]">
-  <p>
+  <xsl:variable name="class">
+    <xsl:value-of select="$css-artwork"/>
+    <xsl:text> </xsl:text>
+    <xsl:if test="svg:svg">
+      <xsl:value-of select="$css-art-svg"/>
+    </xsl:if>
     <xsl:choose>
-      <xsl:when test="@align='center'">
-        <xsl:attribute name="style">text-align: center</xsl:attribute>
-      </xsl:when>
-      <xsl:when test="@align='right'">
-        <xsl:attribute name="style">text-align: right</xsl:attribute>
-      </xsl:when>
+      <xsl:when test="@align='center'"><xsl:text> </xsl:text><xsl:value-of select="$css-center"/></xsl:when>
+      <xsl:when test="@align='right'"><xsl:text> </xsl:text><xsl:value-of select="$css-right"/></xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
+  </xsl:variable>
+  <div class="{normalize-space($class)}">
     <xsl:choose>
       <xsl:when test="svg:svg">
         <xsl:copy-of select="svg:svg"/>
@@ -1322,7 +1328,7 @@
         </img>
       </xsl:otherwise>
     </xsl:choose>
-  </p>
+  </div>
 </xsl:template>
 
 <xsl:template match="author|x:contributor">
@@ -5967,7 +5973,7 @@ blockquote > * .bcp14 {
 .editingmark {
   background-color: khaki;
 }</xsl:if>
-.center {
+.<xsl:value-of select="$css-center"/> {
   text-align: center;
 }
 .<xsl:value-of select="$css-error"/> {
@@ -9214,11 +9220,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.889 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.889 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.890 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.890 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/28 05:41:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/28 05:41:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/28 09:34:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/28 09:34:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
