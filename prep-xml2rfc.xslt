@@ -51,7 +51,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi xinclude rfc2629ext figextract artwork cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug derivedcontent pn scripts preptime</xsl:text>
+  <xsl:text>pi xinclude rfc2629ext figextract artwork cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug derivedcontent pn scripts idcheck preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -102,6 +102,10 @@
         <xsl:when test="$s='figextract'">
           <xsl:message>Step: figextract</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-figextract"/>
+        </xsl:when>
+        <xsl:when test="$s='idcheck'">
+          <xsl:message>Step: idcheck</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-idcheck"/>
         </xsl:when>
         <xsl:when test="$s='listdefaultstyle'">
           <xsl:message>Step: listdefaultstyleract</xsl:message>
@@ -582,6 +586,24 @@
 
 <xsl:template match="node()|@*" mode="prep-figextract">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-figextract"/></xsl:copy>
+</xsl:template>
+
+<!-- idcheck step -->
+
+<xsl:template match="node()|@*" mode="prep-idcheck">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-idcheck"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="*/@anchor|*/@pn|svg:*/@id" mode="prep-idcheck">
+  <xsl:variable name="r" select="ancestor::rfc[1]"/>
+  <xsl:variable name="targets" select="$r//*[@anchor=current()]|$r//svg:*[@id=current()]|$r//*[@pn=current()]"/>
+  <xsl:if test="count($targets)>1">
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg">Multiple anchors: <xsl:value-of select="current()"/> (<xsl:value-of select="count($targets)"/>).</xsl:with-param>
+      <xsl:with-param name="inline" select="'no'"/>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-idcheck"/></xsl:copy>
 </xsl:template>
 
 <!-- listdefaultstyle step -->
