@@ -270,7 +270,16 @@
 
 <xsl:template match="x:blockquote|blockquote" mode="cleanup">
   <t><list>
-    <xsl:apply-templates mode="cleanup" />
+    <xsl:choose>
+      <xsl:when test="t|ul|ol|dl|artwork|figure|sourcecode">
+        <xsl:apply-templates mode="cleanup" />
+      </xsl:when>
+      <xsl:otherwise>
+        <t>
+          <xsl:apply-templates mode="cleanup" />
+        </t>
+      </xsl:otherwise>
+    </xsl:choose>
   </list></t>
 </xsl:template>
 
