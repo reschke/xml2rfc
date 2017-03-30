@@ -728,6 +728,23 @@
 
 <!--templates for URI calculation -->
 
+<xsl:param name="xml2rfc-ext-isbn-uri">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'isbn-uri'"/>
+    <xsl:with-param name="default">https://www.worldcat.org/search?q=isbn:{isbn}</xsl:with-param>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:template name="compute-isbn-uri">
+  <xsl:param name="isbn"/>
+  <xsl:call-template name="replace-substring">
+    <xsl:with-param name="string" select="$xml2rfc-ext-isbn-uri"/>
+    <xsl:with-param name="replace" select="'{isbn}'"/>
+    <xsl:with-param name="by" select="translate($isbn,'-','')"/>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:param name="xml2rfc-ext-rfc-uri">
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
@@ -2918,6 +2935,17 @@
               <xsl:with-param name="msg">Unexpected DOI for RFC, found <xsl:value-of select="@value"/>, expected <xsl:value-of select="$doi"/></xsl:with-param>
             </xsl:call-template>
           </xsl:if>
+        </xsl:when>
+        <xsl:when test="@name='ISBN'">
+          <xsl:variable name="uri">
+            <xsl:call-template name="compute-isbn-uri">
+              <xsl:with-param name="isbn" select="@value"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <a href="{$uri}">
+            <xsl:value-of select="@name" />
+            <xsl:if test="@value!=''">&#0160;<xsl:value-of select="@value" /></xsl:if>
+          </a>
         </xsl:when>
         <xsl:when test="@name='Internet-Draft' and $rfcno > 7375">
           <!-- special case in RFC formatting since 2015 -->            
@@ -9221,11 +9249,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.893 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.893 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.894 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.894 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/29 14:45:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/29 14:45:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/30 14:08:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/30 14:08:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

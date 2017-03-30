@@ -358,6 +358,12 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>URI template for Internet-Draft links.</c>
 
   <c>rfc-ext</c>
+  <c>isbn-uri<iref item="isbn-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="isbn-uri"/></c>
+  <c>xml2rfc-ext-isbn-uri<iref item="xml2rfc-ext-isbn-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-isbn-uri"/></c>
+  <c>"https://www.worldcat.org/search?q=isbn:{isbn}"</c>
+  <c>URI template for ISBN lookup.</c>
+
+  <c>rfc-ext</c>
   <c>justification<iref item="justification PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="justification"/></c>
   <c>xml2rfc-ext-justification<iref item="xml2rfc-ext-justification parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-justification"/></c>
   <c>"never"</c>
