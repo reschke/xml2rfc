@@ -2005,34 +2005,21 @@
   <xsl:variable name="p">
     <xsl:call-template name="get-paragraph-number" />
   </xsl:variable>
-  <xsl:choose>
-    <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-      <div id="{$anchor-pref}section.{$p}">
-        <dl>
-          <xsl:call-template name="copy-anchor"/>
-          <xsl:if test="normalize-space($class)!=''">
-            <xsl:attribute name="class"><xsl:value-of select="normalize-space($class)"/></xsl:attribute>
-          </xsl:if>
-          <xsl:for-each select="dt">
-            <xsl:apply-templates select="."/>
-            <xsl:apply-templates select="following-sibling::dd[1]"/>
-          </xsl:for-each>
-        </dl>
-      </div>
-    </xsl:when>
-    <xsl:otherwise>
-      <dl>
-        <xsl:call-template name="copy-anchor"/>
-        <xsl:if test="normalize-space($class)!=''">
-          <xsl:attribute name="class"><xsl:value-of select="normalize-space($class)"/></xsl:attribute>
-        </xsl:if>
-        <xsl:for-each select="dt">
-          <xsl:apply-templates select="."/>
-          <xsl:apply-templates select="following-sibling::dd[1]"/>
-        </xsl:for-each>
-      </dl>
-    </xsl:otherwise>
-  </xsl:choose>
+  <div>
+    <xsl:if test="$p!='' and not(ancestor::list) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
+      <xsl:attribute name="id"><xsl:value-of select="concat($anchor-pref,'section.',$p)"/></xsl:attribute>
+    </xsl:if>
+    <dl>
+      <xsl:call-template name="copy-anchor"/>
+      <xsl:if test="normalize-space($class)!=''">
+        <xsl:attribute name="class"><xsl:value-of select="normalize-space($class)"/></xsl:attribute>
+      </xsl:if>
+      <xsl:for-each select="dt">
+        <xsl:apply-templates select="."/>
+        <xsl:apply-templates select="following-sibling::dd[1]"/>
+      </xsl:for-each>
+    </dl>
+  </div>
 </xsl:template>
 
 <xsl:template match="dt">
@@ -9229,11 +9216,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.896 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.896 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.897 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.897 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/03/31 12:41:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/31 12:41:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/03/31 16:06:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/03/31 16:06:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
