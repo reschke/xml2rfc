@@ -3431,6 +3431,15 @@
   <fo:block font-style="italic" space-before=".5em" space-after=".5em" start-indent="3em"
       border-left-style="solid" border-left-color="gray" border-left-width=".25em" padding-left=".5em">
     <xsl:apply-templates/>
+    <xsl:if test="@quotedFrom">
+      <fo:block>
+        <xsl:text>&#8212; </xsl:text>
+        <xsl:choose>
+          <xsl:when test="@cite"><fo:basic-link external-destination="url(@cite)" xsl:use-attribute-sets="external-link"><xsl:value-of select="@quotedFrom"/></fo:basic-link></xsl:when>
+          <xsl:otherwise><xsl:value-of select="@quotedFrom"/></xsl:otherwise>
+        </xsl:choose>
+      </fo:block>
+    </xsl:if>
   </fo:block>
 </xsl:template>
 

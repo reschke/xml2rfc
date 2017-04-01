@@ -3024,6 +3024,7 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute cite { URI }?,
     attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute quotedFrom { ATEXT }?,
     t+
   }
 

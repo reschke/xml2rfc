@@ -280,7 +280,17 @@
         </t>
       </xsl:otherwise>
     </xsl:choose>
-  </list></t>
+    <xsl:if test="@quotedFrom">
+      <t>
+        <xsl:text>&#8212; </xsl:text>
+        <xsl:choose>
+          <xsl:when test="@cite"><eref target="{@cite}"><xsl:value-of select="@quotedFrom"/></eref></xsl:when>
+          <xsl:otherwise><xsl:value-of select="@quotedFrom"/></xsl:otherwise>
+        </xsl:choose>
+      </t>
+    </xsl:if>
+  </list>
+  </t>
 </xsl:template>
 
 <xsl:template match="x:h" mode="cleanup">

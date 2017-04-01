@@ -7935,6 +7935,15 @@ dd, li, p {
           </p>
         </xsl:otherwise>
       </xsl:choose>
+      <xsl:if test="@quotedFrom">
+        <cite>
+          <xsl:text>&#8212; </xsl:text>
+          <xsl:choose>
+            <xsl:when test="@cite"><a href="{@cite}"><xsl:value-of select="@quotedFrom"/></a></xsl:when>
+            <xsl:otherwise><xsl:value-of select="@quotedFrom"/></xsl:otherwise>
+          </xsl:choose>
+        </cite>
+      </xsl:if>
     </blockquote>
   </div>
 </xsl:template>
@@ -9213,11 +9222,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.900 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.900 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.901 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.901 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/04/01 11:49:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/04/01 11:49:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/04/01 13:34:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/04/01 13:34:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

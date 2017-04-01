@@ -435,6 +435,7 @@ v3_blockquote =
     attribute anchor { xsd:ID }?,
     attribute cite { URI }?,
     attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute quotedFrom { ATEXT }?,
     t+
   }
 
