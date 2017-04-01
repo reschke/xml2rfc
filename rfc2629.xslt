@@ -7925,7 +7925,16 @@ dd, li, p {
     <blockquote>
       <xsl:call-template name="copy-anchor"/>
       <xsl:copy-of select="@cite"/>
-      <xsl:apply-templates/>
+      <xsl:choose>
+        <xsl:when test="t|ul|ol|dl|artwork|figure|sourcecode">
+          <xsl:apply-templates/>
+        </xsl:when>
+        <xsl:otherwise>
+          <p>
+            <xsl:apply-templates/>
+          </p>
+        </xsl:otherwise>
+      </xsl:choose>
     </blockquote>
   </div>
 </xsl:template>
@@ -9204,11 +9213,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.899 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.899 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.900 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.900 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/04/01 05:36:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/04/01 05:36:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/04/01 11:49:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/04/01 11:49:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
