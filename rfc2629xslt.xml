@@ -3025,7 +3025,27 @@ attlist.xref &amp;=
     attribute cite { URI }?,
     attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
     attribute quotedFrom { ATEXT }?,
-    t+
+    (
+      (artwork 
+        | v3_dl
+        | figure
+        | v3_ol
+        | v3_sourcecode
+        | t
+        | v3_ul)+
+    |
+      (TEXT
+        | v3_bcp14
+        | cref
+        | v3_em
+        | eref
+        | iref
+        | v3_strong
+        | v3_sub
+        | v3_sup
+        | v3_tt
+        | xref)+
+    )
   }
 
 <em anchor="v3_boilerplate"><iref item="boilerplate V3 Extension Element"/><iref item="V3 Extension Elements" subitem="boilerplate"

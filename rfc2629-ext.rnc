@@ -436,7 +436,27 @@ v3_blockquote =
     attribute cite { URI }?,
     attribute pn { text }?, # (see [RFC7991], Appendix B.2)
     attribute quotedFrom { ATEXT }?,
-    t+
+    (
+      (artwork 
+        | v3_dl
+        | figure
+        | v3_ol
+        | v3_sourcecode
+        | t
+        | v3_ul)+
+    |
+      (TEXT
+        | v3_bcp14
+        | cref
+        | v3_em
+        | eref
+        | iref
+        | v3_strong
+        | v3_sub
+        | v3_sup
+        | v3_tt
+        | xref)+
+    )
   }
 
 # Boilerplate (see Section 12.3)
