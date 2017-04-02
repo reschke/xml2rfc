@@ -1309,6 +1309,7 @@
 <!-- Ordered Lists -->
 <xsl:template match="ol[not(@type) or string-length(@type)=1]" mode="cleanup">
   <t>
+    <xsl:copy-of select="@anchor"/>
     <xsl:if test="@start and @start!='1'">
       <xsl:call-template name="error">
         <xsl:with-param name="inline">no</xsl:with-param>
