@@ -7774,37 +7774,47 @@ dd, li, p {
 
 <xsl:template name="get-paragraph-number">
   <!-- no paragraph numbers in certain containers -->
-  <xsl:if test="(not(ancestor::x:blockquote) and not(ancestor::blockquote) and not(ancestor::x:note) and not(ancestor::aside) and not(ancestor::ul) and not(ancestor::dl) and not(ancestor::ol))">
-
-    <!-- get section number of ancestor section element, then add t number -->
-    <xsl:if test="ancestor::section">
-      <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
-      <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/></xsl:variable>
-      <xsl:choose>
-        <xsl:when test="parent::section and ../@removeInRFC='true' and ../t[1]!=$section-removeInRFC">
-          <xsl:value-of select="1 + $b"/>
-        </xsl:when>
-        <xsl:otherwise><xsl:value-of select="$b"/></xsl:otherwise>
-      </xsl:choose>
-    </xsl:if>
-
-    <!-- or get section number of ancestor note element, then add t number -->
-    <xsl:if test="ancestor::note">
-      <xsl:for-each select="ancestor::note[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
-      <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/></xsl:variable>
-      <xsl:choose>
-        <xsl:when test="parent::note and ../@removeInRFC='true' and ../t[1]!=$note-removeInRFC">
-          <xsl:value-of select="1 + $b"/>
-        </xsl:when>
-        <xsl:otherwise><xsl:value-of select="$b"/></xsl:otherwise>
-      </xsl:choose>
-    </xsl:if>
-
-    <!-- abstract -->
-    <xsl:if test="ancestor::abstract">
-      <xsl:text>p.</xsl:text>
-      <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/>
-    </xsl:if>
+  <xsl:if test="(not(ancestor::x:blockquote) and not(ancestor::x:note) and not(ancestor::aside) and not(ancestor::ul) and not(ancestor::dl) and not(ancestor::ol))">
+  
+    <xsl:choose>
+      <xsl:when test="parent::blockquote or parent::x:blockquote">
+        <!-- boilerplate -->
+        <xsl:for-each select="parent::blockquote|parent::x:blockquote"><xsl:call-template name="get-paragraph-number" />.</xsl:for-each>
+        <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/>
+      </xsl:when>
+  
+      <xsl:when test="ancestor::section">
+        <!-- get section number of ancestor section element, then add t number -->
+        <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
+        <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/></xsl:variable>
+        <xsl:choose>
+          <xsl:when test="parent::section and ../@removeInRFC='true' and ../t[1]!=$section-removeInRFC">
+            <xsl:value-of select="1 + $b"/>
+          </xsl:when>
+          <xsl:otherwise><xsl:value-of select="$b"/></xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+  
+      <xsl:when test="ancestor::note">
+        <!-- or get section number of ancestor note element, then add t number -->
+        <xsl:for-each select="ancestor::note[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
+        <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/></xsl:variable>
+        <xsl:choose>
+          <xsl:when test="parent::note and ../@removeInRFC='true' and ../t[1]!=$note-removeInRFC">
+            <xsl:value-of select="1 + $b"/>
+          </xsl:when>
+          <xsl:otherwise><xsl:value-of select="$b"/></xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+  
+      <!-- abstract -->
+      <xsl:when test="ancestor::abstract">
+        <xsl:text>p.</xsl:text>
+        <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/>
+      </xsl:when>
+  
+      <xsl:otherwise/>
+    </xsl:choose>  
   </xsl:if>
 </xsl:template>
 
@@ -9235,11 +9245,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.903 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.903 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.904 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.904 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/04/03 15:59:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/04/03 15:59:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/04/04 06:56:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/04/04 06:56:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
