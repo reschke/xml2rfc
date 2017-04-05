@@ -3332,48 +3332,18 @@
     </xsl:call-template>
   </xsl:if>
 
-  <xsl:choose>
-    <xsl:when test="@anchor">
-      <div id="{@anchor}">
-        <xsl:if test="$keepwithnext">
-          <xsl:attribute name="class">avoidbreakafter</xsl:attribute>
-        </xsl:if>
-        <xsl:choose>
-          <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-            <div id="{$anchor-pref}{$stype}.{$p}">
-              <xsl:apply-templates mode="t-content" select="node()[1]">
-                <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
-              </xsl:apply-templates>
-            </div>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:apply-templates mode="t-content" select="node()[1]">
-              <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
-            </xsl:apply-templates>
-          </xsl:otherwise>          
-        </xsl:choose>
-      </div>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:choose>
-        <xsl:when test="$p!='' and not(ancestor::list) and not(ancestor::ol) and not(ancestor::ul) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
-          <div id="{$anchor-pref}{$stype}.{$p}">
-            <xsl:if test="$keepwithnext">
-              <xsl:attribute name="class">avoidbreakafter</xsl:attribute>
-            </xsl:if>
-            <xsl:apply-templates mode="t-content" select="node()[1]">
-              <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
-            </xsl:apply-templates>
-          </div>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:apply-templates mode="t-content" select="node()[1]">
-            <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
-          </xsl:apply-templates>
-        </xsl:otherwise>          
-      </xsl:choose>
-    </xsl:otherwise>
-  </xsl:choose>
+  <div>
+    <xsl:if test="$p!='' and not(ancestor::list) and not(ancestor::ol) and not(ancestor::ul) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
+      <xsl:attribute name="id"><xsl:value-of select="concat($anchor-pref,$stype,'.',$p)"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="$keepwithnext">
+      <xsl:attribute name="class">avoidbreakafter</xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates mode="t-content" select="node()[1]">
+      <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
+      <xsl:with-param name="anchor" select="@anchor"/>
+    </xsl:apply-templates>
+  </div>
 </xsl:template>
 
 <!-- for t-content, dispatch to default templates if it's block-level content -->
@@ -3386,6 +3356,8 @@
 <!-- ... otherwise group into p elements -->
 <xsl:template mode="t-content" match="*|node()">
   <xsl:param name="inherited-self-link"/>
+  <xsl:param name="anchor"/>
+
   <xsl:variable name="p">
     <xsl:choose>
       <xsl:when test="self::text()">
@@ -3407,6 +3379,9 @@
 
     <xsl:if test="normalize-space($textcontent)!=''">
       <p>
+        <xsl:if test="$anchor!=''">
+          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+        </xsl:if>
         <xsl:variable name="stype">
           <xsl:choose>
             <xsl:when test="ancestor::abstract">abstract</xsl:when>
@@ -3415,7 +3390,7 @@
             <xsl:otherwise>section</xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
-        <xsl:variable name="anchor">
+        <xsl:variable name="anch">
           <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins) and not(ancestor::li) and not(ancestor::x:lt) and not(preceding-sibling::node())">
             <xsl:value-of select="concat($anchor-pref,$stype,'.',$p)"/>
           </xsl:if>
@@ -3424,8 +3399,8 @@
         <xsl:call-template name="editingMark" />
         <xsl:apply-templates mode="t-content2" select="." />
         <xsl:if test="$xml2rfc-ext-paragraph-links='yes'">
-          <xsl:if test="$anchor!=''">
-            <a class='self' href='#{$anchor}'>&#xb6;</a>
+          <xsl:if test="$anch!=''">
+            <a class='self' href='#{$anch}'>&#xb6;</a>
           </xsl:if>
           <xsl:if test="$inherited-self-link!=''">
             <a class='self' href='#{$inherited-self-link}'>&#xb6;</a>
@@ -9245,11 +9220,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.905 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.905 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.906 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.906 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/04/04 12:58:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/04/04 12:58:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/04/05 05:25:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/04/05 05:25:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
