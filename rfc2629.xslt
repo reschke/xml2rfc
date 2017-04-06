@@ -2195,6 +2195,16 @@
   <li>
     <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates />
+    <xsl:if test="not(following-sibling::li)">
+      <xsl:variable name="l">
+        <xsl:for-each select="..">
+          <xsl:call-template name="get-paragraph-number"/>
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:if test="$l!=''">
+        <a class='self' href='#{$anchor-pref}section.{$l}'>&#xb6;</a>
+      </xsl:if>
+    </xsl:if>
   </li>
 </xsl:template>
 
@@ -6001,7 +6011,7 @@ blockquote > * .bcp14 {
 .self:hover {
     text-decoration: none;
 }
-p:hover .self {
+li:hover > a.self, p:hover > a.self {
     visibility: visible;
 }</xsl:if><xsl:if test="$has-edits">del {
   color: red;
@@ -9220,11 +9230,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.907 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.907 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.908 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.908 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/04/05 11:10:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/04/05 11:10:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/04/06 12:58:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/04/06 12:58:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
