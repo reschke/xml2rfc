@@ -390,7 +390,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>rfc-ext</c>
   <c>rfc-erratum-uri<iref item="rfc-erratum-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-erratum-uri"/></c>
   <c>xml2rfc-ext-rfc-erratum-uri<iref item="xml2rfc-ext-rfc-erratum-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-erratum-uri"/></c>
-  <c>"https://www.rfc-editor.org/errata_search.php?eid={eid}"</c>
+  <c>"https://www.rfc-editor.org/errata/eid{eid}"</c>
   <c>URI template for a specific RFC erratum ("eid" is the "errata id").</c>
 
   <c>rfc-ext</c>
