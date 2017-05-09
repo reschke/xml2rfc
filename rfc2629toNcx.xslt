@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to NCX file format
 
-    Copyright (c) 2009-2010, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2009-2017, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -95,7 +95,7 @@
         <xsl:value-of select="@title"/>
       </text>
     </navLabel>
-    <content src="{$basename}.xhtml#{$anchor-prefix}.section.{$no}"/>
+    <content src="{$basename}.xhtml#{$anchor-pref}section.{$no}"/>
     <xsl:apply-templates mode="ncx"/>
   </navPoint>
 </xsl:template>
