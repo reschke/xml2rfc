@@ -156,7 +156,7 @@
     <xsl:when test="$l='nonspecific'">
       <!-- not a section number -->
     </xsl:when>
-    <xsl:when test="$l='toc' or $l='boilerplate'">
+    <xsl:when test="$l='toc' or $l='boilerplate' or $l='abstract'">
       <section><xsl:value-of select="$l"/></section>
     </xsl:when>
     <xsl:when test="ends-with($s,'.')">
