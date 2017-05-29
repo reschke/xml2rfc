@@ -9233,11 +9233,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.910 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.910 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.911 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.911 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/05/22 12:09:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/05/22 12:09:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/05/29 21:20:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/05/29 21:20:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -9470,7 +9470,7 @@ prev: <xsl:value-of select="$prev"/>
   <xsl:param name="initials"/>
   <xsl:variable name="local-multiple-initials">
     <xsl:call-template name="parse-pis">
-      <xsl:with-param name="nodes" select="./processing-instruction('rfc')"/>
+      <xsl:with-param name="nodes" select="../../processing-instruction('rfc')|../processing-instruction('rfc')|./processing-instruction('rfc')"/>
       <xsl:with-param name="attr" select="'multiple-initials'"/>
     </xsl:call-template>
   </xsl:variable>
