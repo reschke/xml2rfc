@@ -201,6 +201,12 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c/>
   
   <c>rfc</c>
+  <c>multiple-initials<iref item="multiple-initials PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="multiple-initials"/></c>
+  <c>xml2rfc-multiple-initials<iref item="xml2rfc-multiple-initials parameter"/> <iref item="Parameters" subitem="xml2rfc-multiple-initials"/></c>
+  <c>"no"</c>
+  <c>determines whether the processor will attempt to truncate multiple initials to a single one; can be set globally (affecting the front page) but also as child element of &lt;reference&gt;</c>
+
+  <c>rfc</c>
   <c>private<iref item="private PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="private"/></c>
   <c>xml2rfc-private<iref item="xml2rfc-private parameter"/> <iref item="Parameters" subitem="xml2rfc-private"/></c>
   <c>(not set)</c>
