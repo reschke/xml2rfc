@@ -135,6 +135,12 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <ttcol>comment</ttcol>
 
   <c>rfc</c>
+  <c>authorship<iref item="authorship PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="authorship"/></c>
+  <c>xml2rfc-authorship<iref item="xml2rfc-authorship parameter"/> <iref item="Parameters" subitem="xml2rfc-authorship"/></c>
+  <c>"yes"</c>
+  <c>when set to "no", the "Authors" section is suppressed</c>
+
+  <c>rfc</c>
   <c>background<iref item="background PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="background"/></c>
   <c>xml2rfc-background<iref item="xml2rfc-background parameter"/> <iref item="Parameters" subitem="xml2rfc-background"/></c>
   <c>(not set)</c>

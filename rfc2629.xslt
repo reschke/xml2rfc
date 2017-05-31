@@ -55,6 +55,16 @@
 <!-- PIs outside the root element, or inside the root element but before <front> -->
 <xsl:variable name="global-std-pis" select="/processing-instruction('rfc') | /*/processing-instruction('rfc')[following-sibling::front]"/>
 
+<!-- rfc authorship PI -->
+
+<xsl:param name="xml2rfc-authorship">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
+    <xsl:with-param name="attr" select="'authorship'"/>
+    <xsl:with-param name="default" select="'yes'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- rfc comments PI -->
 
 <xsl:param name="xml2rfc-comments">
@@ -3183,7 +3193,9 @@
       <xsl:if test="$xml2rfc-toc='yes'">
         <link rel="Contents" href="#{$anchor-pref}toc" />
       </xsl:if>
-      <link rel="Author" href="#{$anchor-pref}authors" />
+      <xsl:if test="$xml2rfc-authorship!='no'">
+        <link rel="Author" href="#{$anchor-pref}authors" />
+      </xsl:if>
       <xsl:if test="$xml2rfc-private=''">
         <xsl:choose>
           <xsl:when test="$no-copylong">
@@ -4901,7 +4913,7 @@
     <xsl:call-template name="get-authors-section-number"/>
   </xsl:variable>
 
-  <xsl:if test="$number!='suppress'">
+  <xsl:if test="$number!='suppress' and $xml2rfc-authorship!='no'">
     <xsl:call-template name="insert-conditional-hrule"/>
 
     <section id="{$anchor-pref}authors" class="avoidbreakinside">
@@ -7316,7 +7328,7 @@ dd, li, p {
     <xsl:call-template name="get-authors-section-number"/>
   </xsl:variable>
 
-  <xsl:if test="$authors-number!='suppress'">
+  <xsl:if test="$authors-number!='suppress' and $xml2rfc-authorship!='no'">
     <li>
       <xsl:call-template name="insert-toc-line">
         <xsl:with-param name="target" select="concat($anchor-pref,'authors')"/>
@@ -9233,11 +9245,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.911 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.911 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.912 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.912 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/05/29 21:20:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/05/29 21:20:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/05/31 14:04:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/05/31 14:04:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -9731,6 +9743,7 @@ prev: <xsl:value-of select="$prev"/>
 
                   <xsl:if test="name()='rfc' and $attr='SANITYCHECK'">
                     <xsl:choose>
+                      <xsl:when test="$attrname='authorship'"/>
                       <xsl:when test="$attrname='comments'"/>
                       <xsl:when test="$attrname='compact'"/>
                       <xsl:when test="$attrname='docmapping'">

@@ -2169,7 +2169,7 @@
     <xsl:call-template name="get-authors-section-number"/>
   </xsl:variable>
 
-  <xsl:if test="$sectionNumber!='suppress'">
+  <xsl:if test="$sectionNumber!='suppress' and $xml2rfc-authorship!='no'">
     <fo:block id="{$anchor-pref}authors" xsl:use-attribute-sets="h1 newpage">
       <xsl:if test="$sectionNumber != ''">
         <xsl:call-template name="emit-section-number">
@@ -2426,7 +2426,7 @@
   <xsl:variable name="authors-number">
     <xsl:call-template name="get-authors-section-number"/>
   </xsl:variable>
-  <xsl:if test="$authors-number!='suppress'">
+  <xsl:if test="$authors-number!='suppress' and $xml2rfc-authorship!='no'">
     <xsl:call-template name="insert-toc-line">
       <xsl:with-param name="target" select="concat($anchor-pref,'authors')"/>
       <xsl:with-param name="title" select="$authors-title"/>
@@ -2894,7 +2894,7 @@
     <xsl:call-template name="get-authors-section-title"/>
   </xsl:variable>
 
-  <xsl:if test="$authors-number!='suppress'">
+  <xsl:if test="$authors-number!='suppress' and $xml2rfc-authorship!='no'">
     <fo:bookmark internal-destination="{concat($anchor-pref,'authors')}">
       <fo:bookmark-title><xsl:value-of select="$title"/></fo:bookmark-title>
     </fo:bookmark>
