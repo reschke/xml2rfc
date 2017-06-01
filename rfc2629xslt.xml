@@ -423,6 +423,11 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>"yes"</c>
   <c>Decides whether the HTML transformation should generate META tags according <xref target="rfc2731.properties"/>.</c>
 
+  <c>rfc-ext</c>
+  <c>xml2rfc-backend<iref item="xml2rfc-backend PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xml2rfc-backend"/></c>
+  <c>xml2rfc-ext-xml2rfc-backend<iref item="xml2rfc-ext-xml2rfc-backend parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-xml2rfc-backend"/></c>
+  <c>based on document date</c>
+  <c>Used in <tt>clean-for-DTD.xslt</tt> (see <xref target="clean-for-dtd"/>).</c>
 
 </texttable>
 </section>
@@ -1961,10 +1966,10 @@ The picture below shows the RFC dependencies in RFC2629.
 </aside>
 <t>
   As the output formatters evolve to support the V3 format (proposed in
-  <xref target="RFC7991"/>, <tt>clean-for-DTD.xslt</tt> will start taking
-  advantage of these changes. Right now, it supports exactly two modes,
-  one of which being used for the historic TCL processor, and the newer
-  one to be used for <tt>xml2rfv 2.5.2</tt> (see <eref target="https://pypi.python.org/pypi/xml2rfc/">https://pypi.python.org/pypi/xml2rfc/</eref>).
+  <xref target="RFC7991"/>), <tt>clean-for-DTD.xslt</tt> will start taking
+  advantage of these changes. Right now, it supports three modes,
+  one of which being used for the historic TCL processor, and the other ones being used with
+  <tt>xml2rfc 2.5.2</tt> and <tt>xml2rfc 2.6.0</tt> (see <eref target="https://pypi.python.org/pypi/xml2rfc/">https://pypi.python.org/pypi/xml2rfc/</eref>).
 </t>
 <t>
   The modes can be selected using the <tt>xml2rfc-ext-xml2rfc-backend</tt>
