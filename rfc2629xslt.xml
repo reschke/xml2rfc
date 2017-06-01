@@ -1969,14 +1969,16 @@ The picture below shows the RFC dependencies in RFC2629.
 <t>
   The modes can be selected using the <tt>xml2rfc-ext-xml2rfc-backend</tt>
   parameter or the <tt>rfc-ext/xml2rfc-backend</tt> processing instruction.
-  The default mode is "201610" for documents with a publication date in 2017
-  or newer, and "201510" otherwise:
+  The default mode is "201610" for documents with a publication date between January and May 2017,
+  "201706" for documents newer than May 2017, and "201510" otherwise:
 </t>
 <dl>
   <dt><em>201510</em></dt>
   <dd>For <tt>xml2rfc.tcl</tt> and versions of the Python formatter before version 2.5.2.</dd>
   <dt><em>201610</em></dt>
   <dd>Maps the V3 extension for unnumbered section numbers to something the 2.5.2 version of the Python formatter understands (but note <eref target="https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/313">https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/313</eref>).</dd>
+  <dt><em>201706</em></dt>
+  <dd>Copies the V3 extension for unnumbered section numbers to the output.</dd>
 </dl>
 </section>
 
