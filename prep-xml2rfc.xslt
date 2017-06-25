@@ -603,7 +603,7 @@
       <xsl:with-param name="inline" select="'no'"/>
     </xsl:call-template>
   </xsl:if>
-  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-idcheck"/></xsl:copy>
+  <xsl:copy-of select="."/>
 </xsl:template>
 
 <!-- listdefaultstyle step -->
