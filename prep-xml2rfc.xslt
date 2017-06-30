@@ -1178,6 +1178,12 @@
   </link>
 </xsl:template>
 
+<xsl:template match="x:note" mode="prep-rfc2629ext" xmlns:x="http://purl.org/net/xml2rfc/ext">
+  <aside>
+    <xsl:apply-templates select="@*|node()" mode="prep-rfc2629ext"/>
+  </aside>
+</xsl:template>
+
 <!-- rfccleanup step -->
 
 <xsl:template match="*|text()|processing-instruction()|@*" mode="prep-rfccleanup">
