@@ -1938,7 +1938,6 @@
 <!-- list templates depend on the list style -->
 
 <xsl:template name="list-empty">
-  <xsl:call-template name="check-no-text-content"/>
   <ul class="empty">
     <xsl:call-template name="copy-anchor"/>
     <xsl:call-template name="insertInsDelClass"/>
@@ -1947,7 +1946,6 @@
 </xsl:template>
 
 <xsl:template name="list-format">
-  <xsl:call-template name="check-no-text-content"/>
   <dl>
     <xsl:call-template name="copy-anchor"/>
     <xsl:call-template name="insertInsDelClass"/>
@@ -1956,7 +1954,6 @@
 </xsl:template>
 
 <xsl:template name="list-hanging">
-  <xsl:call-template name="check-no-text-content"/>
   <xsl:variable name="compact">
     <xsl:call-template name="get-compact-setting"/>
   </xsl:variable>
@@ -1975,7 +1972,6 @@
 </xsl:template>
 
 <xsl:template name="list-numbers">
-  <xsl:call-template name="check-no-text-content"/>
   <ol>
     <xsl:call-template name="copy-anchor"/>
     <xsl:call-template name="insertInsDelClass"/>
@@ -1983,8 +1979,15 @@
   </ol>
 </xsl:template>
 
+<xsl:template name="check-no-hangindent">
+  <xsl:if test="@hangIndent">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg" select="'hangIndent attribute not supported for this list style'"/>
+    </xsl:call-template>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template name="list-letters">
-  <xsl:call-template name="check-no-text-content"/>
   <xsl:variable name="style">
     <xsl:choose>
       <!-- lowercase for even-numbered nesting levels -->
@@ -2001,7 +2004,6 @@
 </xsl:template>
 
 <xsl:template name="list-symbols">
-  <xsl:call-template name="check-no-text-content"/>
   <ul>
     <xsl:call-template name="copy-anchor"/>
     <xsl:call-template name="insertInsDelClass"/>
@@ -2011,8 +2013,10 @@
 
 <xsl:template match="list">
   <xsl:variable name="style" select="ancestor-or-self::list[@style][1]/@style"/>
+  <xsl:call-template name="check-no-text-content"/>
   <xsl:choose>
     <xsl:when test="not($style) or $style='empty'">
+      <xsl:call-template name="check-no-hangindent"/>
       <xsl:call-template name="list-empty"/>
     </xsl:when>
     <xsl:when test="starts-with($style, 'format ')">
@@ -2022,12 +2026,15 @@
       <xsl:call-template name="list-hanging"/>
     </xsl:when>
     <xsl:when test="$style='letters'">
+      <xsl:call-template name="check-no-hangindent"/>
       <xsl:call-template name="list-letters"/>
     </xsl:when>
     <xsl:when test="$style='numbers'">
+      <xsl:call-template name="check-no-hangindent"/>
       <xsl:call-template name="list-numbers"/>
     </xsl:when>
     <xsl:when test="$style='symbols'">
+      <xsl:call-template name="check-no-hangindent"/>
       <xsl:call-template name="list-symbols"/>
     </xsl:when>
     <xsl:otherwise>
@@ -9331,11 +9338,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.917 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.917 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.918 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.918 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/07/02 08:55:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/07/02 08:55:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/07/02 12:50:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/07/02 12:50:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
