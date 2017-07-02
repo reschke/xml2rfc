@@ -1937,7 +1937,7 @@
 
 <!-- list templates depend on the list style -->
 
-<xsl:template match="list[@style='empty' or (not(@style) and not(ancestor::list[@style]) or (not(@style) and ancestor::list[@style='empty']))]">
+<xsl:template name="list-empty">
   <xsl:call-template name="check-no-text-content"/>
   <ul class="empty">
     <xsl:call-template name="copy-anchor"/>
@@ -1945,6 +1945,126 @@
     <xsl:apply-templates />
   </ul>
 </xsl:template>
+
+<xsl:template name="list-format">
+  <xsl:call-template name="check-no-text-content"/>
+  <dl>
+    <xsl:call-template name="copy-anchor"/>
+    <xsl:call-template name="insertInsDelClass"/>
+    <xsl:apply-templates />
+  </dl>
+</xsl:template>
+
+<xsl:template name="list-hanging">
+  <xsl:call-template name="check-no-text-content"/>
+  <xsl:variable name="compact">
+    <xsl:call-template name="get-compact-setting"/>
+  </xsl:variable>
+  <!-- insert a hard space for nested lists so that indentation works ok -->
+  <xsl:if test="ancestor::list and normalize-space(preceding-sibling::text())=''">
+    <xsl:text>&#160;</xsl:text>
+  </xsl:if>
+  <dl>
+    <xsl:if test="$compact='yes'">
+      <xsl:attribute name="class">compact</xsl:attribute>
+    </xsl:if>
+    <xsl:call-template name="copy-anchor"/>
+    <xsl:call-template name="insertInsDelClass"/>
+    <xsl:apply-templates />
+  </dl>
+</xsl:template>
+
+<xsl:template name="list-numbers">
+  <xsl:call-template name="check-no-text-content"/>
+  <ol>
+    <xsl:call-template name="copy-anchor"/>
+    <xsl:call-template name="insertInsDelClass"/>
+    <xsl:apply-templates />
+  </ol>
+</xsl:template>
+
+<xsl:template name="list-letters">
+  <xsl:call-template name="check-no-text-content"/>
+  <xsl:variable name="style">
+    <xsl:choose>
+      <!-- lowercase for even-numbered nesting levels -->
+      <xsl:when test="0=(count(ancestor::list[@style='letters']) mod 2)">la</xsl:when>
+      <!-- uppercase otherwise -->
+      <xsl:otherwise>ua</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <ol class="{$style}">
+    <xsl:call-template name="copy-anchor"/>
+    <xsl:call-template name="insertInsDelClass"/>
+    <xsl:apply-templates />
+  </ol>
+</xsl:template>
+
+<xsl:template name="list-symbols">
+  <xsl:call-template name="check-no-text-content"/>
+  <ul>
+    <xsl:call-template name="copy-anchor"/>
+    <xsl:call-template name="insertInsDelClass"/>
+    <xsl:apply-templates />
+  </ul>
+</xsl:template>
+
+<xsl:template match="list[@style='empty']">
+  <xsl:call-template name="list-empty"/>
+</xsl:template>
+
+<xsl:template match="list[starts-with(@style,'format ')]">
+  <xsl:call-template name="list-format"/>
+</xsl:template>
+
+<xsl:template match="list[@style='hanging']">
+  <xsl:call-template name="list-hanging"/>
+</xsl:template>
+
+<xsl:template match="list[@style='letters']">
+  <xsl:call-template name="list-letters"/>
+</xsl:template>
+
+<xsl:template match="list[@style='numbers']">
+  <xsl:call-template name="list-numbers"/>
+</xsl:template>
+
+<xsl:template match="list[@style='symbols']">
+  <xsl:call-template name="list-symbols"/>
+</xsl:template>
+
+<xsl:template match="list[not(@style)]">
+  <xsl:variable name="inherited" select="ancestor::list[@style][1]/@style"/>
+  <xsl:choose>
+    <xsl:when test="not($inherited) or $inherited='empty'">
+      <xsl:call-template name="list-empty"/>
+    </xsl:when>
+    <xsl:when test="starts-with($inherited, 'format ')">
+      <xsl:call-template name="list-format"/>
+    </xsl:when>
+    <xsl:when test="$inherited='hanging'">
+      <xsl:call-template name="list-hanging"/>
+    </xsl:when>
+    <xsl:when test="$inherited='letters'">
+      <xsl:call-template name="list-letters"/>
+    </xsl:when>
+    <xsl:when test="$inherited='numbers'">
+      <xsl:call-template name="list-numbers"/>
+    </xsl:when>
+    <xsl:when test="$inherited='symbols'">
+      <xsl:call-template name="list-symbols"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('Unsupported inherited style attribute: ', $inherited)"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+
+
+<!-- v3 lists -->
 
 <xsl:template match="ol[string-length(@type)>1]">
   <xsl:variable name="p">
@@ -2070,15 +2190,6 @@
   </dd>
 </xsl:template>
 
-<xsl:template match="list[starts-with(@style,'format ')]">
-  <xsl:call-template name="check-no-text-content"/>
-  <dl>
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
-    <xsl:apply-templates />
-  </dl>
-</xsl:template>
-
 <!-- get value of "compact" mode, checking subcompact first, then compact -->
 <xsl:template name="get-compact-setting">
   <xsl:variable name="t1">
@@ -2102,34 +2213,6 @@
       <xsl:value-of select="$t1"/>
     </xsl:otherwise>
   </xsl:choose>
-</xsl:template>
-
-<xsl:template match="list[@style='hanging']">
-  <xsl:call-template name="check-no-text-content"/>
-  <xsl:variable name="compact">
-    <xsl:call-template name="get-compact-setting"/>
-  </xsl:variable>
-  <!-- insert a hard space for nested lists so that indentation works ok -->
-  <xsl:if test="ancestor::list and normalize-space(preceding-sibling::text())=''">
-    <xsl:text>&#160;</xsl:text>
-  </xsl:if>
-  <dl>
-    <xsl:if test="$compact='yes'">
-      <xsl:attribute name="class">compact</xsl:attribute>
-    </xsl:if>
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
-    <xsl:apply-templates />
-  </dl>
-</xsl:template>
-
-<xsl:template match="list[@style='numbers' or (not(@style) and ancestor::list[@style='numbers'])]">
-  <xsl:call-template name="check-no-text-content"/>
-  <ol>
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
-    <xsl:apply-templates />
-  </ol>
 </xsl:template>
 
 <xsl:template name="ol-start">
@@ -2223,61 +2306,9 @@
   </li>
 </xsl:template>
 
-<xsl:template match="list[@style='letters' or (not(@style) and ancestor::list[@style='letters'])]">
-  <xsl:call-template name="check-no-text-content"/>
-  <xsl:variable name="style">
-    <xsl:choose>
-      <!-- lowercase for even-numbered nesting levels -->
-      <xsl:when test="0=(count(ancestor::list[@style='letters']) mod 2)">la</xsl:when>
-      <!-- uppercase otherwise -->
-      <xsl:otherwise>ua</xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <ol class="{$style}">
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
-    <xsl:apply-templates />
-  </ol>
-</xsl:template>
-
-<xsl:template match="list[@style='symbols' or (not(@style) and ancestor::list[@style='symbols'])]">
-  <xsl:call-template name="check-no-text-content"/>
-  <ul>
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
-    <xsl:apply-templates />
-  </ul>
-</xsl:template>
-
-
 <!-- same for t(ext) elements -->
 
-<xsl:template match="list[@style='empty' or not(@style)]/t | list[@style='empty' or not(@style)]/ed:replace/ed:*/t">
-  <xsl:if test="@hangText">
-    <xsl:call-template name="warning">
-      <xsl:with-param name="msg" select="'t/@hangText used on unstyled list'"/>
-    </xsl:call-template>
-  </xsl:if>
-  <li>
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
-    <xsl:apply-templates />
-  </li>
-</xsl:template>
-
-<xsl:template match="list[@style='numbers' or @style='symbols' or @style='letters']/x:lt">
-  <li>
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:apply-templates select="t" />
-  </li>
-</xsl:template>
-
-<xsl:template match="list[@style='numbers' or @style='symbols' or @style='letters']/t | list[@style='numbers' or @style='symbols' or @style='letters']/ed:replace/ed:*/t">
-  <xsl:if test="@hangText">
-    <xsl:call-template name="warning">
-      <xsl:with-param name="msg" select="'t/@hangText used on non-hanging list'"/>
-    </xsl:call-template>
-  </xsl:if>
+<xsl:template name="list-item-generic">
   <li>
     <xsl:call-template name="copy-anchor"/>
     <xsl:call-template name="insertInsDelClass"/>
@@ -2288,33 +2319,7 @@
   </li>
 </xsl:template>
 
-<xsl:template match="list[@style='hanging']/x:lt">
-  <xsl:if test="@hangText!=''">
-    <dt>
-      <xsl:call-template name="copy-anchor"/>
-      <xsl:call-template name="insertInsDelClass"/>
-      <xsl:variable name="del-node" select="ancestor::ed:del"/>
-      <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
-      <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
-      <xsl:for-each select="../..">
-        <xsl:call-template name="insert-issue-pointer">
-          <xsl:with-param name="deleted-anchor" select="$deleted"/>
-        </xsl:call-template>
-      </xsl:for-each>
-      <xsl:value-of select="@hangText" />
-    </dt>
-  </xsl:if>
-  <dd>
-    <xsl:call-template name="insertInsDelClass"/>
-    <!-- if hangIndent present, use 0.7 of the specified value (1em is the width of the "m" character -->
-    <xsl:if test="../@hangIndent">
-      <xsl:attribute name="style">margin-left: <xsl:value-of select="format-number(../@hangIndent * 0.7,'#.#')"/>em</xsl:attribute>
-    </xsl:if>
-    <xsl:apply-templates select="t" />
-  </dd>
-</xsl:template>
-
-<xsl:template match="list[@style='hanging']/t | list[@style='hanging']/ed:replace/ed:*/t">
+<xsl:template name="list-item-hanging">
   <xsl:if test="@hangText!=''">
     <dt>
       <xsl:call-template name="copy-anchor"/>
@@ -2354,7 +2359,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="list[starts-with(@style,'format ')]/t">
+<xsl:template name="list-item-format">
   <xsl:variable name="list" select=".." />
   <xsl:variable name="format" select="substring-after(../@style,'format ')" />
   <xsl:variable name="pos">
@@ -2375,8 +2380,111 @@
     </xsl:call-template>
   </dt>
   <dd>
-    <xsl:apply-templates />
+    <xsl:apply-templates/>
   </dd>
+</xsl:template>
+
+<xsl:template match="list/t | list/ed:replace/ed:*/t">
+  <xsl:variable name="inherited" select="ancestor::list[@style][1]/@style"/>
+  <xsl:choose>
+    <xsl:when test="not($inherited) or $inherited='empty' or $inherited='letters' or $inherited='numbers' or $inherited='symbols'">
+      <xsl:if test="@hangText">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg" select="'t/@hangText used on unstyled list'"/>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:call-template name="list-item-generic"/>
+    </xsl:when>
+    <xsl:when test="starts-with($inherited, 'format ')">
+      <xsl:call-template name="list-item-format"/>
+    </xsl:when>
+    <xsl:when test="$inherited='hanging'">
+      <xsl:call-template name="list-item-hanging"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('Unsupported inherited style attribute: ', $inherited)"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="list-lt-generic">
+  <li>
+    <xsl:call-template name="copy-anchor"/>
+    <xsl:apply-templates select="t" />
+  </li>
+</xsl:template>
+
+<xsl:template name="list-lt-format">
+  <xsl:variable name="list" select=".." />
+  <xsl:variable name="format" select="substring-after(../@style,'format ')" />
+  <xsl:variable name="pos">
+    <xsl:choose>
+      <xsl:when test="$list/@counter">
+        <xsl:number level="any" count="list[@counter=$list/@counter or (not(@counter) and @style=concat('format ',$list/@counter))]/t" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:number level="any" count="list[concat('format ',@counter)=$list/@style or (not(@counter) and @style=$list/@style)]/t" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <dt>
+    <xsl:call-template name="copy-anchor"/>
+    <xsl:call-template name="expand-format-percent">
+      <xsl:with-param name="format" select="$format"/>
+      <xsl:with-param name="pos" select="$pos"/>
+    </xsl:call-template>
+  </dt>
+  <dd>
+    <xsl:apply-templates select="t" />
+  </dd>
+</xsl:template>
+
+<xsl:template name="list-lt-hanging">
+  <xsl:if test="@hangText!=''">
+    <dt>
+      <xsl:call-template name="copy-anchor"/>
+      <xsl:call-template name="insertInsDelClass"/>
+      <xsl:variable name="del-node" select="ancestor::ed:del"/>
+      <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
+      <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
+      <xsl:for-each select="../..">
+        <xsl:call-template name="insert-issue-pointer">
+          <xsl:with-param name="deleted-anchor" select="$deleted"/>
+        </xsl:call-template>
+      </xsl:for-each>
+      <xsl:value-of select="@hangText" />
+    </dt>
+  </xsl:if>
+  <dd>
+    <xsl:call-template name="insertInsDelClass"/>
+    <!-- if hangIndent present, use 0.7 of the specified value (1em is the width of the "m" character -->
+    <xsl:if test="../@hangIndent">
+      <xsl:attribute name="style">margin-left: <xsl:value-of select="format-number(../@hangIndent * 0.7,'#.#')"/>em</xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates select="t" />
+  </dd>
+</xsl:template>
+
+<xsl:template match="list/x:lt">
+  <xsl:variable name="inherited" select="ancestor::list[@style][1]/@style"/>
+  <xsl:choose>
+    <xsl:when test="$inherited='letters' or $inherited='numbers' or $inherited='symbols'">
+      <xsl:call-template name="list-lt-generic"/>
+    </xsl:when>    
+    <xsl:when test="starts-with($inherited, 'format ')">
+      <xsl:call-template name="list-lt-format"/>
+    </xsl:when>    
+    <xsl:when test="$inherited='hanging'">
+      <xsl:call-template name="list-lt-hanging"/>
+    </xsl:when>    
+    <xsl:otherwise>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('Unsupported inherited style attribute: ', $inherited)"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="expand-format-percent">
@@ -9247,11 +9355,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.914 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.914 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.915 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.915 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/07/01 16:01:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/07/01 16:01:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/07/02 04:42:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/07/02 04:42:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
