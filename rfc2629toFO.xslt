@@ -682,8 +682,19 @@
   </fo:list-item-body>
 </xsl:template>
 
-<xsl:template match="list[@style='hanging']" priority="1">
+<xsl:template name="list-empty">
+  <fo:list-block provisional-distance-between-starts="2em">
+    <xsl:apply-templates />
+  </fo:list-block>
+</xsl:template>
 
+<xsl:template name="list-format">
+  <fo:list-block provisional-distance-between-starts="{string-length(@style) - string-length('format ')}em">
+    <xsl:apply-templates />
+  </fo:list-block>
+</xsl:template>
+
+<xsl:template name="list-hanging">
   <xsl:variable name="width">
     <xsl:choose>
       <xsl:when test="@x:indent">
@@ -707,6 +718,58 @@
   <fo:list-block provisional-distance-between-starts="{$width}">
     <xsl:apply-templates />
   </fo:list-block>
+</xsl:template>
+
+<xsl:template name="list-letters">
+  <fo:list-block provisional-distance-between-starts="1.5em">
+    <xsl:apply-templates />
+  </fo:list-block>
+</xsl:template>
+
+<xsl:template name="list-numbers">
+  <fo:list-block provisional-distance-between-starts="1.5em">
+    <xsl:apply-templates />
+  </fo:list-block>
+</xsl:template>
+
+<xsl:template name="list-symbols">
+  <fo:list-block provisional-distance-between-starts="1.5em">
+    <xsl:apply-templates />
+  </fo:list-block>
+</xsl:template>
+
+<xsl:template match="list">
+  <xsl:variable name="style" select="ancestor-or-self::list[@style][1]/@style"/>
+  <xsl:call-template name="check-no-text-content"/>
+  <xsl:choose>
+    <xsl:when test="not($style) or $style='empty'">
+      <xsl:call-template name="check-no-hangindent"/>
+      <xsl:call-template name="list-empty"/>
+    </xsl:when>
+    <xsl:when test="starts-with($style, 'format ')">
+      <xsl:call-template name="list-format"/>
+    </xsl:when>
+    <xsl:when test="$style='hanging'">
+      <xsl:call-template name="list-hanging"/>
+    </xsl:when>
+    <xsl:when test="$style='letters'">
+      <xsl:call-template name="check-no-hangindent"/>
+      <xsl:call-template name="list-letters"/>
+    </xsl:when>
+    <xsl:when test="$style='numbers'">
+      <xsl:call-template name="check-no-hangindent"/>
+      <xsl:call-template name="list-numbers"/>
+    </xsl:when>
+    <xsl:when test="$style='symbols'">
+      <xsl:call-template name="check-no-hangindent"/>
+      <xsl:call-template name="list-symbols"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('Unsupported style attribute: ', $style)"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']/x:lt" priority="1">
@@ -748,7 +811,7 @@
   </fo:list-item>
 </xsl:template>
 
-<xsl:template match="ul | list[@style='symbols' or (not(@style) and ancestor::list[@style='symbols'])]" priority="1">
+<xsl:template match="ul">
   <fo:list-block provisional-distance-between-starts="1.5em">
     <xsl:if test="self::ul and parent::section|parent::note|parent::abstract">
       <xsl:attribute name="start-indent">2em</xsl:attribute>
@@ -782,17 +845,6 @@
   </fo:list-item>
 </xsl:template>
 
-<xsl:template match="list">
-  <xsl:if test="@style!='' and @style!='empty' and @style">
-    <xsl:call-template name="warning">
-      <xsl:with-param name="msg">unknown style '<xsl:value-of select="@style"/>' for list, continueing with default format.</xsl:with-param>
-    </xsl:call-template>
-  </xsl:if>
-  <fo:list-block provisional-distance-between-starts="2em">
-    <xsl:apply-templates />
-  </fo:list-block>
-</xsl:template>
-
 <xsl:template match="ul[@empty='true']/li | list/t">
   <fo:list-item space-before=".25em" space-after=".25em">
     <xsl:call-template name="copy-anchor"/>
@@ -801,7 +853,7 @@
   </fo:list-item>
 </xsl:template>
 
-<xsl:template match="ol[not(@type) or string-length(@type)=1] | list[@style='numbers' or @style='letters' or (not(@style) and ancestor::list[@style='numbers' or @style='letters'])]" priority="1">
+<xsl:template match="ol[not(@type) or string-length(@type)=1]">
   <fo:list-block provisional-distance-between-starts="1.5em">
     <xsl:if test="self::ol and parent::section|parent::note|parent::abstract">
       <xsl:attribute name="start-indent">2em</xsl:attribute>
@@ -889,12 +941,6 @@
     <fo:list-item-label end-indent="label-end()"><fo:block><xsl:number format="A"/>.</fo:block></fo:list-item-label>
     <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
   </fo:list-item>
-</xsl:template>
-
-<xsl:template match="list[starts-with(@style,'format ')]" priority="1">
-  <fo:list-block provisional-distance-between-starts="{string-length(@style) - string-length('format ')}em">
-    <xsl:apply-templates />
-  </fo:list-block>
 </xsl:template>
 
 <xsl:template match="ol[string-length(@type)>1]">
