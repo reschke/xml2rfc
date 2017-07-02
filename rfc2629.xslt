@@ -2009,54 +2009,30 @@
   </ul>
 </xsl:template>
 
-<xsl:template match="list[@style='empty']">
-  <xsl:call-template name="list-empty"/>
-</xsl:template>
-
-<xsl:template match="list[starts-with(@style,'format ')]">
-  <xsl:call-template name="list-format"/>
-</xsl:template>
-
-<xsl:template match="list[@style='hanging']">
-  <xsl:call-template name="list-hanging"/>
-</xsl:template>
-
-<xsl:template match="list[@style='letters']">
-  <xsl:call-template name="list-letters"/>
-</xsl:template>
-
-<xsl:template match="list[@style='numbers']">
-  <xsl:call-template name="list-numbers"/>
-</xsl:template>
-
-<xsl:template match="list[@style='symbols']">
-  <xsl:call-template name="list-symbols"/>
-</xsl:template>
-
-<xsl:template match="list[not(@style)]">
-  <xsl:variable name="inherited" select="ancestor::list[@style][1]/@style"/>
+<xsl:template match="list">
+  <xsl:variable name="style" select="ancestor-or-self::list[@style][1]/@style"/>
   <xsl:choose>
-    <xsl:when test="not($inherited) or $inherited='empty'">
+    <xsl:when test="not($style) or $style='empty'">
       <xsl:call-template name="list-empty"/>
     </xsl:when>
-    <xsl:when test="starts-with($inherited, 'format ')">
+    <xsl:when test="starts-with($style, 'format ')">
       <xsl:call-template name="list-format"/>
     </xsl:when>
-    <xsl:when test="$inherited='hanging'">
+    <xsl:when test="$style='hanging'">
       <xsl:call-template name="list-hanging"/>
     </xsl:when>
-    <xsl:when test="$inherited='letters'">
+    <xsl:when test="$style='letters'">
       <xsl:call-template name="list-letters"/>
     </xsl:when>
-    <xsl:when test="$inherited='numbers'">
+    <xsl:when test="$style='numbers'">
       <xsl:call-template name="list-numbers"/>
     </xsl:when>
-    <xsl:when test="$inherited='symbols'">
+    <xsl:when test="$style='symbols'">
       <xsl:call-template name="list-symbols"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
-        <xsl:with-param name="msg" select="concat('Unsupported inherited style attribute: ', $inherited)"/>
+        <xsl:with-param name="msg" select="concat('Unsupported inherited style attribute: ', $style)"/>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -9355,11 +9331,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.915 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.915 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.916 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.916 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/07/02 04:42:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/07/02 04:42:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/07/02 07:49:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/07/02 07:49:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
