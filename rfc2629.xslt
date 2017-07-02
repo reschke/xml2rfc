@@ -2032,7 +2032,7 @@
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
-        <xsl:with-param name="msg" select="concat('Unsupported inherited style attribute: ', $style)"/>
+        <xsl:with-param name="msg" select="concat('Unsupported style attribute: ', $style)"/>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -2361,9 +2361,9 @@
 </xsl:template>
 
 <xsl:template match="list/t | list/ed:replace/ed:*/t">
-  <xsl:variable name="inherited" select="ancestor::list[@style][1]/@style"/>
+  <xsl:variable name="style" select="ancestor::list[@style][1]/@style"/>
   <xsl:choose>
-    <xsl:when test="not($inherited) or $inherited='empty' or $inherited='letters' or $inherited='numbers' or $inherited='symbols'">
+    <xsl:when test="not($style) or $style='empty' or $style='letters' or $style='numbers' or $style='symbols'">
       <xsl:if test="@hangText">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg" select="'t/@hangText used on unstyled list'"/>
@@ -2371,15 +2371,15 @@
       </xsl:if>
       <xsl:call-template name="list-item-generic"/>
     </xsl:when>
-    <xsl:when test="starts-with($inherited, 'format ')">
+    <xsl:when test="starts-with($style, 'format ')">
       <xsl:call-template name="list-item-format"/>
     </xsl:when>
-    <xsl:when test="$inherited='hanging'">
+    <xsl:when test="$style='hanging'">
       <xsl:call-template name="list-item-hanging"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
-        <xsl:with-param name="msg" select="concat('Unsupported inherited style attribute: ', $inherited)"/>
+        <xsl:with-param name="msg" select="concat('Unsupported style attribute: ', $style)"/>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -2444,20 +2444,20 @@
 </xsl:template>
 
 <xsl:template match="list/x:lt">
-  <xsl:variable name="inherited" select="ancestor::list[@style][1]/@style"/>
+  <xsl:variable name="style" select="ancestor::list[@style][1]/@style"/>
   <xsl:choose>
-    <xsl:when test="$inherited='letters' or $inherited='numbers' or $inherited='symbols'">
+    <xsl:when test="$style='letters' or $style='numbers' or $style='symbols'">
       <xsl:call-template name="list-lt-generic"/>
     </xsl:when>    
-    <xsl:when test="starts-with($inherited, 'format ')">
+    <xsl:when test="starts-with($style, 'format ')">
       <xsl:call-template name="list-lt-format"/>
     </xsl:when>    
-    <xsl:when test="$inherited='hanging'">
+    <xsl:when test="$style='hanging'">
       <xsl:call-template name="list-lt-hanging"/>
     </xsl:when>    
     <xsl:otherwise>
       <xsl:call-template name="error">
-        <xsl:with-param name="msg" select="concat('Unsupported inherited style attribute: ', $inherited)"/>
+        <xsl:with-param name="msg" select="concat('Unsupported style attribute: ', $style)"/>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -9331,11 +9331,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.916 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.916 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.917 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.917 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/07/02 07:49:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/07/02 07:49:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/07/02 08:55:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/07/02 08:55:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
