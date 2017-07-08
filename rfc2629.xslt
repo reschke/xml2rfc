@@ -6307,6 +6307,7 @@ dd, li, p {
   }
 </xsl:if>}
 @page<xsl:if test="$xml2rfc-ext-duplex='yes'">:right</xsl:if> {
+  font-family: <xsl:value-of select="$xml2rfc-ext-ff-body"/>;
   @top-left {
        content: "<xsl:call-template name="get-header-left"/>";
   }
@@ -6327,6 +6328,7 @@ dd, li, p {
   }
 }<xsl:if test="$xml2rfc-ext-duplex='yes'">
 @page:left {
+  font-family: <xsl:value-of select="$xml2rfc-ext-ff-body"/>;
   @top-left {
        content: "<xsl:call-template name="get-header-right"/>";
   }
@@ -9338,11 +9340,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.918 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.918 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.919 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.919 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/07/02 12:50:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/07/02 12:50:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/07/08 10:12:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/07/08 10:12:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
