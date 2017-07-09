@@ -3224,6 +3224,9 @@
 
   <fo:block space-before=".5em" space-after=".5em" start-indent="2em" id="{$anch}">
     <xsl:call-template name="add-anchor"/>
+    <xsl:if test="@x:caption-side='top'">
+      <xsl:call-template name="insert-table-caption"/>
+    </xsl:if>
     <xsl:apply-templates select="preamble" />
     <fo:table>
       <xsl:variable name="total-specified">
@@ -3302,20 +3305,26 @@
       </fo:table-body>
     </fo:table>
     <xsl:apply-templates select="postamble" />
-    <xsl:if test="(@title!='') or (@anchor!='' and not(@suppress-title='true'))">
-      <xsl:variable name="n"><xsl:call-template name="get-table-number"/></xsl:variable>
-      <fo:block text-align="center" space-before="1em" space-after="1em">
-        <xsl:if test="not(starts-with($n,'u'))">
-          <xsl:text>Table </xsl:text>
-          <xsl:value-of select="$n"/>
-          <xsl:if test="@title!=''">: </xsl:if>
-        </xsl:if>
-        <xsl:if test="@title!=''">
-          <xsl:value-of select="@title" />
-        </xsl:if>
-      </fo:block>
+    <xsl:if test="not(@x:caption-side) or @x:caption-side!='top'">
+      <xsl:call-template name="insert-table-caption"/>
     </xsl:if>
   </fo:block>
+</xsl:template>
+
+<xsl:template name="insert-table-caption">
+  <xsl:if test="(@title!='') or (@anchor!='' and not(@suppress-title='true'))">
+    <xsl:variable name="n"><xsl:call-template name="get-table-number"/></xsl:variable>
+    <fo:block text-align="center" space-before="1em" space-after="1em">
+      <xsl:if test="not(starts-with($n,'u'))">
+        <xsl:text>Table </xsl:text>
+        <xsl:value-of select="$n"/>
+        <xsl:if test="@title!=''">: </xsl:if>
+      </xsl:if>
+      <xsl:if test="@title!=''">
+        <xsl:value-of select="@title" />
+      </xsl:if>
+    </fo:block>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="ttcol">

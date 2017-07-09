@@ -2994,6 +2994,10 @@ attlist.street &amp;=
 attlist.t &amp;=
   attribute pn { text }? # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
 
+<em># Extend attribute set for &lt;texttable></em>
+attlist.texttable &amp;=
+  attribute x:caption-side { ATEXT }?
+
 <em># Extend attribute set for &lt;title></em>
 attlist.title &amp;=
   attribute ascii { ATEXT }?,

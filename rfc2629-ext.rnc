@@ -389,6 +389,10 @@ attlist.street &=
 attlist.t &=
   attribute pn { text }? # (see [RFC7991], Appendix B.2)
 
+# Extend attribute set for <texttable>
+attlist.texttable &=
+  attribute x:caption-side { ATEXT }?
+
 # Extend attribute set for <title>
 attlist.title &=
   attribute ascii { ATEXT }?,

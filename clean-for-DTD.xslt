@@ -970,6 +970,9 @@
 <!-- normativity stripped -->
 <xsl:template match="@x:nrm" mode="cleanup"/>
 
+<!-- table extensions -->
+<xsl:template match="texttable/@x:caption-side" mode="cleanup"/>
+
 <!-- title extensions -->
 <xsl:template match="title/@x:quotes" mode="cleanup"/>
 
