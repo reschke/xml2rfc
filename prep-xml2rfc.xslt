@@ -51,7 +51,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi xinclude rfc2629ext figextract artwork cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults slug derivedcontent pn scripts idcheck preptime</xsl:text>
+  <xsl:text>pi xinclude rfc2629ext figextract artwork cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -118,6 +118,10 @@
         <xsl:when test="$s='lists'">
           <xsl:message>Step: lists</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-lists"/>
+        </xsl:when>
+        <xsl:when test="$s='normalization'">
+          <xsl:message>Step: normalization</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-normalization"/>
         </xsl:when>
         <xsl:when test="$s='pi'">
           <xsl:message>Step: pi</xsl:message>
@@ -1018,6 +1022,18 @@
       <xsl:with-param name="root" select="$root"/>
     </xsl:apply-templates>
   </xsl:copy>
+</xsl:template>
+
+<!-- normalization step -->
+
+<xsl:template match="node()|@*" mode="prep-normalization">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-normalization"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="rfc/front/date/@month" mode="prep-normalization">
+  <xsl:attribute name="month">
+    <xsl:value-of select="number($pub-month-numeric)"/>
+  </xsl:attribute>
 </xsl:template>
 
 <!-- pi step -->
