@@ -344,7 +344,7 @@
   </xsl:call-template>
 </xsl:template>
 
-<xsl:template match="@title[not(parent::section) and not(parent::figure)]" mode="prep-deprecation">
+<xsl:template match="@title[not(parent::section) and not(parent::figure) and not(parent::note)]" mode="prep-deprecation">
   <!-- converted elsewhere to name element -->
 </xsl:template>
 
@@ -396,23 +396,6 @@
   <xsl:call-template name="info">
     <xsl:with-param name="msg" select="concat('&lt;format&gt; element removed from reference ', ../@anchor, ' - use target attribute on &lt;reference&gt; to provide a single URI')"/>
   </xsl:call-template>
-</xsl:template>
-
-<xsl:template match="note" mode="prep-deprecation">
-  <xsl:copy>
-    <xsl:apply-templates select="@*" mode="prep-deprecation"/>
-    <xsl:if test="@title!=''">
-      <xsl:choose>
-        <xsl:when test="name">
-          <!-- error -->
-        </xsl:when>
-        <xsl:otherwise>
-          <name><xsl:value-of select="@title"/></name>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:if>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
-  </xsl:copy>
 </xsl:template>
 
 <xsl:template match="reference" mode="prep-deprecation">
@@ -1040,9 +1023,9 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="figure/@title|section/@title" mode="prep-normalization"/>
+<xsl:template match="figure/@title|note/@title|section/@title" mode="prep-normalization"/>
 
-<xsl:template match="figure|section" mode="prep-normalization">
+<xsl:template match="figure|note|section" mode="prep-normalization">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-normalization"/>
     <xsl:if test="@title!=''">
