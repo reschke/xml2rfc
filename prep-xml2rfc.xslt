@@ -344,7 +344,7 @@
   </xsl:call-template>
 </xsl:template>
 
-<xsl:template match="@title" mode="prep-deprecation">
+<xsl:template match="@title[not(parent::section) and not(parent::figure)]" mode="prep-deprecation">
   <!-- converted elsewhere to name element -->
 </xsl:template>
 
@@ -377,18 +377,7 @@
     </t>
   </xsl:for-each>
   <xsl:copy>
-    <xsl:apply-templates select="@*" mode="prep-deprecation"/>
-    <xsl:if test="@title!=''">
-      <xsl:choose>
-        <xsl:when test="name">
-          <!-- error -->
-        </xsl:when>
-        <xsl:otherwise>
-          <name><xsl:value-of select="@title"/></name>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:if>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
+    <xsl:apply-templates select="@*|node()" mode="prep-deprecation"/>
   </xsl:copy>
   <xsl:for-each select="postamble">
     <t>
@@ -501,23 +490,6 @@
     </xsl:if>
     <xsl:if test="not(@tocDepth) and $parsedTocDepth!=3">
       <xsl:attribute name="tocDepth"><xsl:value-of select="$parsedTocDepth"/></xsl:attribute>
-    </xsl:if>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
-  </xsl:copy>
-</xsl:template>
-
-<xsl:template match="section" mode="prep-deprecation">
-  <xsl:copy>
-    <xsl:apply-templates select="@*" mode="prep-deprecation"/>
-    <xsl:if test="@title!=''">
-      <xsl:choose>
-        <xsl:when test="name">
-          <!-- error -->
-        </xsl:when>
-        <xsl:otherwise>
-          <name><xsl:value-of select="@title"/></name>
-        </xsl:otherwise>
-      </xsl:choose>
     </xsl:if>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </xsl:copy>
@@ -1067,6 +1039,29 @@
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
+
+<xsl:template match="figure/@title|section/@title" mode="prep-normalization"/>
+
+<xsl:template match="figure|section" mode="prep-normalization">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-normalization"/>
+    <xsl:if test="@title!=''">
+      <xsl:choose>
+        <xsl:when test="name">
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg" select="concat(local-name(.), ' contains both name and @title, @title ignored')"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <name><xsl:value-of select="normalize-space(@title)"/></name>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-normalization"/>
+  </xsl:copy>
+</xsl:template>
+
+
 
 <!-- pi step -->
 
