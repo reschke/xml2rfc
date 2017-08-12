@@ -344,10 +344,6 @@
   </xsl:call-template>
 </xsl:template>
 
-<xsl:template match="@title[not(parent::section) and not(parent::figure) and not(parent::note) and not(parent::reference)]" mode="prep-deprecation">
-  <!-- converted elsewhere to name element -->
-</xsl:template>
-
 <xsl:template match="artwork/@xml:space" mode="prep-deprecation">
   <xsl:call-template name="info">
     <xsl:with-param name="msg" select="'xml:space attribute removed from artwork element'"/>
@@ -429,23 +425,6 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="references" mode="prep-deprecation">
-  <xsl:copy>
-    <xsl:apply-templates select="@*" mode="prep-deprecation"/>
-    <xsl:if test="@title!=''">
-      <xsl:choose>
-        <xsl:when test="name">
-          <!-- error -->
-        </xsl:when>
-        <xsl:otherwise>
-          <name><xsl:value-of select="@title"/></name>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:if>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
-  </xsl:copy>
-</xsl:template>
-
 <xsl:template match="rfc" mode="prep-deprecation">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-deprecation"/>
@@ -463,23 +442,6 @@
     </xsl:if>
     <xsl:if test="not(@tocDepth) and $parsedTocDepth!=3">
       <xsl:attribute name="tocDepth"><xsl:value-of select="$parsedTocDepth"/></xsl:attribute>
-    </xsl:if>
-    <xsl:apply-templates select="node()" mode="prep-deprecation"/>
-  </xsl:copy>
-</xsl:template>
-
-<xsl:template match="texttable" mode="prep-deprecation">
-  <xsl:copy>
-    <xsl:apply-templates select="@*" mode="prep-deprecation"/>
-    <xsl:if test="@title!=''">
-      <xsl:choose>
-        <xsl:when test="name">
-          <!-- error -->
-        </xsl:when>
-        <xsl:otherwise>
-          <name><xsl:value-of select="@title"/></name>
-        </xsl:otherwise>
-      </xsl:choose>
     </xsl:if>
     <xsl:apply-templates select="node()" mode="prep-deprecation"/>
   </xsl:copy>
@@ -1013,9 +975,9 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="figure/@title|note/@title|reference/@title|section/@title" mode="prep-normalization"/>
+<xsl:template match="@title" mode="prep-normalization"/>
 
-<xsl:template match="figure|note|reference|section" mode="prep-normalization">
+<xsl:template match="figure|note|references|section|texttable" mode="prep-normalization">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-normalization"/>
     <xsl:if test="@title!=''">
