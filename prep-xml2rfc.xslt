@@ -1036,6 +1036,38 @@
   </xsl:attribute>
 </xsl:template>
 
+<xsl:template match="cite/@ascii|code/@ascii|country/@ascii|email/@ascii|organization/@ascii|postalLine/@ascii|region/@ascii|street/@ascii|title/@ascii" mode="prep-normalization">
+  <xsl:choose>
+    <xsl:when test="normalize-space(.) != normalize-space(..)">
+      <xsl:copy-of select="."/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg" select="concat('removing unneeded @', local-name(.), ' attribute from: ', local-name(..))"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="author/@asciiInitials|author/@asciiFullname|author/@asciiSurname" mode="prep-normalization">
+  <xsl:choose>
+    <xsl:when test="local-name(.)='asciiInitials' and normalize-space(.) != normalize-space(../@initials)">
+      <xsl:copy-of select="."/>
+    </xsl:when>
+    <xsl:when test="local-name(.)='asciiSurname' and normalize-space(.) != normalize-space(../@surname)">
+      <xsl:copy-of select="."/>
+    </xsl:when>
+    <xsl:when test="local-name(.)='asciiFullname' and normalize-space(.) != normalize-space(../@fullname)">
+      <xsl:copy-of select="."/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg" select="concat('removing unneeded @', local-name(.), ' attribute from: ', local-name(..))"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <!-- pi step -->
 
 <xsl:template match="node()|@*" mode="prep-pi">
