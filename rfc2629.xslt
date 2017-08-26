@@ -982,6 +982,29 @@
   </xsl:choose>
 </xsl:variable>
 
+<!-- use https in boilerplate links? -->
+<xsl:variable name="rfc-boilerplate-use-https" select="$pub-yearmonth >= 201709"/>
+
+<xsl:variable name="rfc-info-link">
+  <xsl:variable name="scheme">
+    <xsl:choose>
+      <xsl:when test="$rfc-boilerplate-use-https">https</xsl:when>
+      <xsl:otherwise>http</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:value-of select="concat($scheme,'://www.rfc-editor.org/info/rfc',/rfc/@number)"/>
+</xsl:variable>
+
+<xsl:variable name="trust-license-info-link">
+  <xsl:variable name="scheme">
+    <xsl:choose>
+      <xsl:when test="$rfc-boilerplate-use-https">https</xsl:when>
+      <xsl:otherwise>http</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:value-of select="concat($scheme,'://trustee.ietf.org/license-info')"/>
+</xsl:variable>
+
 <!-- the reference to the latest and greatest headers-and-boilerplates document -->
 <xsl:variable name="hab-reference">
   <xsl:choose>
@@ -7118,7 +7141,7 @@ dd, li, p {
     <t>
       Information about the current status of this document, any errata, and
       how to provide feedback on it may be obtained at
-      <eref target="http://www.rfc-editor.org/info/rfc{@number}">http://www.rfc-editor.org/info/rfc<xsl:value-of select="@number"/></eref>.
+      <eref target="{$rfc-info-link}"><xsl:value-of select="$rfc-info-link"/></eref>.
     </t>
   </xsl:if>
 
@@ -7139,7 +7162,7 @@ dd, li, p {
           <xsl:when test="$ipr-2010-01">
             <t>
               This document is subject to BCP 78 and the IETF Trust's Legal
-              Provisions Relating to IETF Documents (<eref target="http://trustee.ietf.org/license-info">http://trustee.ietf.org/license-info</eref>)
+              Provisions Relating to IETF Documents (<eref target="{$trust-license-info-link}"><xsl:value-of select="$trust-license-info-link"/></eref>)
               in effect on the date of publication of this document. Please
               review these documents carefully, as they describe your rights
               and restrictions with respect to this document.
@@ -9348,11 +9371,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.920 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.920 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.921 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.921 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/07/09 19:39:24 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/07/09 19:39:24 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/08/26 00:45:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/08/26 00:45:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
