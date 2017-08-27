@@ -1223,7 +1223,12 @@
         </xsl:when>
         <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and .//seriesInfo[@name='BCP'] and starts-with(@anchor, 'BCP')">
           <xsl:text>, &lt;</xsl:text>
-          <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/bcp',.//seriesInfo[@name='BCP']/@value)"/>
+          <xsl:variable name="uri">
+            <xsl:call-template name="compute-rfc-info-uri">
+              <xsl:with-param name="type" select="'bcp'"/>
+              <xsl:with-param name="no" select="../seriesInfo[@name='BCP']/@value"/>
+            </xsl:call-template>
+          </xsl:variable>
           <xsl:call-template name="format-uri">
             <xsl:with-param name="s" select="$uri"/>
           </xsl:call-template>
@@ -1231,7 +1236,12 @@
         </xsl:when>
         <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and .//seriesInfo[@name='RFC']">
           <xsl:text>, &lt;</xsl:text>
-          <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/rfc',.//seriesInfo[@name='RFC']/@value)"/>
+          <xsl:variable name="uri">
+            <xsl:call-template name="compute-rfc-info-uri">
+              <xsl:with-param name="type" select="'rfc'"/>
+              <xsl:with-param name="no" select="../seriesInfo[@name='RFC']/@value"/>
+            </xsl:call-template>
+          </xsl:variable>
           <xsl:call-template name="format-uri">
             <xsl:with-param name="s" select="$uri"/>
           </xsl:call-template>

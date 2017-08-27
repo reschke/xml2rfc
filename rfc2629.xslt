@@ -806,6 +806,36 @@
   </xsl:call-template>
 </xsl:template>
 
+<xsl:param name="xml2rfc-ext-rfc-info-uri">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'rfc-info-uri'"/>
+    <xsl:with-param name="default">
+      <xsl:choose>
+        <xsl:when test="$pub-yearmonth &lt; 201708">http://www.rfc-editor.org/info/{type}{no}</xsl:when>
+        <xsl:otherwise>https://www.rfc-editor.org/info/{type}{no}</xsl:otherwise>
+      </xsl:choose>    
+    </xsl:with-param>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:template name="compute-rfc-info-uri">
+  <xsl:param name="type"/>
+  <xsl:param name="no"/>
+  <xsl:variable name="t">
+    <xsl:call-template name="replace-substring">
+      <xsl:with-param name="string" select="$xml2rfc-ext-rfc-info-uri"/>
+      <xsl:with-param name="replace" select="'{type}'"/>
+      <xsl:with-param name="by" select="$type"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:call-template name="replace-substring">
+    <xsl:with-param name="string" select="$t"/>
+    <xsl:with-param name="replace" select="'{no}'"/>
+    <xsl:with-param name="by" select="$no"/>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:param name="xml2rfc-ext-rfc-erratum-uri">
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
@@ -3114,13 +3144,23 @@
       </xsl:when>
       <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and $si[@name='BCP'] and starts-with(@anchor, 'BCP')">
         <xsl:text>, &lt;</xsl:text>
-        <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/bcp',$si[@name='BCP']/@value)"/>
+        <xsl:variable name="uri">
+          <xsl:call-template name="compute-rfc-info-uri">
+            <xsl:with-param name="type" select="'bcp'"/>
+            <xsl:with-param name="no" select="$si[@name='BCP']/@value"/>
+          </xsl:call-template>
+        </xsl:variable>
         <a href="{$uri}"><xsl:value-of select="$uri"/></a>
         <xsl:text>&gt;</xsl:text>
       </xsl:when>
       <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and $si[@name='RFC']">
         <xsl:text>, &lt;</xsl:text>
-        <xsl:variable name="uri" select="concat('http://www.rfc-editor.org/info/rfc',$si[@name='RFC']/@value)"/>
+        <xsl:variable name="uri">
+          <xsl:call-template name="compute-rfc-info-uri">
+            <xsl:with-param name="type" select="'rfc'"/>
+            <xsl:with-param name="no" select="$si[@name='RFC']/@value"/>
+          </xsl:call-template>
+        </xsl:variable>
         <a href="{$uri}"><xsl:value-of select="$uri"/></a>
         <xsl:text>&gt;</xsl:text>
       </xsl:when>
@@ -3343,7 +3383,7 @@
       </xsl:for-each>
       <xsl:if test="@number">
         <link rel="Alternate" title="Authoritative ASCII Version" href="http://www.ietf.org/rfc/rfc{@number}.txt" />
-        <link rel="Help" title="RFC-Editor's Status Page" href="http://www.rfc-editor.org/info/rfc{@number}" />
+        <link rel="Help" title="RFC-Editor's Status Page" href="{$rfc-info-link}" />
         <link rel="Help" title="Additional Information on tools.ietf.org" href="https://tools.ietf.org/html/rfc{@number}"/>
       </xsl:if>
 
@@ -9371,11 +9411,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.921 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.921 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.922 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.922 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/08/26 00:45:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/08/26 00:45:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/08/27 23:55:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/08/27 23:55:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
