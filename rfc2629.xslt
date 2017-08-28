@@ -9411,11 +9411,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.922 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.922 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.923 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.923 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/08/27 23:55:11 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/08/27 23:55:11 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/08/28 00:23:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/08/28 00:23:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -9465,7 +9465,7 @@ dd, li, p {
             <xsl:with-param name="msg">Only top-level sections can be unnumbered</xsl:with-param>
           </xsl:call-template>
         </xsl:if>
-        <xsl:if test="following-sibling::section[not(@numbered) or @numberer!='false'] or following-sibling::references">
+        <xsl:if test="following-sibling::section[not(@numbered) or @numbered!='false'] or following-sibling::references">
           <xsl:call-template name="error">
             <xsl:with-param name="msg">Unnumbered section is followed by numbered sections</xsl:with-param>
           </xsl:call-template>
