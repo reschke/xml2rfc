@@ -2674,18 +2674,22 @@
       </xsl:if>
     </xsl:when>
     <xsl:when test="$bib//seriesInfo/@name='Internet-Draft'">
-      <xsl:call-template name="compute-internet-draft-uri">
-        <xsl:with-param name="internet-draft" select="$bib//seriesInfo[@name='Internet-Draft']/@value"/>
-      </xsl:call-template>
-      <xsl:if test="$ref and $sec!='' and $internetDraftUrlFragSection and $internetDraftUrlFragAppendix">
-        <xsl:choose>
-          <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
-            <xsl:value-of select="concat('#',$internetDraftUrlFragAppendix,$sec)"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="concat('#',$internetDraftUrlFragSection,$sec)"/>
-          </xsl:otherwise>
-        </xsl:choose>
+      <xsl:variable name="draftName" select="$bib//seriesInfo[@name='Internet-Draft']/@value"/>
+      <xsl:variable name="endsWithLatest" select="substring($draftName, string-length($draftName) - string-length('-latest') + 1) = '-latest'"/>
+      <xsl:if test="not($endsWithLatest)">
+        <xsl:call-template name="compute-internet-draft-uri">
+          <xsl:with-param name="internet-draft" select="$draftName"/>
+        </xsl:call-template>
+        <xsl:if test="$ref and $sec!='' and $internetDraftUrlFragSection and $internetDraftUrlFragAppendix">
+          <xsl:choose>
+            <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
+              <xsl:value-of select="concat('#',$internetDraftUrlFragAppendix,$sec)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="concat('#',$internetDraftUrlFragSection,$sec)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:if>
       </xsl:if>
     </xsl:when>
     <xsl:otherwise />
@@ -9411,11 +9415,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.924 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.924 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.925 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.925 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/09/20 09:30:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/09/20 09:30:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/09/26 15:03:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/09/26 15:03:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
