@@ -2646,6 +2646,18 @@
     <xsl:when test="$ref and $bib/x:source/@href and $bib/x:source/@basename and $sec!=''">
       <xsl:value-of select="concat($bib/x:source/@basename,'.',$outputExtension,'#')" />
       <xsl:value-of select="$anchor-pref"/>section.<xsl:value-of select="$sec"/>
+      <!-- sanity check on target document -->
+      <xsl:variable name="d" select="document($bib/x:source/@href)"/>
+      <xsl:variable name="sections">
+        <xsl:text> </xsl:text>
+        <xsl:apply-templates select="$d//rfc" mode="get-section-numbers"/>
+        <xsl:text> </xsl:text>
+      </xsl:variable>
+      <xsl:if test="not(contains($sections,concat(' ',$sec,' ')))">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg" select="concat('apparently dangling reference to ',$sec,' of ',$bib/@anchor)"/>
+        </xsl:call-template>
+      </xsl:if>
     </xsl:when>
     <xsl:when test="$ref and $bib/x:source/@href and $bib/x:source/@basename and $ref/@anchor">
       <xsl:value-of select="concat($bib/x:source/@basename,'.',$outputExtension,'#',$ref/@anchor)" />
@@ -2698,6 +2710,16 @@
     </xsl:when>
     <xsl:otherwise />
   </xsl:choose>
+</xsl:template>
+
+<!-- generates a string with white-space separated section numbers -->
+<xsl:template match="node()|@*" mode="get-section-numbers">
+  <xsl:apply-templates select="*" mode="get-section-numbers"/>
+</xsl:template>
+<xsl:template match="section|references|appendix" mode="get-section-numbers">
+  <xsl:call-template name="get-section-number"/>
+  <xsl:text> </xsl:text>
+  <xsl:apply-templates select="*" mode="get-section-numbers"/>
 </xsl:template>
 
 <xsl:template name="compute-section-number">
@@ -9419,11 +9441,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.926 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.926 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.927 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.927 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/09/27 21:05:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/09/27 21:05:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/09/30 15:52:45 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/09/30 15:52:45 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
