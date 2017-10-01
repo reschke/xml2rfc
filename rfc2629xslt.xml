@@ -3680,6 +3680,7 @@ rdf_content =
     <c>inline</c><c>monospaced text (no outline)</c>
     <c>message/http; msgtype="request"</c><c>HTTP message, as per <xref target="RFC7230" x:fmt="," x:sec="8.3.1" /></c>
     <c>message/http; msgtype="response"</c><c>HTTP message, as per <xref target="RFC7230" x:fmt="," x:sec="8.3.1" /></c>
+    <c>pdu</c><c>pdu (with outline)</c>
     <c>svg and image/svg+xml</c><c>SVG</c>
   </texttable>
   </section>
