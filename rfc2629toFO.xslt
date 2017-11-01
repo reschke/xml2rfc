@@ -1791,11 +1791,15 @@
 
 </xsl:template>
 
-<xsl:template match="xref[not(node())]">
+<xsl:template match="xref[not(node())]|relref[not(node())]">
 
   <xsl:variable name="xref" select="."/>
+  <xsl:variable name="is-xref" select="self::xref"/>
+
   <xsl:variable name="target" select="@target"/>
-  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
+  
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]|relref[@target=$xref/@target]"/></xsl:variable>
+
   <xsl:variable name="node" select="key('anchor-item',$xref/@target)|exslt:node-set($includeDirectives)//reference[@anchor=$xref/@target]"/>
   <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
     <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
@@ -2121,14 +2125,19 @@
                 </xsl:call-template>
               </xsl:variable>
               <xsl:choose>
-                <xsl:when test="$xref/@format='counter'">
+                <xsl:when test="$is-xref and $xref/@format='counter'">
                   <!-- remove brackets -->
                   <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
                 </xsl:when>
-                <xsl:when test="$xref/@format='title'">
+                <xsl:when test="$is-xref and $xref/@format='title'">
                   <xsl:value-of select="$node/front/title"/>
                 </xsl:when>
                 <xsl:otherwise>
+                  <xsl:if test="not($is-xref) and $xref/@format">
+                    <xsl:call-template name="warning">
+                      <xsl:with-param name="msg">@format attribute is undefined for relref</xsl:with-param>
+                    </xsl:call-template>
+                  </xsl:if>
                   <xsl:value-of select="$val"/>
                 </xsl:otherwise>
               </xsl:choose>

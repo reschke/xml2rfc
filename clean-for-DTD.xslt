@@ -459,8 +459,12 @@
   </postal>
 </xsl:template>
 
-<xsl:template match="xref[(@x:fmt or @x:sec or @x:rel or @section or @sectionFormat or @relative) and not(node())]" mode="cleanup">
+<!-- not supported -->
+<xsl:template match="relref/@format" mode="cleanup"/>
+
+<xsl:template match="xref[(@x:fmt or @x:sec or @x:rel or @section or @sectionFormat or @relative) and not(node())]|relref[not(node())]" mode="cleanup">
   <xsl:call-template name="insert-iref-for-xref"/>
+  <xsl:variable name="is-xref" select="self::xref"/>
   <xsl:variable name="node" select="$src//*[@anchor=current()/@target]" />
 
   <xsl:variable name="ssec">

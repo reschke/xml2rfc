@@ -456,9 +456,9 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-derivedcontent"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="xref[not(node())]/@derivedcontent" mode="prep-derivedcontent"/>
+<xsl:template match="xref[not(node())]/@derivedcontent|relref[not(node())]/@derivedcontent" mode="prep-derivedcontent"/>
 
-<xsl:template match="xref[not(node())]" mode="prep-derivedcontent">
+<xsl:template match="xref[not(node())]|relref[not(node())]" mode="prep-derivedcontent">
   <xsl:variable name="d">
     <xsl:variable name="t">
       <xsl:apply-templates select="."/>
