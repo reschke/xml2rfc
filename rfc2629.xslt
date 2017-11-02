@@ -3979,7 +3979,7 @@
 <xsl:template name="get-section-xref-format">
   <xsl:param name="default"/>
   <xsl:choose>
-    <xsl:when test="@displayFormat">
+    <xsl:when test="self::relref and @displayFormat">
       <xsl:choose>
         <xsl:when test="@displayFormat='parens' or @displayFormat='of' or @displayFormat='comma'">
           <xsl:value-of select="@displayFormat"/>
@@ -3992,7 +3992,27 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
-    <xsl:when test="@x:fmt">
+    <xsl:when test="self::xref and @sectionFormat">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">@sectionFormat is deprecated, use @x:fmt instead</xsl:with-param>
+      </xsl:call-template>
+      <xsl:if test="@x:fmt">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">both @x:fmt and @sectionFormat specified</xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="@sectionFormat='parens' or @sectionFormat='of' or @sectionFormat='comma' or @sectionFormat='section' or @sectionFormat='number-only'">
+          <xsl:value-of select="@sectionFormat"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">unknown format for @sectionFormat</xsl:with-param>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:when test="self::xref and @x:fmt">
       <xsl:choose>
         <xsl:when test="@x:fmt='()'">parens</xsl:when>
         <xsl:when test="@x:fmt='of'">of</xsl:when>
@@ -9438,11 +9458,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.929 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.929 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.930 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.930 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/01 21:52:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/01 21:52:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/02 06:34:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/02 06:34:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
