@@ -1816,8 +1816,6 @@
 <xsl:template name="xref-to-figure">
   <xsl:param name="from"/>
   <xsl:param name="to"/>
-  <xsl:param name="id"/>
-  <xsl:param name="irefs"/>
 
   <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
     <xsl:variable name="figcnt">
@@ -1846,8 +1844,6 @@
 <xsl:template name="xref-to-table">
   <xsl:param name="from"/>
   <xsl:param name="to"/>
-  <xsl:param name="id"/>
-  <xsl:param name="irefs"/>
 
   <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
     <xsl:variable name="tabcnt">
@@ -1938,8 +1934,6 @@
       <xsl:call-template name="xref-to-figure">
         <xsl:with-param name="from" select="$xref"/>
         <xsl:with-param name="to" select="$node"/>
-        <xsl:with-param name="id" select="$id"/>
-        <xsl:with-param name="irefs" select="$ireftargets"/>
       </xsl:call-template>
     </xsl:when>
 
@@ -1948,8 +1942,6 @@
       <xsl:call-template name="xref-to-table">
         <xsl:with-param name="from" select="$xref"/>
         <xsl:with-param name="to" select="$node"/>
-        <xsl:with-param name="id" select="$id"/>
-        <xsl:with-param name="irefs" select="$ireftargets"/>
       </xsl:call-template>
     </xsl:when>
 
