@@ -1838,6 +1838,19 @@
   </fo:basic-link>
 </xsl:template>
 
+<!-- xref to paragraph -->
+<xsl:template name="xref-to-paragraph">
+  <xsl:param name="from"/>
+  <xsl:param name="to"/>
+
+  <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
+    <xsl:call-template name="xref-to-paragraph-text">
+      <xsl:with-param name="from" select="$from"/>
+      <xsl:with-param name="to" select="$to"/>
+    </xsl:call-template>
+  </fo:basic-link>
+</xsl:template>
+
 <xsl:template match="xref[not(node())]|relref[not(node())]">
 
   <xsl:variable name="xref" select="."/>
@@ -1910,107 +1923,10 @@
 
     <!-- Paragraph links -->
     <xsl:when test="$node/self::t or $node/self::dt or $node/self::li">
-      <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-        <xsl:variable name="tcnt">
-          <xsl:for-each select="$node">
-            <xsl:call-template name="get-paragraph-number" />
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:variable name="pparent" select="$node/.."/>
-        <xsl:variable name="listtype">
-          <xsl:choose>
-            <xsl:when test="$pparent/self::list">
-              <xsl:value-of select="$pparent/@style"/>
-            </xsl:when>
-            <xsl:when test="$pparent/self::dl">definition</xsl:when>
-            <xsl:when test="$pparent/self::ol[@type='a']">letters</xsl:when>
-            <xsl:when test="$pparent/self::ol[@type='A']">Letters</xsl:when>
-            <xsl:when test="$pparent/self::ol[@type='i']">rnumbers</xsl:when>
-            <xsl:when test="$pparent/self::ol[@type='I']">Rnumbers</xsl:when>
-            <xsl:when test="$pparent/self::ol[string-length(@type)>1]">format <xsl:value-of select="$pparent/self::ol/@type"/></xsl:when> 
-            <xsl:when test="$pparent/self::ol">numbers</xsl:when>
-            <xsl:when test="$pparent/self::ul">symbols</xsl:when>
-            <xsl:otherwise></xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
-        <xsl:variable name="s">
-          <xsl:choose>
-            <xsl:when test="$pparent/@group">
-              <xsl:call-template name="ol-start">
-                <xsl:with-param name="node" select="$pparent"/>
-              </xsl:call-template>
-            </xsl:when>
-            <xsl:when test="$pparent/@start">
-              <xsl:value-of select="$pparent/@start"/>
-            </xsl:when>
-            <xsl:otherwise>1</xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
-        <xsl:variable name="n">
-          <xsl:for-each select="$node">
-            <xsl:number/>
-          </xsl:for-each>
-        </xsl:variable>
-          <xsl:variable name="format">
-          <xsl:choose>
-            <xsl:when test="$listtype='letters'">a</xsl:when>
-            <xsl:when test="$listtype='Letters'">A</xsl:when>
-            <xsl:when test="$listtype='rnumbers'">i</xsl:when>
-            <xsl:when test="$listtype='Rnumbers'">I</xsl:when>
-            <xsl:otherwise>1</xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
-        <xsl:variable name="listindex">
-          <xsl:choose>
-            <xsl:when test="starts-with($listtype,'format ')">
-              <xsl:call-template name="expand-format-percent">
-                <xsl:with-param name="format" select="substring-after($listtype,'format ')"/>
-                <xsl:with-param name="pos" select="$n + $s - 1"/>
-              </xsl:call-template>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:number value="$n + $s - 1" format="{$format}"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
-        <xsl:choose>
-          <xsl:when test="@format='counter'">
-            <xsl:choose>
-              <xsl:when test="$listtype!='' and $listindex!=''">
-                <xsl:value-of select="$listindex"/>
-              </xsl:when>
-              <xsl:when test="$listtype!='' and $listindex=''">
-                <xsl:call-template name="warning">
-                  <xsl:with-param name="msg" select="concat('Use of format=counter for unsupported list type ',$listtype)"/>
-                </xsl:call-template>
-                <xsl:value-of select="$tcnt"/>              
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="$tcnt"/>              
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:when>
-          <xsl:when test="@format='none'">
-            <!-- Nothing to do -->
-          </xsl:when>
-          <xsl:when test="@format='title'">
-            <xsl:choose>
-              <xsl:when test="$node/self::dt">
-                <xsl:apply-templates select="$node/node()"/>
-              </xsl:when>
-              <xsl:when test="$node/@hangText">
-                <xsl:value-of select="$node/@hangText"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="$node/@title" />
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="normalize-space(concat('Paragraph&#160;',substring-after($tcnt,'p.')))"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </fo:basic-link>
+      <xsl:call-template name="xref-to-paragraph">
+        <xsl:with-param name="from" select="$xref"/>
+        <xsl:with-param name="to" select="$node"/>
+      </xsl:call-template>
     </xsl:when>
 
     <!-- Comment links -->

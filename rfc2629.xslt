@@ -4273,119 +4273,130 @@
   </a>
 </xsl:template>
 
+<!-- xref to paragraph -->
+<xsl:template name="xref-to-paragraph-text">
+  <xsl:param name="from"/>
+  <xsl:param name="to"/>
+
+  <xsl:variable name="tcnt">
+    <xsl:for-each select="$to">
+      <xsl:call-template name="get-paragraph-number" />
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:variable name="pparent" select="$to/.."/>
+  <xsl:variable name="listtype">
+    <xsl:choose>
+      <xsl:when test="$pparent/self::list">
+        <xsl:value-of select="$pparent/@style"/>
+      </xsl:when>
+      <xsl:when test="$pparent/self::dl">definition</xsl:when> 
+      <xsl:when test="$pparent/self::ol[@type='a']">letters</xsl:when> 
+      <xsl:when test="$pparent/self::ol[@type='A']">Letters</xsl:when> 
+      <xsl:when test="$pparent/self::ol[@type='i']">rnumbers</xsl:when> 
+      <xsl:when test="$pparent/self::ol[@type='I']">Rnumbers</xsl:when> 
+      <xsl:when test="$pparent/self::ol[string-length(@type)>1]">format <xsl:value-of select="$pparent/self::ol/@type"/></xsl:when> 
+      <xsl:when test="$pparent/self::ol">numbers</xsl:when> 
+      <xsl:otherwise></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="s">
+    <xsl:choose>
+      <xsl:when test="$pparent/@group">
+        <xsl:call-template name="ol-start">
+          <xsl:with-param name="node" select="$pparent"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="$pparent/@start">
+        <xsl:value-of select="$pparent/@start"/>
+      </xsl:when>
+      <xsl:otherwise>1</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="n">
+    <xsl:for-each select="$to">
+      <xsl:number/>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:variable name="format">
+    <xsl:choose>
+      <xsl:when test="$listtype='letters'">a</xsl:when>
+      <xsl:when test="$listtype='Letters'">A</xsl:when>
+      <xsl:when test="$listtype='rnumbers'">i</xsl:when>
+      <xsl:when test="$listtype='Rnumbers'">I</xsl:when>
+      <xsl:otherwise>1</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="listindex">
+    <xsl:choose>
+      <xsl:when test="starts-with($listtype,'format ')">
+        <xsl:call-template name="expand-format-percent">
+          <xsl:with-param name="format" select="substring-after($listtype,'format ')"/>
+          <xsl:with-param name="pos" select="$n + $s - 1"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:number value="$n + $s - 1" format="{$format}"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="$from/@format='counter'">
+      <xsl:choose>
+        <xsl:when test="$listtype!='' and $listindex!=''">
+          <xsl:value-of select="$listindex"/>
+        </xsl:when>
+        <xsl:when test="$listtype!='' and $listindex=''">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg" select="concat('Use of format=counter for unsupported list type ',$listtype)"/>
+          </xsl:call-template>
+          <xsl:value-of select="$tcnt"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$tcnt"/>              
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:when test="$from/@format='none'">
+      <!-- Nothing to do -->
+    </xsl:when>
+    <xsl:when test="$from/@format='title'">
+      <xsl:choose>
+        <xsl:when test="$to/self::dt">
+          <xsl:apply-templates select="$to/node()"/>
+        </xsl:when>
+        <xsl:when test="$to/@hangText">
+          <xsl:value-of select="$to/@hangText"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$to/@title" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="pn" select="normalize-space(substring-after($tcnt,'p.'))"/>
+      <xsl:text>Paragraph&#160;</xsl:text>
+      <xsl:choose>
+        <xsl:when test="$pn=''">
+          <xsl:text>?</xsl:text>
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg" select="concat('No paragraph number for link target ',$from/@target)"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise><xsl:value-of select="$pn"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="xref-to-paragraph">
   <xsl:param name="from"/>
   <xsl:param name="to"/>
 
   <a href="#{$from/@target}">
-    <xsl:variable name="tcnt">
-      <xsl:for-each select="$to">
-        <xsl:call-template name="get-paragraph-number" />
-      </xsl:for-each>
-    </xsl:variable>
-    <xsl:variable name="pparent" select="$to/.."/>
-    <xsl:variable name="listtype">
-      <xsl:choose>
-        <xsl:when test="$pparent/self::list">
-          <xsl:value-of select="$pparent/@style"/>
-        </xsl:when>
-        <xsl:when test="$pparent/self::dl">definition</xsl:when> 
-        <xsl:when test="$pparent/self::ol[@type='a']">letters</xsl:when> 
-        <xsl:when test="$pparent/self::ol[@type='A']">Letters</xsl:when> 
-        <xsl:when test="$pparent/self::ol[@type='i']">rnumbers</xsl:when> 
-        <xsl:when test="$pparent/self::ol[@type='I']">Rnumbers</xsl:when> 
-        <xsl:when test="$pparent/self::ol[string-length(@type)>1]">format <xsl:value-of select="$pparent/self::ol/@type"/></xsl:when> 
-        <xsl:when test="$pparent/self::ol">numbers</xsl:when> 
-        <xsl:otherwise></xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:variable name="s">
-      <xsl:choose>
-        <xsl:when test="$pparent/@group">
-          <xsl:call-template name="ol-start">
-            <xsl:with-param name="node" select="$pparent"/>
-          </xsl:call-template>
-        </xsl:when>
-        <xsl:when test="$pparent/@start">
-          <xsl:value-of select="$pparent/@start"/>
-        </xsl:when>
-        <xsl:otherwise>1</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:variable name="n">
-      <xsl:for-each select="$to">
-        <xsl:number/>
-      </xsl:for-each>
-    </xsl:variable>
-    <xsl:variable name="format">
-      <xsl:choose>
-        <xsl:when test="$listtype='letters'">a</xsl:when>
-        <xsl:when test="$listtype='Letters'">A</xsl:when>
-        <xsl:when test="$listtype='rnumbers'">i</xsl:when>
-        <xsl:when test="$listtype='Rnumbers'">I</xsl:when>
-        <xsl:otherwise>1</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:variable name="listindex">
-      <xsl:choose>
-        <xsl:when test="starts-with($listtype,'format ')">
-          <xsl:call-template name="expand-format-percent">
-            <xsl:with-param name="format" select="substring-after($listtype,'format ')"/>
-            <xsl:with-param name="pos" select="$n + $s - 1"/>
-          </xsl:call-template>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:number value="$n + $s - 1" format="{$format}"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:choose>
-      <xsl:when test="$from/@format='counter'">
-        <xsl:choose>
-          <xsl:when test="$listtype!='' and $listindex!=''">
-            <xsl:value-of select="$listindex"/>
-          </xsl:when>
-          <xsl:when test="$listtype!='' and $listindex=''">
-            <xsl:call-template name="warning">
-              <xsl:with-param name="msg" select="concat('Use of format=counter for unsupported list type ',$listtype)"/>
-            </xsl:call-template>
-            <xsl:value-of select="$tcnt"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$tcnt"/>              
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:when test="$from/@format='none'">
-        <!-- Nothing to do -->
-      </xsl:when>
-      <xsl:when test="$from/@format='title'">
-        <xsl:choose>
-          <xsl:when test="$to/self::dt">
-            <xsl:apply-templates select="$to/node()"/>
-          </xsl:when>
-          <xsl:when test="$to/@hangText">
-            <xsl:value-of select="$to/@hangText"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$to/@title" />
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:variable name="pn" select="normalize-space(substring-after($tcnt,'p.'))"/>
-        <xsl:text>Paragraph&#160;</xsl:text>
-        <xsl:choose>
-          <xsl:when test="$pn=''">
-            <xsl:text>?</xsl:text>
-            <xsl:call-template name="warning">
-              <xsl:with-param name="msg" select="concat('No paragraph number for link target ',$from/@target)"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:otherwise><xsl:value-of select="$pn"/></xsl:otherwise>
-        </xsl:choose>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="xref-to-paragraph-text">
+      <xsl:with-param name="from" select="$from"/>
+      <xsl:with-param name="to" select="$to"/>
+    </xsl:call-template>
   </a>
 </xsl:template>
 
@@ -9533,11 +9544,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.938 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.938 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.939 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.939 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/03 17:07:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/03 17:07:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/03 22:38:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/03 22:38:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
