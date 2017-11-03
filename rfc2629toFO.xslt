@@ -1846,32 +1846,10 @@
   <xsl:param name="to"/>
 
   <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
-    <xsl:variable name="tabcnt">
-      <xsl:for-each select="$to">
-        <xsl:call-template name="get-table-number"/>
-      </xsl:for-each>
-    </xsl:variable>
-    <xsl:choose>
-      <xsl:when test="$from/@format='counter'">
-        <xsl:value-of select="$tabcnt" />
-      </xsl:when>
-      <xsl:when test="$from/@format='none'">
-        <!-- Nothing to do -->
-      </xsl:when>
-      <xsl:when test="$from/@format='title'">
-        <xsl:choose>
-          <xsl:when test="$to/self::table">
-            <xsl:apply-templates select="$to/name/node()"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$to/@title" />
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="normalize-space(concat('Table&#160;',$tabcnt))"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="xref-to-table-text">
+      <xsl:with-param name="from" select="$from"/>
+      <xsl:with-param name="to" select="$to"/>
+    </xsl:call-template>
   </fo:basic-link>
 </xsl:template>
 
