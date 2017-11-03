@@ -1842,6 +1842,43 @@
   </fo:basic-link>
 </xsl:template>
 
+<!-- xref to table -->
+<xsl:template name="xref-to-table">
+  <xsl:param name="from"/>
+  <xsl:param name="to"/>
+  <xsl:param name="id"/>
+  <xsl:param name="irefs"/>
+
+  <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
+    <xsl:variable name="tabcnt">
+      <xsl:for-each select="$to">
+        <xsl:call-template name="get-table-number"/>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="$from/@format='counter'">
+        <xsl:value-of select="$tabcnt" />
+      </xsl:when>
+      <xsl:when test="$from/@format='none'">
+        <!-- Nothing to do -->
+      </xsl:when>
+      <xsl:when test="$from/@format='title'">
+        <xsl:choose>
+          <xsl:when test="$to/self::table">
+            <xsl:apply-templates select="$to/name/node()"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$to/@title" />
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="normalize-space(concat('Table&#160;',$tabcnt))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </fo:basic-link>
+</xsl:template>
+
 <xsl:template match="xref[not(node())]|relref[not(node())]">
 
   <xsl:variable name="xref" select="."/>
@@ -1908,34 +1945,12 @@
 
     <!-- Table links -->
     <xsl:when test="$node/self::texttable or $node/self::table">
-      <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-        <xsl:variable name="tabcnt">
-          <xsl:for-each select="$node">
-            <xsl:call-template name="get-table-number"/>
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:choose>
-          <xsl:when test="@format='counter'">
-            <xsl:value-of select="$tabcnt" />
-          </xsl:when>
-          <xsl:when test="@format='none'">
-            <!-- Nothing to do -->
-          </xsl:when>
-          <xsl:when test="@format='title'">
-            <xsl:choose>
-              <xsl:when test="$node/self::table">
-                <xsl:apply-templates select="$node/name/node()"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="$node/@title" />
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="normalize-space(concat('Table&#160;',$tabcnt))"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </fo:basic-link>
+      <xsl:call-template name="xref-to-table">
+        <xsl:with-param name="from" select="$xref"/>
+        <xsl:with-param name="to" select="$node"/>
+        <xsl:with-param name="id" select="$id"/>
+        <xsl:with-param name="irefs" select="$ireftargets"/>
+      </xsl:call-template>
     </xsl:when>
 
     <!-- Paragraph links -->
