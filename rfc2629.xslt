@@ -4188,6 +4188,36 @@
   </a>
 </xsl:template>
 
+<!-- xref to figure -->
+<xsl:template name="xref-to-figure">
+  <xsl:param name="from"/>
+  <xsl:param name="to"/>
+  <xsl:param name="id"/>
+  <xsl:param name="irefs"/>
+
+  <a href="#{$from/@target}">
+    <xsl:variable name="figcnt">
+      <xsl:for-each select="$to">
+        <xsl:call-template name="get-figure-number"/>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="$from/@format='counter'">
+        <xsl:value-of select="$figcnt" />
+      </xsl:when>
+      <xsl:when test="$from/@format='none'">
+        <!-- Nothing to do -->
+      </xsl:when>
+      <xsl:when test="$from/@format='title'">
+        <xsl:value-of select="$to/@title" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </a>
+</xsl:template>
+
 <xsl:template match="xref[not(node())]|relref[not(node())]">
 
   <xsl:variable name="xref" select="."/>
@@ -4245,27 +4275,12 @@
 
       <!-- Figure links -->
       <xsl:when test="$node/self::figure">
-        <a href="#{$xref/@target}">
-          <xsl:variable name="figcnt">
-            <xsl:for-each select="$node">
-              <xsl:call-template name="get-figure-number"/>
-            </xsl:for-each>
-          </xsl:variable>
-          <xsl:choose>
-            <xsl:when test="$xref/@format='counter'">
-              <xsl:value-of select="$figcnt" />
-            </xsl:when>
-            <xsl:when test="$xref/@format='none'">
-              <!-- Nothing to do -->
-            </xsl:when>
-            <xsl:when test="$xref/@format='title'">
-              <xsl:value-of select="$node/@title" />
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </a>
+        <xsl:call-template name="xref-to-figure">
+          <xsl:with-param name="from" select="$xref"/>
+          <xsl:with-param name="to" select="$node"/>
+          <xsl:with-param name="id" select="$id"/>
+          <xsl:with-param name="irefs" select="$ireftargets"/>
+        </xsl:call-template>
       </xsl:when>
 
       <!-- Table links -->
@@ -9481,11 +9496,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.932 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.932 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.933 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.933 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/03 12:49:30 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/03 12:49:30 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/03 13:15:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/03 13:15:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

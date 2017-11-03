@@ -1812,6 +1812,36 @@
   </fo:basic-link>
 </xsl:template>
 
+<!-- xref to figure -->
+<xsl:template name="xref-to-figure">
+  <xsl:param name="from"/>
+  <xsl:param name="to"/>
+  <xsl:param name="id"/>
+  <xsl:param name="irefs"/>
+
+  <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
+    <xsl:variable name="figcnt">
+      <xsl:for-each select="$to">
+        <xsl:call-template name="get-figure-number"/>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="$from/@format='counter'">
+        <xsl:value-of select="$figcnt" />
+      </xsl:when>
+      <xsl:when test="$from/@format='none'">
+        <!-- Nothing to do -->
+      </xsl:when>
+      <xsl:when test="$from/@format='title'">
+        <xsl:value-of select="$to/@title" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </fo:basic-link>
+</xsl:template>
+
 <xsl:template match="xref[not(node())]|relref[not(node())]">
 
   <xsl:variable name="xref" select="."/>
@@ -1868,27 +1898,12 @@
 
     <!-- Figure links -->
     <xsl:when test="$node//self::figure">
-      <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-        <xsl:variable name="figcnt">
-          <xsl:for-each select="$node">
-            <xsl:call-template name="get-figure-number"/>
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:choose>
-          <xsl:when test="@format='counter'">
-            <xsl:value-of select="$figcnt" />
-          </xsl:when>
-          <xsl:when test="@format='none'">
-            <!-- Nothing to do -->
-          </xsl:when>
-          <xsl:when test="@format='title'">
-            <xsl:value-of select="$node/@title" />
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </fo:basic-link>
+      <xsl:call-template name="xref-to-figure">
+        <xsl:with-param name="from" select="$xref"/>
+        <xsl:with-param name="to" select="$node"/>
+        <xsl:with-param name="id" select="$id"/>
+        <xsl:with-param name="irefs" select="$ireftargets"/>
+      </xsl:call-template>
     </xsl:when>
 
     <!-- Table links -->
