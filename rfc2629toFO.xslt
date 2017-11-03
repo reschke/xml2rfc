@@ -1818,25 +1818,10 @@
   <xsl:param name="to"/>
 
   <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
-    <xsl:variable name="figcnt">
-      <xsl:for-each select="$to">
-        <xsl:call-template name="get-figure-number"/>
-      </xsl:for-each>
-    </xsl:variable>
-    <xsl:choose>
-      <xsl:when test="$from/@format='counter'">
-        <xsl:value-of select="$figcnt" />
-      </xsl:when>
-      <xsl:when test="$from/@format='none'">
-        <!-- Nothing to do -->
-      </xsl:when>
-      <xsl:when test="$from/@format='title'">
-        <xsl:value-of select="$to/@title" />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="xref-to-figure-text">
+      <xsl:with-param name="from" select="$from"/>
+      <xsl:with-param name="to" select="$to"/>
+    </xsl:call-template>
   </fo:basic-link>
 </xsl:template>
 

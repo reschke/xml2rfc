@@ -4189,30 +4189,40 @@
 </xsl:template>
 
 <!-- xref to figure -->
+<xsl:template name="xref-to-figure-text">
+  <xsl:param name="from"/>
+  <xsl:param name="to"/>
+
+  <xsl:variable name="figcnt">
+    <xsl:for-each select="$to">
+      <xsl:call-template name="get-figure-number"/>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="$from/@format='counter'">
+      <xsl:value-of select="$figcnt" />
+    </xsl:when>
+    <xsl:when test="$from/@format='none'">
+      <!-- Nothing to do -->
+    </xsl:when>
+    <xsl:when test="$from/@format='title'">
+      <xsl:value-of select="$to/@title" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="xref-to-figure">
   <xsl:param name="from"/>
   <xsl:param name="to"/>
 
   <a href="#{$from/@target}">
-    <xsl:variable name="figcnt">
-      <xsl:for-each select="$to">
-        <xsl:call-template name="get-figure-number"/>
-      </xsl:for-each>
-    </xsl:variable>
-    <xsl:choose>
-      <xsl:when test="$from/@format='counter'">
-        <xsl:value-of select="$figcnt" />
-      </xsl:when>
-      <xsl:when test="$from/@format='none'">
-        <!-- Nothing to do -->
-      </xsl:when>
-      <xsl:when test="$from/@format='title'">
-        <xsl:value-of select="$to/@title" />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="xref-to-figure-text">
+      <xsl:with-param name="from" select="$from"/>
+      <xsl:with-param name="to" select="$to"/>
+    </xsl:call-template>
   </a>
 </xsl:template>
 
@@ -9513,11 +9523,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.936 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.936 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.937 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.937 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/03 15:30:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/03 15:30:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/03 16:01:24 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/03 16:01:24 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
