@@ -1826,7 +1826,7 @@
     <xsl:when test="$node/self::section or $node/self::appendix">
       <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
         <!-- insert id when a backlink to this xref is needed in the index -->
-        <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
+        <xsl:variable name="ireftargets" select="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]"/>
         <xsl:if test="$ireftargets">
           <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
         </xsl:if>

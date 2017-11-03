@@ -4170,6 +4170,24 @@
 
 <xsl:key name="iref-xanch" match="iref[@x:for-anchor]" use="@x:for-anchor"/>
 
+<!-- xref to section or appendix -->
+<xsl:template name="xref-to-section">
+  <xsl:param name="from"/>
+  <xsl:param name="to"/>
+  <xsl:param name="id"/>
+  
+  <a href="#{$from/@target}">
+    <xsl:if test="$id!=''">
+      <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+    </xsl:if>
+    <xsl:call-template name="render-section-ref">
+      <xsl:with-param name="from" select="$from"/>
+      <xsl:with-param name="to" select="$to"/>
+    </xsl:call-template>
+  </a>
+</xsl:template>
+
+
 <xsl:template match="xref[not(node())]|relref[not(node())]">
 
   <xsl:variable name="xref" select="."/>
@@ -4195,6 +4213,13 @@
   <!-- ensure we have the right context, this <xref> may be processed from within the boilerplate -->
   <xsl:for-each select="$src">
 
+    <!-- insert id when a backlink to this xref is needed in the index -->
+    <xsl:variable name="id">
+      <xsl:if test="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]">
+        <xsl:value-of select="$anchor"/>
+      </xsl:if>
+    </xsl:variable>
+  
     <xsl:variable name="node" select="key('anchor-item',$xref/@target)|exslt:node-set($includeDirectives)//reference[@anchor=$xref/@target]"/>
     <xsl:if test="count($node)=0 and not($node/ancestor::ed:del)">
       <xsl:for-each select="$xref">
@@ -4208,16 +4233,11 @@
 
       <!-- Section links -->
       <xsl:when test="$node/self::section or $node/self::appendix">
-        <a href="#{$xref/@target}">
-          <!-- insert id when a backlink to this xref is needed in the index -->
-          <xsl:if test="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]">
-            <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-          </xsl:if>
-          <xsl:call-template name="render-section-ref">
-            <xsl:with-param name="from" select="$xref"/>
-            <xsl:with-param name="to" select="$node"/>
-          </xsl:call-template>
-        </a>
+        <xsl:call-template name="xref-to-section">
+          <xsl:with-param name="from" select="$xref"/>
+          <xsl:with-param name="to" select="$node"/>
+          <xsl:with-param name="id" select="$id"/>
+        </xsl:call-template>
       </xsl:when>
 
       <!-- Figure links -->
@@ -9458,11 +9478,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.930 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.930 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.931 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.931 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/02 06:34:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/02 06:34:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/03 07:02:23 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/03 07:02:23 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
