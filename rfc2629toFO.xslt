@@ -1791,6 +1791,27 @@
 
 </xsl:template>
 
+<!-- xref to section or appendix -->
+<xsl:template name="xref-to-section">
+  <xsl:param name="from"/>
+  <xsl:param name="to"/>
+  <xsl:param name="id"/>
+  <xsl:param name="irefs"/>
+  
+  <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
+    <xsl:if test="$id!=''">
+      <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+    </xsl:if>
+    <xsl:for-each select="$irefs">
+      <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
+    </xsl:for-each>
+    <xsl:call-template name="render-section-ref">
+      <xsl:with-param name="from" select="$from"/>
+      <xsl:with-param name="to" select="$to"/>
+    </xsl:call-template>
+  </fo:basic-link>
+</xsl:template>
+
 <xsl:template match="xref[not(node())]|relref[not(node())]">
 
   <xsl:variable name="xref" select="."/>
@@ -1800,10 +1821,22 @@
   
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]|relref[@target=$xref/@target]"/></xsl:variable>
 
+  <!-- index links to this xref -->
+  <xsl:variable name="ireftargets" select="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]"/>
+  <!-- insert id when a backlink to this xref is needed in the index -->
+  <xsl:variable name="id">
+    <xsl:if test="$ireftargets">
+      <xsl:value-of select="$anchor"/>
+    </xsl:if>
+  </xsl:variable>
+
   <xsl:variable name="node" select="key('anchor-item',$xref/@target)|exslt:node-set($includeDirectives)//reference[@anchor=$xref/@target]"/>
   <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
-    <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
-    <span class="error">Undefined target: <xsl:value-of select="@target" /></span>
+    <xsl:for-each select="$xref">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="concat('Undefined target: ',$xref/@target)"/>
+      </xsl:call-template>
+    </xsl:for-each>
   </xsl:if>
 
   <xsl:variable name="sfmt">
@@ -1822,22 +1855,15 @@
   </xsl:variable>
 
   <xsl:choose>
+
     <!-- Section links -->
     <xsl:when test="$node/self::section or $node/self::appendix">
-      <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-        <!-- insert id when a backlink to this xref is needed in the index -->
-        <xsl:variable name="ireftargets" select="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]"/>
-        <xsl:if test="$ireftargets">
-          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-        </xsl:if>
-        <xsl:for-each select="$ireftargets">
-          <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
-        </xsl:for-each>
-        <xsl:call-template name="render-section-ref">
-          <xsl:with-param name="from" select="."/>
-          <xsl:with-param name="to" select="$node"/>
-        </xsl:call-template>
-      </fo:basic-link>
+      <xsl:call-template name="xref-to-section">
+        <xsl:with-param name="from" select="$xref"/>
+        <xsl:with-param name="to" select="$node"/>
+        <xsl:with-param name="id" select="$id"/>
+        <xsl:with-param name="irefs" select="$ireftargets"/>
+      </xsl:call-template>
     </xsl:when>
 
     <!-- Figure links -->

@@ -4175,6 +4175,7 @@
   <xsl:param name="from"/>
   <xsl:param name="to"/>
   <xsl:param name="id"/>
+  <xsl:param name="irefs"/>
   
   <a href="#{$from/@target}">
     <xsl:if test="$id!=''">
@@ -4186,7 +4187,6 @@
     </xsl:call-template>
   </a>
 </xsl:template>
-
 
 <xsl:template match="xref[not(node())]|relref[not(node())]">
 
@@ -4213,9 +4213,11 @@
   <!-- ensure we have the right context, this <xref> may be processed from within the boilerplate -->
   <xsl:for-each select="$src">
 
+    <!-- index links to this xref -->
+    <xsl:variable name="ireftargets" select="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]"/>
     <!-- insert id when a backlink to this xref is needed in the index -->
     <xsl:variable name="id">
-      <xsl:if test="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]">
+      <xsl:if test="$ireftargets">
         <xsl:value-of select="$anchor"/>
       </xsl:if>
     </xsl:variable>
@@ -4237,6 +4239,7 @@
           <xsl:with-param name="from" select="$xref"/>
           <xsl:with-param name="to" select="$node"/>
           <xsl:with-param name="id" select="$id"/>
+          <xsl:with-param name="irefs" select="$ireftargets"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -9478,11 +9481,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.931 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.931 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.932 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.932 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/03 07:02:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/03 07:02:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/03 12:49:30 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/03 12:49:30 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
