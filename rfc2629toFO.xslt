@@ -1869,9 +1869,22 @@
   <xsl:variable name="xref" select="."/>
   <xsl:variable name="is-xref" select="self::xref"/>
 
-  <xsl:variable name="target" select="@target"/>
-  
-  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]|relref[@target=$xref/@target]"/></xsl:variable>
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="$xref/@target"/>.<xsl:number level="any" count="xref[@target=$xref/@target]|relref[@target=$xref/@target]"/></xsl:variable>
+
+  <xsl:variable name="sfmt">
+    <xsl:call-template name="get-section-xref-format">
+      <xsl:with-param name="default">
+        <xsl:choose>
+          <xsl:when test="ancestor::artwork">comma</xsl:when>
+          <xsl:otherwise>of</xsl:otherwise>
+        </xsl:choose>
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:variable>
+
+  <xsl:variable name="ssec">
+    <xsl:call-template name="get-section-xref-section"/>
+  </xsl:variable>
 
   <!-- index links to this xref -->
   <xsl:variable name="ireftargets" select="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]"/>
@@ -1890,21 +1903,6 @@
       </xsl:call-template>
     </xsl:for-each>
   </xsl:if>
-
-  <xsl:variable name="sfmt">
-    <xsl:call-template name="get-section-xref-format">
-      <xsl:with-param name="default">
-        <xsl:choose>
-          <xsl:when test="ancestor::artwork">comma</xsl:when>
-          <xsl:otherwise>of</xsl:otherwise>
-        </xsl:choose>
-      </xsl:with-param>
-    </xsl:call-template>
-  </xsl:variable>
-
-  <xsl:variable name="ssec">
-    <xsl:call-template name="get-section-xref-section"/>
-  </xsl:variable>
 
   <xsl:choose>
 
@@ -2028,18 +2026,18 @@
             <!-- Nothing to do -->
           </xsl:when>
           <xsl:otherwise>
-            <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
+            <fo:basic-link internal-destination="{$xref/@target}" xsl:use-attribute-sets="internal-link">
               <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
                 <xsl:attribute name="id">
                   <xsl:value-of select="$anchor"/>
                 </xsl:attribute>
                 <xsl:attribute name="index-key">
-                  <xsl:value-of select="concat('xrefitem=',@target)"/>
+                  <xsl:value-of select="concat('xrefitem=',$xref/@target)"/>
                 </xsl:attribute>
                 <xsl:if test="$sec!=''">
                   <fo:wrapper>
                     <xsl:attribute name="index-key">
-                      <xsl:value-of select="concat('xrefitem=',@target,'#',$sec)"/>
+                      <xsl:value-of select="concat('xrefitem=',$xref/@target,'#',$sec)"/>
                     </xsl:attribute>
                   </fo:wrapper>
                 </xsl:if>
