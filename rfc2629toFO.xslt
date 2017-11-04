@@ -1663,6 +1663,9 @@
 
 <xsl:template match="xref[node()]">
 
+  <xsl:variable name="xref" select="."/>
+  <xsl:variable name="is-xref" select="self::xref"/>
+
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="//*[@anchor=$target]" />
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
@@ -1710,22 +1713,17 @@
           </fo:basic-link>
         </xsl:when>
         <xsl:otherwise>
+          <!-- index links to this xref -->
+          <xsl:variable name="ireftargets" select="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]"/>
+
           <xsl:apply-templates/>
           <xsl:text> (</xsl:text>
-          <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-            <!-- insert id when a backlink to this xref is needed in the index -->
-            <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
-            <xsl:if test="$ireftargets">
-              <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-            </xsl:if>
-            <xsl:for-each select="$ireftargets">
-              <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
-            </xsl:for-each>
-            <xsl:call-template name="render-section-ref">
-              <xsl:with-param name="from" select="."/>
-              <xsl:with-param name="to" select="$node"/>
-            </xsl:call-template>
-          </fo:basic-link>
+          <xsl:call-template name="xref-to-section">
+            <xsl:with-param name="from" select="$xref"/>
+            <xsl:with-param name="to" select="$node"/>
+            <xsl:with-param name="id" select="$anchor"/>
+            <xsl:with-param name="irefs" select="$ireftargets"/>
+          </xsl:call-template>
           <xsl:text>)</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
