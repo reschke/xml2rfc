@@ -1661,46 +1661,6 @@
   <fo:block/>
 </xsl:template>
 
-<xsl:template name="render-section-ref">
-  <xsl:param name="from" />
-  <xsl:param name="to" />
-  <xsl:variable name="target" select="$from/@target" />
-
-  <xsl:variable name="refname">
-    <xsl:for-each select="$to">
-      <xsl:call-template name="get-section-type">
-        <xsl:with-param name="prec" select="$from/preceding-sibling::node()[1]" />
-      </xsl:call-template>
-    </xsl:for-each>
-  </xsl:variable>
-  <xsl:variable name="refnum">
-    <xsl:for-each select="$to">
-      <xsl:call-template name="get-section-number" />
-    </xsl:for-each>
-  </xsl:variable>
-  <xsl:choose>
-    <xsl:when test="@format='counter'">
-      <xsl:value-of select="$refnum"/>
-    </xsl:when>
-    <xsl:when test="@format='none'">
-      <!-- Nothing to do -->
-    </xsl:when>
-    <xsl:when test="@format='title'">
-      <xsl:choose>
-        <xsl:when test="$to/name">
-          <xsl:apply-templates select="$to/name/node()"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$to/@title"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
-    </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
-
 <xsl:template match="xref[node()]">
 
   <xsl:variable name="target" select="@target" />
@@ -1764,6 +1724,7 @@
             <xsl:call-template name="render-section-ref">
               <xsl:with-param name="from" select="."/>
               <xsl:with-param name="to" select="$node"/>
+              <xsl:with-param name="include-title" select="false()"/>
             </xsl:call-template>
           </fo:basic-link>
           <xsl:text>)</xsl:text>
@@ -1809,6 +1770,7 @@
     <xsl:call-template name="render-section-ref">
       <xsl:with-param name="from" select="$from"/>
       <xsl:with-param name="to" select="$to"/>
+      <xsl:with-param name="include-title" select="false()"/>
     </xsl:call-template>
   </fo:basic-link>
 </xsl:template>
@@ -1886,6 +1848,9 @@
   <xsl:variable name="ssec">
     <xsl:call-template name="get-section-xref-section"/>
   </xsl:variable>
+
+  <!-- ensure we have the right context, this <xref> may be processed from within the boilerplate -->
+  <xsl:for-each select="$src">
 
   <xsl:variable name="node" select="key('anchor-item',$xref/@target)|exslt:node-set($includeDirectives)//reference[@anchor=$xref/@target]"/>
   <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
@@ -2063,12 +2028,12 @@
             <xsl:value-of select="$anchor"/>
           </xsl:attribute>
           <xsl:attribute name="index-key">
-            <xsl:value-of select="concat('xrefitem=',@target)"/>
+            <xsl:value-of select="concat('xrefitem=',$xref/@target)"/>
           </xsl:attribute>
           <xsl:if test="$sec!=''">
             <fo:wrapper>
               <xsl:attribute name="index-key">
-                <xsl:value-of select="concat('xrefitem=',@target,'#',$sec)"/>
+                <xsl:value-of select="concat('xrefitem=',$xref/@target,'#',$sec)"/>
               </xsl:attribute>
             </fo:wrapper>
           </xsl:if>
@@ -2151,6 +2116,8 @@
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
+    </xsl:for-each>
+
 </xsl:template>
 
 <xsl:template match="/">
