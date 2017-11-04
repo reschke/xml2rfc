@@ -1724,7 +1724,6 @@
             <xsl:call-template name="render-section-ref">
               <xsl:with-param name="from" select="."/>
               <xsl:with-param name="to" select="$node"/>
-              <xsl:with-param name="include-title" select="false()"/>
             </xsl:call-template>
           </fo:basic-link>
           <xsl:text>)</xsl:text>
@@ -1770,7 +1769,6 @@
     <xsl:call-template name="render-section-ref">
       <xsl:with-param name="from" select="$from"/>
       <xsl:with-param name="to" select="$to"/>
-      <xsl:with-param name="include-title" select="false()"/>
     </xsl:call-template>
   </fo:basic-link>
 </xsl:template>
