@@ -1961,15 +1961,28 @@
 
     <!-- Reference links -->
     <xsl:when test="$node/self::reference">
-      <!--
-      Formats:
-      
-        ()      [XXXX] (Section SS)
-        ,       [XXXX], Section SS
-        of      Section SS of [XXXX]
-        sec     Section SS
-        number  SS
-      -->
+
+      <!-- check normative/informative -->
+      <xsl:variable name="t-is-normative" select="$xref/ancestor-or-self::*[@x:nrm][1]"/>
+      <xsl:variable name="is-normative" select="$t-is-normative/@x:nrm='true'"/>
+      <xsl:if test="count($node)=1 and $is-normative">
+        <xsl:variable name="t-r-is-normative" select="$node/ancestor-or-self::*[@x:nrm][1]"/>
+        <xsl:variable name="r-is-normative" select="$t-r-is-normative/@x:nrm='true'"/>
+        <xsl:if test="not($r-is-normative)">
+          <xsl:for-each select="$xref">
+            <xsl:call-template name="warning">
+              <xsl:with-param name="msg" select="concat('Potentially normative reference to ',$xref/@target,' not referenced normatively')"/>
+            </xsl:call-template>
+          </xsl:for-each>
+        </xsl:if>
+      </xsl:if>
+
+      <xsl:variable name="href">
+        <xsl:call-template name="computed-target">
+          <xsl:with-param name="bib" select="$node"/>
+          <xsl:with-param name="ref" select="$xref"/>
+        </xsl:call-template>
+      </xsl:variable>
 
       <xsl:variable name="sec">
         <xsl:choose>
@@ -1987,6 +2000,14 @@
           <xsl:otherwise>
             <xsl:value-of select="$ssec"/>
           </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+
+      <xsl:variable name="secterm">
+        <xsl:choose>
+          <!-- starts with letter? -->
+          <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">Appendix</xsl:when>
+          <xsl:otherwise>Section</xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
 
@@ -2077,12 +2098,16 @@
       <xsl:if test="$sec!=''">
         <xsl:choose>
           <xsl:when test="$sfmt='parens'">
-            <xsl:text> (Section </xsl:text>
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="$secterm"/>
+            <xsl:text> </xsl:text>
             <xsl:value-of select="$sec"/>
             <xsl:text>)</xsl:text>
           </xsl:when>
           <xsl:when test="$sfmt='comma'">
-            <xsl:text>, Section </xsl:text>
+            <xsl:text>, </xsl:text>
+            <xsl:value-of select="$secterm"/>
+            <xsl:text> </xsl:text>
             <xsl:value-of select="$sec"/>
           </xsl:when>
           <xsl:otherwise/>
