@@ -1973,11 +1973,16 @@
 
       <xsl:variable name="sec">
         <xsl:choose>
-          <xsl:when test="starts-with(@x:rel,'#') and $ssec='' and $node/x:source/@href">
-            <xsl:variable name="extdoc" select="document($node/x:source/@href)"/>
-            <xsl:for-each select="$extdoc//*[@anchor=substring-after(current()/@x:rel,'#')]">
-              <xsl:call-template name="get-section-number"/>
-            </xsl:for-each>
+          <xsl:when test="starts-with($xref/@x:rel,'#') and $ssec=''">
+            <xsl:call-template name="compute-section-number">
+              <xsl:with-param name="bib" select="$node"/>
+              <xsl:with-param name="ref" select="$xref"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="$xref/@x:rel and not(starts-with($xref/@x:rel,'#')) and $ssec=''">
+            <xsl:call-template name="error">
+              <xsl:with-param name="msg">x:rel attribute '<xsl:value-of select="$xref/@x:rel"/>' in reference to <xsl:value-of select="$node/@anchor"/> is expected to start with '#'.</xsl:with-param>
+            </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="$ssec"/>
