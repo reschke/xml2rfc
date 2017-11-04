@@ -2006,6 +2006,40 @@
         </xsl:choose>
       </xsl:variable>
 
+      <xsl:variable name="title">
+        <xsl:choose>
+          <xsl:when test="starts-with($xref/@x:rel,'#') and $ssec='' and $node/x:source/@href">
+            <xsl:variable name="extdoc" select="document($node/x:source/@href)"/>
+            <xsl:variable name="nodes" select="$extdoc//*[@anchor=substring-after($xref//@x:rel,'#')]"/>
+            <xsl:if test="not($nodes)">
+              <xsl:call-template name="error">
+                <xsl:with-param name="msg">Anchor '<xsl:value-of select="substring-after($xref//@x:rel,'#')"/>' not found in <xsl:value-of select="$node/x:source/@href"/>.</xsl:with-param>
+              </xsl:call-template>
+            </xsl:if>
+            <xsl:for-each select="$nodes">
+              <xsl:value-of select="@title"/>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise />
+        </xsl:choose>
+      </xsl:variable>
+
+      <!--
+      Formats:
+
+        parens  [XXXX] (Section SS)
+        comma   [XXXX], Section SS
+        of      Section SS of [XXXX]
+        sec     Section SS
+        number  SS
+      -->
+
+      <xsl:if test="$sfmt!='' and not($sfmt='of' or $sfmt='section' or $sfmt='number-only' or $sfmt='parens' or $sfmt='comma')">
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg" select="concat('unknown xref section format extension: ',$sfmt)"/>
+        </xsl:call-template>
+      </xsl:if>
+
       <xsl:if test="$sec!=''">
         <xsl:choose>
           <xsl:when test="$sfmt='of' or $sfmt='section'">
