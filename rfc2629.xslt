@@ -4400,6 +4400,44 @@
   </a>
 </xsl:template>
 
+<!-- xref to comment -->
+<xsl:template name="xref-to-comment-text">
+  <xsl:param name="from"/>
+  <xsl:param name="to"/>
+
+  <xsl:variable name="name">
+    <xsl:for-each select="$to">
+      <xsl:call-template name="get-comment-name" />
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="$from/@format='counter'">
+      <xsl:value-of select="$name" />
+    </xsl:when>
+    <xsl:when test="$from/@format='none'">
+      <!-- Nothing to do -->
+    </xsl:when>
+    <xsl:when test="$from/@format='title'">
+      <xsl:value-of select="$to/@title" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="normalize-space(concat('Comment&#160;',$name))"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="xref-to-comment">
+  <xsl:param name="from"/>
+  <xsl:param name="to"/>
+
+  <a href="#{$from/@target}">
+    <xsl:call-template name="xref-to-comment-text">
+      <xsl:with-param name="from" select="$from"/>
+      <xsl:with-param name="to" select="$to"/>
+    </xsl:call-template>
+  </a>
+</xsl:template>
+
 <xsl:template match="xref[not(node())]|relref[not(node())]">
 
   <xsl:variable name="xref" select="."/>
@@ -4483,27 +4521,10 @@
       <xsl:when test="$node/self::cref">
         <xsl:choose>
           <xsl:when test="$xml2rfc-comments!='no'">
-            <a href="#{$xref/@target}">
-              <xsl:variable name="name">
-                <xsl:for-each select="$node">
-                  <xsl:call-template name="get-comment-name" />
-                </xsl:for-each>
-              </xsl:variable>
-              <xsl:choose>
-                <xsl:when test="$xref/@format='counter'">
-                  <xsl:value-of select="$name" />
-                </xsl:when>
-                <xsl:when test="$xref/@format='none'">
-                  <!-- Nothing to do -->
-                </xsl:when>
-                <xsl:when test="$xref/@format='title'">
-                  <xsl:value-of select="$node/@title" />
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:value-of select="normalize-space(concat('Comment&#160;',$name))"/>
-                </xsl:otherwise>
-              </xsl:choose>
-            </a>
+            <xsl:call-template name="xref-to-comment">
+              <xsl:with-param name="from" select="$xref"/>
+              <xsl:with-param name="to" select="$node"/>
+            </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
             <xsl:for-each select="$xref">
@@ -9544,11 +9565,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.939 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.939 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.940 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.940 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/03 22:38:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/03 22:38:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/04 07:22:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/04 07:22:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

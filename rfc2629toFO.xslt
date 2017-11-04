@@ -1851,6 +1851,19 @@
   </fo:basic-link>
 </xsl:template>
 
+<!-- xref to comment -->
+<xsl:template name="xref-to-comment">
+  <xsl:param name="from"/>
+  <xsl:param name="to"/>
+
+  <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
+    <xsl:call-template name="xref-to-comment-text">
+      <xsl:with-param name="from" select="$from"/>
+      <xsl:with-param name="to" select="$to"/>
+    </xsl:call-template>
+  </fo:basic-link>
+</xsl:template>
+
 <xsl:template match="xref[not(node())]|relref[not(node())]">
 
   <xsl:variable name="xref" select="."/>
@@ -1933,32 +1946,17 @@
     <xsl:when test="$node/self::cref">
       <xsl:choose>
         <xsl:when test="$xml2rfc-comments!='no'">
-          <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-            <xsl:variable name="name">
-              <xsl:for-each select="$node">
-                <xsl:call-template name="get-comment-name" />
-              </xsl:for-each>
-            </xsl:variable>
-            <xsl:choose>
-              <xsl:when test="@format='counter'">
-                <xsl:value-of select="$name" />
-              </xsl:when>
-              <xsl:when test="@format='none'">
-                <!-- Nothing to do -->
-              </xsl:when>
-              <xsl:when test="@format='title'">
-                <xsl:value-of select="$node/@title" />
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="normalize-space(concat('Comment&#160;',$name))"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </fo:basic-link>
+          <xsl:call-template name="xref-to-comment">
+            <xsl:with-param name="from" select="$xref"/>
+            <xsl:with-param name="to" select="$node"/>
+          </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:call-template name="error">
-            <xsl:with-param name="msg">xref to cref, but comments aren't included in the output</xsl:with-param>
-          </xsl:call-template>
+          <xsl:for-each select="$xref">
+            <xsl:call-template name="error">
+              <xsl:with-param name="msg">xref to cref, but comments aren't included in the output</xsl:with-param>
+            </xsl:call-template>
+          </xsl:for-each>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
