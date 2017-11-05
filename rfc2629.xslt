@@ -4438,6 +4438,51 @@
   </a>
 </xsl:template>
 
+<xsl:template name="emit-link">
+  <xsl:param name="target"/>
+  <xsl:param name="text"/>
+  <xsl:param name="id"/>
+  <xsl:param name="title"/>
+  <xsl:param name="citation-title"/>
+  
+  <xsl:choose>
+    <xsl:when test="$target!=''">
+      <a href="{$target}">
+        <xsl:if test="$id!=''">
+          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$title!=''">
+          <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="$citation-title!=''">
+            <cite title="{$citation-title}">
+              <xsl:value-of select="$text"/>
+            </cite>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$text"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </a>
+    </xsl:when>
+    <xsl:when test="$id!='' or $title!=''">
+      <span>
+        <xsl:if test="$id!=''">
+          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$title!=''">
+          <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+        </xsl:if>
+        <xsl:value-of select="$text"/>
+      </span>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$text"/>
+    </xsl:otherwise>
+  </xsl:choose>  
+</xsl:template>
+
 <!-- xref to reference -->
 <xsl:template name="xref-to-reference">
   <xsl:param name="from"/>
@@ -4550,26 +4595,25 @@
 
   <xsl:if test="$sec!=''">
     <xsl:choose>
-      <xsl:when test="$sfmt='of' or $sfmt='section'">
-        <xsl:choose>
-          <xsl:when test="$href!=''">
-            <a href="{$href}">
-              <xsl:if test="$title!=''">
-                <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
-              </xsl:if>
-              <xsl:if test="$sfmt='section' and $xml2rfc-ext-include-references-in-index='yes'">
-                <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-              </xsl:if>
-              <xsl:value-of select="$secterm"/>
-              <xsl:text> </xsl:text>
-              <xsl:value-of select="$sec"/>
-            </a>
-          </xsl:when>
-          <xsl:otherwise><xsl:value-of select="$secterm"/><xsl:text> </xsl:text><xsl:value-of select="$sec"/></xsl:otherwise>
-        </xsl:choose>
-        <xsl:if test="$sfmt='of'">
-          <xsl:text> of </xsl:text>
-        </xsl:if>
+      <xsl:when test="$sfmt='of'">
+        <xsl:call-template name="emit-link">
+          <xsl:with-param name="target" select="$href"/>
+          <xsl:with-param name="text" select="concat($secterm,' ',$sec)"/>
+          <xsl:with-param name="title" select="$title"/>
+        </xsl:call-template>
+        <xsl:text> of </xsl:text>
+      </xsl:when>
+      <xsl:when test="$sfmt='section'">
+        <xsl:call-template name="emit-link">
+          <xsl:with-param name="target" select="$href"/>
+          <xsl:with-param name="text" select="concat($secterm,' ',$sec)"/>
+          <xsl:with-param name="title" select="$title"/>
+          <xsl:with-param name="id">
+            <xsl:if test="$sfmt='section' and $xml2rfc-ext-include-references-in-index='yes'">
+              <xsl:value-of select="$id"/>
+            </xsl:if>
+          </xsl:with-param>
+        </xsl:call-template>
       </xsl:when>
       <xsl:when test="$sfmt='number-only'">
         <xsl:choose>
@@ -9577,11 +9621,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.946 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.946 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.947 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.947 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/04 20:54:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/04 20:54:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/05 12:47:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/05 12:47:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

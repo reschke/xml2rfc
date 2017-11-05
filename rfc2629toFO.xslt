@@ -1918,13 +1918,13 @@
   </xsl:variable>
 
   <!--
-  Formats:
+    Formats:
 
-    parens  [XXXX] (Section SS)
-    comma   [XXXX], Section SS
-    of      Section SS of [XXXX]
-    sec     Section SS
-    number  SS
+    parens       [XXXX] (Section SS)
+    comma        [XXXX], Section SS
+    of           Section SS of [XXXX]
+    section      Section SS
+    number-only  SS
   -->
 
   <xsl:if test="$sfmt!='' and not($sfmt='of' or $sfmt='section' or $sfmt='number-only' or $sfmt='parens' or $sfmt='comma')">
