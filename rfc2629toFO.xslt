@@ -1981,9 +1981,18 @@
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="$sfmt='number-only'">
-        <xsl:value-of select="$sec"/>
+        <xsl:call-template name="emit-link">
+          <xsl:with-param name="target" select="$href"/>
+          <xsl:with-param name="text" select="$sec"/>
+          <xsl:with-param name="title" select="$title"/>
+          <xsl:with-param name="id">
+            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+              <xsl:value-of select="$id"/>
+            </xsl:if>
+          </xsl:with-param>
+        </xsl:call-template>
       </xsl:when>
-      <xsl:otherwise/>
+      <xsl:otherwise />
     </xsl:choose>
   </xsl:if>
   
