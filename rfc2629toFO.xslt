@@ -1823,6 +1823,31 @@
   </fo:basic-link>
 </xsl:template>
 
+<xsl:template name="emit-link">
+  <xsl:param name="target"/>
+  <xsl:param name="text"/>
+  <xsl:param name="id"/>
+  <xsl:param name="title"/>
+  <xsl:param name="citation-title"/>
+  
+  <xsl:variable name="t">
+    <xsl:if test="starts-with($target,'#')">
+      <xsl:value-of select="substring($target,2)"/>
+    </xsl:if>
+  </xsl:variable>
+  
+  <xsl:choose>
+    <xsl:when test="$t!=''">
+      <fo:basic-link internal-destination="{$t}" xsl:use-attribute-sets="internal-link">
+        <xsl:value-of select="$text"/>
+      </fo:basic-link>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$text"/>
+    </xsl:otherwise>
+  </xsl:choose>  
+</xsl:template>
+
 <!-- xref to reference -->
 <xsl:template name="xref-to-reference">
   <xsl:param name="from"/>
@@ -1935,12 +1960,25 @@
 
   <xsl:if test="$sec!=''">
     <xsl:choose>
-      <xsl:when test="$sfmt='of' or $sfmt='section'">
-        <xsl:text>Section </xsl:text>
-        <xsl:value-of select="$sec"/>
-        <xsl:if test="$sfmt='of'">
-          <xsl:text> of </xsl:text>
-        </xsl:if>
+      <xsl:when test="$sfmt='of'">
+        <xsl:call-template name="emit-link">
+          <xsl:with-param name="target" select="$href"/>
+          <xsl:with-param name="text" select="concat($secterm,' ',$sec)"/>
+          <xsl:with-param name="title" select="$title"/>
+        </xsl:call-template>
+        <xsl:text> of </xsl:text>
+      </xsl:when>
+      <xsl:when test="$sfmt='section'">
+        <xsl:call-template name="emit-link">
+          <xsl:with-param name="target" select="$href"/>
+          <xsl:with-param name="text" select="concat($secterm,' ',$sec)"/>
+          <xsl:with-param name="title" select="$title"/>
+          <xsl:with-param name="id">
+            <xsl:if test="$sfmt='section' and $xml2rfc-ext-include-references-in-index='yes'">
+              <xsl:value-of select="$id"/>
+            </xsl:if>
+          </xsl:with-param>
+        </xsl:call-template>
       </xsl:when>
       <xsl:when test="$sfmt='number-only'">
         <xsl:value-of select="$sec"/>
