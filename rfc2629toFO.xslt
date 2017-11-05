@@ -1810,19 +1810,6 @@
   </fo:basic-link>
 </xsl:template>
 
-<!-- xref to comment -->
-<xsl:template name="xref-to-comment">
-  <xsl:param name="from"/>
-  <xsl:param name="to"/>
-
-  <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
-    <xsl:call-template name="xref-to-comment-text">
-      <xsl:with-param name="from" select="$from"/>
-      <xsl:with-param name="to" select="$to"/>
-    </xsl:call-template>
-  </fo:basic-link>
-</xsl:template>
-
 <xsl:template name="emit-link">
   <xsl:param name="target"/>
   <xsl:param name="text"/>
