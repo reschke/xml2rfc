@@ -1674,6 +1674,10 @@
     <xsl:call-template name="get-section-xref-format"/>
   </xsl:variable>
 
+  <xsl:variable name="ssec">
+    <xsl:call-template name="get-section-xref-section"/>
+  </xsl:variable>
+
   <xsl:choose>
     <xsl:when test="$sfmt='none'">
       <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
@@ -2004,7 +2008,7 @@
 
   <xsl:if test="$sec='' or ($sfmt!='section' and $sfmt!='number-only')">
     <xsl:choose>
-      <xsl:when test="$from/@format='none'">
+      <xsl:when test="$is-xref and $from/@format='none'">
         <!-- Nothing to do -->
       </xsl:when>
       <xsl:otherwise>
