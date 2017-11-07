@@ -1820,18 +1820,62 @@
   <xsl:param name="id"/>
   <xsl:param name="title"/>
   <xsl:param name="citation-title"/>
+  <xsl:param name="index"/>
   
   <xsl:variable name="t">
     <xsl:if test="starts-with($target,'#')">
       <xsl:value-of select="substring($target,2)"/>
     </xsl:if>
   </xsl:variable>
-  
+
+  <xsl:variable name="index1">
+    <xsl:choose>
+      <xsl:when test="contains($index,' ')">
+        <xsl:value-of select="normalize-space(substring-before($index,' '))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="normalize-space($index)"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+  <xsl:variable name="index2">
+    <xsl:choose>
+      <xsl:when test="contains($index,' ')">
+        <xsl:value-of select="concat($index1,'#',substring-after(normalize-space($index),' '))"/>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+  </xsl:variable>
+
   <xsl:choose>
     <xsl:when test="$t!=''">
       <fo:basic-link internal-destination="{$t}" xsl:use-attribute-sets="internal-link">
+          <xsl:if test="$id!=''">
+            <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+          </xsl:if>
+          <xsl:if test="$index1!=''">
+            <xsl:attribute name="index-key">xrefitem=<xsl:value-of select="$index1"/></xsl:attribute>
+          </xsl:if>
+          <xsl:if test="$index2!=''">
+            <fo:wrapper index-key="xrefitem={$index2}"/>
+          </xsl:if>
         <xsl:value-of select="$text"/>
       </fo:basic-link>
+    </xsl:when>
+    <xsl:when test="$id!='' or $index1!='' or $index2!=''">
+      <fo:wrapper>
+        <xsl:if test="$id!=''">
+          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$index1!=''">
+          <xsl:attribute name="index-key">xrefitem=<xsl:value-of select="$index1"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$index2!=''">
+          <fo:wrapper index-key="xrefitem={$index2}"/>
+        </xsl:if>
+        <xsl:value-of select="$text"/>
+      </fo:wrapper>
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="$text"/>
@@ -1950,6 +1994,12 @@
   </xsl:if>
 
   <xsl:if test="$sec!=''">
+    <xsl:variable name="index">
+      <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+        <xsl:value-of select="concat($from/@target,' ',$sec)"/>
+      </xsl:if>
+    </xsl:variable>
+  
     <xsl:choose>
       <xsl:when test="$sfmt='of'">
         <xsl:call-template name="emit-link">
@@ -1969,6 +2019,7 @@
               <xsl:value-of select="$id"/>
             </xsl:if>
           </xsl:with-param>
+          <xsl:with-param name="index" select="$index"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="$sfmt='number-only'">
@@ -1981,31 +2032,13 @@
               <xsl:value-of select="$id"/>
             </xsl:if>
           </xsl:with-param>
+          <xsl:with-param name="index" select="$index"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise />
     </xsl:choose>
   </xsl:if>
   
-  <!-- anchor for index -->
-  <xsl:if test="$xml2rfc-ext-include-references-in-index='yes' and $sec!='' and ($sfmt='section' or $sfmt='number-only')">
-    <fo:wrapper>
-      <xsl:attribute name="id">
-        <xsl:value-of select="$id"/>
-      </xsl:attribute>
-      <xsl:attribute name="index-key">
-        <xsl:value-of select="concat('xrefitem=',$from/@target)"/>
-      </xsl:attribute>
-      <xsl:if test="$sec!=''">
-        <fo:wrapper>
-          <xsl:attribute name="index-key">
-            <xsl:value-of select="concat('xrefitem=',$from/@target,'#',$sec)"/>
-          </xsl:attribute>
-        </fo:wrapper>
-      </xsl:if>
-    </fo:wrapper>
-  </xsl:if>
-
   <xsl:if test="$sec='' or ($sfmt!='section' and $sfmt!='number-only')">
     <xsl:choose>
       <xsl:when test="$is-xref and $from/@format='none'">
