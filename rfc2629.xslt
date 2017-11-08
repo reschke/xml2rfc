@@ -3966,8 +3966,9 @@
 <xsl:template name="get-section-xref-format">
   <xsl:param name="default"/>
   <xsl:choose>
-    <xsl:when test="self::relref and @displayFormat">
+    <xsl:when test="self::relref">
       <xsl:choose>
+        <xsl:when test="not(@displayFormat)">of</xsl:when>
         <xsl:when test="@displayFormat='parens' or @displayFormat='of' or @displayFormat='comma'">
           <xsl:value-of select="@displayFormat"/>
         </xsl:when>
@@ -4015,11 +4016,6 @@
       </xsl:choose>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:if test="self::relref">
-        <xsl:call-template name="error">
-          <xsl:with-param name="msg">missing @displayFormat attribute</xsl:with-param>
-        </xsl:call-template>
-      </xsl:if>
       <xsl:value-of select="$default"/>
     </xsl:otherwise>
   </xsl:choose>
@@ -9624,11 +9620,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.955 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.955 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.956 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.956 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/08 12:47:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/08 12:47:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/08 15:04:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/08 15:04:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

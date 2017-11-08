@@ -284,6 +284,16 @@
   </xsl:copy>
 </xsl:template>
 
+<xsl:template match="relref" mode="prep-defaults">
+  <xsl:copy>
+    <xsl:if test="not(@displayFormat)">
+      <xsl:attribute name="displayFormat">of</xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates select="@*" mode="prep-defaults"/>
+    <xsl:apply-templates select="node()" mode="prep-defaults"/>
+  </xsl:copy>
+</xsl:template>
+
 <xsl:template match="rfc" mode="prep-defaults">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-defaults"/>
