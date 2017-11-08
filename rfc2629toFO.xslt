@@ -2092,20 +2092,25 @@
     <xsl:choose>
       <xsl:when test="$sfmt='parens'">
         <xsl:text> (</xsl:text>
-        <xsl:value-of select="$secterm"/>
-        <xsl:text> </xsl:text>
-        <xsl:value-of select="$sec"/>
+        <xsl:call-template name="emit-link">
+          <xsl:with-param name="target" select="$href"/>
+          <xsl:with-param name="text" select="concat($secterm,' ',$sec)"/>
+          <xsl:with-param name="title" select="$title"/>
+        </xsl:call-template>
         <xsl:text>)</xsl:text>
       </xsl:when>
       <xsl:when test="$sfmt='comma'">
         <xsl:text>, </xsl:text>
-        <xsl:value-of select="$secterm"/>
-        <xsl:text> </xsl:text>
-        <xsl:value-of select="$sec"/>
+        <xsl:call-template name="emit-link">
+          <xsl:with-param name="target" select="$href"/>
+          <xsl:with-param name="text" select="concat($secterm,' ',$sec)"/>
+          <xsl:with-param name="title" select="$title"/>
+        </xsl:call-template>
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
   </xsl:if>
+
 </xsl:template>
 
 <xsl:template match="xref[not(node())]|relref[not(node())]">
