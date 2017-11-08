@@ -4437,7 +4437,8 @@
   <xsl:param name="id"/>
   <xsl:param name="title"/>
   <xsl:param name="citation-title"/>
-  <xsl:param name="index"/>
+  <xsl:param name="index-item"/>
+  <xsl:param name="index-subitem"/>
   
   <xsl:choose>
     <xsl:when test="$target!=''">
@@ -4588,10 +4589,11 @@
   </xsl:if>
 
   <xsl:if test="$sec!=''">
-    <xsl:variable name="index">
-      <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
-        <xsl:value-of select="concat($from/@target,' ',$sec)"/>
-      </xsl:if>
+    <xsl:variable name="index-item">
+      <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$from/@target"/></xsl:if>
+    </xsl:variable>
+    <xsl:variable name="index-subitem">
+      <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$sec"/></xsl:if>
     </xsl:variable>
   
     <xsl:choose>
@@ -4613,7 +4615,8 @@
               <xsl:value-of select="$id"/>
             </xsl:if>
           </xsl:with-param>
-          <xsl:with-param name="index" select="$index"/>
+          <xsl:with-param name="index-item" select="$index-item"/>
+          <xsl:with-param name="index-subitem" select="$index-subitem"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="$sfmt='number-only'">
@@ -4626,7 +4629,8 @@
               <xsl:value-of select="$id"/>
             </xsl:if>
           </xsl:with-param>
-          <xsl:with-param name="index" select="$index"/>
+          <xsl:with-param name="index-item" select="$index-item"/>
+          <xsl:with-param name="index-subitem" select="$index-subitem"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise />
@@ -4670,10 +4674,11 @@
               <xsl:value-of select="$id"/>
             </xsl:if>
           </xsl:with-param>
-          <xsl:with-param name="index">
-            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
-              <xsl:value-of select="normalize-space(concat($from/@target,' ',$sec))"/>
-            </xsl:if>
+          <xsl:with-param name="index-item">
+            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$from/@target"/></xsl:if>
+          </xsl:with-param>
+          <xsl:with-param name="index-subitem">
+            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$sec"/></xsl:if>
           </xsl:with-param>
           <xsl:with-param name="citation-title" select="normalize-space($to/front/title)"/>
         </xsl:call-template>
@@ -9619,11 +9624,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.954 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.954 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.955 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.955 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/08 10:13:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/08 10:13:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/08 12:47:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/08 12:47:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
