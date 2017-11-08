@@ -1661,14 +1661,14 @@
   <fo:block/>
 </xsl:template>
 
-<xsl:template match="xref[node()]">
+<xsl:template match="xref[*|text()]|relref[*|text()]">
 
   <xsl:variable name="xref" select="."/>
   <xsl:variable name="is-xref" select="self::xref"/>
 
   <xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="//*[@anchor=$target]" />
-  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]|relref[@target=$target]"/></xsl:variable>
 
   <xsl:variable name="sfmt">
     <xsl:call-template name="get-section-xref-format"/>
@@ -1678,7 +1678,47 @@
     <xsl:call-template name="get-section-xref-section"/>
   </xsl:variable>
 
+  <xsl:variable name="href">
+    <xsl:call-template name="computed-target">
+      <xsl:with-param name="bib" select="$node"/>
+      <xsl:with-param name="ref" select="."/>
+    </xsl:call-template>
+  </xsl:variable>
+
   <xsl:choose>
+    <xsl:when test="self::relref and not($node/self::reference)">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg">relref/@target must be a reference</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="self::relref and $href=''">
+      <xsl:apply-templates/>
+    </xsl:when>
+    <xsl:when test="self::relref">
+      <fo:wrapper>
+        <xsl:if test="$node/self::reference and $xml2rfc-ext-include-references-in-index='yes'">
+          <xsl:attribute name="id">
+            <xsl:value-of select="$anchor"/>
+          </xsl:attribute>
+          <xsl:attribute name="index-key">
+            <xsl:value-of select="concat('xrefitem=',@target)"/>
+          </xsl:attribute>
+          <xsl:if test="$ssec!=''">
+            <fo:wrapper index-key="xrefitem={@target}#{$ssec}"/>
+          </xsl:if>
+        </xsl:if>
+        <!-- insert id when a backlink to this xref is needed in the index -->
+        <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
+        <xsl:if test="$ireftargets">
+          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+        </xsl:if>
+        <xsl:for-each select="$ireftargets">
+          <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
+        </xsl:for-each>
+        <xsl:apply-templates/>
+      </fo:wrapper>
+    </xsl:when>
+
     <xsl:when test="$sfmt='none'">
       <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
         <xsl:if test="$node/self::reference and $xml2rfc-ext-include-references-in-index='yes'">

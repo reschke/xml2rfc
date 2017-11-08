@@ -462,7 +462,7 @@
 <!-- not supported -->
 <xsl:template match="relref/@format" mode="cleanup"/>
 
-<xsl:template match="xref[(@x:fmt or @x:sec or @x:rel or @section or @sectionFormat or @relative) and not(node())]|relref[not(node())]" mode="cleanup">
+<xsl:template match="xref[(@x:fmt or @x:sec or @x:rel or @section or @sectionFormat or @relative) and not(*|text())]|relref[not(*|text())]" mode="cleanup">
   <xsl:call-template name="insert-iref-for-xref"/>
   <xsl:variable name="is-xref" select="self::xref"/>
   <xsl:variable name="node" select="$src//*[@anchor=current()/@target]" />
@@ -549,9 +549,12 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref[(@x:fmt or @x:sec or @x:rel) and node()]" mode="cleanup">
+<xsl:template match="xref[(@x:fmt or @x:sec or @x:rel) and (*|text())]|relref[*|text()]" mode="cleanup">
   <xsl:call-template name="insert-iref-for-xref"/>
   <xsl:choose>
+    <xsl:when test="self::relref">
+      <xsl:apply-templates mode="cleanup"/>
+    </xsl:when>
     <xsl:when test="@x:fmt='none'">
       <xsl:apply-templates mode="cleanup"/>
     </xsl:when>
