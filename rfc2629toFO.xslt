@@ -2045,45 +2045,44 @@
         <!-- Nothing to do -->
       </xsl:when>
       <xsl:otherwise>
-        <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
-          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
-            <xsl:attribute name="id">
+        <xsl:call-template name="emit-link">
+          <xsl:with-param name="target" select="concat('#',$from/@target)"/>
+          <xsl:with-param name="text">
+            <xsl:variable name="val">
+              <xsl:call-template name="reference-name">
+                <xsl:with-param name="node" select="$to" />
+              </xsl:call-template>
+            </xsl:variable>
+            <xsl:choose>
+              <xsl:when test="$is-xref and $from/@format='counter'">
+                <!-- remove brackets -->
+                <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
+              </xsl:when>
+              <xsl:when test="$is-xref and $from/@format='title'">
+                <xsl:value-of select="$to/front/title"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:if test="not($is-xref) and $from/@format">
+                  <xsl:call-template name="warning">
+                    <xsl:with-param name="msg">@format attribute is undefined for relref</xsl:with-param>
+                  </xsl:call-template>
+                </xsl:if>
+                <xsl:value-of select="$val"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:with-param>
+          <xsl:with-param name="id">
+            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
               <xsl:value-of select="$id"/>
-            </xsl:attribute>
-            <xsl:attribute name="index-key">
-              <xsl:value-of select="concat('xrefitem=',$from/@target)"/>
-            </xsl:attribute>
-            <xsl:if test="$sec!=''">
-              <fo:wrapper>
-                <xsl:attribute name="index-key">
-                  <xsl:value-of select="concat('xrefitem=',$from/@target,'#',$sec)"/>
-                </xsl:attribute>
-              </fo:wrapper>
             </xsl:if>
-          </xsl:if>
-          <xsl:variable name="val">
-            <xsl:call-template name="reference-name">
-              <xsl:with-param name="node" select="$to" />
-            </xsl:call-template>
-          </xsl:variable>
-          <xsl:choose>
-            <xsl:when test="$is-xref and $from/@format='counter'">
-              <!-- remove brackets -->
-              <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
-            </xsl:when>
-            <xsl:when test="$is-xref and $from/@format='title'">
-              <xsl:value-of select="$to/front/title"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:if test="not($is-xref) and $from/@format">
-                <xsl:call-template name="warning">
-                  <xsl:with-param name="msg">@format attribute is undefined for relref</xsl:with-param>
-                </xsl:call-template>
-              </xsl:if>
-              <xsl:value-of select="$val"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </fo:basic-link>
+          </xsl:with-param>
+          <xsl:with-param name="index">
+            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+              <xsl:value-of select="normalize-space(concat($from/@target,' ',$sec))"/>
+            </xsl:if>
+          </xsl:with-param>
+          <xsl:with-param name="citation-title" select="normalize-space($to/front/title)"/>
+        </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
