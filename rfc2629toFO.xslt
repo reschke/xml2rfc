@@ -1695,28 +1695,22 @@
       <xsl:apply-templates/>
     </xsl:when>
     <xsl:when test="self::relref">
-      <fo:wrapper>
-        <xsl:if test="$node/self::reference and $xml2rfc-ext-include-references-in-index='yes'">
-          <xsl:attribute name="id">
-            <xsl:value-of select="$anchor"/>
-          </xsl:attribute>
-          <xsl:attribute name="index-key">
-            <xsl:value-of select="concat('xrefitem=',@target)"/>
-          </xsl:attribute>
-          <xsl:if test="$ssec!=''">
-            <fo:wrapper index-key="xrefitem={@target}#{$ssec}"/>
-          </xsl:if>
-        </xsl:if>
-        <!-- insert id when a backlink to this xref is needed in the index -->
-        <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
-        <xsl:if test="$ireftargets">
-          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-        </xsl:if>
-        <xsl:for-each select="$ireftargets">
-          <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
-        </xsl:for-each>
-        <xsl:apply-templates/>
-      </fo:wrapper>
+      <!-- insert id when a backlink to this xref is needed in the index -->
+      <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
+
+      <xsl:call-template name="emit-link">
+        <xsl:with-param name="target" select="$href"/>
+        <xsl:with-param name="id">
+          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$anchor"/></xsl:if>
+        </xsl:with-param>
+        <xsl:with-param name="index-item">
+          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="@target"/></xsl:if>
+        </xsl:with-param>
+        <xsl:with-param name="index-subitem">
+          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$ssec"/></xsl:if>
+        </xsl:with-param>
+        <xsl:with-param name="child-nodes" select="*|text()"/>
+      </xsl:call-template>
     </xsl:when>
 
     <xsl:when test="$sfmt='none'">
@@ -1856,12 +1850,19 @@
 
 <xsl:template name="emit-link">
   <xsl:param name="target"/>
-  <xsl:param name="text"/>
   <xsl:param name="id"/>
   <xsl:param name="title"/>
   <xsl:param name="citation-title"/>
   <xsl:param name="index-item"/>
   <xsl:param name="index-subitem"/>
+  <xsl:param name="text"/>
+  <xsl:param name="child-nodes"/>
+  
+  <xsl:if test="$text!='' and $child-nodes">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">emit-link called both with text and child-nodes</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
   
   <xsl:variable name="t">
     <xsl:if test="starts-with($target,'#')">
@@ -1872,16 +1873,23 @@
   <xsl:choose>
     <xsl:when test="$t!=''">
       <fo:basic-link internal-destination="{$t}" xsl:use-attribute-sets="internal-link">
-          <xsl:if test="$id!=''">
-            <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-          </xsl:if>
-          <xsl:if test="$index-item!=''">
-            <xsl:attribute name="index-key">xrefitem=<xsl:value-of select="$index-item"/></xsl:attribute>
-          </xsl:if>
-          <xsl:if test="$index-subitem!=''">
-            <fo:wrapper index-key="xrefitem={concat($index-item,'#',$index-subitem)}"/>
-          </xsl:if>
-        <xsl:value-of select="$text"/>
+        <xsl:if test="$id!=''">
+          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$index-item!=''">
+          <xsl:attribute name="index-key">xrefitem=<xsl:value-of select="$index-item"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$index-subitem!=''">
+          <fo:wrapper index-key="xrefitem={concat($index-item,'#',$index-subitem)}"/>
+        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="$child-nodes">
+            <xsl:apply-templates select="$child-nodes"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$text"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </fo:basic-link>
     </xsl:when>
     <xsl:when test="$id!='' or $index-item!=''">
@@ -1895,11 +1903,25 @@
         <xsl:if test="$index-subitem!=''">
           <fo:wrapper index-key="xrefitem={concat($index-item,'#',$index-subitem)}"/>
         </xsl:if>
-        <xsl:value-of select="$text"/>
+        <xsl:choose>
+          <xsl:when test="$child-nodes">
+            <xsl:apply-templates select="$child-nodes"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$text"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </fo:wrapper>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$text"/>
+      <xsl:choose>
+        <xsl:when test="$child-nodes">
+          <xsl:apply-templates select="$child-nodes"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$text"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>  
 </xsl:template>

@@ -4074,13 +4074,16 @@
       <xsl:apply-templates/>
     </xsl:when>
     <xsl:when test="self::relref">
-      <a href="{$href}">
-        <!-- insert id when a backlink to this xref is needed in the index -->
-        <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]">
-          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-        </xsl:if>
-        <xsl:apply-templates/>
-      </a>
+      <!-- insert id when a backlink to this xref is needed in the index -->
+      <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
+
+      <xsl:call-template name="emit-link">
+        <xsl:with-param name="target" select="$href"/>
+        <xsl:with-param name="id">
+          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes' and $ireftargets"><xsl:value-of select="$anchor"/></xsl:if>
+        </xsl:with-param>
+        <xsl:with-param name="child-nodes" select="*|text()"/>
+      </xsl:call-template>
     </xsl:when>
   
     <!-- $sfmt='none': do not generate any links -->
@@ -4461,12 +4464,19 @@
 
 <xsl:template name="emit-link">
   <xsl:param name="target"/>
-  <xsl:param name="text"/>
   <xsl:param name="id"/>
   <xsl:param name="title"/>
   <xsl:param name="citation-title"/>
   <xsl:param name="index-item"/>
   <xsl:param name="index-subitem"/>
+  <xsl:param name="text"/>
+  <xsl:param name="child-nodes"/>
+  
+  <xsl:if test="$text!='' and $child-nodes">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">emit-link called both with text and child-nodes</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
   
   <xsl:choose>
     <xsl:when test="$target!=''">
@@ -4484,7 +4494,14 @@
             </cite>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="$text"/>
+            <xsl:choose>
+              <xsl:when test="$child-nodes">
+                <xsl:apply-templates select="$child-nodes"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$text"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:otherwise>
         </xsl:choose>
       </a>
@@ -4497,11 +4514,25 @@
         <xsl:if test="$title!=''">
           <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
         </xsl:if>
-        <xsl:value-of select="$text"/>
+        <xsl:choose>
+          <xsl:when test="$child-nodes">
+            <xsl:apply-templates select="$child-nodes"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$text"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </span>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$text"/>
+      <xsl:choose>
+        <xsl:when test="$child-nodes">
+          <xsl:apply-templates select="$child-nodes"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$text"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>  
 </xsl:template>
@@ -9652,11 +9683,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.957 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.957 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.958 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.958 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/08 19:26:50 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/08 19:26:50 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/09 16:06:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/09 16:06:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
