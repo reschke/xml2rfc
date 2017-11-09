@@ -466,9 +466,34 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-derivedcontent"/></xsl:copy>
 </xsl:template>
 
+<xsl:template match="relref/@derivedLink" mode="prep-derivedcontent"/>
+
+<xsl:template match="relref" mode="prep-derivedcontent">
+  <xsl:variable name="d">
+    <xsl:variable name="r" select="ancestor::rfc[1]"/>
+    <xsl:variable name="t">
+      <xsl:call-template name="computed-target">
+        <xsl:with-param name="bib" select="$r//reference[@anchor=current()/@target]"/>
+        <xsl:with-param name="ref" select="."/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="normalize-space($t)"/>
+  </xsl:variable>
+  <xsl:if test="@derivedLink and @derivedLink!=$d">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg" select="concat('provided value for derivedLink does not match computed:', @derivedLink, ' vs ', $d)"/>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-derivedcontent"/>
+    <xsl:attribute name="derivedLink" select="$d"/>
+    <xsl:apply-templates select="node()" mode="prep-derivedcontent"/>
+  </xsl:copy>
+</xsl:template>
+
 <xsl:template match="xref[not(*|text())]/@derivedContent" mode="prep-derivedcontent"/>
 
-<xsl:template match="xref[not(*|text())]|relref[not(*|text())]" mode="prep-derivedcontent">
+<xsl:template match="xref[not(*|text())]" mode="prep-derivedcontent">
   <xsl:variable name="d">
     <xsl:variable name="t">
       <xsl:apply-templates select="."/>
