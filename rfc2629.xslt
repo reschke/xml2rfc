@@ -4090,16 +4090,16 @@
     <xsl:when test="$sfmt='none'">
       <xsl:choose>
         <xsl:when test="$node/self::reference">
-          <cite title="{normalize-space($node/front/title)}">
-            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
-              <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-            </xsl:if>
-            <!-- insert id when a backlink to this xref is needed in the index -->
-            <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]">
-              <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-            </xsl:if>
-            <xsl:apply-templates/>
-          </cite>
+          <!-- insert id when a backlink to this xref is needed in the index -->
+          <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
+
+          <xsl:call-template name="emit-link">
+            <xsl:with-param name="id">
+              <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$anchor"/></xsl:if>
+            </xsl:with-param>
+            <xsl:with-param name="citation-title" select="normalize-space($node/front/title)"/>
+            <xsl:with-param name="child-nodes" select="*|text()"/>
+          </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates/>
@@ -4490,7 +4490,14 @@
         <xsl:choose>
           <xsl:when test="$citation-title!=''">
             <cite title="{$citation-title}">
-              <xsl:value-of select="$text"/>
+              <xsl:choose>
+                <xsl:when test="$child-nodes">
+                  <xsl:apply-templates select="$child-nodes"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$text"/>
+                </xsl:otherwise>
+              </xsl:choose>
             </cite>
           </xsl:when>
           <xsl:otherwise>
@@ -4505,6 +4512,21 @@
           </xsl:otherwise>
         </xsl:choose>
       </a>
+    </xsl:when>
+    <xsl:when test="$citation-title!=''">
+      <cite title="{$citation-title}">
+        <xsl:if test="$id!=''">
+          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="$child-nodes">
+            <xsl:apply-templates select="$child-nodes"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$text"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </cite>
     </xsl:when>
     <xsl:when test="$id!='' or $title!=''">
       <span>
@@ -9683,11 +9705,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.958 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.958 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.959 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.959 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/09 16:06:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/09 16:06:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/09 20:23:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/09 20:23:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
