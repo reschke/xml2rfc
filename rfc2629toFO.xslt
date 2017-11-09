@@ -1069,7 +1069,7 @@
       <fo:block id="{@anchor}">
         <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
           <xsl:attribute name="index-key">
-            <xsl:value-of select="concat('xrefitem=',@anchor)"/>
+            <xsl:value-of select="concat('xrefitem=',@anchor,',primary')"/>
           </xsl:attribute>
         </xsl:if>
         <xsl:call-template name="reference-name"/>
