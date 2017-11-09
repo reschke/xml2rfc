@@ -2028,7 +2028,7 @@
           <xsl:when test="self::reference">
             <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
             
-              <xsl:variable name="entries" select="//xref[@target=current()/@anchor and not(ancestor::ed:del)]" />
+              <xsl:variable name="entries" select="//xref[@target=current()/@anchor and not(ancestor::ed:del)]|//relref[@target=current()/@anchor and not(ancestor::ed:del)]" />
               
               <xsl:if test="$entries">
                 <fo:block start-indent="1em" hyphenate="true">
