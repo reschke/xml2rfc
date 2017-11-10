@@ -1732,6 +1732,7 @@
       </xsl:choose>
     </xsl:when>
     
+    <!-- Section links -->
     <xsl:when test="$node/self::section or $node/self::appendix">
       <xsl:choose>
         <xsl:when test="@format='none'">
@@ -1767,6 +1768,19 @@
     </xsl:when>
     
     <xsl:otherwise>
+      <!-- check normative/informative -->
+      <xsl:variable name="t-is-normative" select="ancestor-or-self::*[@x:nrm][1]"/>
+      <xsl:variable name="is-normative" select="$t-is-normative/@x:nrm='true'"/>
+      <xsl:if test="count($node)=1 and $is-normative">
+        <xsl:variable name="t-r-is-normative" select="$node/ancestor-or-self::*[@x:nrm][1]"/>
+        <xsl:variable name="r-is-normative" select="$t-r-is-normative/@x:nrm='true'"/>
+        <xsl:if test="not($r-is-normative)">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg" select="concat('Potentially normative reference to ',@target,' not referenced normatively')"/>
+          </xsl:call-template>
+        </xsl:if>
+      </xsl:if>
+
       <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
         <xsl:value-of select="." />
       </fo:basic-link>

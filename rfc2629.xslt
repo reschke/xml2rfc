@@ -4167,15 +4167,14 @@
         </xsl:if>
       </xsl:if>
 
-      <a href="#{$target}">
-        <xsl:if test="@format='none'">
-          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
-            <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-          </xsl:if>
-        </xsl:if>
-        
-        <xsl:apply-templates />
-      </a>
+      <xsl:call-template name="emit-link">
+        <xsl:with-param name="target" select="concat('#',@target)"/>
+        <xsl:with-param name="id">
+          <xsl:if test="@format='none' and $xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$anchor"/></xsl:if>
+        </xsl:with-param>
+        <xsl:with-param name="child-nodes" select="*|text()"/>
+      </xsl:call-template>
+
       <xsl:if test="not(@format='none')">
         <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
           <xsl:text> </xsl:text>
@@ -9680,11 +9679,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.964 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.964 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.965 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.965 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/10 17:39:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/10 17:39:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/10 20:54:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/10 20:54:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
