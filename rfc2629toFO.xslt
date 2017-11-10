@@ -2060,7 +2060,8 @@
                 <xsl:variable name="val">
                   <xsl:call-template name="reference-name"/>
                 </xsl:variable>
-                <fo:wrapper font-style="italic"><xsl:value-of select="concat(substring($val,2,string-length($val)-2),' ')" /></fo:wrapper>
+                <fo:wrapper font-style="italic"><xsl:value-of select="substring($val,2,string-length($val)-2)"/></fo:wrapper>
+                <xsl:text> </xsl:text>
 
                 <fo:index-page-citation-list merge-sequential-page-numbers="merge">
                   <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('xrefitem=',@anchor,',primary')}" font-weight="bold"/>
