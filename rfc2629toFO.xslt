@@ -1713,6 +1713,7 @@
       </xsl:call-template>
     </xsl:when>
 
+    <!-- $sfmt='none': do not generate any links -->
     <xsl:when test="$sfmt='none'">
       <xsl:choose>
         <xsl:when test="$node/self::reference">
