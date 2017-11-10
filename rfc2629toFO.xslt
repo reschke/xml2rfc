@@ -1735,17 +1735,13 @@
     <xsl:when test="$node/self::section or $node/self::appendix">
       <xsl:choose>
         <xsl:when test="@format='none'">
-          <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-            <!-- insert id when a backlink to this xref is needed in the index -->
-            <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
-            <xsl:if test="$ireftargets">
-              <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-            </xsl:if>
-            <xsl:for-each select="$ireftargets">
-              <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
-            </xsl:for-each>
-            <xsl:apply-templates/>
-          </fo:basic-link>
+          <xsl:call-template name="emit-link">
+            <xsl:with-param name="target" select="concat('#',@target)"/>
+            <xsl:with-param name="id">
+              <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"><xsl:value-of select="$anchor"/></xsl:if>
+            </xsl:with-param>
+            <xsl:with-param name="child-nodes" select="*|text()"/>
+          </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
           <!-- index links to this xref -->
