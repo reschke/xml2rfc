@@ -1797,8 +1797,9 @@
       </xsl:call-template>
 
       <xsl:if test="not(@format='none')">
-        <xsl:for-each select="//reference[@anchor=$target]">
-          &#160;<xsl:call-template name="reference-name"/>
+        <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
+          <xsl:text> </xsl:text>
+          <xsl:call-template name="reference-name"/>
         </xsl:for-each>
       </xsl:if>
     </xsl:otherwise>
