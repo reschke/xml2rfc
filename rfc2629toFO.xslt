@@ -1732,6 +1732,13 @@
       </xsl:choose>
     </xsl:when>
     
+    <!-- Other $sfmt values than "none": unsupported -->
+    <xsl:when test="$sfmt!='' and $sfmt!='none'">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg" select="concat('ignoring unknown xref section format extension: ',$sfmt)"/>
+      </xsl:call-template>
+    </xsl:when>
+
     <!-- Section links -->
     <xsl:when test="$node/self::section or $node/self::appendix">
       <xsl:choose>
@@ -1781,9 +1788,14 @@
         </xsl:if>
       </xsl:if>
 
-      <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-        <xsl:value-of select="." />
-      </fo:basic-link>
+      <xsl:call-template name="emit-link">
+        <xsl:with-param name="target" select="concat('#',@target)"/>
+        <!--<xsl:with-param name="id">
+          <xsl:if test="@format='none' and $xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$anchor"/></xsl:if>
+        </xsl:with-param>-->
+        <xsl:with-param name="child-nodes" select="*|text()"/>
+      </xsl:call-template>
+
       <xsl:if test="not(@format='none')">
         <xsl:for-each select="//reference[@anchor=$target]">
           &#160;<xsl:call-template name="reference-name"/>
