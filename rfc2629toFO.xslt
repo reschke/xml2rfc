@@ -1703,12 +1703,8 @@
         <xsl:with-param name="id">
           <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$anchor"/></xsl:if>
         </xsl:with-param>
-        <xsl:with-param name="index-item">
-          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="@target"/></xsl:if>
-        </xsl:with-param>
-        <xsl:with-param name="index-subitem">
-          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$ssec"/></xsl:if>
-        </xsl:with-param>
+        <xsl:with-param name="index-item" select="@target"/>
+        <xsl:with-param name="index-subitem" select="$ssec"/>
         <xsl:with-param name="child-nodes" select="*|text()"/>
       </xsl:call-template>
     </xsl:when>
@@ -1726,12 +1722,8 @@
             </xsl:with-param>
             <xsl:with-param name="citation-title" select="normalize-space($node/front/title)"/>
             <xsl:with-param name="child-nodes" select="*|text()"/>
-            <xsl:with-param name="index-item">
-              <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="@target"/></xsl:if>
-            </xsl:with-param>
-            <xsl:with-param name="index-subitem">
-              <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$ssec"/></xsl:if>
-            </xsl:with-param>
+            <xsl:with-param name="index-item" select="@target"/>
+            <xsl:with-param name="index-subitem" select="$ssec"/>
           </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
@@ -1881,10 +1873,10 @@
         <xsl:if test="$id!=''">
           <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
         </xsl:if>
-        <xsl:if test="$index-item!=''">
+        <xsl:if test="$index-item!='' and $xml2rfc-ext-include-references-in-index='yes'">
           <xsl:attribute name="index-key">xrefitem=<xsl:value-of select="$index-item"/></xsl:attribute>
         </xsl:if>
-        <xsl:if test="$index-subitem!=''">
+        <xsl:if test="$index-subitem!='' and $xml2rfc-ext-include-references-in-index='yes'">
           <fo:wrapper index-key="xrefitem={concat($index-item,'#',$index-subitem)}"/>
         </xsl:if>
         <xsl:choose>
@@ -1897,15 +1889,15 @@
         </xsl:choose>
       </fo:basic-link>
     </xsl:when>
-    <xsl:when test="$id!='' or $index-item!=''">
+    <xsl:when test="$id!='' or ($index-item!='' and $xml2rfc-ext-include-references-in-index='yes')">
       <fo:wrapper>
         <xsl:if test="$id!=''">
           <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
         </xsl:if>
-        <xsl:if test="$index-item!=''">
+        <xsl:if test="$index-item!='' and $xml2rfc-ext-include-references-in-index='yes'">
           <xsl:attribute name="index-key">xrefitem=<xsl:value-of select="$index-item"/></xsl:attribute>
         </xsl:if>
-        <xsl:if test="$index-subitem!=''">
+        <xsl:if test="$index-subitem!='' and $xml2rfc-ext-include-references-in-index='yes'">
           <fo:wrapper index-key="xrefitem={concat($index-item,'#',$index-subitem)}"/>
         </xsl:if>
         <xsl:choose>
