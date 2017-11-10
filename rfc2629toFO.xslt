@@ -1799,7 +1799,12 @@
       <xsl:if test="not(@format='none')">
         <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
           <xsl:text> </xsl:text>
-          <xsl:call-template name="reference-name"/>
+          <xsl:call-template name="emit-link">
+            <xsl:with-param name="citation-title" select="normalize-space(front/title)"/>
+            <xsl:with-param name="text">
+              <xsl:call-template name="reference-name"/>
+            </xsl:with-param>
+          </xsl:call-template>
         </xsl:for-each>
       </xsl:if>
     </xsl:otherwise>
