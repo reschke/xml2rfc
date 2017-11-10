@@ -1714,25 +1714,29 @@
     </xsl:when>
 
     <xsl:when test="$sfmt='none'">
-      <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-        <xsl:if test="$node/self::reference and $xml2rfc-ext-include-references-in-index='yes'">
-          <xsl:attribute name="id">
-            <xsl:value-of select="$anchor"/>
-          </xsl:attribute>
-          <xsl:attribute name="index-key">
-            <xsl:value-of select="concat('xrefitem=',@target)"/>
-          </xsl:attribute>
-        </xsl:if>
-        <!-- insert id when a backlink to this xref is needed in the index -->
-        <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
-        <xsl:if test="$ireftargets">
-          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-        </xsl:if>
-        <xsl:for-each select="$ireftargets">
-          <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
-        </xsl:for-each>
-        <xsl:apply-templates/>
-      </fo:basic-link>
+      <xsl:choose>
+        <xsl:when test="$node/self::reference">
+          <!-- insert id when a backlink to this xref is needed in the index -->
+          <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
+
+          <xsl:call-template name="emit-link">
+            <xsl:with-param name="id">
+              <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$anchor"/></xsl:if>
+            </xsl:with-param>
+            <xsl:with-param name="citation-title" select="normalize-space($node/front/title)"/>
+            <xsl:with-param name="child-nodes" select="*|text()"/>
+            <xsl:with-param name="index-item">
+              <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="@target"/></xsl:if>
+            </xsl:with-param>
+            <xsl:with-param name="index-subitem">
+              <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$ssec"/></xsl:if>
+            </xsl:with-param>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:when>
     
     <xsl:when test="$node/self::section or $node/self::appendix">
