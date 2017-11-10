@@ -4478,9 +4478,24 @@
     </xsl:call-template>
   </xsl:if>
   
+  <xsl:variable name="element">
+    <xsl:choose>
+      <xsl:when test="$target!=''">a</xsl:when>
+      <xsl:when test="$citation-title!=''">cite</xsl:when>
+      <xsl:when test="$id!='' or $title!=''">span</xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+  </xsl:variable>
+  
   <xsl:choose>
-    <xsl:when test="$target!=''">
-      <a href="{$target}">
+    <xsl:when test="$element!=''">
+      <xsl:element name="{$element}">
+        <xsl:if test="$target!=''">
+          <xsl:attribute name="href"><xsl:value-of select="$target"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$element='cite' and $citation-title!=''">
+          <xsl:attribute name="title"><xsl:value-of select="$citation-title"/></xsl:attribute>
+        </xsl:if>
         <xsl:if test="$id!=''">
           <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
         </xsl:if>
@@ -4488,7 +4503,7 @@
           <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
         </xsl:if>
         <xsl:choose>
-          <xsl:when test="$citation-title!=''">
+          <xsl:when test="$element!='cite' and $citation-title!=''">
             <cite title="{$citation-title}">
               <xsl:choose>
                 <xsl:when test="$child-nodes">
@@ -4511,40 +4526,7 @@
             </xsl:choose>
           </xsl:otherwise>
         </xsl:choose>
-      </a>
-    </xsl:when>
-    <xsl:when test="$citation-title!=''">
-      <cite title="{$citation-title}">
-        <xsl:if test="$id!=''">
-          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-        </xsl:if>
-        <xsl:choose>
-          <xsl:when test="$child-nodes">
-            <xsl:apply-templates select="$child-nodes"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$text"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </cite>
-    </xsl:when>
-    <xsl:when test="$id!='' or $title!=''">
-      <span>
-        <xsl:if test="$id!=''">
-          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-        </xsl:if>
-        <xsl:if test="$title!=''">
-          <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
-        </xsl:if>
-        <xsl:choose>
-          <xsl:when test="$child-nodes">
-            <xsl:apply-templates select="$child-nodes"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$text"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </span>
+      </xsl:element>
     </xsl:when>
     <xsl:otherwise>
       <xsl:choose>
@@ -4556,7 +4538,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:otherwise>
-  </xsl:choose>  
+  </xsl:choose>
 </xsl:template>
 
 <!-- xref to reference -->
@@ -9705,11 +9687,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.959 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.959 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.960 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.960 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/09 20:23:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/09 20:23:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/10 09:49:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/10 09:49:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
