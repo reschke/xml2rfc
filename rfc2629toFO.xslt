@@ -1695,9 +1695,6 @@
       <xsl:apply-templates/>
     </xsl:when>
     <xsl:when test="self::relref">
-      <!-- insert id when a backlink to this xref is needed in the index -->
-      <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
-
       <xsl:call-template name="emit-link">
         <xsl:with-param name="target" select="$href"/>
         <xsl:with-param name="id" select="$anchor"/>
