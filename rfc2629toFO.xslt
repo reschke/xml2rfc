@@ -1700,9 +1700,7 @@
 
       <xsl:call-template name="emit-link">
         <xsl:with-param name="target" select="$href"/>
-        <xsl:with-param name="id">
-          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$anchor"/></xsl:if>
-        </xsl:with-param>
+        <xsl:with-param name="id" select="$anchor"/>
         <xsl:with-param name="index-item" select="@target"/>
         <xsl:with-param name="index-subitem" select="$ssec"/>
         <xsl:with-param name="child-nodes" select="*|text()"/>
@@ -1717,9 +1715,7 @@
           <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
 
           <xsl:call-template name="emit-link">
-            <xsl:with-param name="id">
-              <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$anchor"/></xsl:if>
-            </xsl:with-param>
+            <xsl:with-param name="id" select="$anchor"/>
             <xsl:with-param name="citation-title" select="normalize-space($node/front/title)"/>
             <xsl:with-param name="child-nodes" select="*|text()"/>
             <xsl:with-param name="index-item" select="@target"/>
@@ -1898,7 +1894,7 @@
   <xsl:choose>
     <xsl:when test="$t!=''">
       <fo:basic-link internal-destination="{$t}" xsl:use-attribute-sets="internal-link">
-        <xsl:if test="$id!=''">
+        <xsl:if test="$id!='' and $xml2rfc-ext-include-references-in-index='yes'">
           <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="$index-item!='' and $xml2rfc-ext-include-references-in-index='yes'">
@@ -1917,9 +1913,9 @@
         </xsl:choose>
       </fo:basic-link>
     </xsl:when>
-    <xsl:when test="$id!='' or ($index-item!='' and $xml2rfc-ext-include-references-in-index='yes')">
+    <xsl:when test="($id!='' and $xml2rfc-ext-include-references-in-index='yes') or ($index-item!='' and $xml2rfc-ext-include-references-in-index='yes')">
       <fo:wrapper>
-        <xsl:if test="$id!=''">
+        <xsl:if test="$id!='' and $xml2rfc-ext-include-references-in-index='yes'">
           <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="$index-item!='' and $xml2rfc-ext-include-references-in-index='yes'">

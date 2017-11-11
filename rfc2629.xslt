@@ -4080,7 +4080,7 @@
       <xsl:call-template name="emit-link">
         <xsl:with-param name="target" select="$href"/>
         <xsl:with-param name="id">
-          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes' and $ireftargets"><xsl:value-of select="$anchor"/></xsl:if>
+          <xsl:if test="$ireftargets"><xsl:value-of select="$anchor"/></xsl:if>
         </xsl:with-param>
         <xsl:with-param name="child-nodes" select="*|text()"/>
         <xsl:with-param name="index-item" select="@target"/>
@@ -4096,9 +4096,7 @@
           <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
 
           <xsl:call-template name="emit-link">
-            <xsl:with-param name="id">
-              <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$anchor"/></xsl:if>
-            </xsl:with-param>
+            <xsl:with-param name="id" select="$anchor"/>
             <xsl:with-param name="citation-title" select="normalize-space($node/front/title)"/>
             <xsl:with-param name="child-nodes" select="*|text()"/>
             <xsl:with-param name="index-item" select="@target"/>
@@ -4170,7 +4168,7 @@
       <xsl:call-template name="emit-link">
         <xsl:with-param name="target" select="concat('#',@target)"/>
         <xsl:with-param name="id">
-          <xsl:if test="@format='none' and $xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$anchor"/></xsl:if>
+          <xsl:if test="@format='none'"><xsl:value-of select="$anchor"/></xsl:if>
         </xsl:with-param>
         <xsl:with-param name="child-nodes" select="*|text()"/>
       </xsl:call-template>
@@ -4180,9 +4178,7 @@
           <xsl:text> </xsl:text>
           <xsl:call-template name="emit-link">
             <xsl:with-param name="citation-title" select="normalize-space(front/title)"/>
-            <xsl:with-param name="id">
-              <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'"><xsl:value-of select="$anchor"/></xsl:if>
-            </xsl:with-param>
+            <xsl:with-param name="id" select="$anchor"/>
             <xsl:with-param name="text">
               <xsl:call-template name="reference-name"/>
             </xsl:with-param>
@@ -4488,7 +4484,7 @@
     <xsl:choose>
       <xsl:when test="$target!=''">a</xsl:when>
       <xsl:when test="$citation-title!=''">cite</xsl:when>
-      <xsl:when test="$id!='' or $title!=''">span</xsl:when>
+      <xsl:when test="($id!='' and $xml2rfc-ext-include-references-in-index='yes') or $title!=''">span</xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
   </xsl:variable>
@@ -4502,7 +4498,7 @@
         <xsl:if test="$element='cite' and $citation-title!=''">
           <xsl:attribute name="title"><xsl:value-of select="$citation-title"/></xsl:attribute>
         </xsl:if>
-        <xsl:if test="$id!=''">
+        <xsl:if test="$id!='' and $xml2rfc-ext-include-references-in-index='yes'">
           <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="$title!=''">
@@ -4673,7 +4669,7 @@
           <xsl:with-param name="text" select="concat($secterm,' ',$sec)"/>
           <xsl:with-param name="title" select="$title"/>
           <xsl:with-param name="id">
-            <xsl:if test="$sfmt='section' and $xml2rfc-ext-include-references-in-index='yes'">
+            <xsl:if test="$sfmt='section'">
               <xsl:value-of select="$id"/>
             </xsl:if>
           </xsl:with-param>
@@ -4686,11 +4682,7 @@
           <xsl:with-param name="target" select="$href"/>
           <xsl:with-param name="text" select="$sec"/>
           <xsl:with-param name="title" select="$title"/>
-          <xsl:with-param name="id">
-            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
-              <xsl:value-of select="$id"/>
-            </xsl:if>
-          </xsl:with-param>
+          <xsl:with-param name="id" select="$id"/>
           <xsl:with-param name="index-item" select="$from/@target"/>
           <xsl:with-param name="index-subitem" select="$sec"/>
         </xsl:call-template>
@@ -4731,11 +4723,7 @@
               </xsl:otherwise>
             </xsl:choose>
           </xsl:with-param>
-          <xsl:with-param name="id">
-            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
-              <xsl:value-of select="$id"/>
-            </xsl:if>
-          </xsl:with-param>
+          <xsl:with-param name="id" select="$id"/>
           <xsl:with-param name="index-item" select="$from/@target"/>
           <xsl:with-param name="index-subitem" select="$sec"/>
           <xsl:with-param name="citation-title" select="normalize-space($to/front/title)"/>
@@ -9682,11 +9670,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.966 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.966 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.967 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.967 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/10 23:34:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/10 23:34:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/11 13:50:27 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/11 13:50:27 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
