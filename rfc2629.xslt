@@ -3582,43 +3582,49 @@
     </xsl:choose>
   </xsl:variable>
 
-  <!-- do not open a new p element if this is a whitespace-only text node and no siblings follow -->
   <xsl:if test="not(self::text() and normalize-space(.)='' and not(following-sibling::node()))">
     <xsl:variable name="textcontent">
       <xsl:apply-templates mode="t-content2" select="." />
     </xsl:variable>
 
-    <xsl:if test="normalize-space($textcontent)!=''">
-      <p>
-        <xsl:if test="$anchor!=''">
-          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
-        </xsl:if>
-        <xsl:variable name="stype">
-          <xsl:choose>
-            <xsl:when test="ancestor::abstract">abstract</xsl:when>
-            <xsl:when test="ancestor::note">note</xsl:when>
-            <xsl:when test="ancestor::boilerplate">boilerplate</xsl:when>
-            <xsl:otherwise>section</xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
-        <xsl:variable name="anch">
-          <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins) and not(ancestor::li) and not(ancestor::x:lt) and not(preceding-sibling::node())">
-            <xsl:value-of select="concat($anchor-pref,$stype,'.',$p)"/>
+    <xsl:choose>
+      <!-- do not open a new p element if this is a whitespace-only text node and no siblings follow -->
+      <xsl:when test="normalize-space($textcontent)!=''">
+        <p>
+          <xsl:if test="$anchor!=''">
+            <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
           </xsl:if>
-        </xsl:variable>
-        <xsl:call-template name="insertInsDelClass"/>
-        <xsl:call-template name="editingMark" />
+          <xsl:variable name="stype">
+            <xsl:choose>
+              <xsl:when test="ancestor::abstract">abstract</xsl:when>
+              <xsl:when test="ancestor::note">note</xsl:when>
+              <xsl:when test="ancestor::boilerplate">boilerplate</xsl:when>
+              <xsl:otherwise>section</xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+          <xsl:variable name="anch">
+            <xsl:if test="$p!='' and not(ancestor::ed:del) and not(ancestor::ed:ins) and not(ancestor::li) and not(ancestor::x:lt) and not(preceding-sibling::node())">
+              <xsl:value-of select="concat($anchor-pref,$stype,'.',$p)"/>
+            </xsl:if>
+          </xsl:variable>
+          <xsl:call-template name="insertInsDelClass"/>
+          <xsl:call-template name="editingMark" />
+          <xsl:apply-templates mode="t-content2" select="." />
+          <xsl:if test="$xml2rfc-ext-paragraph-links='yes'">
+            <xsl:if test="$anch!=''">
+              <a class='self' href='#{$anch}'>&#xb6;</a>
+            </xsl:if>
+            <xsl:if test="$inherited-self-link!=''">
+              <a class='self' href='#{$inherited-self-link}'>&#xb6;</a>
+            </xsl:if>
+          </xsl:if>
+        </p>
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- but we still need to emit non textual content, such as irefs -->
         <xsl:apply-templates mode="t-content2" select="." />
-        <xsl:if test="$xml2rfc-ext-paragraph-links='yes'">
-          <xsl:if test="$anch!=''">
-            <a class='self' href='#{$anch}'>&#xb6;</a>
-          </xsl:if>
-          <xsl:if test="$inherited-self-link!=''">
-            <a class='self' href='#{$inherited-self-link}'>&#xb6;</a>
-          </xsl:if>
-        </xsl:if>
-      </p>
-    </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:if>
   <xsl:apply-templates mode="t-content" select="following-sibling::*[self::list or self::figure or self::texttable][1]" />
 </xsl:template>
@@ -9658,11 +9664,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.970 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.970 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.971 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.971 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/12 14:05:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/12 14:05:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/13 00:39:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/13 00:39:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
