@@ -429,6 +429,11 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>based on document date</c>
   <c>Used in <tt>clean-for-DTD.xslt</tt> (see <xref target="clean-for-dtd"/>).</c>
 
+  <c>rfc-ext</c>
+  <c>xref-with-text-generate<iref item="xref-with-text-generate PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xref-with-text-generate"/></c>
+  <c>xml2rfc-ext-xref-with-text-generate<iref item="xml2rfc-ext-xref-with-text-generate"/> <iref item="Parameters" subitem="xml2rfc-ext-xref-with-text-generate"/></c>
+  <c>'text'</c>
+  <c>Determines whether &lt;xref> with text content generates additional text as in traditional text output ("text"), or just generates a link around the text ("nothing"). Note that the default might change in the future in order to achieve compatibility with other formatters.</c>
 </texttable>
 </section>
 

@@ -655,6 +655,17 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- extension for switching the behaviour for xrefs with text content -->
+<!-- 'text': as in text output, 'nothing': just the link -->
+
+<xsl:param name="xml2rfc-ext-xref-with-text-generate">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'xref-with-text-generate-text'"/>
+    <xsl:with-param name="default" select="'text'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- position of author's section -->
 
 <xsl:param name="xml2rfc-ext-authors-section">
@@ -4117,7 +4128,7 @@
     <!-- Section links -->
     <xsl:when test="$node/self::section or $node/self::appendix">
       <xsl:choose>
-        <xsl:when test="@format='none'">
+        <xsl:when test="@format='none' or $xml2rfc-ext-xref-with-text-generate='nothing'">
           <xsl:call-template name="emit-link">
             <xsl:with-param name="target" select="concat('#',@target)"/>
             <xsl:with-param name="id">
@@ -4171,7 +4182,7 @@
         <xsl:with-param name="child-nodes" select="*|text()"/>
       </xsl:call-template>
 
-      <xsl:if test="not(@format='none')">
+      <xsl:if test="not(@format='none' or $xml2rfc-ext-xref-with-text-generate='nothing')">
         <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
           <xsl:text> </xsl:text>
           <xsl:call-template name="emit-link">
@@ -9664,11 +9675,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.971 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.971 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.972 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.972 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/13 00:39:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/13 00:39:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/11/16 14:16:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/16 14:16:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -10152,6 +10163,7 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='trace-parse-xml'"/>
                       <xsl:when test="$attrname='vspace-pagebreak'"/>
                       <xsl:when test="$attrname='xml2rfc-backend'"/>
+                      <xsl:when test="$attrname='xref-with-text-generate'"/>
                       <xsl:otherwise>
                         <xsl:call-template name="warning">
                           <xsl:with-param name="msg">unsupported rfc-ext pseudo-attribute '<xsl:value-of select="$attrname"/>'</xsl:with-param>
