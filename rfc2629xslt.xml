@@ -517,9 +517,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <t>
         <list style="symbols">
           <t>Be aware that XSLT execution can be suppressed using <iref item="NoScript"/><eref target="https://addons.mozilla.org/de/firefox/addon/722">NoScript</eref></t>
-          <t>Firefox does not load external DTDs nor external entities,
-          see <eref target="https://bugzilla.mozilla.org/show_bug.cgi?id=22942">Mozilla Bug 22942</eref>, thus entities
-          like &amp;nbsp; need to be declared in the internal subset (<xref target="examples.internalsubset"/>)</t>
           <t>There seems to be a new problem in Firefox 4 where it occasionally
           does the initial rendering with the wrong width (people who can reproduce
           this problem please comment on <eref target="https://bugzilla.mozilla.org/show_bug.cgi?id=640390"/>.
@@ -553,6 +550,11 @@ xsltproc --param xml2rfc-toc '"yes"' \
       </t>
     </x:lt>
   </list>
+</t>
+<t>
+  Note that browsers in general do not load external DTDs nor external entities (see, for instance,
+  <eref target="https://bugzilla.mozilla.org/show_bug.cgi?id=22942">Mozilla Bug 22942</eref>) thus entities
+  like &amp;nbsp; need to be declared in the internal subset (<xref target="examples.internalsubset"/>).
 </t>
 <t>
   The following browsers are known not to work properly:
@@ -3749,8 +3751,8 @@ rdf_content =
 ]>
 </artwork>
 <postamble>
-  Note: including entities from a remote site will not work in Firefox, 
-  see <eref target="https://bugzilla.mozilla.org/show_bug.cgi?id=22942"/>.</postamble>
+  Note: including entities from a remote site will not work in browsers due
+  to the Same-Origin policy.</postamble>
 </figure>
   
   </section>
