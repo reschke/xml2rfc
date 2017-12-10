@@ -1882,7 +1882,6 @@
   </xsl:if>
 </xsl:template>
 
-
 <!-- generate the index section -->
 
 <xsl:template name="insertIndex">
@@ -1898,20 +1897,9 @@
     <xsl:sort select="translate(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),$lcase,$ucase)" />
     <xsl:variable name="letter" select="translate(substring(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase)"/>
             
-    <xsl:variable name="showit">
-      <xsl:choose>
-        <xsl:when test="$xml2rfc-ext-include-references-in-index!='yes'">
-          <xsl:if test="$irefs[starts-with(translate(@item,$lcase,$ucase),$letter)]">
-            <xsl:text>yes</xsl:text>
-          </xsl:if>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>yes</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
+    <xsl:variable name="showit" select="$xml2rfc-ext-include-references-in-index='yes' or $irefs[starts-with(translate(@item,$lcase,$ucase),$letter)]"/>
 
-    <xsl:if test="$showit='yes'">
+    <xsl:if test="$showit">
       <fo:block space-before="1em" font-weight="bold">
         <xsl:value-of select="$letter" />
       </fo:block>

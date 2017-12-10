@@ -6799,6 +6799,36 @@ dd, li, p {
   <xsl:if test="position()!=last()">, </xsl:if>
 </xsl:template>
 
+<!-- generate navigation links to index subsections -->
+<xsl:template name="insert-index-navigation">
+  <p class="{$css-noprint}">
+    <xsl:variable name="irefs" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))[1])]"/>
+    <xsl:variable name="xrefs" select="//reference[not(starts-with(@anchor,'deleted-'))][generate-id(.) = generate-id(key('index-first-letter',translate(substring(concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase))[1])]"/>
+
+    <xsl:for-each select="$irefs | $xrefs">
+    
+      <xsl:sort select="translate(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),$lcase,$ucase)" />
+
+      <xsl:variable name="letter" select="translate(substring(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase)"/>
+
+      <!-- character? -->
+      <xsl:if test="translate($letter,concat($lcase,$ucase,'0123456789'),'')=''">
+
+        <xsl:variable name="showit" select="$xml2rfc-ext-include-references-in-index='yes' or $irefs[starts-with(translate(@item,$lcase,$ucase),$letter)]"/>
+
+        <xsl:if test="$showit">
+          <a href="#{$anchor-pref}index.{$letter}">
+            <xsl:value-of select="$letter" />
+          </a>
+          <xsl:text> </xsl:text>
+        </xsl:if>
+      </xsl:if>
+    </xsl:for-each>
+  </p>
+</xsl:template>
+
+<!-- generate the index section -->
+
 <xsl:template name="insertIndex">
 
   <xsl:call-template name="insert-conditional-hrule"/>
@@ -6809,43 +6839,19 @@ dd, li, p {
       <a href="#{$anchor-pref}index">Index</a>
     </h2>
 
-    <!-- generate navigation links to index subsections -->
-    <p class="{$css-noprint}">
-      <xsl:variable name="irefs" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))[1])]"/>
-      <xsl:variable name="xrefs" select="//reference[not(starts-with(@anchor,'deleted-'))][generate-id(.) = generate-id(key('index-first-letter',translate(substring(concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase))[1])]"/>
-  
-      <xsl:for-each select="$irefs | $xrefs">
-      
-        <xsl:sort select="translate(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),$lcase,$ucase)" />
-  
-        <xsl:variable name="letter" select="translate(substring(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase)"/>
-  
-        <!-- character? -->
-        <xsl:if test="translate($letter,concat($lcase,$ucase,'0123456789'),'')=''">
-  
-          <xsl:variable name="showit" select="$xml2rfc-ext-include-references-in-index='yes' or $irefs[starts-with(translate(@item,$lcase,$ucase),$letter)]"/>
-  
-          <xsl:if test="$showit">
-            <a href="#{$anchor-pref}index.{$letter}">
-              <xsl:value-of select="$letter" />
-            </a>
-            <xsl:text> </xsl:text>
-          </xsl:if>
-        </xsl:if>
-      </xsl:for-each>
-    </p>
-
+    <xsl:call-template name="insert-index-navigation"/>
+    
+    <xsl:variable name="irefs" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))[1])]"/>
+    <xsl:variable name="xrefs" select="//reference[not(starts-with(@anchor,'deleted-'))][generate-id(.) = generate-id(key('index-first-letter',translate(substring(concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase))[1])]"/>
+    
     <!-- for each index subsection -->
     <div class="print2col">
       <ul class="ind">
-        <xsl:variable name="irefs2" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))[1])]"/>
-        <xsl:variable name="xrefs2" select="//reference[not(starts-with(@anchor,'deleted-'))][generate-id(.) = generate-id(key('index-first-letter',translate(substring(concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase))[1])]"/>
-    
-        <xsl:for-each select="$irefs2 | $xrefs2">
+        <xsl:for-each select="$irefs | $xrefs">
           <xsl:sort select="translate(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),$lcase,$ucase)" />
           <xsl:variable name="letter" select="translate(substring(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase)"/>
     
-          <xsl:variable name="showit" select="$xml2rfc-ext-include-references-in-index='yes' or $irefs2[starts-with(translate(@item,$lcase,$ucase),$letter)]"/>
+          <xsl:variable name="showit" select="$xml2rfc-ext-include-references-in-index='yes' or $irefs[starts-with(translate(@item,$lcase,$ucase),$letter)]"/>
     
           <xsl:if test="$showit">
             <li>
@@ -9675,11 +9681,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.972 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.972 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.973 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.973 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/11/16 14:16:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/11/16 14:16:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/12/10 19:54:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/10 19:54:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
