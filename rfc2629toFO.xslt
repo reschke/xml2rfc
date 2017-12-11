@@ -1906,7 +1906,7 @@
             
       <xsl:for-each select="key('index-first-letter',translate(substring(concat(@item,@anchor),1,1),$lcase,$ucase))">
   
-      <xsl:sort select="translate(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),$lcase,$ucase)" />
+        <xsl:sort select="translate(concat(@item,@anchor),$lcase,$ucase)" />
       
         <xsl:choose>
           <xsl:when test="self::reference">
