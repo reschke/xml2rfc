@@ -497,7 +497,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
     <t>Java: <iref item="Saxon"/>Saxon (<eref target="http://saxon.sourceforge.net/"/>)</t>
     <t>Java: <iref item="Xalan"/>Xalan (<eref target="http://xml.apache.org/xalan-j/"/>)</t>
     <t>C/C++: <iref item="xsltproc"/>xsltproc (libxslt) (<eref target="http://xmlsoft.org/XSLT/"/>, make sure that you
-    have a current version)</t>
+    have a current version, also: does not support inclusion of "https" resources -- <eref target="https://bugzilla.gnome.org/show_bug.cgi?id=791491"/>)</t>
   </list>
 </t>
 </section>
