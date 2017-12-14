@@ -1910,7 +1910,6 @@
 
   <xsl:if test="$xml2rfc-toc='yes'">
     <xsl:apply-templates select="/" mode="toc" />
-    <xsl:call-template name="insertTocAppendix" />
   </xsl:if>
 
 </xsl:template>
@@ -7637,6 +7636,8 @@ dd, li, p {
     <ul class="toc">
       <xsl:apply-templates mode="toc" />
     </ul>
+
+    <xsl:call-template name="insertTocAppendix" />
   </nav>
 </xsl:template>
 
@@ -7931,7 +7932,8 @@ dd, li, p {
 
   <xsl:if test="//figure[@title!='' or @anchor!='']">
     <ul class="toc">
-      <li>Figures
+      <li>
+        <xsl:text>Figures</xsl:text>
         <ul>
           <xsl:for-each select="//figure[@title!='' or @anchor!='']">
             <xsl:variable name="n"><xsl:call-template name="get-figure-number"/></xsl:variable>
@@ -9681,11 +9683,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.974 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.974 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.975 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.975 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/12/11 05:39:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/11 05:39:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/12/14 05:45:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/14 05:45:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
