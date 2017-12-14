@@ -3307,39 +3307,42 @@
     <xsl:if test="$nested">.<xsl:value-of select="$name"/></xsl:if>
   </xsl:variable>
 
-  <section id="{$anchor-pref}references{$anchorpostfix}">
+  <section>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:if test="$name='1'">
       <xsl:call-template name="insert-conditional-pagebreak"/>
     </xsl:if>
-    <xsl:if test="$sectionNumber!=''">
-      <xsl:call-template name="insert-errata">
-        <xsl:with-param name="section" select="$sectionNumber"/>
-      </xsl:call-template>
-    </xsl:if>
-    <xsl:element name="{$elemtype}">
-      <xsl:attribute name="id"><xsl:value-of select="concat($anchor-pref,'section.',$sectionNumber)"/></xsl:attribute>
-      <a href="#{$anchor-pref}section.{$sectionNumber}">
-        <xsl:call-template name="emit-section-number">
-          <xsl:with-param name="no" select="$sectionNumber"/>
+    <div id="{$anchor-pref}references{$anchorpostfix}">
+      <xsl:if test="$sectionNumber!=''">
+        <xsl:call-template name="insert-errata">
+          <xsl:with-param name="section" select="$sectionNumber"/>
         </xsl:call-template>
-      </a>
-      <xsl:text> </xsl:text>
-      <xsl:copy-of select="$title"/>
-    </xsl:element>
-  
-    <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
-    <dl class="{$css-reference}">
-      <xsl:choose>
-        <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
-          <xsl:apply-templates select="*|$included">
-            <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
-          </xsl:apply-templates>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:apply-templates select="*|$included"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </dl>
+      </xsl:if>
+      <xsl:element name="{$elemtype}">
+        <xsl:attribute name="id"><xsl:value-of select="concat($anchor-pref,'section.',$sectionNumber)"/></xsl:attribute>
+        <a href="#{$anchor-pref}section.{$sectionNumber}">
+          <xsl:call-template name="emit-section-number">
+            <xsl:with-param name="no" select="$sectionNumber"/>
+          </xsl:call-template>
+        </a>
+        <xsl:text> </xsl:text>
+        <xsl:copy-of select="$title"/>
+      </xsl:element>
+    
+      <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
+      <dl class="{$css-reference}">
+        <xsl:choose>
+          <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
+            <xsl:apply-templates select="*|$included">
+              <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
+            </xsl:apply-templates>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="*|$included"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </dl>
+    </div>
   </section>
 </xsl:template>
 
@@ -9683,11 +9686,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.976 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.976 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.977 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.977 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/12/14 10:56:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/14 10:56:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/12/14 22:10:47 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/14 22:10:47 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

@@ -1285,41 +1285,47 @@
 
   <xsl:choose>
     <xsl:when test="count(/*/back/references)=1">
-      <fo:block id="{$anchor-pref}references" xsl:use-attribute-sets="h1 newpage">
-        <xsl:variable name="sectionNumber">
-          <xsl:call-template name="get-section-number"/>
-        </xsl:variable>
-        <xsl:call-template name="emit-section-number">
-          <xsl:with-param name="no" select="$sectionNumber"/>
-        </xsl:call-template>
-        <xsl:text>&#160;&#160;</xsl:text>
-        <xsl:choose>
-          <xsl:when test="name">
-            <xsl:if test="@title">
-              <xsl:call-template name="warning">
-                <xsl:with-param name="msg">both @title attribute and name child node present</xsl:with-param>
-              </xsl:call-template>
-            </xsl:if>
-            <xsl:apply-templates select="name/node()"/>
-          </xsl:when>
-          <xsl:when test="@title!=''"><xsl:value-of select="@title"/></xsl:when>
-          <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
-        </xsl:choose>
+      <fo:block xsl:use-attribute-sets="h1 newpage">
+        <xsl:call-template name="copy-anchor"/>
+        <fo:wrapper id="{$anchor-pref}references" >
+          <xsl:variable name="sectionNumber">
+            <xsl:call-template name="get-section-number"/>
+          </xsl:variable>
+          <xsl:call-template name="emit-section-number">
+            <xsl:with-param name="no" select="$sectionNumber"/>
+          </xsl:call-template>
+          <xsl:text>&#160;&#160;</xsl:text>
+          <xsl:choose>
+            <xsl:when test="name">
+              <xsl:if test="@title">
+                <xsl:call-template name="warning">
+                  <xsl:with-param name="msg">both @title attribute and name child node present</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+              <xsl:apply-templates select="name/node()"/>
+            </xsl:when>
+            <xsl:when test="@title!=''"><xsl:value-of select="@title"/></xsl:when>
+            <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
+          </xsl:choose>
+        </fo:wrapper>
       </fo:block>
     </xsl:when>
     <xsl:otherwise>
-      <fo:block id="{$anchor-pref}references.{$name}" xsl:use-attribute-sets="h2">
-        <xsl:variable name="sectionNumber">
-          <xsl:call-template name="get-section-number"/>
-        </xsl:variable>
-        <xsl:call-template name="emit-section-number">
-          <xsl:with-param name="no" select="$sectionNumber"/>
-        </xsl:call-template>
-        <xsl:text>&#160;&#160;</xsl:text>
-        <xsl:choose>
-          <xsl:when test="@title!=''"><xsl:value-of select="@title"/></xsl:when>
-          <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
-        </xsl:choose>
+      <fo:block xsl:use-attribute-sets="h2">
+        <xsl:call-template name="copy-anchor"/>
+        <fo:wrapper id="{$anchor-pref}references.{$name}" >
+          <xsl:variable name="sectionNumber">
+            <xsl:call-template name="get-section-number"/>
+          </xsl:variable>
+          <xsl:call-template name="emit-section-number">
+            <xsl:with-param name="no" select="$sectionNumber"/>
+          </xsl:call-template>
+          <xsl:text>&#160;&#160;</xsl:text>
+          <xsl:choose>
+            <xsl:when test="@title!=''"><xsl:value-of select="@title"/></xsl:when>
+            <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
+          </xsl:choose>
+        </fo:wrapper>
       </fo:block>
     </xsl:otherwise>
   </xsl:choose>
