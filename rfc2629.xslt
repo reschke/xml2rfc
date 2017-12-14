@@ -2815,7 +2815,7 @@
   <xsl:choose>
     <!-- xref seems to be for BCP, not RFC -->
     <xsl:when test=".//seriesInfo[@name='BCP'] and starts-with(@anchor, 'BCP')" />
-    <xsl:when test=".//seriesInfo[@name='RFC'] and not(.//organization='RFC Errata') and not(@target='http://www.rfc-editor.org' or @target='https://www.rfc-editor.org')">
+    <xsl:when test=".//seriesInfo[@name='RFC'] and not(normalize-space((.//organization)[1])='RFC Errata') and not(starts-with(@target,'http://www.rfc-editor.org') or starts-with(@target,'https://www.rfc-editor.org'))">
       <xsl:variable name="rfc" select=".//seriesInfo[@name='RFC'][1]/@value"/>
       <xsl:value-of select="concat('10.17487/RFC', format-number($rfc,'#0000'))"/>
     </xsl:when>
@@ -9683,11 +9683,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.975 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.975 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.976 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.976 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/12/14 05:45:51 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/14 05:45:51 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/12/14 10:56:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/14 10:56:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
