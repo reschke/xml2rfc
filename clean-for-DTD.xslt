@@ -1077,6 +1077,8 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template match="references/@anchor" mode="cleanup"/>
+
 <!-- New reference attributes -->
 <xsl:template match="reference/@quoteTitle" mode="cleanup">
   <xsl:if test="$xml2rfc-ext-xml2rfc-backend >= 201706">
@@ -1174,7 +1176,7 @@
 <!-- References titles -->
 <xsl:template match="references" mode="cleanup">
   <references>
-    <xsl:copy-of select="@anchor|@toc"/>
+    <xsl:apply-templates select="@anchor|@toc" mode="cleanup"/>
     <xsl:variable name="title">
       <xsl:choose>
         <xsl:when test="name">
