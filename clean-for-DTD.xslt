@@ -1078,10 +1078,15 @@
 </xsl:template>
 
 <!-- New reference attributes -->
-<xsl:template match="reference/@quoteTitle" mode="cleanup"/>
+<xsl:template match="reference/@quoteTitle" mode="cleanup">
+  <xsl:if test="$xml2rfc-ext-xml2rfc-backend >= 201706">
+    <xsl:attribute name="quote-title"><xsl:value-of select="."/></xsl:attribute>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template match="reference" mode="cleanup">
   <reference>
-    <xsl:apply-templates select="@anchor|@target" mode="cleanup"/>
+    <xsl:apply-templates select="@anchor|@target|@quoteTitle" mode="cleanup"/>
     <xsl:choose>
       <xsl:when test="not(@target) and $xml2rfc-ext-link-rfc-to-info-page='yes' and seriesInfo[@name='BCP'] and starts-with(@anchor,'BCP')">
         <xsl:variable name="uri">
