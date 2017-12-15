@@ -4786,7 +4786,7 @@
     <xsl:choose>
 
       <!-- Section links -->
-      <xsl:when test="$node/self::section or $node/self::appendix">
+      <xsl:when test="$node/self::section or $node/self::appendix or $node/self::references">
         <!-- index links to this xref -->
         <xsl:variable name="ireftargets" select="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]"/>
         
@@ -9686,11 +9686,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.977 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.977 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.978 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.978 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/12/14 22:10:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/14 22:10:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/12/15 14:06:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/15 14:06:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -9800,7 +9800,7 @@ dd, li, p {
 <xsl:template name="get-section-type">
   <xsl:param name="prec" /> <!-- TODO: check this, it's unused -->
   <xsl:choose>
-    <xsl:when test="ancestor::back">Appendix</xsl:when>
+    <xsl:when test="ancestor::back and not(self::references)">Appendix</xsl:when>
     <xsl:otherwise>Section</xsl:otherwise>
   </xsl:choose>
 </xsl:template>
