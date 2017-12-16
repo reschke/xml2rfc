@@ -8907,9 +8907,11 @@ dd, li, p {
     </xsl:call-template>
   </xsl:if>
 
+  <xsl:variable name="all-refs" select="/rfc/back/reference|exslt:node-set($includeDirectives)//reference"/>
+
   <!-- check ABNF syntax references -->
   <xsl:if test="//artwork[@type='abnf2616' or @type='abnf7230']">
-    <xsl:if test="not(//reference//seriesInfo[@name='RFC' and (@value='2068' or @value='2616' or @value='7230')]) and not(//reference//seriesInfo[@name='Internet-Draft' and (starts-with(@value, 'draft-ietf-httpbis-p1-messaging-'))])">
+    <xsl:if test="not($all-refs//seriesInfo[@name='RFC' and (@value='2068' or @value='2616' or @value='7230')]) and not($all-refs//seriesInfo[@name='Internet-Draft' and (starts-with(@value, 'draft-ietf-httpbis-p1-messaging-'))])">
       <!-- check for draft-ietf-httpbis-p1-messaging- is for backwards compat -->
       <xsl:call-template name="warning">
         <xsl:with-param name="msg">document uses HTTP-style ABNF syntax, but doesn't reference RFC 2068, RFC 2616, or RFC 7230.</xsl:with-param>
@@ -8917,7 +8919,7 @@ dd, li, p {
     </xsl:if>
   </xsl:if>
   <xsl:if test="//artwork[@type='abnf']">
-    <xsl:if test="not(//reference//seriesInfo[@name='RFC' and (@value='2234' or @value='4234' or @value='5234')])">
+    <xsl:if test="not($all-refs//seriesInfo[@name='RFC' and (@value='2234' or @value='4234' or @value='5234')])">
       <xsl:call-template name="warning">
         <xsl:with-param name="msg">document uses ABNF syntax, but doesn't reference RFC 2234, 4234 or 5234.</xsl:with-param>
       </xsl:call-template>
@@ -9686,11 +9688,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.978 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.978 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.979 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.979 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/12/15 14:06:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/15 14:06:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2017/12/16 14:35:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/16 14:35:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
