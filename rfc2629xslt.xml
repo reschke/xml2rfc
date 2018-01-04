@@ -66,6 +66,8 @@
 </t>
 <t>
   The full distribution is available at <eref target="http://greenbytes.de/tech/webdav/rfc2629xslt.zip"/>.
+  A mirror of the non-public source repository can be found at <eref target="https://github.com/reschke/xml2rfc"/>;
+  this is also a good place for reporting issues.
 </t>
 <aside>
   <t>
