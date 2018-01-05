@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2006-2017, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2018, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -2345,7 +2345,7 @@
           <xsl:call-template name="get-paragraph-number"/>
         </xsl:for-each>
       </xsl:variable>
-      <xsl:if test="$l!=''">
+      <xsl:if test="xml2rfc-ext-paragraph-links='yes' and $l!=''">
         <a class='self' href='#{$anchor-pref}section.{$l}'>&#xb6;</a>
       </xsl:if>
     </xsl:if>
@@ -9688,11 +9688,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.979 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.979 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.980 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.980 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2017/12/16 14:35:39 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2017/12/16 14:35:39 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/01/05 12:14:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/05 12:14:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
