@@ -452,6 +452,32 @@
   </xsl:call-template>
 </xsl:variable>
 
+<!-- logging -->
+
+<xsl:param name="xml2rfc-ext-log-level">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'log-level'"/>
+    <xsl:with-param name="default" select="'WARNING'"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:variable name="log-level">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-log-level='OFF'">6</xsl:when>
+    <xsl:when test="$xml2rfc-ext-log-level='FATAL'">5</xsl:when>
+    <xsl:when test="$xml2rfc-ext-log-level='ERROR'">4</xsl:when>
+    <xsl:when test="$xml2rfc-ext-log-level='WARNING'">3</xsl:when>
+    <xsl:when test="$xml2rfc-ext-log-level='INFO'">2</xsl:when>
+    <xsl:when test="$xml2rfc-ext-log-level='DEBUG'">1</xsl:when>
+    <xsl:when test="$xml2rfc-ext-log-level='TRACE'">0</xsl:when>
+    <xsl:otherwise>
+      <xsl:message>Unsupported LOG level '<xsl:value-of select="$xml2rfc-ext-log-level"/>', defaulting to 'WARNING'</xsl:message>
+      <xsl:value-of select="'3'"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:variable>
+
 <!-- prettyprinting -->
 
 <xsl:param name="xml2rfc-ext-html-pretty-print">
@@ -9177,6 +9203,7 @@ dd, li, p {
   <xsl:param name="lineno" select="true()"/>
   <xsl:call-template name="emit-message">
     <xsl:with-param name="level">WARNING</xsl:with-param>
+    <xsl:with-param name="dlevel">3</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
     <xsl:with-param name="msg2" select="$msg2"/>
     <xsl:with-param name="inline" select="'yes'"/>
@@ -9190,6 +9217,7 @@ dd, li, p {
   <xsl:param name="lineno" select="true()"/>
   <xsl:call-template name="emit-message">
     <xsl:with-param name="level">WARNING</xsl:with-param>
+    <xsl:with-param name="dlevel">3</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
     <xsl:with-param name="msg2" select="$msg2"/>
     <xsl:with-param name="inline" select="'no'"/>
@@ -9203,6 +9231,7 @@ dd, li, p {
   <xsl:param name="lineno" select="true()"/>
   <xsl:call-template name="emit-message">
     <xsl:with-param name="level">INFO</xsl:with-param>
+    <xsl:with-param name="dlevel">2</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
     <xsl:with-param name="msg2" select="$msg2"/>
     <xsl:with-param name="inline" select="'no'"/>
@@ -9217,6 +9246,7 @@ dd, li, p {
   <xsl:param name="lineno" select="true()"/>
   <xsl:call-template name="emit-message">
     <xsl:with-param name="level">ERROR</xsl:with-param>
+    <xsl:with-param name="dlevel">4</xsl:with-param>
     <xsl:with-param name="msg" select="$msg"/>
     <xsl:with-param name="msg2" select="$msg2"/>
     <xsl:with-param name="inline" select="$inline"/>
@@ -9225,29 +9255,32 @@ dd, li, p {
 </xsl:template>
 
 <xsl:template name="emit-message">
-  <xsl:param name="level"/>
+  <xsl:param name="level">DEBUG</xsl:param>
+  <xsl:param name="dlevel">0</xsl:param>
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
   <xsl:param name="inline"/>
   <xsl:param name="lineno" select="true()"/>
-  <xsl:variable name="message"><xsl:value-of select="$level"/>: <xsl:value-of select="$msg"/><xsl:if test="$msg2!=''"> - <xsl:value-of select="$msg2"/></xsl:if><xsl:if test="$lineno"><xsl:call-template name="lineno"/></xsl:if></xsl:variable>
-  <xsl:choose>
-    <xsl:when test="$inline!='no'">
-      <xsl:choose>
-        <xsl:when test="ancestor::t">
-          <span class="{$css-error}"><xsl:value-of select="$message"/></span>
-        </xsl:when>
-        <xsl:otherwise>
-          <div class="{$css-error}"><xsl:value-of select="$message"/></div>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:when>
-    <xsl:otherwise>
-      <!-- this fails when the message contains characters not encodable in the output encoding -->
-      <!-- <xsl:comment><xsl:value-of select="$message"/></xsl:comment> -->
-    </xsl:otherwise>
-  </xsl:choose>
-  <xsl:message><xsl:value-of select="$message"/></xsl:message>
+  <xsl:if test="$dlevel >= $log-level">
+    <xsl:variable name="message"><xsl:value-of select="$level"/>: <xsl:value-of select="$msg"/><xsl:if test="$msg2!=''"> - <xsl:value-of select="$msg2"/></xsl:if><xsl:if test="$lineno"><xsl:call-template name="lineno"/></xsl:if></xsl:variable>
+    <xsl:choose>
+      <xsl:when test="$inline!='no'">
+        <xsl:choose>
+          <xsl:when test="ancestor::t">
+            <span class="{$css-error}"><xsl:value-of select="$message"/></span>
+          </xsl:when>
+          <xsl:otherwise>
+            <div class="{$css-error}"><xsl:value-of select="$message"/></div>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- this fails when the message contains characters not encodable in the output encoding -->
+        <!-- <xsl:comment><xsl:value-of select="$message"/></xsl:comment> -->
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:message><xsl:value-of select="$message"/></xsl:message>
+  </xsl:if>
 </xsl:template>
 
 <!-- table formatting -->
@@ -9688,11 +9721,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.980 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.980 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.981 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.981 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/01/05 12:14:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/05 12:14:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/01/06 18:12:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/06 18:12:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

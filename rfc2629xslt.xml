@@ -378,6 +378,12 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>URI template for ISBN lookup.</c>
 
   <c>rfc-ext</c>
+  <c>log-level<iref item="log-level PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="log-level"/></c>
+  <c>xml2rfc-ext-log-level<iref item="xml2rfc-ext-log-level parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-log-level"/></c>
+  <c>"WARNING"</c>
+  <c>default logging level, one of "OFF", "FATAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE"</c>
+
+  <c>rfc-ext</c>
   <c>justification<iref item="justification PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="justification"/></c>
   <c>xml2rfc-ext-justification<iref item="xml2rfc-ext-justification parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-justification"/></c>
   <c>"never"</c>
@@ -3876,7 +3882,7 @@ rdf_content =
 
   <section title="License" anchor="license">
   <t>
-Copyright (c) 2006-2017, Julian Reschke (julian.reschke@greenbytes.de)
+Copyright (c) 2006-2018, Julian Reschke (julian.reschke@greenbytes.de)
   </t>
   <t>
 All rights reserved.
