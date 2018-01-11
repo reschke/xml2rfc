@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to XSL-FO
       
-    Copyright (c) 2006-2017, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2018, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1916,9 +1916,9 @@
       
         <xsl:choose>
           <xsl:when test="self::reference">
-            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes' and not(starts-with(@anchor,'deleted-'))">
             
-              <xsl:variable name="entries" select="//xref[@target=current()/@anchor and not(ancestor::ed:del)]|//relref[@target=current()/@anchor and not(ancestor::ed:del)]" />
+              <xsl:variable name="rs" select="key('xref-item',current()/@anchor) | . | key('anchor-item',concat('deleted-',current()/@anchor))"/>
               
               <fo:block start-indent="1em" hyphenate="true">
                 <xsl:variable name="val">
@@ -1932,7 +1932,7 @@
                   <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('xrefitem=',@anchor)}"/>
                 </fo:index-page-citation-list>
 
-                <xsl:variable name="rs2" select="$entries[@x:sec|@section]"/>
+                <xsl:variable name="rs2" select="$rs[@x:sec|@section]"/>
 
                 <xsl:if test="$rs2">
                   <xsl:for-each select="$rs2">
@@ -1961,7 +1961,7 @@
                 </xsl:if>
 
                 <xsl:if test="current()/x:source/@href">
-                  <xsl:variable name="rs3" select="$entries[not(@x:sec) and @x:rel]"/>
+                  <xsl:variable name="rs3" select="$rs[not(@x:sec) and @x:rel]"/>
                   <xsl:if test="$rs3">
                     <xsl:variable name="doc" select="document(current()/x:source/@href)"/>
                     <xsl:for-each select="$rs3">
