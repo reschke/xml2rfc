@@ -1938,6 +1938,7 @@
                   <xsl:for-each select="$rs2">
                     <xsl:sort select="substring-before(concat(@x:sec,@section,'.'),'.')" data-type="number"/>
                     <xsl:sort select="substring(concat(@x:sec,@section),2+string-length(substring-before(concat(@x:sec,@section),'.')))" data-type="number"/>
+
                     <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-sec',concat(@target,'..',@x:sec,@section)))">
                       <fo:block start-indent="2em" hyphenate="true">
                         <fo:wrapper font-style="italic">
@@ -1966,7 +1967,7 @@
                     <xsl:variable name="doc" select="document(current()/x:source/@href)"/>
                     <xsl:for-each select="$rs3">
                       <xsl:sort select="count($doc//*[@anchor and following::*/@anchor=substring-after(current()/@x:rel,'#')])" order="ascending" data-type="number"/>
-                      <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-anchor',concat(@target,'..',@x:rel)))">
+                      <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-anchor',concat(@target,'..',@x:rel))[1])">
                         <fo:block start-indent="2em" hyphenate="true">
                           <xsl:variable name="sec">
                             <xsl:for-each select="$doc//*[@anchor=substring-after(current()/@x:rel,'#')]">
@@ -1999,10 +2000,10 @@
             </xsl:if>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
-            
+              <!-- regular iref -->
+              <xsl:if test="generate-id(.) =  generate-id(key('index-item',concat(@item,@anchor))[1])">
               <xsl:variable name="item" select="@item"/>
-              <xsl:variable name="in-artwork" select="count(//iref[@item=$item and @primary='true' and ancestor::artwork])!=0"/>
+              <xsl:variable name="in-artwork" select="key('index-item',$item)[@primary='true' and ancestor::artwork]"/>
         
               <fo:block start-indent="1em" hyphenate="true">
                 <xsl:choose>
