@@ -3975,9 +3975,7 @@
 
   <xsl:variable name="refname">
     <xsl:for-each select="$to">
-      <xsl:call-template name="get-section-type">
-        <xsl:with-param name="prec" select="$from/preceding-sibling::node()[1]" />
-      </xsl:call-template>
+      <xsl:call-template name="get-section-type"/>
     </xsl:for-each>
   </xsl:variable>
   <xsl:variable name="refnum">
@@ -9721,11 +9719,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.982 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.982 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.983 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.983 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/01/07 06:28:55 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/07 06:28:55 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/01/11 14:40:56 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/11 14:40:56 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -9833,7 +9831,6 @@ dd, li, p {
 </xsl:template>
 
 <xsl:template name="get-section-type">
-  <xsl:param name="prec" /> <!-- TODO: check this, it's unused -->
   <xsl:choose>
     <xsl:when test="ancestor::back and not(self::references)">Appendix</xsl:when>
     <xsl:otherwise>Section</xsl:otherwise>
