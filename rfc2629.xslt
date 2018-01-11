@@ -6853,6 +6853,19 @@ dd, li, p {
   </p>
 </xsl:template>
 
+<xsl:template name="format-section-ref">
+  <xsl:param name="number"/>
+  <xsl:choose>
+    <xsl:when test="translate(substring($number,1,1),$ucase,'')=''">
+      <xsl:text>Appendix </xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>Section </xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:value-of select="$number"/>
+</xsl:template>
+
 <!-- generate the index section -->
 
 <xsl:template name="insertIndex">
@@ -6928,15 +6941,9 @@ dd, li, p {
                                 <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-sec',concat(@target,'..',@x:sec,@section))[1])">
                                   <li>
                                     <em>
-                                      <xsl:choose>
-                                        <xsl:when test="translate(substring(concat(@x:sec,@section),1,1),$ucase,'')=''">
-                                          <xsl:text>Appendix </xsl:text>
-                                        </xsl:when>
-                                        <xsl:otherwise>
-                                          <xsl:text>Section </xsl:text>
-                                        </xsl:otherwise>
-                                      </xsl:choose>
-                                      <xsl:value-of select="@x:sec|@section"/>
+                                      <xsl:call-template name="format-section-ref">
+                                        <xsl:with-param name="number" select="concat(@x:sec,@section)"/>
+                                      </xsl:call-template>
                                     </em>
                                     <xsl:text>&#160;&#160;</xsl:text>
                                     <xsl:for-each select="key('index-xref-by-sec',concat(@target,'..',@x:sec,@section))">
@@ -6963,15 +6970,9 @@ dd, li, p {
                                             <xsl:call-template name="get-section-number"/>
                                           </xsl:for-each>
                                         </xsl:variable>
-                                        <xsl:choose>
-                                          <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
-                                            <xsl:text>Appendix </xsl:text>
-                                          </xsl:when>
-                                          <xsl:otherwise>
-                                            <xsl:text>Section </xsl:text>
-                                          </xsl:otherwise>
-                                        </xsl:choose>
-                                        <xsl:value-of select="$sec"/>
+                                        <xsl:call-template name="format-section-ref">
+                                          <xsl:with-param name="number" select="$sec"/>
+                                        </xsl:call-template>
                                       </em>
                                       <xsl:text>&#160;&#160;</xsl:text>
                                       <xsl:for-each select="key('index-xref-by-anchor',concat(@target,'..',@x:rel))">
@@ -9719,11 +9720,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.983 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.983 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.984 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.984 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/01/11 14:40:56 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/11 14:40:56 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/01/11 15:17:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/11 15:17:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

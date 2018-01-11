@@ -1942,15 +1942,9 @@
                     <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-sec',concat(@target,'..',@x:sec,@section)))">
                       <fo:block start-indent="2em" hyphenate="true">
                         <fo:wrapper font-style="italic">
-                          <xsl:choose>
-                            <xsl:when test="translate(substring(concat(@x:sec,@section),1,1),$ucase,'')=''">
-                              <xsl:text>Appendix </xsl:text>
-                            </xsl:when>
-                            <xsl:otherwise>
-                              <xsl:text>Section </xsl:text>
-                            </xsl:otherwise>
-                          </xsl:choose>
-                          <xsl:value-of select="@x:sec|@section"/>
+                          <xsl:call-template name="format-section-ref">
+                            <xsl:with-param name="number" select="concat(@x:sec,@section)"/>
+                          </xsl:call-template>
                           <xsl:text>&#160;</xsl:text>
                         </fo:wrapper>
                         <fo:index-page-citation-list merge-sequential-page-numbers="merge">
@@ -1975,15 +1969,9 @@
                             </xsl:for-each>
                           </xsl:variable>
                           <fo:wrapper font-style="italic">
-                            <xsl:choose>
-                              <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
-                                <xsl:text>Appendix </xsl:text>
-                              </xsl:when>
-                              <xsl:otherwise>
-                                <xsl:text>Section </xsl:text>
-                              </xsl:otherwise>
-                            </xsl:choose>
-                            <xsl:value-of select="$sec"/>
+                            <xsl:call-template name="format-section-ref">
+                              <xsl:with-param name="number" select="$sec"/>
+                            </xsl:call-template>
                             <xsl:text> </xsl:text>
                           </fo:wrapper>
                           <fo:index-page-citation-list merge-sequential-page-numbers="merge">
