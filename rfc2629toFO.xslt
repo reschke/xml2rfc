@@ -2004,9 +2004,9 @@
                 </xsl:choose>
                 <xsl:text> </xsl:text>
                 
-                <xsl:variable name="entries" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
+                <xsl:variable name="irefs3" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
                                         
-                <xsl:if test="$entries">
+                <xsl:if test="$irefs3">
                   <fo:index-page-citation-list merge-sequential-page-numbers="merge">
                     <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
                     <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}"/>
@@ -2035,9 +2035,9 @@
                     </xsl:choose>
                     <xsl:text> </xsl:text>
       
-                    <xsl:variable name="entries2" select="key('index-item-subitem',concat(@item,'..',@subitem))" />
+                    <xsl:variable name="irefs4" select="key('index-item-subitem',concat(@item,'..',@subitem))" />
                     
-                    <xsl:if test="$entries2">
+                    <xsl:if test="$irefs4">
                       <fo:index-page-citation-list merge-sequential-page-numbers="merge">
                         <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
                         <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}" />
