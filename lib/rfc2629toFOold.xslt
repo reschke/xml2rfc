@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to XSL-FO
       
-    Copyright (c) 2006-2018, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2017, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1916,9 +1916,9 @@
       
         <xsl:choose>
           <xsl:when test="self::reference">
-            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes' and not(starts-with(@anchor,'deleted-'))">
+            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
             
-              <xsl:variable name="rs" select="key('xref-item',current()/@anchor) | . | key('anchor-item',concat('deleted-',current()/@anchor))"/>
+              <xsl:variable name="entries" select="//xref[@target=current()/@anchor and not(ancestor::ed:del)]|//relref[@target=current()/@anchor and not(ancestor::ed:del)]" />
               
               <fo:block start-indent="1em" hyphenate="true">
                 <xsl:variable name="val">
@@ -1932,19 +1932,24 @@
                   <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('xrefitem=',@anchor)}"/>
                 </fo:index-page-citation-list>
 
-                <xsl:variable name="rs2" select="$rs[@x:sec|@section]"/>
+                <xsl:variable name="rs2" select="$entries[@x:sec|@section]"/>
 
                 <xsl:if test="$rs2">
                   <xsl:for-each select="$rs2">
                     <xsl:sort select="substring-before(concat(@x:sec,@section,'.'),'.')" data-type="number"/>
                     <xsl:sort select="substring(concat(@x:sec,@section),2+string-length(substring-before(concat(@x:sec,@section),'.')))" data-type="number"/>
-
                     <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-sec',concat(@target,'..',@x:sec,@section)))">
                       <fo:block start-indent="2em" hyphenate="true">
                         <fo:wrapper font-style="italic">
-                          <xsl:call-template name="format-section-ref">
-                            <xsl:with-param name="number" select="concat(@x:sec,@section)"/>
-                          </xsl:call-template>
+                          <xsl:choose>
+                            <xsl:when test="translate(substring(concat(@x:sec,@section),1,1),$ucase,'')=''">
+                              <xsl:text>Appendix </xsl:text>
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:text>Section </xsl:text>
+                            </xsl:otherwise>
+                          </xsl:choose>
+                          <xsl:value-of select="@x:sec|@section"/>
                           <xsl:text>&#160;</xsl:text>
                         </fo:wrapper>
                         <fo:index-page-citation-list merge-sequential-page-numbers="merge">
@@ -1956,12 +1961,12 @@
                 </xsl:if>
 
                 <xsl:if test="current()/x:source/@href">
-                  <xsl:variable name="rs3" select="$rs[not(@x:sec) and @x:rel]"/>
+                  <xsl:variable name="rs3" select="$entries[not(@x:sec) and @x:rel]"/>
                   <xsl:if test="$rs3">
                     <xsl:variable name="doc" select="document(current()/x:source/@href)"/>
                     <xsl:for-each select="$rs3">
                       <xsl:sort select="count($doc//*[@anchor and following::*/@anchor=substring-after(current()/@x:rel,'#')])" order="ascending" data-type="number"/>
-                      <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-anchor',concat(@target,'..',@x:rel))[1])">
+                      <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-anchor',concat(@target,'..',@x:rel)))">
                         <fo:block start-indent="2em" hyphenate="true">
                           <xsl:variable name="sec">
                             <xsl:for-each select="$doc//*[@anchor=substring-after(current()/@x:rel,'#')]">
@@ -1969,11 +1974,17 @@
                             </xsl:for-each>
                           </xsl:variable>
                           <fo:wrapper font-style="italic">
-                            <xsl:call-template name="format-section-ref">
-                              <xsl:with-param name="number" select="$sec"/>
-                            </xsl:call-template>
+                            <xsl:choose>
+                              <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
+                                <xsl:text>Appendix </xsl:text>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                <xsl:text>Section </xsl:text>
+                              </xsl:otherwise>
+                            </xsl:choose>
+                            <xsl:value-of select="$sec"/>
+                            <xsl:text> </xsl:text>
                           </fo:wrapper>
-                          <xsl:text>&#160;</xsl:text>
                           <fo:index-page-citation-list merge-sequential-page-numbers="merge">
                             <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('xrefitem=',@target,'#',$sec)}"/>
                           </fo:index-page-citation-list>
@@ -1988,25 +1999,24 @@
             </xsl:if>
           </xsl:when>
           <xsl:otherwise>
-              <!-- regular iref -->
-              <xsl:if test="generate-id(.) =  generate-id(key('index-item',concat(@item,@anchor))[1])">
+            <xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
+            
               <xsl:variable name="item" select="@item"/>
-              <xsl:variable name="in-artwork" select="key('index-item',$item)[@primary='true' and ancestor::artwork]"/>
+              <xsl:variable name="in-artwork" select="count(//iref[@item=$item and @primary='true' and ancestor::artwork])!=0"/>
         
               <fo:block start-indent="1em" hyphenate="true">
                 <xsl:choose>
                   <xsl:when test="$in-artwork">
-                    <fo:wrapper font-family="monospace"><xsl:value-of select="@item" /></fo:wrapper>
+                    <fo:wrapper font-family="monospace"><xsl:value-of select="concat(@item,' ')" /></fo:wrapper>
                   </xsl:when>
                   <xsl:otherwise>
-                    <xsl:value-of select="@item" />
+                    <xsl:value-of select="concat(@item,' ')" />
                   </xsl:otherwise>
                 </xsl:choose>
-                <xsl:text> </xsl:text>
                 
-                <xsl:variable name="irefs3" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
+                <xsl:variable name="entries" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
                                         
-                <xsl:if test="$irefs3">
+                <xsl:if test="$entries">
                   <fo:index-page-citation-list merge-sequential-page-numbers="merge">
                     <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
                     <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}"/>
@@ -2015,29 +2025,28 @@
       
               </fo:block>
                     
-              <xsl:variable name="s2" select="key('index-item',@item)[@subitem and @subitem!='']"/>
-              <xsl:for-each select="$s2">
-                <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
+              <xsl:for-each select="key('index-item',@item)[@subitem and @subitem!='']">
+              <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
             
-                <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem))[1])">
+                <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
                 
-                  <xsl:variable name="in-artwork2" select="key('index-item-subitem',concat(@item,'..',@subitem))[@primary='true' and ancestor::artwork]" />
+                  <xsl:variable name="itemsubitem" select="concat(@item,'..',@subitem)"/>
+                  <xsl:variable name="in-artwork2" select="count(//iref[concat(@item,'..',@subitem)=$itemsubitem and @primary='true' and ancestor::artwork])!=0"/>
                               
                   <fo:block start-indent="2em" hyphenate="true">
                   
                     <xsl:choose>
                       <xsl:when test="$in-artwork2">
-                        <fo:wrapper font-family="monospace"><xsl:value-of select="@subitem" /></fo:wrapper>
+                        <fo:wrapper font-family="monospace"><xsl:value-of select="concat(@subitem,' ')" /></fo:wrapper>
                       </xsl:when>
                       <xsl:otherwise>
-                        <xsl:value-of select="@subitem" />
+                        <xsl:value-of select="concat(@subitem,' ')" />
                       </xsl:otherwise>
                     </xsl:choose>
-                    <xsl:text> </xsl:text>
       
-                    <xsl:variable name="irefs4" select="key('index-item-subitem',concat(@item,'..',@subitem))" />
+                    <xsl:variable name="entries2" select="key('index-item-subitem',concat(@item,'..',@subitem))" />
                     
-                    <xsl:if test="$irefs4">
+                    <xsl:if test="$entries2">
                       <fo:index-page-citation-list merge-sequential-page-numbers="merge">
                         <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
                         <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}" />
