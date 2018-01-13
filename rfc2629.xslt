@@ -6866,6 +6866,50 @@ dd, li, p {
   <xsl:value-of select="$number"/>
 </xsl:template>
 
+<xsl:template name="insert-index-item">
+  <xsl:param name="in-artwork"/>
+  <xsl:param name="irefs"/>
+  <xsl:param name="xrefs"/>
+  <xsl:param name="extrefs"/>
+
+  <xsl:choose>
+    <xsl:when test="$in-artwork">
+      <span class="tt"><xsl:value-of select="@item" /></span>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="@item" />
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:text>&#160;&#160;</xsl:text>
+
+  <xsl:for-each select="$irefs|$xrefs|$extrefs">
+    <xsl:call-template name="insertSingleIref" />
+  </xsl:for-each>
+</xsl:template>
+
+<xsl:template name="insert-index-subitem">
+  <xsl:param name="in-artwork"/>
+  <xsl:param name="irefs"/>
+  <xsl:param name="xrefs"/>
+  <xsl:param name="extrefs"/>
+
+  <li>
+    <xsl:choose>
+      <xsl:when test="$in-artwork">
+        <span class="tt"><xsl:value-of select="@subitem" /></span>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@subitem" />
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>&#160;&#160;</xsl:text>
+
+    <xsl:for-each select="$irefs|$xrefs|$extrefs">
+      <xsl:call-template name="insertSingleIref" />
+    </xsl:for-each>
+  </li>
+</xsl:template>
+
 <!-- generate the index section -->
 
 <xsl:template name="insertIndex">
@@ -6994,57 +7038,35 @@ dd, li, p {
                         <xsl:variable name="in-artwork" select="key('index-item',$item)[@primary='true' and ancestor::artwork]"/>
     
                         <li>
-                          <xsl:choose>
-                            <xsl:when test="$in-artwork">
-                              <span class="tt"><xsl:value-of select="@item" /></span>
-                            </xsl:when>
-                            <xsl:otherwise>
-                              <xsl:value-of select="@item" />
-                            </xsl:otherwise>
-                          </xsl:choose>
-                          <xsl:text>&#160;&#160;</xsl:text>
-    
                           <xsl:variable name="irefs3" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
                           <xsl:variable name="xrefs3" select="key('xref-item',$irefs3[@x:for-anchor='']/../@anchor) | key('xref-item',$irefs3/@x:for-anchor)"/>
                           <xsl:variable name="extrefs3" select="key('extref-item',$irefs3[@x:for-anchor='']/../@anchor) | key('extref-item',$irefs3/@x:for-anchor)"/>
-    
-                          <xsl:for-each select="$irefs3|$xrefs3|$extrefs3">
-                            <!-- <xsl:sort select="translate(@item,$lcase,$ucase)" />  -->
-                            <xsl:call-template name="insertSingleIref" />
-                          </xsl:for-each>
-    
-                          <xsl:variable name="s2" select="key('index-item',@item)[@subitem and @subitem!='']"/>
+
+                          <xsl:call-template name="insert-index-item">
+                            <xsl:with-param name="in-artwork" select="key('index-item',@item)[@primary='true' and ancestor::artwork]"/>
+                            <xsl:with-param name="irefs" select="$irefs3"/>
+                            <xsl:with-param name="xrefs" select="$xrefs3"/>
+                            <xsl:with-param name="extrefs" select="$extrefs3"/>
+                          </xsl:call-template>
+
+                          <xsl:variable name="s2" select="key('index-item',@item)[@subitem!='']"/>
                           <xsl:if test="$s2">
                             <ul>
                               <xsl:for-each select="$s2">
                                 <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
     
                                 <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem))[1])">
-    
-                                  <xsl:variable name="in-artwork2" select="key('index-item-subitem',concat(@item,'..',@subitem))[@primary='true' and ancestor::artwork]" />
-    
-                                  <li>
-    
-                                    <xsl:choose>
-                                      <xsl:when test="$in-artwork2">
-                                        <span class="tt"><xsl:value-of select="@subitem" /></span>
-                                      </xsl:when>
-                                      <xsl:otherwise>
-                                        <xsl:value-of select="@subitem" />
-                                      </xsl:otherwise>
-                                    </xsl:choose>
-                                    <xsl:text>&#160;&#160;</xsl:text>
-    
+
                                     <xsl:variable name="irefs4" select="key('index-item-subitem',concat(@item,'..',@subitem))"/>
                                     <xsl:variable name="xrefs4" select="key('xref-item',$irefs4[@x:for-anchor='']/../@anchor) | key('xref-item',$irefs4/@x:for-anchor)"/>
                                     <xsl:variable name="extrefs4" select="key('extref-item',$irefs4[@x:for-anchor='']/../@anchor) | key('extref-item',$irefs4/@x:for-anchor)"/>
     
-                                    <xsl:for-each select="$irefs4|$xrefs4|$extrefs4">
-                                      <!--<xsl:sort select="translate(@item,$lcase,$ucase)" />-->
-                                      <xsl:call-template name="insertSingleIref" />
-                                    </xsl:for-each>
-    
-                                  </li>
+                                  <xsl:call-template name="insert-index-subitem">
+                                    <xsl:with-param name="in-artwork" select="key('index-item-subitem',concat(@item,'..',@subitem))[@primary='true' and ancestor::artwork]"/>
+                                    <xsl:with-param name="irefs" select="$irefs4"/>
+                                    <xsl:with-param name="xrefs" select="$xrefs4"/>
+                                    <xsl:with-param name="extrefs" select="$extrefs4"/>
+                                  </xsl:call-template>
                                 </xsl:if>
                               </xsl:for-each>
                             </ul>
@@ -9720,11 +9742,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.984 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.984 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.985 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.985 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/01/11 15:17:20 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/11 15:17:20 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/01/13 16:43:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/13 16:43:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
