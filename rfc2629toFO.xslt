@@ -1945,6 +1945,7 @@
   <xsl:attribute name="start-indent">1em</xsl:attribute>
   <xsl:attribute name="hyphenate">true</xsl:attribute>
 </xsl:attribute-set> 
+<xsl:variable name="subitems-wrapper-element">fo:wrapper</xsl:variable>
 
 <!-- generate the index section -->
 
@@ -2065,24 +2066,27 @@
               </xsl:element>
                     
               <xsl:variable name="s2" select="key('index-item',@item)[@subitem!='']"/>
-              <xsl:for-each select="$s2">
-                <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
-            
-                <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem))[1])">
+              <xsl:if test="$s2">
+                <xsl:element name="{$subitems-wrapper-element}">
+                  <xsl:for-each select="$s2">
+                    <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
                 
-                    <xsl:variable name="irefs4" select="key('index-item-subitem',concat(@item,'..',@subitem))"/>
-                    <xsl:variable name="xrefs4" select="key('xref-item',$irefs4[@x:for-anchor='']/../@anchor) | key('xref-item',$irefs4/@x:for-anchor)"/>
-                    <xsl:variable name="extrefs4" select="key('extref-item',$irefs4[@x:for-anchor='']/../@anchor) | key('extref-item',$irefs4/@x:for-anchor)"/>
-
-                  <xsl:call-template name="insert-index-subitem">
-                    <xsl:with-param name="in-artwork" select="key('index-item-subitem',concat(@item,'..',@subitem))[@primary='true' and ancestor::artwork]"/>
-                    <xsl:with-param name="irefs" select="$irefs4"/>
-                    <xsl:with-param name="xrefs" select="$xrefs4"/>
-                    <xsl:with-param name="extrefs" select="$extrefs4"/>
-                  </xsl:call-template>
-                </xsl:if>
-              </xsl:for-each>
-                      
+                    <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem))[1])">
+                    
+                        <xsl:variable name="irefs4" select="key('index-item-subitem',concat(@item,'..',@subitem))"/>
+                        <xsl:variable name="xrefs4" select="key('xref-item',$irefs4[@x:for-anchor='']/../@anchor) | key('xref-item',$irefs4/@x:for-anchor)"/>
+                        <xsl:variable name="extrefs4" select="key('extref-item',$irefs4[@x:for-anchor='']/../@anchor) | key('extref-item',$irefs4/@x:for-anchor)"/>
+    
+                      <xsl:call-template name="insert-index-subitem">
+                        <xsl:with-param name="in-artwork" select="key('index-item-subitem',concat(@item,'..',@subitem))[@primary='true' and ancestor::artwork]"/>
+                        <xsl:with-param name="irefs" select="$irefs4"/>
+                        <xsl:with-param name="xrefs" select="$xrefs4"/>
+                        <xsl:with-param name="extrefs" select="$extrefs4"/>
+                      </xsl:call-template>
+                    </xsl:if>
+                  </xsl:for-each>
+                </xsl:element>
+              </xsl:if>
             </xsl:if>
           </xsl:otherwise>
         </xsl:choose>
