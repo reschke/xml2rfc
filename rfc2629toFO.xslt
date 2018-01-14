@@ -1940,6 +1940,12 @@
     </fo:block>
 </xsl:template>
 
+<xsl:variable name="item-wrapper-element">fo:block</xsl:variable>
+<xsl:attribute-set name="item-wrapper-element">
+  <xsl:attribute name="start-indent">1em</xsl:attribute>
+  <xsl:attribute name="hyphenate">true</xsl:attribute>
+</xsl:attribute-set> 
+
 <!-- generate the index section -->
 
 <xsl:template name="insertIndex">
@@ -2045,7 +2051,7 @@
               <xsl:variable name="item" select="@item"/>
               <xsl:variable name="in-artwork" select="key('index-item',$item)[@primary='true' and ancestor::artwork]"/>
         
-              <fo:block start-indent="1em" hyphenate="true">
+              <xsl:element name="{$item-wrapper-element}" use-attribute-sets="item-wrapper-element">
                 <xsl:variable name="irefs3" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
                 <xsl:variable name="xrefs3" select="key('xref-item',$irefs3[@x:for-anchor='']/../@anchor) | key('xref-item',$irefs3/@x:for-anchor)"/>
                 <xsl:variable name="extrefs3" select="key('extref-item',$irefs3[@x:for-anchor='']/../@anchor) | key('extref-item',$irefs3/@x:for-anchor)"/>
@@ -2056,7 +2062,7 @@
                   <xsl:with-param name="xrefs" select="$xrefs3"/>
                   <xsl:with-param name="extrefs" select="$extrefs3"/>
                 </xsl:call-template>
-              </fo:block>
+              </xsl:element>
                     
               <xsl:variable name="s2" select="key('index-item',@item)[@subitem!='']"/>
               <xsl:for-each select="$s2">

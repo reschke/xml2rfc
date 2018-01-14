@@ -6910,6 +6910,11 @@ dd, li, p {
   </li>
 </xsl:template>
 
+
+<xsl:variable name="item-wrapper-element">li</xsl:variable>
+<xsl:attribute-set name="item-wrapper-element"/>
+<xsl:variable name="subitems-wrapper-element">ul</xsl:variable>
+
 <!-- generate the index section -->
 
 <xsl:template name="insertIndex">
@@ -7037,7 +7042,7 @@ dd, li, p {
                         <xsl:variable name="item" select="@item"/>
                         <xsl:variable name="in-artwork" select="key('index-item',$item)[@primary='true' and ancestor::artwork]"/>
     
-                        <li>
+                        <xsl:element name="{$item-wrapper-element}" use-attribute-sets="item-wrapper-element">
                           <xsl:variable name="irefs3" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
                           <xsl:variable name="xrefs3" select="key('xref-item',$irefs3[@x:for-anchor='']/../@anchor) | key('xref-item',$irefs3/@x:for-anchor)"/>
                           <xsl:variable name="extrefs3" select="key('extref-item',$irefs3[@x:for-anchor='']/../@anchor) | key('extref-item',$irefs3/@x:for-anchor)"/>
@@ -7071,7 +7076,7 @@ dd, li, p {
                               </xsl:for-each>
                             </ul>
                           </xsl:if>
-                        </li>
+                        </xsl:element>
                       </xsl:if>
                     </xsl:otherwise>
                   </xsl:choose>
@@ -9742,11 +9747,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.985 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.985 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.986 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.986 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/01/13 16:43:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/13 16:43:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/01/14 11:02:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/14 11:02:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
