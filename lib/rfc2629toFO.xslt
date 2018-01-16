@@ -1889,6 +1889,65 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:template name="insert-index-item">
+  <xsl:param name="in-artwork"/>
+  <xsl:param name="irefs"/>
+  <xsl:param name="xrefs"/>
+  <xsl:param name="extrefs"/>
+
+  <xsl:choose>
+    <xsl:when test="$in-artwork">
+      <fo:wrapper font-family="monospace"><xsl:value-of select="@item" /></fo:wrapper>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="@item" />
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:text> </xsl:text>
+  
+  <xsl:if test="$irefs">
+    <fo:index-page-citation-list merge-sequential-page-numbers="merge">
+      <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
+      <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}"/>
+    </fo:index-page-citation-list>
+  </xsl:if>
+
+</xsl:template>
+
+<xsl:template name="insert-index-subitem">
+  <xsl:param name="in-artwork"/>
+  <xsl:param name="irefs"/>
+  <xsl:param name="xrefs"/>
+  <xsl:param name="extrefs"/>
+
+  <fo:block start-indent="2em" hyphenate="true">
+      <xsl:choose>
+        <xsl:when test="$in-artwork">
+          <fo:wrapper font-family="monospace"><xsl:value-of select="@subitem" /></fo:wrapper>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@subitem" />
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text> </xsl:text>
+
+      <xsl:if test="$irefs">
+        <fo:index-page-citation-list merge-sequential-page-numbers="merge">
+          <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
+          <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}" />
+        </fo:index-page-citation-list>
+      </xsl:if>
+
+    </fo:block>
+</xsl:template>
+
+<xsl:variable name="item-wrapper-element">fo:block</xsl:variable>
+<xsl:attribute-set name="item-wrapper-element">
+  <xsl:attribute name="start-indent">1em</xsl:attribute>
+  <xsl:attribute name="hyphenate">true</xsl:attribute>
+</xsl:attribute-set> 
+<xsl:variable name="subitems-wrapper-element">fo:wrapper</xsl:variable>
+
 <!-- generate the index section -->
 
 <xsl:template name="insertIndex">
@@ -1989,67 +2048,7 @@
             </xsl:if>
           </xsl:when>
           <xsl:otherwise>
-              <!-- regular iref -->
-              <xsl:if test="generate-id(.) =  generate-id(key('index-item',concat(@item,@anchor))[1])">
-              <xsl:variable name="item" select="@item"/>
-              <xsl:variable name="in-artwork" select="key('index-item',$item)[@primary='true' and ancestor::artwork]"/>
-        
-              <fo:block start-indent="1em" hyphenate="true">
-                <xsl:choose>
-                  <xsl:when test="$in-artwork">
-                    <fo:wrapper font-family="monospace"><xsl:value-of select="@item" /></fo:wrapper>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:value-of select="@item" />
-                  </xsl:otherwise>
-                </xsl:choose>
-                <xsl:text> </xsl:text>
-                
-                <xsl:variable name="irefs3" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
-                                        
-                <xsl:if test="$irefs3">
-                  <fo:index-page-citation-list merge-sequential-page-numbers="merge">
-                    <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
-                    <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}"/>
-                  </fo:index-page-citation-list>
-                </xsl:if>
-      
-              </fo:block>
-                    
-              <xsl:variable name="s2" select="key('index-item',@item)[@subitem and @subitem!='']"/>
-              <xsl:for-each select="$s2">
-                <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
-            
-                <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem))[1])">
-                
-                  <xsl:variable name="in-artwork2" select="key('index-item-subitem',concat(@item,'..',@subitem))[@primary='true' and ancestor::artwork]" />
-                              
-                  <fo:block start-indent="2em" hyphenate="true">
-                  
-                    <xsl:choose>
-                      <xsl:when test="$in-artwork2">
-                        <fo:wrapper font-family="monospace"><xsl:value-of select="@subitem" /></fo:wrapper>
-                      </xsl:when>
-                      <xsl:otherwise>
-                        <xsl:value-of select="@subitem" />
-                      </xsl:otherwise>
-                    </xsl:choose>
-                    <xsl:text> </xsl:text>
-      
-                    <xsl:variable name="irefs4" select="key('index-item-subitem',concat(@item,'..',@subitem))" />
-                    
-                    <xsl:if test="$irefs4">
-                      <fo:index-page-citation-list merge-sequential-page-numbers="merge">
-                        <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
-                        <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}" />
-                      </fo:index-page-citation-list>
-                    </xsl:if>
-      
-                  </fo:block>
-                </xsl:if>
-              </xsl:for-each>
-                      
-            </xsl:if>
+            <xsl:call-template name="insert-index-regular-iref"/>
           </xsl:otherwise>
         </xsl:choose>
     
