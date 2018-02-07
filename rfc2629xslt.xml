@@ -1020,15 +1020,15 @@ mkepub.sh rfc2616.xml
   </t>
 </section>
 
-<!--<section title="&lt;include-author> element" anchor="ext.element.include-author">
-  <iref item="Extension Elements" subitem="include-author" primary="true"/>
-  <iref item="include-author Extension Element" primary="true"/>
-  <x:anchor-alias value="include-author"/>
+<section title="&lt;contributor> element" anchor="ext.element.contributor">
+  <iref item="Extension Elements" subitem="contributor" primary="true"/>
+  <iref item="contributor Extension Element" primary="true"/>
+  <x:anchor-alias value="contributor"/>
   <t>
-    This element can be used to include an author's contact information in
-    place where a paragraphj (&lt;t>) would be allowed otherwise.
+    This element can be used to include a contributor's contact information in
+    place where a paragraph (&lt;t>) would be allowed otherwise.
   </t>
-</section> -->
+</section>
 
 <section title="&lt;bcp14> element" anchor="ext.element.bcp14">
   <iref item="Extension Elements" subitem="bcp14" primary="true"/>
@@ -2884,6 +2884,7 @@ include "rfc2629.rnc" {
        <strong>| <x:ref>v3_ul</x:ref></strong>
        <strong>| <x:ref>x_anchor-alias</x:ref></strong>
        <strong>| <x:ref>x_blockquote</x:ref></strong>
+       <strong>| <x:ref>x_contributor</x:ref></strong>
        <strong>| <x:ref>x_include-author</x:ref></strong>
        <strong>| <x:ref>x_note</x:ref></strong>
        <strong>| <x:ref>rdf_Description</x:ref></strong>)*
@@ -3461,6 +3462,16 @@ attlist.xref &amp;=
   element x:anchor-alias {
     attribute value { TEXT },
     empty
+  }
+
+<em anchor="x_contributor"><iref item="contributor Extension Element"/><iref item="Extension Elements" subitem="contributor"
+/># Contributor information (see <xref target="ext.element.contributor"/>)
+# (experimental)</em>
+<x:ref>x_contributor</x:ref> =
+  element x:contributor {
+    attlist.author,
+    organization?,
+    address?
   }
 
 <em anchor="x_feedback"><iref item="feedback Extension Element"/><iref item="Extension Elements" subitem="feedback"
