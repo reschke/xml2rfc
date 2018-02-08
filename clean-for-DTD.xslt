@@ -1,7 +1,7 @@
 <!--
     Strip rfc2629.xslt extensions, generating XML input for MTR's xml2rfc
 
-    Copyright (c) 2006-2017, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2018, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -585,6 +585,17 @@
     <xsl:apply-templates select="."/>
   </xsl:variable>
   <xsl:value-of select="$content"/>
+</xsl:template>
+
+<xsl:template match="xref[not(node()) and (not(@format) or @format='default') and (@target=//section[@numbered='false']/@anchor)]" mode="cleanup">
+  <!-- link to unnumbered section -->
+  <xsl:copy>
+    <xsl:copy-of select="@target"/>
+    <xsl:variable name="content">
+      <xsl:apply-templates select="."/>
+    </xsl:variable>
+    <xsl:value-of select="$content"/>
+  </xsl:copy>
 </xsl:template>
 
 <xsl:template match="xref" mode="cleanup" priority="0">
