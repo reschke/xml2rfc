@@ -508,6 +508,9 @@
 <xsl:variable name="note-removeInRFC">This note is to be removed before publishing as an RFC.</xsl:variable>
 <xsl:variable name="section-removeInRFC">This section is to be removed before publishing as an RFC.</xsl:variable>
 
+<!-- constant string for unnumbered parts -->
+<xsl:variable name="unnumbered">unnumbered-</xsl:variable>
+
 
 <!-- CSS class name remapping -->
 
@@ -3816,7 +3819,7 @@
   
       <xsl:call-template name="insertInsDelClass" />
   
-      <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
+      <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,$unnumbered))">
         <a href="#{$anchor-pref}section.{$sectionNumber}">
           <xsl:call-template name="emit-section-number">
             <xsl:with-param name="no" select="$sectionNumber"/>
@@ -4002,7 +4005,24 @@
       <!-- Nothing to do -->
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
+      <xsl:choose>
+        <xsl:when test="starts-with($refnum,$unnumbered)">
+          <xsl:value-of select="$refname"/>
+          <xsl:text> "</xsl:text>
+          <xsl:choose>
+            <xsl:when test="$to/name">
+              <xsl:apply-templates select="$to/name/node()"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$to/@title"/>
+            </xsl:otherwise>
+          </xsl:choose>
+          <xsl:text>"</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -7711,8 +7731,8 @@ dd, li, p {
   <xsl:variable name="depth">
     <!-- count the dots -->
     <xsl:choose>
-      <xsl:when test="starts-with($number,'unnumbered-')">
-        <xsl:value-of select="string-length(translate(substring-after($number,'unnumbered-'),'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.'))"/>
+      <xsl:when test="starts-with($number,$unnumbered)">
+        <xsl:value-of select="string-length(translate(substring-after($number,$unnumbered),'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.'))"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="string-length(translate($number,'.ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890&#167;','.'))"/>
@@ -7739,7 +7759,7 @@ dd, li, p {
           </del>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:if test="$number != '' and not(contains($number,'unnumbered-'))">
+          <xsl:if test="$number != '' and not(contains($number,$unnumbered))">
             <a href="#{$anchor-pref}section.{$number}">
               <xsl:call-template name="emit-section-number">
                 <xsl:with-param name="no" select="$number"/>
@@ -9160,7 +9180,7 @@ dd, li, p {
       <xsl:value-of select="@x:fixed-section-number"/>
     </xsl:when>
     <xsl:when test="(@x:fixed-section-number and @x:fixed-section-number='') or @numbered='false'">
-      <xsl:text>unnumbered-</xsl:text>
+      <xsl:value-of select="$unnumbered"/>
       <xsl:number count="section[@x:fixed-section-number='' or @numbered='false']" level="any"/>
     </xsl:when>
     <xsl:when test="self::section and parent::ed:ins and local-name(../..)='replace'">
@@ -9620,7 +9640,7 @@ dd, li, p {
 <xsl:template match="/*/middle//section[not(ancestor::section)]" mode="links">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
   <xsl:variable name="title">
-    <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
+    <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,$unnumbered))">
       <xsl:value-of select="$sectionNumber"/>
       <xsl:text> </xsl:text>
     </xsl:if>
@@ -9643,7 +9663,7 @@ dd, li, p {
 <xsl:template match="/*/back//section[not(ancestor::section)]" mode="links">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
   <xsl:variable name="title">
-    <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
+    <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,$unnumbered))">
       <xsl:value-of select="$sectionNumber"/>
       <xsl:text> </xsl:text>
     </xsl:if>
@@ -9750,11 +9770,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.989 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.989 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.990 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.990 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/01/25 13:03:20 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/01/25 13:03:20 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/02/08 09:39:56 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/02/08 09:39:56 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -9795,7 +9815,7 @@ dd, li, p {
       <xsl:value-of select="@x:fixed-section-number"/>
     </xsl:when>
     <xsl:when test="(@x:fixed-section-number and @x:fixed-section-number='') or @numbered='false'">
-      <xsl:text>unnumbered-</xsl:text>
+      <xsl:value-of select="$unnumbered"/>
       <xsl:number count="section[@x:fixed-section-number='' or @numbered='false']" level="any"/>
       <!-- checks -->
       <xsl:if test="@numbered='false'">

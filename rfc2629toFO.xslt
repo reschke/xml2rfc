@@ -1542,7 +1542,7 @@
   
   <xsl:call-template name="add-anchor" />
   
-  <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
+  <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,$unnumbered))">
     <xsl:call-template name="emit-section-number">
       <xsl:with-param name="no" select="$sectionNumber"/>
     </xsl:call-template>
@@ -2231,7 +2231,7 @@
     </xsl:when>
     <xsl:when test="$depth = 0">
       <fo:block space-before="1em" font-weight="bold" text-align-last="justify">
-        <xsl:if test="$number!='' and not(contains($number,'unnumbered-'))">
+        <xsl:if test="$number!='' and not(contains($number,$unnumbered))">
           <xsl:value-of select="$number" />
           <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
           <xsl:text>&#0160;&#0160;</xsl:text>
@@ -2254,7 +2254,7 @@
     </xsl:when>
     <xsl:when test="$depth = 1">
       <fo:block space-before="0.5em" text-align-last="justify">
-        <xsl:if test="$number!='' and not(contains($number,'unnumbered-'))">
+        <xsl:if test="$number!='' and not(contains($number,$unnumbered))">
           <xsl:value-of select="$number" />
           <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
           <xsl:text>&#0160;&#0160;&#0160;&#0160;</xsl:text>
@@ -2278,7 +2278,7 @@
     <xsl:otherwise>
       <fo:block text-align-last="justify">
         <xsl:text>&#0160;&#0160;</xsl:text>
-        <xsl:if test="$number!='' and not(contains($number,'unnumbered-'))">
+        <xsl:if test="$number!='' and not(contains($number,$unnumbered))">
           <xsl:value-of select="$number" />
           <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
           <xsl:text>&#0160;&#0160;&#0160;&#0160;</xsl:text>
@@ -2503,7 +2503,7 @@
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
   <fo:bookmark internal-destination="{$anchor-pref}section.{$sectionNumber}">
     <fo:bookmark-title>
-      <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,'unnumbered-'))">
+      <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,$unnumbered))">
         <xsl:value-of select="$sectionNumber"/>
         <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
         <xsl:text> </xsl:text>
