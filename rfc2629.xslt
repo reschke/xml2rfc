@@ -2762,6 +2762,19 @@
   <xsl:apply-templates select="*" mode="get-section-numbers"/>
 </xsl:template>
 
+<xsl:template name="get-title-as-string">
+  <xsl:param name="node" select="."/>
+  <xsl:choose>
+    <xsl:when test="$node/name">
+      <xsl:value-of select="$node/name"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$node/@title"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+
 <xsl:template name="compute-section-number">
   <xsl:param name="bib"/>
   <xsl:param name="ref"/>
@@ -2793,14 +2806,9 @@
             <xsl:when test="$nodes[1]/ancestor::back">A@</xsl:when>
             <xsl:otherwise>S@</xsl:otherwise>
           </xsl:choose>
-          <xsl:choose>
-            <xsl:when test="$nodes[1]/name">
-              <xsl:value-of select="$nodes[1]/name"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="$nodes[1]/@title"/>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:call-template name="get-title-as-string">
+            <xsl:with-param name="node" select="$nodes[1]"/>
+          </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$number"/>
@@ -4282,14 +4290,9 @@
       <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
     </xsl:if>
     <xsl:attribute name="title">
-      <xsl:choose>
-        <xsl:when test="$to/name">
-          <xsl:value-of select="$to/name"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$to/@title"/>
-        </xsl:otherwise>
-      </xsl:choose>
+      <xsl:call-template name="get-title-as-string">
+        <xsl:with-param name="node" select="$to"/>
+      </xsl:call-template>
     </xsl:attribute>
     <xsl:call-template name="render-section-ref">
       <xsl:with-param name="from" select="$from"/>
@@ -9798,11 +9801,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.991 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.991 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.992 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.992 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/02/09 10:17:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/02/09 10:17:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/02/09 13:47:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/02/09 13:47:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
