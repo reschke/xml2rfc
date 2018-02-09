@@ -2782,9 +2782,30 @@
           <xsl:with-param name="msg">Anchor '<xsl:value-of select="$anch"/>' in <xsl:value-of select="$bib/@anchor"/> not found in source file '<xsl:value-of select="$bib/x:source/@href"/>'.</xsl:with-param>
         </xsl:call-template>
       </xsl:if>
-      <xsl:for-each select="$nodes">
-        <xsl:call-template name="get-section-number"/>
-      </xsl:for-each>
+      <xsl:variable name="number">
+        <xsl:for-each select="$nodes">
+          <xsl:call-template name="get-section-number"/>
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:choose>
+        <xsl:when test="starts-with($number,$unnumbered)">
+          <xsl:choose>
+            <xsl:when test="$nodes[1]/ancestor::back">A@</xsl:when>
+            <xsl:otherwise>S@</xsl:otherwise>
+          </xsl:choose>
+          <xsl:choose>
+            <xsl:when test="$nodes[1]/name">
+              <xsl:value-of select="$nodes[1]/name"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$nodes[1]/@title"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$number"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -4648,7 +4669,7 @@
     </xsl:call-template>
   </xsl:variable>
 
-  <xsl:variable name="sec">
+  <xsl:variable name="tsec">
     <xsl:choose>
       <xsl:when test="starts-with($from/@x:rel,'#') and $ssec=''">
         <xsl:call-template name="compute-section-number">
@@ -4666,11 +4687,18 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+  
+  <xsl:variable name="sec">
+    <xsl:choose>
+      <xsl:when test="contains($tsec,'@')">"<xsl:value-of select="substring-after($tsec,'@')"/>"</xsl:when>
+      <xsl:otherwise><xsl:value-of select="$tsec"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
 
   <xsl:variable name="secterm">
     <xsl:choose>
-      <!-- starts with letter? -->
-      <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">Appendix</xsl:when>
+      <!-- starts with letter or unnumbred? -->
+      <xsl:when test="translate(substring($sec,1,1),$ucase,'')='' or starts-with($tsec,'A@')">Appendix</xsl:when>
       <xsl:otherwise>Section</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -9770,11 +9798,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.990 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.990 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.991 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.991 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/02/08 09:39:56 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/02/08 09:39:56 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/02/09 10:17:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/02/09 10:17:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
