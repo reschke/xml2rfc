@@ -7108,22 +7108,24 @@ dd, li, p {
                                 <xsl:for-each select="$rs3">
                                   <xsl:sort select="count($doc//*[@anchor and following::*/@anchor=substring-after(current()/@x:rel,'#')])" order="ascending" data-type="number"/>
                                   <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-anchor',concat(@target,'..',@x:rel))[1])">
-                                    <li>
-                                      <em>
-                                        <xsl:variable name="sec">
-                                          <xsl:for-each select="$doc//*[@anchor=substring-after(current()/@x:rel,'#')]">
-                                            <xsl:call-template name="get-section-number"/>
-                                          </xsl:for-each>
-                                        </xsl:variable>
-                                        <xsl:call-template name="format-section-ref">
-                                          <xsl:with-param name="number" select="$sec"/>
-                                        </xsl:call-template>
-                                      </em>
-                                      <xsl:text>&#160;&#160;</xsl:text>
-                                      <xsl:for-each select="key('index-xref-by-anchor',concat(@target,'..',@x:rel))">
-                                        <xsl:call-template name="insertSingleXref" />
+                                    <xsl:variable name="sec">
+                                      <xsl:for-each select="$doc//*[@anchor=substring-after(current()/@x:rel,'#')]">
+                                        <xsl:call-template name="get-section-number"/>
                                       </xsl:for-each>
-                                    </li>
+                                    </xsl:variable>
+                                    <xsl:if test="$sec!=''">
+                                      <li>
+                                        <em>
+                                          <xsl:call-template name="format-section-ref">
+                                            <xsl:with-param name="number" select="$sec"/>
+                                          </xsl:call-template>
+                                        </em>
+                                        <xsl:text>&#160;&#160;</xsl:text>
+                                        <xsl:for-each select="key('index-xref-by-anchor',concat(@target,'..',@x:rel))">
+                                          <xsl:call-template name="insertSingleXref" />
+                                        </xsl:for-each>
+                                      </li>
+                                    </xsl:if>
                                   </xsl:if>
                                 </xsl:for-each>
                               </ul>
@@ -9808,11 +9810,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.993 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.993 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.994 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.994 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/02/10 08:38:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/02/10 08:38:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/02/10 12:36:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/02/10 12:36:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
