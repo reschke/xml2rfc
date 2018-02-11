@@ -7116,9 +7116,18 @@ dd, li, p {
                                     <xsl:if test="$sec!=''">
                                       <li>
                                         <em>
-                                          <xsl:call-template name="format-section-ref">
-                                            <xsl:with-param name="number" select="$sec"/>
-                                          </xsl:call-template>
+                                          <xsl:choose>
+                                            <xsl:when test="starts-with($sec,$unnumbered)">
+                                              <xsl:for-each select="$doc//*[@anchor=substring-after(current()/@x:rel,'#')]">
+                                                <xsl:call-template name="get-title-as-string"/>
+                                              </xsl:for-each>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                              <xsl:call-template name="format-section-ref">
+                                                <xsl:with-param name="number" select="$sec"/>
+                                              </xsl:call-template>
+                                            </xsl:otherwise>
+                                          </xsl:choose>
                                         </em>
                                         <xsl:text>&#160;&#160;</xsl:text>
                                         <xsl:for-each select="key('index-xref-by-anchor',concat(@target,'..',@x:rel))">
@@ -9810,11 +9819,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.994 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.994 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.995 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.995 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/02/10 12:36:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/02/10 12:36:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/02/11 11:19:36 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/02/11 11:19:36 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
