@@ -1035,7 +1035,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </fo:block>
-  <xsl:if test="@removeInRFC='true' and t[1]!=$note-removeInRFC">
+  <xsl:if test="@removeInRFC='true' and (not(t) or t[1]!=$note-removeInRFC)">
     <fo:block font-style="italic" start-indent="2em">
       <xsl:value-of select="$note-removeInRFC"/>
     </fo:block>
@@ -1573,7 +1573,7 @@
     <xsl:call-template name="section-maker" />
   </fo:block>
 
-  <xsl:if test="@removeInRFC='true' and t[1]!=$section-removeInRFC">
+  <xsl:if test="@removeInRFC='true' and (not(t) or t[1]!=$section-removeInRFC)">
     <fo:block font-style="italic" start-indent="2em">
       <xsl:value-of select="$section-removeInRFC"/>
     </fo:block>
@@ -1590,7 +1590,7 @@
     <xsl:call-template name="section-maker" />
   </fo:block>
 
-  <xsl:if test="@removeInRFC='true' and t[1]!=$section-removeInRFC">
+  <xsl:if test="@removeInRFC='true' and (not(t) or t[1]!=$section-removeInRFC)">
     <fo:block font-style="italic" start-indent="2em">
       <xsl:value-of select="$section-removeInRFC"/>
     </fo:block>
