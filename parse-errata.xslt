@@ -1,7 +1,7 @@
 <!--
     Parse RFC Editor Errata pages into XML
 
-    Copyright (c) 2017, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2017-2018, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -82,9 +82,9 @@
     </xsl:analyze-string>
   </xsl:variable>
   <erratum>
-    <xsl:analyze-string select="$s" regex="(.*)Errata ID: ([0-9]+)(.*)">
+    <xsl:analyze-string select="$s" regex="(.*)Errata ID: (&lt;a href=.*>)?([0-9]+)(&lt;/a>)?(.*)">
       <xsl:matching-substring>
-        <xsl:attribute name="eid" select="regex-group(2)"/>
+        <xsl:attribute name="eid" select="regex-group(3)"/>
       </xsl:matching-substring>
     </xsl:analyze-string>
     <xsl:analyze-string select="$s" regex="(.*)&lt;b>Status: ([A-Za-z ]*)(.*)">
