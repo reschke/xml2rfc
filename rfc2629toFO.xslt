@@ -1064,6 +1064,18 @@
     <xsl:call-template name="link-ref-title-to"/>
   </xsl:variable>
 
+  <xsl:variable name="front" select="front[1]|document(x:source/@href)/rfc/front[1]"/>
+  <xsl:if test="count($front)=0">
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg">&lt;front> element missing for '<xsl:value-of select="@anchor"/>'</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:if test="count($front)>1">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">&lt;front> can be omitted when &lt;x:source> is specified (for '<xsl:value-of select="@anchor"/>')</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+
   <fo:list-item space-after=".5em">
     <fo:list-item-label end-indent="label-end()">
       <fo:block id="{@anchor}">
@@ -1078,7 +1090,7 @@
     
     <fo:list-item-body start-indent="body-start()"><fo:block>
 
-      <xsl:for-each select="front/author">
+      <xsl:for-each select="$front[1]/author">
         <xsl:variable name="initials">
           <xsl:call-template name="format-initials"/>
         </xsl:variable>
@@ -1121,22 +1133,22 @@
         </xsl:choose>
       </xsl:for-each>
 
-      <xsl:variable name="quoted" select="not(front/title/@x:quotes='false') and not(@quote-title='false')"/>
+      <xsl:variable name="quoted" select="not($front[1]/title/@x:quotes='false') and not(@quote-title='false')"/>
       <xsl:if test="$quoted">"<!--&#8220;--></xsl:if>
       <xsl:choose>
         <xsl:when test="string-length($target) &gt; 0">
-          <fo:basic-link external-destination="url('{$target}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="normalize-space(front/title)" /></fo:basic-link>
+          <fo:basic-link external-destination="url('{$target}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="normalize-space($front[1]/title)" /></fo:basic-link>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="normalize-space(front/title)" />
+          <xsl:value-of select="normalize-space($front[1]/title)" />
         </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="$quoted">"<!--&#8221;--></xsl:if>
       
-      <xsl:if test="front/title/@ascii!=''">
+      <xsl:if test="$front[1]/title/@ascii!=''">
         <xsl:text> (</xsl:text>
         <xsl:if test="$quoted">"<!--&#8220;--></xsl:if>
-        <xsl:value-of select="normalize-space(front/title/@ascii)" />
+        <xsl:value-of select="normalize-space($front[1]/title/@ascii)" />
         <xsl:if test="$quoted">"<!--&#8221;--></xsl:if>
         <xsl:text>)</xsl:text>
       </xsl:if> 
@@ -1147,7 +1159,7 @@
         <xsl:call-template name="compute-doi"/>
       </xsl:variable>
 
-      <xsl:for-each select="seriesInfo|front/seriesInfo">
+      <xsl:for-each select="seriesInfo|$front[1]/seriesInfo">
         <xsl:text>, </xsl:text>
         <xsl:choose>
           <xsl:when test="not(@name) and not(@value) and ./text()"><xsl:value-of select="." /></xsl:when>
@@ -1208,9 +1220,9 @@
         <xsl:apply-templates/>
       </xsl:for-each>
 
-      <xsl:if test="front/date/@year!=''">
+      <xsl:if test="$front[1]/date/@year!=''">
         <xsl:text>, </xsl:text>
-        <xsl:value-of select="front/date/@month" />&#0160;<xsl:value-of select="front/date/@year" />
+        <xsl:value-of select="$front[1]/date/@month" />&#0160;<xsl:value-of select="$front[1]/date/@year" />
       </xsl:if>
       
       <xsl:choose>

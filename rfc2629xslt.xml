@@ -2832,14 +2832,26 @@ include "rfc2629.rnc" {
   reference =
     element reference {
       attlist.reference,
-      front,
-      <strong><x:ref>v3_refcontent</x:ref>?</strong>,
-      seriesInfo*,
-      <strong><x:ref>x_prose</x:ref>?</strong>,
-      <strong><x:ref>v3_refcontent</x:ref>?</strong>,
-      format*,
-      annotation*,
-      <strong><x:ref>x_source</x:ref>?</strong>
+      (
+        (
+          front,
+          <strong><x:ref>v3_refcontent</x:ref>?</strong>,
+          seriesInfo*,
+          <strong><x:ref>x_prose</x:ref>?</strong>,
+          <strong><x:ref>v3_refcontent</x:ref>?</strong>,
+          format*,
+          annotation*,
+          <strong><x:ref>x_source</x:ref>?</strong>
+        ) | (
+          <strong><x:ref>v3_refcontent</x:ref>?</strong>,
+          seriesInfo*,
+          <strong><x:ref>x_prose</x:ref>?</strong>,
+          <strong><x:ref>v3_refcontent</x:ref>?</strong>,
+          format*,
+          annotation*,
+          <strong><x:ref>x_source</x:ref></strong>
+        )
+      )
     }
 
   <em># Redefine &lt;references> to allow our &lt;name&gt;</em>

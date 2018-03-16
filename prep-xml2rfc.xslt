@@ -1185,6 +1185,16 @@
 </xsl:template>
 <xsl:template match="@x:quotes" mode="prep-rfc2629ext" xmlns:x="http://purl.org/net/xml2rfc/ext"/>
 
+<xsl:template match="x:source" mode="prep-rfc2629ext" xmlns:x="http://purl.org/net/xml2rfc/ext">
+  <xsl:if test="not(../front)">
+    <xsl:copy-of select="document(@href)/rfc/front"/>
+  </xsl:if>
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-rfc2629ext"/>
+    <xsl:apply-templates select="node()" mode="prep-rfc2629ext"/>
+  </xsl:copy>
+</xsl:template>
+
 <xsl:template match="x:link[not(@basename)]" mode="prep-rfc2629ext" xmlns:x="http://purl.org/net/xml2rfc/ext">
   <link>
     <xsl:apply-templates select="@*" mode="prep-rfc2629ext"/>
