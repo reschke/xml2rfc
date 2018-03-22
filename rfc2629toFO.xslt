@@ -1967,21 +1967,18 @@
     <xsl:text>Index</xsl:text>
   </fo:block>
 
-  <xsl:variable name="irefs" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]"/>
-  <xsl:variable name="xrefs" select="//reference[generate-id(.) = generate-id(key('index-first-letter',translate(substring(concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase)))]"/>
-
-  <xsl:for-each select="$irefs | $xrefs">
+  <xsl:for-each select="//iref | //reference[not(starts-with(@anchor,'deleted-'))]">
     <xsl:sort select="translate(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),$lcase,$ucase)" />
     <xsl:variable name="letter" select="translate(substring(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase)"/>
             
-    <xsl:variable name="showit" select="$xml2rfc-ext-include-references-in-index='yes' or $irefs[starts-with(translate(@item,$lcase,$ucase),$letter)]"/>
+    <xsl:variable name="showit" select="$xml2rfc-ext-include-references-in-index='yes' or self::iref"/>
 
-    <xsl:if test="$showit">
+    <xsl:if test="$showit and generate-id(.) = generate-id(key('index-first-letter',$letter)[1])">
       <fo:block space-before="1em" font-weight="bold">
         <xsl:value-of select="$letter" />
       </fo:block>
             
-      <xsl:for-each select="key('index-first-letter',translate(substring(concat(@item,@anchor),1,1),$lcase,$ucase))">
+      <xsl:for-each select="key('index-first-letter',$letter)">
   
         <xsl:sort select="translate(concat(@item,@anchor),$lcase,$ucase)" />
       
