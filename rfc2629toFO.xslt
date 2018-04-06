@@ -3091,25 +3091,11 @@
         <xsl:apply-templates/>
       </fo:basic-link>
     </xsl:when>
-    <xsl:when test="$target[1]/self::x:source">
-      <xsl:variable name="extdoc" select="document($target[1]/@href)"/>
-      <xsl:variable name="nodes" select="$extdoc//*[@anchor and (x:anchor-alias/@value=$val)]"/>
-      <xsl:if test="not($nodes)">
-        <xsl:call-template name="error">
-          <xsl:with-param name="msg">Anchor '<xsl:value-of select="$val"/>' not found in source file '<xsl:value-of select="$target[1]/@href"/>'.</xsl:with-param>
-        </xsl:call-template>
-      </xsl:if>
-      <!-- we know the external target, but for now we won't use it (what should the PDF link to?) -->
+    <xsl:otherwise>
       <fo:inline>
         <xsl:call-template name="copy-anchor"/>
-        <xsl:value-of select="."/>
+        <xsl:apply-templates/>
       </fo:inline>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:call-template name="warning">
-        <xsl:with-param name="msg">internal link target for '<xsl:value-of select="."/>' does not exist.</xsl:with-param>
-      </xsl:call-template>
-      <xsl:value-of select="."/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
