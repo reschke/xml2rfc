@@ -1276,6 +1276,9 @@
         <xsl:value-of select="concat(' lang-',@x:lang)"/>
       </xsl:if>
     </xsl:if>
+    <xsl:if test="contains(@type,'abnf') and $prettyprint-class!=''">
+      <xsl:value-of select="concat(' ',$prettyprint-class,' lang-ietf_abnf')"/>
+    </xsl:if>
   </xsl:variable>
   <xsl:if test="normalize-space($v)!=''">
     <xsl:attribute name="class"><xsl:value-of select="normalize-space($v)"/></xsl:attribute>
@@ -6128,8 +6131,33 @@ function anchorRewrite() {
 window.addEventListener('hashchange', anchorRewrite);
 window.addEventListener('DOMContentLoaded', anchorRewrite);
 </script><xsl:if test="$prettyprint-script!=''">
-<script src="{$prettyprint-script}"/></xsl:if>
-</xsl:template>
+<script src="{$prettyprint-script}"/></xsl:if><xsl:if test="contains($prettyprint-script,'prettify') and //artwork[contains(@type,'abnf')]">
+<script><![CDATA[try {
+PR['registerLangHandler'](
+    PR['createSimpleLexer'](
+        [
+         // comment
+         [PR['PR_COMMENT'], /^;[^\x00-\x1f]*/, null, ";"],
+        ],
+        [
+         // string literals
+         [PR['PR_STRING'], /^(\%s|\%i)?"[^"\x00-\x1f]*"/, null],
+         // binary literals
+         [PR['PR_LITERAL'], /^\%b[01]+((-[01]+)|(\.[01]+)*)/, null],
+         // decimal literals
+         [PR['PR_LITERAL'], /^\%d[0-9]+((-[0-9]+)|(\.[0-9]+)*)/, null],
+         // hex literals
+         [PR['PR_LITERAL'], /^(\%x[A-Za-z0-9]+((-[A-Za-z0-9]+)|(\.[A-Za-z0-9]+)*))/, null],
+         // prose rule
+         [PR['PR_NOCODE'], /^<[^>\x00-\x1f]*>/, null],
+         // rule name
+         [PR['PR_TYPE'], /^([A-Za-z][A-Za-z0-9-]*)/, null],
+         [PR['PR_PUNCTUATION'], /^[=\(\)\*\/\[\]#]/, null],
+        ]),
+    ['ietf_abnf']);
+} catch(e){}]]>
+</script>
+</xsl:if></xsl:template>
 
 <!-- insert CSS style info -->
 
@@ -9883,11 +9911,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1010 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1010 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1011 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1011 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/05/08 18:34:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/08 18:34:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/05/15 18:26:15 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/15 18:26:15 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
