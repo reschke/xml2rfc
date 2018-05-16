@@ -62,8 +62,13 @@
       <xsl:apply-templates mode="link-sibling-specs"/>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:for-each select="$t4">
-    <xsl:apply-templates mode="insert-feedback"/>
+  <xsl:variable name="t5">
+    <xsl:for-each select="$t4">
+      <xsl:apply-templates mode="insert-feedback"/>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:for-each select="$t5">
+    <xsl:apply-templates mode="insert-prettyprint"/>
   </xsl:for-each>
 </xsl:template>
 
@@ -231,6 +236,16 @@
     </xsl:if>
     <xsl:apply-templates select="node()" mode="insert-feedback"/>
   </xsl:copy>
+</xsl:template>
+
+<xsl:template match="*|@*|comment()|processing-instruction()" mode="insert-prettyprint">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="insert-prettyprint"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="rfc" mode="insert-prettyprint">
+  <xsl:processing-instruction name="rfc-ext">html-pretty-print="prettyprint https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"</xsl:processing-instruction>
+  <xsl:text>&#10;</xsl:text>
+  <xsl:copy-of select="."/>
 </xsl:template>
 
 </xsl:transform>
