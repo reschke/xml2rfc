@@ -8517,11 +8517,17 @@ dd, li, p {
         </xsl:for-each>
       </xsl:variable>
       <xsl:copy-of select="$out"/>
-      <xsl:if test="string-length($out)=0">
+      <xsl:variable name="plainout" select="normalize-space($out)"/>
+      <xsl:if test="string-length($plainout)=0">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg">Anchor '<xsl:value-of select="$val"/>' not found anywhere in references.</xsl:with-param>
         </xsl:call-template>
         <xsl:value-of select="$val"/>
+      </xsl:if>
+      <xsl:if test="string-length($plainout)!=string-length($val)">
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg">Multiple targets found for anchor '<xsl:value-of select="$val"/>' - need to disambiguate.</xsl:with-param>
+        </xsl:call-template>
       </xsl:if>
     </xsl:when>
     <xsl:otherwise>
@@ -9911,11 +9917,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1011 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1011 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1012 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1012 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/05/15 18:26:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/15 18:26:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/05/16 09:00:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/16 09:00:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
