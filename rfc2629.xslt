@@ -5643,7 +5643,7 @@
 <!-- optional scripts -->
 <xsl:template name="insertScripts">
 <xsl:if test="$xml2rfc-ext-refresh-from!=''">
-<script type="application/javascript">
+<script>
 var RfcRefresh = {};
 RfcRefresh.NS_XHTML = "http://www.w3.org/1999/xhtml";
 RfcRefresh.NS_MOZERR = "http://www.mozilla.org/newlayout/xml/parsererror.xml";
@@ -5866,7 +5866,7 @@ RfcRefresh.initRefresh = function() {
 </script>
 </xsl:if>
 <xsl:if test="/rfc/x:feedback">
-<script type="application/javascript">
+<script>
 var buttonsAdded = false;
 
 function initFeedback() {
@@ -5958,7 +5958,7 @@ function toggleButton(node) {
 }</script>
 </xsl:if>
 <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!=''">
-<script type="application/javascript">
+<script>
 function getMeta(rfcno, container) {
 
   var xhr = new XMLHttpRequest();
@@ -6076,7 +6076,7 @@ function appendRfcLinks(parent, text) {
 }
 </script>
 </xsl:if>
-<script type="application/javascript">
+<script>
 function anchorRewrite() {
 <xsl:text>  map = { </xsl:text>
   <xsl:for-each select="//x:anchor-alias">
@@ -9917,11 +9917,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1012 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1012 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1013 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1013 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/05/16 09:00:11 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/16 09:00:11 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/05/22 12:25:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/22 12:25:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
