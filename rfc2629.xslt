@@ -3476,7 +3476,7 @@
       </title>
       <xsl:call-template name="insertScripts" />
       <xsl:call-template name="insertCss" />
-      <!-- <link rel="alternate stylesheet" type="text/css" media="screen" title="Plain (typewriter)" href="rfc2629tty.css" /> -->
+      <!-- <link rel="alternate stylesheet" media="screen" title="Plain (typewriter)" href="rfc2629tty.css" /> -->
 
       <!-- link elements -->
       <xsl:if test="$xml2rfc-toc='yes'">
@@ -6162,7 +6162,7 @@ PR['registerLangHandler'](
 <!-- insert CSS style info -->
 
 <xsl:template name="insertCss">
-<style type="text/css" title="rfc2629.xslt">
+<style title="rfc2629.xslt">
 <xsl:value-of select="$xml2rfc-ext-webfonts"/>
 a {
   text-decoration: none;
@@ -9917,11 +9917,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1014 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1014 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1015 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1015 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/05/23 10:51:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/23 10:51:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/05/23 11:48:49 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/23 11:48:49 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
