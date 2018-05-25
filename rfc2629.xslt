@@ -3555,7 +3555,9 @@
               <meta name="dcterms.identifier" content="urn:ietf:rfc:{@number}" />
             </xsl:when>
             <xsl:when test="@docName">
-              <meta name="dcterms.identifier" content="urn:ietf:id:{@docName}" />
+              <xsl:if test="'-latest'!=substring(@docName,string-length(@docName)-string-length('-latest')+1)">
+                <meta name="dcterms.identifier" content="urn:ietf:id:{@docName}" />
+              </xsl:if>
             </xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
@@ -9917,11 +9919,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1017 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1017 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1018 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1018 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/05/24 13:15:49 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/24 13:15:49 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/05/25 12:43:45 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/25 12:43:45 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
