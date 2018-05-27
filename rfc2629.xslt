@@ -404,9 +404,12 @@
     </xsl:variable>
     <xsl:if test="$uri1!=''">
       <xsl:variable name="ends-with-xml" select="substring($uri1, string-length($uri1)-3)='.xml'"/>
+      <xsl:variable name="for-draft" select="contains($uri1,'reference.I-D')"/>
       <xsl:variable name="uri2" select="concat($uri1,'.xml')"/>
-      <xsl:variable name="uri3" select="concat($toolsBaseUriForRFCReferences,$uri1)"/>
-      <xsl:variable name="uri4" select="concat($toolsBaseUriForRFCReferences,$uri1,'.xml')"/>
+      <xsl:variable name="uri3r" select="concat($toolsBaseUriForRFCReferences,$uri1)"/>
+      <xsl:variable name="uri4r" select="concat($toolsBaseUriForRFCReferences,$uri1,'.xml')"/>
+      <xsl:variable name="uri3i" select="concat($toolsBaseUriForIDReferences,$uri1)"/>
+      <xsl:variable name="uri4i" select="concat($toolsBaseUriForIDReferences,$uri1,'.xml')"/>
       <xsl:choose>
         <xsl:when test="not($ends-with-xml) and document($uri2)/reference">
           <myns:include from="{$uri2}" in="{generate-id(..)}">
@@ -418,14 +421,24 @@
             <xsl:copy-of select="document($uri1)"/>
           </myns:include>
         </xsl:when>
-        <xsl:when test="not($ends-with-xml) and not(contains($uri1,':')) and document($uri4)/reference">
-          <myns:include from="{$uri4}" in="{generate-id(..)}">
-            <xsl:copy-of select="document($uri4)"/>
+        <xsl:when test="not($ends-with-xml) and $for-draft and not(contains($uri1,':')) and document($uri4i)/reference">
+          <myns:include from="{$uri4i}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri4i)"/>
           </myns:include>
         </xsl:when>
-        <xsl:when test="not(contains($uri1,':')) and document($uri3)/reference">
-          <myns:include from="{$uri3}" in="{generate-id(..)}">
-            <xsl:copy-of select="document($uri3)"/>
+        <xsl:when test="not(contains($uri1,':')) and $for-draft and document($uri3i)/reference">
+          <myns:include from="{$uri3i}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri3i)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="not($ends-with-xml) and not(contains($uri1,':')) and document($uri4r)/reference">
+          <myns:include from="{$uri4r}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri4r)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="not(contains($uri1,':')) and document($uri3r)/reference">
+          <myns:include from="{$uri3r}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri3r)"/>
           </myns:include>
         </xsl:when>
         <xsl:otherwise/>
@@ -790,8 +803,11 @@
 <xsl:param name="internetDraftUrlFragSection" select="'section-'" />
 <xsl:param name="internetDraftUrlFragAppendix" select="'appendix-'" />
 
-<!-- base URI for include directive when relative reference does not resolve -->
+<!-- base URI for include directive when relative reference does not resolve for RFCs -->
 <xsl:param name="toolsBaseUriForRFCReferences">https://xml2rfc.tools.ietf.org/public/rfc/bibxml/</xsl:param>
+
+<!-- base URI for include directive when relative reference does not resolve for Intetnet Drafts -->
+<xsl:param name="toolsBaseUriForIDReferences">https://xml2rfc.tools.ietf.org/public/rfc/bibxml-ids/</xsl:param>
 
 <!--templates for URI calculation -->
 
@@ -9919,11 +9935,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1018 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1018 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1019 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1019 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/05/25 12:43:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/25 12:43:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/05/27 07:20:23 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/27 07:20:23 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
