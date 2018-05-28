@@ -412,6 +412,10 @@
       <xsl:variable name="uri4i" select="concat($toolsBaseUriForIDReferences,$uri1,'.xml')"/>
       <xsl:choose>
         <xsl:when test="not($ends-with-xml) and document($uri2)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri1"/>
+            <xsl:with-param name="success" select="$uri2"/>
+          </xsl:call-template>
           <myns:include from="{$uri2}" in="{generate-id(..)}">
             <xsl:copy-of select="document($uri2)"/>
           </myns:include>
@@ -422,21 +426,37 @@
           </myns:include>
         </xsl:when>
         <xsl:when test="not($ends-with-xml) and $for-draft and not(contains($uri1,':')) and document($uri4i)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri1"/>
+            <xsl:with-param name="success" select="$uri4i"/>
+          </xsl:call-template>
           <myns:include from="{$uri4i}" in="{generate-id(..)}">
             <xsl:copy-of select="document($uri4i)"/>
           </myns:include>
         </xsl:when>
         <xsl:when test="not(contains($uri1,':')) and $for-draft and document($uri3i)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri1"/>
+            <xsl:with-param name="success" select="$uri3i"/>
+          </xsl:call-template>
           <myns:include from="{$uri3i}" in="{generate-id(..)}">
             <xsl:copy-of select="document($uri3i)"/>
           </myns:include>
         </xsl:when>
         <xsl:when test="not($ends-with-xml) and not(contains($uri1,':')) and document($uri4r)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri1"/>
+            <xsl:with-param name="success" select="$uri4r"/>
+          </xsl:call-template>
           <myns:include from="{$uri4r}" in="{generate-id(..)}">
             <xsl:copy-of select="document($uri4r)"/>
           </myns:include>
         </xsl:when>
         <xsl:when test="not(contains($uri1,':')) and document($uri3r)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri1"/>
+            <xsl:with-param name="success" select="$uri3r"/>
+          </xsl:call-template>
           <myns:include from="{$uri3r}" in="{generate-id(..)}">
             <xsl:copy-of select="document($uri3r)"/>
           </myns:include>
@@ -445,6 +465,14 @@
       </xsl:choose>
     </xsl:if>
   </xsl:for-each>
+</xsl:template>
+
+<xsl:template name="include-uri-warning">
+  <xsl:param name="specified"/>
+  <xsl:param name="success"/>
+  <xsl:call-template name="warning">
+    <xsl:with-param name="msg">include succeeded for best-guess URI <xsl:value-of select="$success"/> while <xsl:value-of select="$specified"/> was specified - you may want to adjust the include directive in order to avoid future warnings</xsl:with-param>
+  </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="getXIncludes">
@@ -9935,11 +9963,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1019 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1019 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1020 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1020 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/05/27 07:20:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/27 07:20:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/05/28 11:05:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/28 11:05:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -10457,9 +10485,18 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='footer'"/>
                       <xsl:when test="$attrname='header'"/>
                       <xsl:when test="$attrname='include'">
-                        <xsl:call-template name="warning">
-                          <xsl:with-param name="msg">the rfc include pseudo-attribute is only partially supported by this processor, see http://greenbytes.de/tech/webdav/rfc2629xslt/rfc2629xslt.html#examples.internalsubset for alternative syntax.</xsl:with-param>
-                        </xsl:call-template>
+                        <xsl:choose>
+                          <xsl:when test="not(parent::references)">
+                            <xsl:call-template name="error">
+                              <xsl:with-param name="msg">the rfc include pseudo-attribute (unless a child node of &lt;references&gt;) is not supported by this processor, see http://greenbytes.de/tech/webdav/rfc2629xslt/rfc2629xslt.html#examples.internalsubset for alternative syntax.</xsl:with-param>
+                            </xsl:call-template>
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <xsl:call-template name="warning">
+                              <xsl:with-param name="msg">the rfc include pseudo-attribute is only partially supported by this processor, see http://greenbytes.de/tech/webdav/rfc2629xslt/rfc2629xslt.html#examples.internalsubset for alternative syntax.</xsl:with-param>
+                            </xsl:call-template>
+                          </xsl:otherwise>
+                        </xsl:choose>
                       </xsl:when>
                       <xsl:when test="$attrname='inline'"/>
                       <xsl:when test="$attrname='iprnotified'"/>
