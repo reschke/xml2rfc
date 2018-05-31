@@ -1,5 +1,5 @@
 <!--
-    Strip rfc2629.xslt extensions, generating XML input for MTR's xml2rfc
+    Strip rfc2629.xslt extensions, generating XML input for "official" xml2rfc
 
     Copyright (c) 2006-2018, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
@@ -75,7 +75,7 @@
   <xsl:text>&#10;</xsl:text>
   <xsl:comment>
     This XML document is the output of clean-for-DTD.xslt; a tool that strips
-    extensions to RFC2629(bis) from documents for processing with xml2rfc.
+    extensions to RFC 7749 from documents for processing with xml2rfc.
 </xsl:comment>
 <xsl:text>&#10;</xsl:text>
 <xsl:comment>TARGET-GENERATOR: <xsl:value-of select="$xml2rfc-ext-xml2rfc-backend"/></xsl:comment>
