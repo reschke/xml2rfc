@@ -1245,7 +1245,7 @@
 
 <xsl:variable name="no-funding" select="$ipr-2007-08"/>
 
-<xsl:variable name="no-copylong" select="$ipr-2008-11"/>
+<xsl:variable name="no-copylong" select="$ipr-2008-11 or /rfc/@ipr='none'"/>
 
 <!-- will document have an index -->
 <xsl:variable name="has-index" select="(//iref or (//xref and $xml2rfc-ext-include-references-in-index='yes')) and $xml2rfc-ext-include-index!='no'" />
@@ -7682,6 +7682,7 @@ dd, li, p {
   <xsl:copy-of select="$notes"/>
 
   <xsl:choose>
+    <xsl:when test="$src/rfc/@ipr='none'"/>
     <xsl:when test="$ipr-2008-11">
       <section anchor="{$anchor-pref}copyrightnotice">
         <name>Copyright Notice</name>
@@ -9963,11 +9964,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1020 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1020 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1021 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1021 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/05/28 11:05:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/28 11:05:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/05/31 03:45:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/31 03:45:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
