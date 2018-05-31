@@ -3529,7 +3529,7 @@
       <xsl:if test="$xml2rfc-authorship!='no'">
         <link rel="Author" href="#{$anchor-pref}authors" />
       </xsl:if>
-      <xsl:if test="$xml2rfc-private=''">
+      <xsl:if test="$xml2rfc-private='' and not($src/rfc/@ipr='none')">
         <xsl:choose>
           <xsl:when test="$no-copylong">
             <link rel="License" href="#{$anchor-pref}copyrightnotice" />
@@ -9964,11 +9964,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1021 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1021 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1022 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1022 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/05/31 03:45:51 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/31 03:45:51 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/05/31 05:17:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/31 05:17:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
