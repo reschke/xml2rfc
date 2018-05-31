@@ -1519,19 +1519,13 @@
             <xsl:variable name="copyright">
               <xsl:call-template name="insertCopyright" />
             </xsl:variable>
-          
-            <!-- emit it -->
-            <xsl:choose>
-              <xsl:when test="function-available('exslt:node-set')">
-                <xsl:apply-templates select="exslt:node-set($copyright)/node()" />
-              </xsl:when>
-              <xsl:otherwise> <!--proceed with fingers crossed-->
-                <xsl:variable name="temp" select="$copyright"/>
-                <xsl:apply-templates select="$temp/node()" />
-              </xsl:otherwise>
-            </xsl:choose>
+            
+            <xsl:if test="normalize-space($copyright)=''">
+              <fo:block/>
+            </xsl:if>
+
+            <xsl:apply-templates select="exslt:node-set($copyright)/node()" />
           </xsl:if>
-          
         </fo:flow>
       </fo:page-sequence>
     </xsl:if>
