@@ -1822,10 +1822,14 @@
 
 <xsl:variable name="all-notes" select="/rfc/front/note"/>
 <xsl:variable name="all-edited-notes" select="/rfc/front/ed:replace[.//note]"/>
-<xsl:variable name="notes-not-in-boilerplate" select="$all-notes[@title!='IESG Note' or $xml2rfc-private!='' or $notes-follow-abstract]"/>
-<xsl:variable name="edited-notes-not-in-boilerplate" select="$all-edited-notes[.//note/@title!='IESG Note' or $xml2rfc-private!='' or $notes-follow-abstract]"/>
-<xsl:variable name="notes-in-boilerplate" select="$all-notes[not(@title!='IESG Note' or $xml2rfc-private!='' or $notes-follow-abstract)]"/>
-<xsl:variable name="edited-notes-in-boilerplate" select="$all-edited-notes[not(.//note/@title!='IESG Note' or $xml2rfc-private!='' or $notes-follow-abstract)]"/>
+
+<!-- TODO:extend for other streams -->
+<xsl:variable name="stream-note-titles">[IESG Note][IESG Note:]</xsl:variable>
+
+<xsl:variable name="notes-not-in-boilerplate" select="$all-notes[not(contains($stream-note-titles,concat('[',normalize-space(@title),']'))) or $xml2rfc-private!='' or $notes-follow-abstract]"/>
+<xsl:variable name="edited-notes-not-in-boilerplate" select="$all-edited-notes[not(contains($stream-note-titles,concat('[',normalize-space(.//note/@title),']'))) or $xml2rfc-private!='' or $notes-follow-abstract]"/>
+<xsl:variable name="notes-in-boilerplate" select="$all-notes[not(not(contains($stream-note-titles,concat('[',normalize-space(@title),']'))) or $xml2rfc-private!='' or $notes-follow-abstract)]"/>
+<xsl:variable name="edited-notes-in-boilerplate" select="$all-edited-notes[not(not(contains($stream-note-titles,concat('[',normalize-space(.//note/@title),']'))) or $xml2rfc-private!='' or $notes-follow-abstract)]"/>
 
 <xsl:template match="front">
   <xsl:call-template name="check-no-text-content"/>
@@ -1983,8 +1987,9 @@
       </xsl:call-template>
     </xsl:if>
   </xsl:if>
-  
-  <xsl:apply-templates select="abstract" />
+
+  <xsl:apply-templates select="abstract"/>
+
   <xsl:if test="$notes-follow-abstract">
     <xsl:apply-templates select="$notes-not-in-boilerplate|$edited-notes-not-in-boilerplate" />
   </xsl:if>
@@ -9964,11 +9969,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1022 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1022 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1023 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1023 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/05/31 05:17:51 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/05/31 05:17:51 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/06/01 11:26:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/06/01 11:26:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
