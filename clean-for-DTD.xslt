@@ -1183,7 +1183,12 @@
         <xsl:apply-templates select="front" mode="cleanup"/>
       </xsl:when>
       <xsl:when test="x:source">
-        <xsl:apply-templates select="document(x:source/@href)/rfc/front" mode="cleanup"/>
+        <xsl:comment>included from <xsl:value-of select="x:source/@href"/></xsl:comment>
+        <front>
+          <xsl:apply-templates select="document(x:source/@href)/rfc/front/title" mode="cleanup"/>
+          <xsl:apply-templates select="document(x:source/@href)/rfc/front/author" mode="cleanup"/>
+          <xsl:apply-templates select="document(x:source/@href)/rfc/front/date" mode="cleanup"/>
+        </front>
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
