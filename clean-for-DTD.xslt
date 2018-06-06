@@ -1183,11 +1183,21 @@
         <xsl:apply-templates select="front" mode="cleanup"/>
       </xsl:when>
       <xsl:when test="x:source">
+        <xsl:variable name="d" select="document(x:source/@href)"/>
         <xsl:comment>included from <xsl:value-of select="x:source/@href"/></xsl:comment>
         <front>
-          <xsl:apply-templates select="document(x:source/@href)/rfc/front/title" mode="cleanup"/>
-          <xsl:apply-templates select="document(x:source/@href)/rfc/front/author" mode="cleanup"/>
-          <xsl:apply-templates select="document(x:source/@href)/rfc/front/date" mode="cleanup"/>
+          <xsl:apply-templates select="$d/rfc/front/title" mode="cleanup"/>
+          <xsl:apply-templates select="$d/rfc/front/author" mode="cleanup"/>
+          <xsl:choose>
+            <xsl:when test="$d/rfc/front/date/@*">
+              <!-- any date info present? -->
+              <xsl:apply-templates select="$d/rfc/front/date" mode="cleanup"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <!-- let defaults apply -->
+              <date year="{$xml2rfc-ext-pub-year}" month="{$xml2rfc-ext-pub-month}"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </front>
       </xsl:when>
       <xsl:otherwise/>

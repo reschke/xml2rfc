@@ -1220,11 +1220,18 @@
         <xsl:apply-templates/>
       </xsl:for-each>
 
-      <xsl:if test="$front[1]/date/@year!=''">
-        <xsl:text>, </xsl:text>
-        <xsl:value-of select="$front[1]/date/@month" />&#0160;<xsl:value-of select="$front[1]/date/@year" />
-      </xsl:if>
-      
+      <xsl:choose>
+        <xsl:when test="$front[1]/date/@year!=''">
+          <xsl:text>, </xsl:text>
+          <xsl:value-of select="$front[1]/date/@month" />&#0160;<xsl:value-of select="$front[1]/date/@year" />
+        </xsl:when>
+        <xsl:when test="document(x:source/@href)/rfc/front">
+          <!-- is the date element maybe included and should be defaulted? -->
+          <xsl:value-of select="concat(', ',$xml2rfc-ext-pub-month,'&#160;',$xml2rfc-ext-pub-year)"/>
+        </xsl:when>
+        <xsl:otherwise/>
+      </xsl:choose>
+
       <xsl:choose>
         <xsl:when test="string-length(normalize-space(@target)) &gt; 0">
           <xsl:text>, &lt;</xsl:text>
