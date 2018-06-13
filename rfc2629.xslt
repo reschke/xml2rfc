@@ -6343,11 +6343,11 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
 img {
   margin-left: 3em;
 }
-li {
-  margin-left: 2em;
-}
 ol {
   margin-left: 2em;
+}
+li ol {
+  margin-left: 0em;
 }
 ol.la {
   list-style-type: lower-alpha;
@@ -6558,6 +6558,12 @@ ul.toc li li {
 }
 li.excluded {
   font-size: 0%;
+}
+ul {
+  margin-left: 2em;
+}
+li ul {
+  margin-left: 0em;
 }
 ul p {
   margin-left: 0em;
@@ -9986,11 +9992,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1027 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1027 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1028 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1028 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/06/12 07:40:44 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/06/12 07:40:44 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/06/13 12:00:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/06/13 12:00:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
