@@ -1335,7 +1335,7 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:ellipse/@cx|svg:ellipse/@cy|svg:ellipse/@fill|svg:ellipse/@rx|svg:ellipse/@ry|svg:ellipse/@stroke" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:ellipse/@cx|svg:ellipse/@cy|svg:ellipse/@rx|svg:ellipse/@ry" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
@@ -1343,20 +1343,58 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:path/@d|svg:path/@fill|svg:path/@stroke|svg:path/@stroke-dasharray|svg:path/@stroke-width|svg:path/@style" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:path/@d|svg:path/@stroke-dasharray|svg:path/@stroke-width|svg:path/@style" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:polygon/@fill|svg:polygon/@points|svg:polygon/@stroke|svg:polygon/@style" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:polygon/@points|svg:polygon/@style" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:text/@fill|svg:text/@font-family|svg:text/@font-size|svg:text/@style|svg:text/@text-anchor|svg:text/@x|svg:text/@y" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:text/@font-family|svg:text/@font-size|svg:text/@style|svg:text/@text-anchor|svg:text/@x|svg:text/@y" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
 <xsl:template match="svg:title/@content" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="svg:ellipse/@fill|svg:path/@fill|svg:polygon/@fill|svg:text/@fill" mode="prep-sanitizesvg" priority="9">
+  <xsl:choose>
+    <xsl:when test=".='none' or .='black' or .='white' or .='#000000' or .='#ffffff' or .='#FFFFFF'">
+      <xsl:copy/>
+    </xsl:when>
+    <xsl:when test=".='#000' or (.&gt;'#800000' and (.&lt;'#FFFFFF' or .&lt;'#ffffff'))">
+      <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'white')</xsl:message>
+      <xsl:attribute name="fill">white</xsl:attribute>
+    </xsl:when>
+    <xsl:when test=".='#fff' or .='#FFF' or (.&gt;'#000000' and .&lt;='800000')">
+      <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'black')</xsl:message>
+      <xsl:attribute name="fill">black</xsl:attribute>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (dropped)</xsl:message>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="svg:ellipse/@stroke|svg:path/@stroke|svg:polygon/@stroke" mode="prep-sanitizesvg" priority="9">
+  <xsl:choose>
+    <xsl:when test=".='none' or .='currentColor' or .='black' or .='white' or .='#000000' or .='#ffffff' or .='#FFFFFF'">
+      <xsl:copy/>
+    </xsl:when>
+    <xsl:when test=".='#000' or (.&gt;'#800000' and (.&lt;'#FFFFFF' or .&lt;'#ffffff'))">
+      <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'white')</xsl:message>
+      <xsl:attribute name="stroke">white</xsl:attribute>
+    </xsl:when>
+    <xsl:when test=".='#fff' or .='#FFF' or (.&gt;'#000000' and .&lt;='800000')">
+      <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'black')</xsl:message>
+      <xsl:attribute name="stroke">black</xsl:attribute>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (dropped)</xsl:message>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- xinclude step -->
