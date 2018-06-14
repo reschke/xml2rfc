@@ -1,7 +1,7 @@
 <!--
     Experimental implementation of xml2rfc v3 preptool
 
-    Copyright (c) 2016-2017, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2016-2018, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi xinclude rfc2629ext figextract artwork cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck preptime</xsl:text>
+  <xsl:text>pi xinclude rfc2629ext figextract artwork cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck sanitizesvg preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -146,6 +146,12 @@
         <xsl:when test="$s='rfccleanup'">
           <xsl:message>Step: rfccleanup</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-rfccleanup"/>
+        </xsl:when>
+        <xsl:when test="$s='sanitizesvg'">
+          <xsl:message>Step: sanitizesvg</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-sanitizesvg">
+            <xsl:with-param name="root" select="$nodes"/>
+          </xsl:apply-templates>
         </xsl:when>
         <xsl:when test="$s='scripts'">
           <xsl:message>Step: scripts</xsl:message>
@@ -1304,6 +1310,53 @@
       <xsl:apply-templates select="node()|@*" mode="prep-tables"/>
     </t>
   </xsl:for-each>
+</xsl:template>
+
+
+<!-- sanitizesvg step, TBD: add to whitelist, check specific attribute values -->
+
+<xsl:template match="node()|@*" mode="prep-sanitizesvg">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-sanitizesvg"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="*[ancestor::svg:svg]" mode="prep-sanitizesvg">
+  <xsl:message>ERROR: <xsl:value-of select="node-name(.)"/> not allowed in SVG content (dropped)</xsl:message>
+</xsl:template>
+
+<xsl:template match="*[ancestor::svg:svg]/@*" mode="prep-sanitizesvg">
+  <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/> not allowed in SVG content (dropped)</xsl:message>
+</xsl:template>
+
+<xsl:template match="svg:a|svg:desc|svg:ellipse|svg:g|svg:path|svg:polygon|svg:text|svg:title" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-sanitizesvg"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="svg:a/@xlink:href|svg:a/@xlink:title" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="svg:ellipse/@cx|svg:ellipse/@cy|svg:ellipse/@fill|svg:ellipse/@rx|svg:ellipse/@ry|svg:ellipse/@stroke" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="svg:g/@class|svg:g/@id|svg:g/@transform" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="svg:path/@d|svg:path/@fill|svg:path/@stroke|svg:path/@stroke-dasharray|svg:path/@stroke-width|svg:path/@style" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="svg:polygon/@fill|svg:polygon/@points|svg:polygon/@stroke|svg:polygon/@style" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="svg:text/@fill|svg:text/@font-family|svg:text/@font-size|svg:text/@style|svg:text/@text-anchor|svg:text/@x|svg:text/@y" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="svg:title/@content" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
 </xsl:template>
 
 <!-- xinclude step -->
