@@ -1360,15 +1360,45 @@
 </xsl:template>
 
 <xsl:template match="svg:ellipse/@fill|svg:path/@fill|svg:polygon/@fill|svg:text/@fill" mode="prep-sanitizesvg" priority="9">
+  <xsl:variable name="v">
+    <xsl:choose>
+      <xsl:when test="starts-with(.,'#')">
+        <xsl:value-of select="translate(.,$lcase,$ucase)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="brightness">
+    <xsl:choose>
+      <xsl:when test="starts-with($v,'#') and string-length($v)=7">
+        <xsl:variable name="r" select="f:parse-hex(substring($v,2,2))"/>
+        <xsl:variable name="g" select="f:parse-hex(substring($v,4,2))"/>
+        <xsl:variable name="b" select="f:parse-hex(substring($v,6,2))"/>
+        <xsl:value-of select="($r + $g + $b) div 3"/>
+        <!--<xsl:message><xsl:value-of select="concat($v,': ',$r,' ',$g,' ',$b,' = ',($r + $g + $b) div 3)"/></xsl:message>-->
+      </xsl:when>
+      <xsl:when test="starts-with($v,'#') and string-length($v)=4">
+        <xsl:variable name="r" select="f:parse-hex(substring($v,2,1))"/>
+        <xsl:variable name="g" select="f:parse-hex(substring($v,3,1))"/>
+        <xsl:variable name="b" select="f:parse-hex(substring($v,4,1))"/>
+        <xsl:value-of select="($r + $g + $b) div 3"/>
+        <!--<xsl:message><xsl:value-of select="concat($v,': ',$r,' ',$g,' ',$b,' = ',($r + $g + $b) div 3)"/></xsl:message>-->
+      </xsl:when>
+      <xsl:otherwise>-1</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
   <xsl:choose>
-    <xsl:when test=".='none' or .='black' or .='white' or .='#000000' or .='#ffffff' or .='#FFFFFF'">
+    <xsl:when test="$v='none' or $v='black' or $v='white' or $v='#000000' or $v='#FFFFFF'">
       <xsl:copy/>
     </xsl:when>
-    <xsl:when test=".='#000' or (.&gt;'#800000' and (.&lt;'#FFFFFF' or .&lt;'#ffffff'))">
+    <xsl:when test="$brightness >= 128">
       <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'white')</xsl:message>
       <xsl:attribute name="fill">white</xsl:attribute>
     </xsl:when>
-    <xsl:when test=".='#fff' or .='#FFF' or (.&gt;'#000000' and .&lt;='800000')">
+    <xsl:when test="$brightness >= 0 and $brightness &lt; 128">
       <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'black')</xsl:message>
       <xsl:attribute name="fill">black</xsl:attribute>
     </xsl:when>
@@ -1379,15 +1409,45 @@
 </xsl:template>
 
 <xsl:template match="svg:ellipse/@stroke|svg:path/@stroke|svg:polygon/@stroke" mode="prep-sanitizesvg" priority="9">
+  <xsl:variable name="v">
+    <xsl:choose>
+      <xsl:when test="starts-with(.,'#')">
+        <xsl:value-of select="translate(.,$lcase,$ucase)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="brightness">
+    <xsl:choose>
+      <xsl:when test="starts-with($v,'#') and string-length($v)=7">
+        <xsl:variable name="r" select="f:parse-hex(substring($v,2,2))"/>
+        <xsl:variable name="g" select="f:parse-hex(substring($v,4,2))"/>
+        <xsl:variable name="b" select="f:parse-hex(substring($v,6,2))"/>
+        <xsl:value-of select="($r + $g + $b) div 3"/>
+        <!--<xsl:message><xsl:value-of select="concat($v,': ',$r,' ',$g,' ',$b,' = ',($r + $g + $b) div 3)"/></xsl:message>-->
+      </xsl:when>
+      <xsl:when test="starts-with($v,'#') and string-length($v)=4">
+        <xsl:variable name="r" select="f:parse-hex(substring($v,2,1))"/>
+        <xsl:variable name="g" select="f:parse-hex(substring($v,3,1))"/>
+        <xsl:variable name="b" select="f:parse-hex(substring($v,4,1))"/>
+        <xsl:value-of select="($r + $g + $b) div 3"/>
+        <!--<xsl:message><xsl:value-of select="concat($v,': ',$r,' ',$g,' ',$b,' = ',($r + $g + $b) div 3)"/></xsl:message>-->
+      </xsl:when>
+      <xsl:otherwise>-1</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
   <xsl:choose>
-    <xsl:when test=".='none' or .='currentColor' or .='black' or .='white' or .='#000000' or .='#ffffff' or .='#FFFFFF'">
+    <xsl:when test="$v='none' or $v='currentColor' or $v='black' or $v='white' or $v='#000000' or $v='#FFFFFF'">
       <xsl:copy/>
     </xsl:when>
-    <xsl:when test=".='#000' or (.&gt;'#800000' and (.&lt;'#FFFFFF' or .&lt;'#ffffff'))">
+    <xsl:when test="$brightness >= 128">
       <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'white')</xsl:message>
       <xsl:attribute name="stroke">white</xsl:attribute>
     </xsl:when>
-    <xsl:when test=".='#fff' or .='#FFF' or (.&gt;'#000000' and .&lt;='800000')">
+    <xsl:when test="$brightness >= 0 and $brightness &lt; 128">
       <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'black')</xsl:message>
       <xsl:attribute name="stroke">black</xsl:attribute>
     </xsl:when>
