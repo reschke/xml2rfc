@@ -1382,7 +1382,7 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:text/@font-size|svg:text/@style|svg:text/@text-anchor|svg:text/@x|svg:text/@y" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:text/@font-size|svg:text/@style|svg:text/@x|svg:text/@y" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
@@ -1450,6 +1450,17 @@
     <xsl:when test="contains(.,'serif')">
       <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'serif')</xsl:message>
       <xsl:attribute name="font-family">serif</xsl:attribute>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (dropped)</xsl:message>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="svg:text/@text-anchor" mode="prep-sanitizesvg" priority="9">
+  <xsl:choose>
+    <xsl:when test=".='start' or .='middle' or .='end' or .='inherit'">
+      <xsl:copy/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (dropped)</xsl:message>
