@@ -51,7 +51,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi xinclude rfc2629ext figextract artwork cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck sanitizesvg preptime</xsl:text>
+  <xsl:text>pi xinclude rfc2629ext figextract artwork cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck preprocesssvg sanitizesvg preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -131,6 +131,10 @@
           <xsl:message>Step: pn</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-pn"/>
         </xsl:when>
+        <xsl:when test="$s='preprocesssvg'">
+          <xsl:message>Step: preprocesssvg</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-preprocesssvg"/>
+        </xsl:when>
         <xsl:when test="$s='preptime'">
           <xsl:message>Step: preptime</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-preptime"/>
@@ -149,9 +153,7 @@
         </xsl:when>
         <xsl:when test="$s='sanitizesvg'">
           <xsl:message>Step: sanitizesvg</xsl:message>
-          <xsl:apply-templates select="$nodes" mode="prep-sanitizesvg">
-            <xsl:with-param name="root" select="$nodes"/>
-          </xsl:apply-templates>
+          <xsl:apply-templates select="$nodes" mode="prep-sanitizesvg"/>
         </xsl:when>
         <xsl:when test="$s='scripts'">
           <xsl:message>Step: scripts</xsl:message>
@@ -1205,7 +1207,7 @@
   </xsl:choose>
 </xsl:template>
 
-<!-- rrfc2629ext step -->
+<!-- rfc2629ext step -->
 
 <xsl:template match="node()|@*" mode="prep-rfc2629ext">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-rfc2629ext"/></xsl:copy>
@@ -1344,6 +1346,22 @@
 </xsl:template>
 
 
+<!-- preprocesssvg step -->
+
+<xsl:template match="node()|@*" mode="prep-preprocesssvg">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-preprocesssvg"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="svg:*/@style" mode="prep-preprocesssvg" priority="9">
+  <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (dropped)</xsl:message>
+  <xsl:analyze-string select="." regex='\s*([-A-Za-z]*)\s*(:)\s*([^;]*)\s*(;)?'>
+    <xsl:matching-substring>
+      <xsl:message>INFO: inserting <xsl:value-of select="regex-group(1)"/>=<xsl:value-of select="regex-group(3)"/> instead</xsl:message>
+      <xsl:attribute name="{regex-group(1)}"><xsl:value-of select="regex-group(3)"/></xsl:attribute>
+    </xsl:matching-substring>
+  </xsl:analyze-string>
+</xsl:template>
+
 <!-- sanitizesvg step, TBD: add to whitelist, check specific attribute values -->
 
 <xsl:template match="node()|@*" mode="prep-sanitizesvg">
@@ -1374,7 +1392,7 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:line/@class|svg:line/@id|svg:line/@stroke|svg:line/@stroke-width|svg:line/@style|svg:line/@x1|svg:line/@x2|svg:line/@y1|svg:line/@y2" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:line/@class|svg:line/@id|svg:line/@stroke-width|svg:line/@style|svg:line/@x1|svg:line/@x2|svg:line/@y1|svg:line/@y2" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
@@ -1402,7 +1420,7 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:ellipse/@fill|svg:path/@fill|svg:polygon/@fill|svg:rect/@fill|svg:text/@fill" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:ellipse/@fill|svg:line/@fill|svg:path/@fill|svg:polygon/@fill|svg:rect/@fill|svg:text/@fill" mode="prep-sanitizesvg" priority="9">
   <xsl:variable name="v" select="f:normalize-css-color(.)"/>
   <xsl:variable name="brightness" select="f:compute-css-color-brightness($v)"/>
 
@@ -1424,7 +1442,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="svg:ellipse/@stroke|svg:path/@stroke|svg:polygon/@stroke|svg:rect/@stroke" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:ellipse/@stroke|svg:line/@stroke|svg:path/@stroke|svg:polygon/@stroke|svg:rect/@stroke" mode="prep-sanitizesvg" priority="9">
   <xsl:variable name="v" select="f:normalize-css-color(.)"/>
   <xsl:variable name="brightness" select="f:compute-css-color-brightness($v)"/>
 
@@ -1450,6 +1468,10 @@
   <xsl:choose>
     <xsl:when test=".='serif' or .='sans-serif' or .='monospace'">
       <xsl:copy/>
+    </xsl:when>
+    <xsl:when test=".='Times New Roman'">
+      <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'serif')</xsl:message>
+      <xsl:attribute name="font-family">serif</xsl:attribute>
     </xsl:when>
     <xsl:when test="contains(.,'monospace')">
       <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'monospace')</xsl:message>
