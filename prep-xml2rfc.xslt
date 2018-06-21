@@ -1358,7 +1358,7 @@
   <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/> not allowed in SVG content (dropped)</xsl:message>
 </xsl:template>
 
-<xsl:template match="svg:a|svg:desc|svg:ellipse|svg:g|svg:path|svg:polygon|svg:text|svg:title" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:a|svg:defs|svg:desc|svg:ellipse|svg:g|svg:line|svg:path|svg:polygon|svg:rect|svg:style|svg:text|svg:title|svg:tspan" mode="prep-sanitizesvg" priority="9">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-sanitizesvg"/></xsl:copy>
 </xsl:template>
 
@@ -1374,15 +1374,23 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:path/@d|svg:path/@stroke-dasharray|svg:path/@stroke-width|svg:path/@style" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:line/@class|svg:line/@id|svg:line/@stroke|svg:line/@stroke-width|svg:line/@style|svg:line/@x1|svg:line/@x2|svg:line/@y1|svg:line/@y2" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:polygon/@points|svg:polygon/@style" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:path/@class|svg:path/@d|svg:path/@stroke-dasharray|svg:path/@stroke-width|svg:path/@style" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:text/@font-size|svg:text/@style|svg:text/@x|svg:text/@y" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:polygon/@class|svg:polygon/@points|svg:polygon/@style" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="svg:rect/@class|svg:rect/@height|svg:rect/@rx|svg:rect/@ry|svg:rect/@width|svg:rect/@x|svg:rect/@y" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="svg:text/@class|svg:text/@font-size|svg:text/@style|svg:text/@x|svg:text/@y" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
@@ -1390,7 +1398,11 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:ellipse/@fill|svg:path/@fill|svg:polygon/@fill|svg:text/@fill" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:tspan/@fill|svg:tspan/@x|svg:tspan/@y" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="svg:ellipse/@fill|svg:path/@fill|svg:polygon/@fill|svg:rect/@fill|svg:text/@fill" mode="prep-sanitizesvg" priority="9">
   <xsl:variable name="v" select="f:normalize-css-color(.)"/>
   <xsl:variable name="brightness" select="f:compute-css-color-brightness($v)"/>
 
@@ -1412,7 +1424,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="svg:ellipse/@stroke|svg:path/@stroke|svg:polygon/@stroke" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:ellipse/@stroke|svg:path/@stroke|svg:polygon/@stroke|svg:rect/@stroke" mode="prep-sanitizesvg" priority="9">
   <xsl:variable name="v" select="f:normalize-css-color(.)"/>
   <xsl:variable name="brightness" select="f:compute-css-color-brightness($v)"/>
 
