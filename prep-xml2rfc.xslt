@@ -1392,7 +1392,7 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:line/@class|svg:line/@id|svg:line/@stroke-width|svg:line/@style|svg:line/@x1|svg:line/@x2|svg:line/@y1|svg:line/@y2" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:line/@class|svg:line/@id|svg:line/@stroke-dasharray|svg:line/@stroke-width|svg:line/@style|svg:line/@x1|svg:line/@x2|svg:line/@y1|svg:line/@y2" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
@@ -1404,7 +1404,7 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:rect/@class|svg:rect/@height|svg:rect/@rx|svg:rect/@ry|svg:rect/@width|svg:rect/@x|svg:rect/@y" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:rect/@class|svg:rect/@height|svg:rect/@rx|svg:rect/@ry|svg:rect/@stroke-width|svg:rect/@width|svg:rect/@x|svg:rect/@y" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
