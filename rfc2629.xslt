@@ -2816,6 +2816,21 @@
         </xsl:if>
       </xsl:if>
     </xsl:when>
+    <xsl:when test="$bib//x:source/@href and document($bib//x:source/@href)/rfc/@number">
+      <xsl:call-template name="compute-rfc-uri">
+        <xsl:with-param name="rfc" select="document($bib//x:source/@href)/rfc/@number"/>
+      </xsl:call-template>
+      <xsl:if test="$ref and $sec!='' and $rfcUrlFragSection and $rfcUrlFragAppendix">
+        <xsl:choose>
+          <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
+            <xsl:value-of select="concat('#',$rfcUrlFragAppendix,$sec)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="concat('#',$rfcUrlFragSection,$sec)"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:if>
+    </xsl:when>
     <xsl:otherwise />
   </xsl:choose>
 </xsl:template>
@@ -10029,11 +10044,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1030 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1030 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1031 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1031 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/06/24 07:37:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/06/24 07:37:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/06/24 13:08:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/06/24 13:08:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
