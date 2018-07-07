@@ -1977,7 +1977,41 @@
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
-            <div class="filename"><xsl:value-of select="$docname"/></div>
+            <div class="filename">
+              <xsl:variable name="seq">
+                <xsl:call-template name="draft-sequence-number">
+                  <xsl:with-param name="name" select="$docname"/>
+                </xsl:call-template>
+              </xsl:variable>
+              <xsl:variable name="base">
+                <xsl:call-template name="draft-base-name">
+                  <xsl:with-param name="name" select="$docname"/>
+                </xsl:call-template>
+              </xsl:variable>
+              <xsl:variable name="status-uri">
+                <xsl:call-template name="compute-draft-status-uri">
+                  <xsl:with-param name="draftname" select="$base"/>
+                </xsl:call-template>
+              </xsl:variable>
+              <xsl:choose>
+                <xsl:when test="number($seq)>=0">
+                  <xsl:variable name="draft-uri">
+                    <xsl:call-template name="compute-internet-draft-uri">
+                      <xsl:with-param name="internet-draft" select="$docname"/>
+                    </xsl:call-template>
+                  </xsl:variable>
+                  <a href="{$status-uri}" class="smpl"><xsl:value-of select="$base"/></a>
+                  <xsl:text>-</xsl:text>
+                  <a href="{$draft-uri}" class="smpl"><xsl:value-of select="$seq"/></a>
+                </xsl:when>
+                <xsl:when test="$base!=''">
+                  <a href="{$status-uri}" class="smpl"><xsl:value-of select="$docname"/></a>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$docname"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </div>
           </xsl:otherwise>
         </xsl:choose>
         
@@ -10120,11 +10154,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1036 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1036 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1037 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1037 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/07/03 13:25:20 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/07/03 13:25:20 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/07/07 15:36:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/07/07 15:36:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
