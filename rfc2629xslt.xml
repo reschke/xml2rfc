@@ -1445,28 +1445,46 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 <t>
   The following formats are defined for the x:fmt attribute:
-  <list style="hanging">
-    <t hangText=", (Comma)">
-      [<em>reference</em>], Section <em>sec</em>
-    </t>
-    <t hangText="()">
-      [<em>reference</em>] (Section <em>sec</em>)
-    </t>
-    <t hangText="of">
-      Section <em>sec</em> of [<em>reference</em>]
-    </t>
-    <t hangText="number">
-      <em>sec</em>
-    </t>
-    <t hangText="none">
-      No output (can be used to have xrefs to references without
-      having them rendered as such)
-    </t>
-    <t hangText="sec">
-      Section <em>sec</em>
-    </t>
-  </list>
 </t>
+<dl>
+  <dt>
+    <tt>,</tt> (Comma)
+  </dt>
+  <dd>
+      [<em>reference</em>], Section <em>sec</em>
+  </dd>
+  <dt>
+    <tt>()</tt>
+  </dt>
+  <dd>
+    [<em>reference</em>] (Section <em>sec</em>)
+  </dd>
+  <dt>
+    <tt>of</tt>
+  </dt>
+  <dd>
+    Section <em>sec</em> of [<em>reference</em>]
+  </dd>
+  <dt>
+    <tt>number</tt>
+  </dt>
+  <dd>
+    <em>sec</em>
+  </dd>
+  <dt>
+    <tt>none</tt>
+  </dt>
+  <dd>
+    No output (can be used to have xrefs to references without
+    having them rendered as such)
+  </dd>
+  <dt>
+    <tt>sec</tt>
+  </dt>
+  <dd>
+    Section <em>sec</em>
+  </dd>
+</dl>
 <t>
   These extensions are currently only supported for &lt;xref&gt; elements without
   child nodes.
