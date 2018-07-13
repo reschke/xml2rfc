@@ -904,6 +904,23 @@
   </xsl:call-template>
 </xsl:template>
 
+<xsl:param name="xml2rfc-ext-diff-uri">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'diff-uri'"/>
+    <xsl:with-param name="default">https://tools.ietf.org/rfcdiff?url2={internet-draft}</xsl:with-param>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:template name="compute-diff-uri">
+  <xsl:param name="name"/>
+  <xsl:call-template name="replace-substring">
+    <xsl:with-param name="string" select="$xml2rfc-ext-diff-uri"/>
+    <xsl:with-param name="replace" select="'{internet-draft}'"/>
+    <xsl:with-param name="by" select="$name"/>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:param name="xml2rfc-ext-latest-diff-uri">
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
@@ -4158,8 +4175,9 @@
           <xsl:choose>
             <!-- check whether the "next" draft exists (is mentioned in a sibling section -->
             <xsl:when test="../section[contains(@title,$next)]">
-              <xsl:text>https://tools.ietf.org/rfcdiff?url2=</xsl:text>
-              <xsl:value-of select="$next"/>
+              <xsl:call-template name="compute-diff-uri">
+                <xsl:with-param name="name" select="$next"/>
+              </xsl:call-template>
             </xsl:when>
             <xsl:when test="starts-with(ancestor::rfc/@docName,$basename)">
               <xsl:call-template name="compute-latest-diff-uri">
@@ -10220,11 +10238,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1039 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1039 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1040 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1040 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/07/13 07:41:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/07/13 07:41:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/07/13 15:13:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/07/13 15:13:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
