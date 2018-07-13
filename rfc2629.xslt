@@ -4150,8 +4150,10 @@
         </xsl:call-template>
       </xsl:variable>
 
+      <xsl:variable name="smells-like-change-log" select="ancestor-or-self::section[@removeInRFC='true'] or ancestor::section[@title='Changes'] or ancestor::section[@title='Change Log']"/>
+      
       <xsl:variable name="diff-uri">
-        <xsl:if test="ancestor-or-self::section[@removeInRFC='true'] and $basename!=''">
+        <xsl:if test="$smells-like-change-log and $basename!=''">
           <xsl:variable name="next" select="concat($basename,'-',format-number(1 + $seq,'00'))"/>
           <xsl:choose>
             <!-- check whether the "next" draft exists (is mentioned in a sibling section -->
@@ -4170,7 +4172,7 @@
       </xsl:variable>
 
       <xsl:variable name="text-uri">
-        <xsl:if test="ancestor-or-self::section[@removeInRFC='true'] and $basename!=''">
+        <xsl:if test="$smells-like-change-log and $basename!=''">
           <xsl:call-template name="compute-internet-draft-uri">
             <xsl:with-param name="internet-draft" select="$name"/>
           </xsl:call-template>
@@ -10218,11 +10220,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1038 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1038 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1039 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1039 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/07/11 20:13:31 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/07/11 20:13:31 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/07/13 07:41:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/07/13 07:41:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
