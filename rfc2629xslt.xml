@@ -1537,14 +1537,6 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
-<section title="br Element" anchor="v3.br">
-  <iref item="V3 Extension Elements" subitem="br" primary="true"/>
-  <iref item="boilerplate V3 Extension Element" primary="true"/>
-<t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.br"/>.
-</t>
-</section>
-
 <section title="displayreference Element" anchor="v3.displayreference">
   <iref item="V3 Extension Elements" subitem="displayreference" primary="true"/>
   <iref item="displayreference V3 Extension Element" primary="true"/>
@@ -3136,13 +3128,6 @@ attlist.xref &amp;=
     section+
   }
 
-<em anchor="v3_br"><iref item="br V3 Extension Element"/><iref item="V3 Extension Elements" subitem="br"
-/># Line Break (see <xref target="v3.br"/>)</em>
-<x:ref>v3_br</x:ref> =
-  element br {
-    empty
-  }
-
 <em anchor="v3_displayreference"><iref item="displayreference V3 Extension Element"/><iref item="V3 Extension Elements" subitem="displayreference"
 /># Mapping of reference names to display names (see <xref target="v3.displayreference"/>)</em>
 <x:ref>v3_displayreference</x:ref> =
@@ -3360,7 +3345,6 @@ attlist.xref &amp;=
       )+
       | (TEXT
          | <x:ref>v3_bcp14</x:ref>
-         | <x:ref>v3_br</x:ref>
          | cref
          | <x:ref>v3_em</x:ref>
          | eref
@@ -3398,7 +3382,6 @@ attlist.xref &amp;=
       )+
       | (TEXT
          | <x:ref>v3_bcp14</x:ref>
-         | <x:ref>v3_br</x:ref>
          | cref
          | <x:ref>v3_em</x:ref>
          | eref

@@ -1616,10 +1616,6 @@
   </texttable>
 </xsl:template>
 
-<xsl:template match="td/br|th/br" mode="cleanup">
-  <xsl:text> </xsl:text>
-</xsl:template>
-
 <!-- date formats -->
 <xsl:template match="/rfc/front/date/@month" mode="cleanup">
   <xsl:attribute name="month">
