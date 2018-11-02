@@ -374,12 +374,12 @@ attlist.region &=
 attlist.rfc &=
   attribute grddl:transformation { ATEXT }?,
   attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
-  attribute indexInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.45.4)
-  attribute tocDepth { text }?, # (see [RFC7991bis], Section 2.45.14)
-  attribute tocInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.45.15)
-  attribute sortRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.45.11)
-  attribute symRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.45.13)
-  attribute version { text }? # (see [RFC7991bis], Section 2.45.13)
+  attribute indexInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.4)
+  attribute tocDepth { text }?, # (see [RFC7991bis], Section 2.44.14)
+  attribute tocInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.15)
+  attribute sortRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.11)
+  attribute symRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.13)
+  attribute version { text }? # (see [RFC7991bis], Section 2.44.13)
 
 # Extend/Relax attribute set for <section> (see Section 11.27)
 attlist.x_section &=
