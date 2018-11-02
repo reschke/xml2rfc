@@ -862,7 +862,7 @@
   </fo:list-block>
 </xsl:template>
 
-<xsl:template match="ol[not(@type) or string-length(@type)=1]/li[not(t)] | list[@style='numbers' or @style='letters' or (not(@style) and ancestor::list[@style='numbers' or @style='letters'])]/t" priority="1">
+<xsl:template match="ol[not(@type) or string-length(@type)=1]/li[not(blockquote|t)] | list[@style='numbers' or @style='letters' or (not(@style) and ancestor::list[@style='numbers' or @style='letters'])]/t" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
     <xsl:call-template name="copy-anchor"/>
     <fo:list-item-label end-indent="label-end()">
@@ -904,7 +904,7 @@
   </fo:list-item>
 </xsl:template>
 
-<xsl:template match="ol[not(@type) or string-length(@type)=1]/li[t] | list[@style='numbers' or @style='letters' or (not(@style) and ancestor::list[@style='numbers' or @style='letters'])]/x:lt" priority="1">
+<xsl:template match="ol[not(@type) or string-length(@type)=1]/li[blockquote|t] | list[@style='numbers' or @style='letters' or (not(@style) and ancestor::list[@style='numbers' or @style='letters'])]/x:lt" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
     <xsl:call-template name="copy-anchor"/>
     <fo:list-item-label end-indent="label-end()">
@@ -922,12 +922,19 @@
       </fo:block>
     </fo:list-item-label>
     <fo:list-item-body start-indent="body-start()">
-      <xsl:for-each select="t">
+      <xsl:for-each select="blockquote|t">
         <fo:block>
           <xsl:if test="position()!=1">
             <xsl:attribute name="space-before">.25em</xsl:attribute>
           </xsl:if>
-          <xsl:apply-templates />
+          <xsl:choose>
+            <xsl:when test="self::t">
+              <xsl:apply-templates />
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:apply-templates select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
         </fo:block>
       </xsl:for-each>
     </fo:list-item-body>
