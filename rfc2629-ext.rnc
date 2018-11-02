@@ -620,6 +620,7 @@ v3_sourcecode =
   element sourcecode {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
+    attribute type { text }?,
     attribute x:lang { "" }?,
     TEXT
   }

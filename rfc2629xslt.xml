@@ -3277,6 +3277,7 @@ attlist.xref &amp;=
   element sourcecode {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
+    attribute type { text }?,
     attribute x:lang { "" }?,
     TEXT
   }
