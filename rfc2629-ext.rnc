@@ -212,10 +212,11 @@ include "rfc2629.rnc" {
       )
     }
 
-  # Redefine <references> to allow our <name>
+  # Redefine <references> to allow extension elements and attributes
   references =
     element references {
       attribute title { text }?,
+      attribute anchor { xsd:ID }?,
       attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
       v3_name?,
       (reference
