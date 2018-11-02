@@ -81,7 +81,7 @@
 <t>
   <tt>rfc2629.xslt</tt> supports both all grammar elements defined in
   <xref target="RFC7749"/>, plus a subset of the new elements defined
-  in <xref target="RFC7991"/>.
+  in <xref target="RFC7991bis"/>.
 </t>
 <section title="Extension elements">
 <t>
@@ -1497,11 +1497,11 @@ Content-Length: &lt;x:length-of target="req"/>
 
 </section>
 
-<section title="Experimental Support for RFC7991 Vocabulary" anchor="v3">
+<section title="Experimental Support for RFC7991bis Vocabulary" anchor="v3">
 <t>
   <tt>rfc2629.xslt</tt> experimentally supports some 
   elements from the "V3" vocabulary, defined in 
-  <xref target="RFC7991"/>. <em>This support is experimental, as
+  <xref target="RFC7991bis"/>. <em>This support is experimental, as
   the "v3" vocabulary is still being developed.</em>
 </t>
 
@@ -1509,7 +1509,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="aside" primary="true"/>
   <iref item="aside V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.aside"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.aside"/>.
 </t>
 </section>
 
@@ -1517,7 +1517,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="bcp14" primary="true"/>
   <iref item="bcp14 V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.bcp14"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.bcp14"/>.
 </t>
 </section>
 
@@ -1525,7 +1525,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="blockquote" primary="true"/>
   <iref item="blockquote V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.blockquote"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.blockquote"/>.
 </t>
 </section>
 
@@ -1533,7 +1533,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="boilerplate" primary="true"/>
   <iref item="boilerplate V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.blockquote"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.blockquote"/>.
 </t>
 </section>
 
@@ -1541,7 +1541,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="displayreference" primary="true"/>
   <iref item="displayreference V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.displayreference"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.displayreference"/>.
 </t>
 </section>
 
@@ -1549,7 +1549,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="dd" primary="true"/>
   <iref item="dd V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.dd"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.dd"/>.
 </t>
 </section>
 
@@ -1557,7 +1557,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="dl" primary="true"/>
   <iref item="dl V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.dl"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.dl"/>.
 </t>
 </section>
 
@@ -1565,7 +1565,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="dt" primary="true"/>
   <iref item="dt V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.dt"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.dt"/>.
 </t>
 </section>
 
@@ -1573,7 +1573,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="em" primary="true"/>
   <iref item="em V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.em"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.em"/>.
 </t>
 </section>
 
@@ -1581,7 +1581,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="li" primary="true"/>
   <iref item="li V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.li"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.li"/>.
 </t>
 </section>
 
@@ -1589,7 +1589,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="link" primary="true"/>
   <iref item="link V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.link"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.link"/>.
 </t>
 </section>
 
@@ -1597,7 +1597,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="name" primary="true"/>
   <iref item="name V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.name"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.name"/>.
   <em>Currently only supported inside &lt;references&gt; and &lt;section&gt;</em>.
 </t>
 </section>
@@ -1606,7 +1606,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="ol" primary="true"/>
   <iref item="ol V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.ol"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.ol"/>.
 </t>
 </section>
 
@@ -1614,7 +1614,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="postalLine" primary="true"/>
   <iref item="postalLine V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.postalLine"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.postalLine"/>.
 </t>
 </section>
 
@@ -1622,7 +1622,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="refcontent" primary="true"/>
   <iref item="refcontent V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.refcontent"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.refcontent"/>.
 </t>
 </section>
 
@@ -1630,7 +1630,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="relref" primary="true"/>
   <iref item="relref V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.relref"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.relref"/>.
 </t>
 <t>
   <em>EXPERIMENTAL, might be removed again - see <eref target="https://github.com/rfc-format/draft-iab-xml2rfc-v3-bis/issues/26"/>.</em>
@@ -1641,7 +1641,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="sourcecode" primary="true"/>
   <iref item="sourcecode V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.sourcecode"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.sourcecode"/>.
 </t>
 </section>
 
@@ -1649,12 +1649,12 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="reference" primary="true"/>
   <iref item="reference V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.reference"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.reference"/>.
 </t>
 
 <section title="quoteTitle attribute" anchor="v3.reference.quoteTitle">
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.reference.attribute.quoteTitle"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.reference.attribute.quoteTitle"/>.
 </t>
 </section>
 </section>
@@ -1663,18 +1663,18 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="section" primary="true"/>
   <iref item="section V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.section"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.section"/>.
 </t>
 
 <section title="numbered attribute" anchor="v3.section.numbered">
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.section.attribute.numbered"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.section.attribute.numbered"/>.
 </t>
 </section>
 
 <section title="removeInRFC attribute" anchor="v3.section.removeInRFC">
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.section.attribute.removeInRFC"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.section.attribute.removeInRFC"/>.
 </t>
 </section>
 </section>
@@ -1683,7 +1683,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="strong" primary="true"/>
   <iref item="strong V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.strong"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.strong"/>.
 </t>
 </section>
 
@@ -1691,7 +1691,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="sub" primary="true"/>
   <iref item="sub V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.sub"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.sub"/>.
 </t>
 </section>
 
@@ -1699,7 +1699,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="sup" primary="true"/>
   <iref item="sup V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.sup"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.sup"/>.
 </t>
 </section>
 
@@ -1707,7 +1707,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="svg" primary="true"/>
   <iref item="svg V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.svg"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.svg"/>.
 </t>
 </section>
 
@@ -1715,7 +1715,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="table" primary="true"/>
   <iref item="table V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.table"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.table"/>.
 </t>
 </section>
 
@@ -1723,7 +1723,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="tbody" primary="true"/>
   <iref item="tbody V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.tbody"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.tbody"/>.
 </t>
 </section>
 
@@ -1731,7 +1731,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="td" primary="true"/>
   <iref item="td V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.td"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.td"/>.
 </t>
 </section>
 
@@ -1739,7 +1739,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="tfoot" primary="true"/>
   <iref item="tfoot V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.tfoot"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.tfoot"/>.
 </t>
 </section>
 
@@ -1747,7 +1747,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="th" primary="true"/>
   <iref item="th V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.th"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.th"/>.
 </t>
 </section>
 
@@ -1755,7 +1755,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="thead" primary="true"/>
   <iref item="thead V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.thead"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.thead"/>.
 </t>
 </section>
 
@@ -1763,7 +1763,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="tr" primary="true"/>
   <iref item="tr V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.tr"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.tr"/>.
 </t>
 </section>
 
@@ -1771,7 +1771,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="tt" primary="true"/>
   <iref item="tt V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.tt"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.tt"/>.
 </t>
 </section>
 
@@ -1779,7 +1779,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="ul" primary="true"/>
   <iref item="ul V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#element.ul"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.ul"/>.
 </t>
 </section>
 
@@ -1787,7 +1787,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="xi:include" primary="true"/>
   <iref item="xi:include V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="RFC7991" x:fmt="of" x:rel="#includingexternal"/>.
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#includingexternal"/>.
 </t>
 <t>
   <em>EXPERIMENTAL and INCOMPLETE - only supported as a child element of &lt;references>, and only supporting parse type "XML".</em>
@@ -2013,7 +2013,7 @@ The picture below shows the RFC dependencies in RFC2629.
 </aside>
 <t>
   As the output formatters evolve to support the V3 format (proposed in
-  <xref target="RFC7991"/>), <tt>clean-for-DTD.xslt</tt> will start taking
+  <xref target="RFC7991bis"/>), <tt>clean-for-DTD.xslt</tt> will start taking
   advantage of these changes. Right now, it supports three modes,
   one of which being used for the historic TCL processor, and the other ones being used with
   <tt>xml2rfc 2.5.2</tt> and <tt>xml2rfc 2.6.0</tt> (see <eref target="https://pypi.python.org/pypi/xml2rfc/">https://pypi.python.org/pypi/xml2rfc/</eref>).
@@ -2620,8 +2620,8 @@ done
   <x:source href="rfc7749.xml" basename="rfc7749"/>
 </reference>
 
-<reference anchor="RFC7991">
-  <x:source href="rfc7991.xml" basename="rfc7991"/>
+<reference anchor="RFC7991bis">
+  <x:source href="draft-iab-rfc7991bis-00.xml" basename="draft-iab-rfc7991bis-00"/>
 </reference>
 
 </references>
@@ -2678,7 +2678,7 @@ include "rfc2629.rnc" {
   artwork =
     element artwork {
       attlist.artwork,
-      attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+      attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
       ( <strong><x:ref>v3_svg</x:ref> |
         </strong>(TEXT
           <strong>| eref</strong> 
@@ -2739,7 +2739,7 @@ include "rfc2629.rnc" {
   figure =
     element figure {
       attlist.figure,
-      attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+      attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
       <strong><x:ref>v3_name</x:ref>?</strong>,
       iref*,
       preamble?,
@@ -2856,7 +2856,7 @@ include "rfc2629.rnc" {
   references =
     element references {
       attribute title { text }?,
-      attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+      attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
       <strong><x:ref>v3_name</x:ref>?</strong>,
       (reference
        | <x:ref>xi_include</x:ref>)+
@@ -2944,7 +2944,7 @@ include "rfc2629.rnc" {
 
 <em># Extend attribute set for &lt;abstract></em>
 attlist.abstract &amp;=
-  attribute pn { text }? # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+  attribute pn { text }? # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
 
 <em># Allow extension attributes on &lt;artwork> (<xref target="ext-rfc2629.artwork"/>)</em>
 attlist.artwork &amp;=
@@ -3004,7 +3004,7 @@ attlist.reference &amp;=
 
 <em># Extend attribute set for &lt;references></em>
 attlist.references &amp;=
-  attribute pn { text }? # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+  attribute pn { text }? # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
 
 <em># Extend attribute set for &lt;region></em>
 attlist.region &amp;=
@@ -3014,12 +3014,12 @@ attlist.region &amp;=
 attlist.rfc &amp;=
   attribute grddl:transformation { ATEXT }?,
   attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
-  attribute indexInclude { "true" | "false" }?, # (see <xref target="RFC7991" x:rel="#element.rfc.attribute.indexInclude"/>)
-  attribute tocDepth { text }?, # (see <xref target="RFC7991" x:rel="#element.rfc.attribute.tocDepth"/>)
-  attribute tocInclude { "true" | "false" }?, # (see <xref target="RFC7991" x:rel="#element.rfc.attribute.tocInclude"/>)
-  attribute sortRefs { "true" | "false" }?, # (see <xref target="RFC7991" x:rel="#element.rfc.attribute.sortRefs"/>)
-  attribute symRefs { "true" | "false" }?, # (see <xref target="RFC7991" x:rel="#element.rfc.attribute.symRefs"/>)
-  attribute version { text }? # (see <xref target="RFC7991" x:rel="#element.rfc.attribute.symRefs"/>)
+  attribute indexInclude { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.indexInclude"/>)
+  attribute tocDepth { text }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.tocDepth"/>)
+  attribute tocInclude { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.tocInclude"/>)
+  attribute sortRefs { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.sortRefs"/>)
+  attribute symRefs { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.symRefs"/>)
+  attribute version { text }? # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.symRefs"/>)
 
 <em># Extend/Relax attribute set for &lt;section> (see <xref target="ext-rfc2629.section"/>)</em>
 attlist.x_section &amp;=
@@ -3028,7 +3028,7 @@ attlist.x_section &amp;=
   attribute toc { "include" | "exclude" | "default" }?,
   attribute numbered { "false" | "true" }?, # see <xref target="v3.section.numbered"/>
   attribute removeInRFC { "false" | "true" }?, # see <xref target="v3.section.removeInRFC"/>
-  attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+  attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
   attribute x:fixed-section-number { ATEXT }?
 
 <em># Allow anchor attribute on &lt;spanx></em>
@@ -3041,7 +3041,7 @@ attlist.street &amp;=
 
 <em># Extend attribute set for &lt;c> (see <xref target="ext-rfc2629.iref"/>)</em>
 attlist.t &amp;=
-  attribute pn { text }? # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+  attribute pn { text }? # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
 
 <em># Extend attribute set for &lt;texttable></em>
 attlist.texttable &amp;=
@@ -3068,7 +3068,7 @@ attlist.xref &amp;=
 <x:ref>v3_aside</x:ref> =
   element aside {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     t+
   }
 
@@ -3095,7 +3095,7 @@ attlist.xref &amp;=
   element blockquote {
     attribute anchor { xsd:ID }?,
     attribute cite { URI }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     attribute quotedFrom { ATEXT }?,
     (
       (artwork 
@@ -3124,7 +3124,7 @@ attlist.xref &amp;=
 /># Boilerplate (see <xref target="v3.blockquote"/>)</em>
 <x:ref>v3_boilerplate</x:ref> =
   element boilerplate {
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     section+
   }
 
@@ -3140,7 +3140,7 @@ attlist.xref &amp;=
 /># Definition List Description Element (see <xref target="v3.dd"/>)</em>
 <x:ref>v3_dd</x:ref> =
   element dd {
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     ((t
       | <x:ref>v3_dl</x:ref>)+ | 
     (TEXT
@@ -3159,7 +3159,7 @@ attlist.xref &amp;=
 <x:ref>v3_dl</x:ref> =
   element dl {
     attribute hanging { "false" | "true" }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     attribute spacing { "normal" | "compact" }?,
     (<x:ref>v3_dt</x:ref>, <x:ref>v3_dd</x:ref>)+
   }
@@ -3169,7 +3169,7 @@ attlist.xref &amp;=
 <x:ref>v3_dt</x:ref> =
   element dt {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     (TEXT
       | cref
       | eref
@@ -3195,7 +3195,7 @@ attlist.xref &amp;=
 <x:ref>v3_li</x:ref> =
   element li {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     ((<x:ref>v3_dl</x:ref> | <x:ref>v3_ol</x:ref>  | t | <x:ref>v3_ul</x:ref> )+ 
       | 
     (TEXT
@@ -3224,7 +3224,7 @@ attlist.xref &amp;=
 /># Section/Figure/Table Name (see <xref target="v3.name"/>)</em>
 <x:ref>v3_name</x:ref> =
   element name {
-    attribute slugifiedName { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute slugifiedName { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     (TEXT
       | cref
       | <x:ref>v3_em</x:ref>
@@ -3237,7 +3237,7 @@ attlist.xref &amp;=
 <x:ref>v3_ol</x:ref> =
   element ol {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     attribute start { TEXT }?,
     attribute group { TEXT }?,
     attribute type { TEXT }?,
@@ -3276,7 +3276,7 @@ attlist.xref &amp;=
 <x:ref>v3_sourcecode</x:ref> =
   element sourcecode {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     attribute x:lang { "" }?,
     TEXT
   }
@@ -3311,7 +3311,7 @@ attlist.xref &amp;=
 <x:ref>v3_table</x:ref> =
   element table {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     <x:ref>v3_name</x:ref>?,
     iref*,
     <x:ref>v3_thead</x:ref>?,
@@ -3324,7 +3324,7 @@ attlist.xref &amp;=
 <x:ref>v3_tbody</x:ref> =
   element tbody {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     <x:ref>v3_tr</x:ref>+
   }
 
@@ -3335,7 +3335,7 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     attribute rowspan { text }?,
     ( (t
        | <x:ref>v3_dl</x:ref>
@@ -3361,7 +3361,7 @@ attlist.xref &amp;=
 <x:ref>v3_tfoot</x:ref> =
   element tfoot {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     <x:ref>v3_tr</x:ref>
   }
 
@@ -3372,7 +3372,7 @@ attlist.xref &amp;=
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     attribute rowspan { text }?,
     ( (t
        | <x:ref>v3_dl</x:ref>
@@ -3398,7 +3398,7 @@ attlist.xref &amp;=
 <x:ref>v3_thead</x:ref> =
   element thead {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     <x:ref>v3_tr</x:ref>
   }
 
@@ -3407,7 +3407,7 @@ attlist.xref &amp;=
 <x:ref>v3_tr</x:ref> =
   element tr {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     (
       <x:ref>v3_td</x:ref>
       | <x:ref>v3_th</x:ref>
@@ -3430,7 +3430,7 @@ attlist.xref &amp;=
   element ul {
     attribute anchor { xsd:ID }?,
     attribute empty { TEXT }?,
-    attribute pn { text }?, # (see <xref target="RFC7991" x:rel="#anchorsandids"/>)
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     <x:ref>v3_li</x:ref>+
   }
 

@@ -38,7 +38,7 @@ include "rfc2629.rnc" {
   artwork =
     element artwork {
       attlist.artwork,
-      attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+      attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
       ( v3_svg |
         (TEXT
           | eref 
@@ -99,7 +99,7 @@ include "rfc2629.rnc" {
   figure =
     element figure {
       attlist.figure,
-      attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+      attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
       v3_name?,
       iref*,
       preamble?,
@@ -216,7 +216,7 @@ include "rfc2629.rnc" {
   references =
     element references {
       attribute title { text }?,
-      attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+      attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
       v3_name?,
       (reference
        | xi_include)+
@@ -304,7 +304,7 @@ include "rfc2629.rnc" {
 
 # Extend attribute set for <abstract>
 attlist.abstract &=
-  attribute pn { text }? # (see [RFC7991], Appendix B.2)
+  attribute pn { text }? # (see [RFC7991bis], Appendix B.2)
 
 # Allow extension attributes on <artwork> (Section 11.23)
 attlist.artwork &=
@@ -364,7 +364,7 @@ attlist.reference &=
 
 # Extend attribute set for <references>
 attlist.references &=
-  attribute pn { text }? # (see [RFC7991], Appendix B.2)
+  attribute pn { text }? # (see [RFC7991bis], Appendix B.2)
 
 # Extend attribute set for <region>
 attlist.region &=
@@ -374,12 +374,12 @@ attlist.region &=
 attlist.rfc &=
   attribute grddl:transformation { ATEXT }?,
   attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
-  attribute indexInclude { "true" | "false" }?, # (see [RFC7991], Section 2.45.4)
-  attribute tocDepth { text }?, # (see [RFC7991], Section 2.45.14)
-  attribute tocInclude { "true" | "false" }?, # (see [RFC7991], Section 2.45.15)
-  attribute sortRefs { "true" | "false" }?, # (see [RFC7991], Section 2.45.11)
-  attribute symRefs { "true" | "false" }?, # (see [RFC7991], Section 2.45.13)
-  attribute version { text }? # (see [RFC7991], Section 2.45.13)
+  attribute indexInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.45.4)
+  attribute tocDepth { text }?, # (see [RFC7991bis], Section 2.45.14)
+  attribute tocInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.45.15)
+  attribute sortRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.45.11)
+  attribute symRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.45.13)
+  attribute version { text }? # (see [RFC7991bis], Section 2.45.13)
 
 # Extend/Relax attribute set for <section> (see Section 11.27)
 attlist.x_section &=
@@ -388,7 +388,7 @@ attlist.x_section &=
   attribute toc { "include" | "exclude" | "default" }?,
   attribute numbered { "false" | "true" }?, # see Section 12.19.1
   attribute removeInRFC { "false" | "true" }?, # see Section 12.19.2
-  attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+  attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
   attribute x:fixed-section-number { ATEXT }?
 
 # Allow anchor attribute on <spanx>
@@ -401,7 +401,7 @@ attlist.street &=
 
 # Extend attribute set for <c> (see Section 11.24)
 attlist.t &=
-  attribute pn { text }? # (see [RFC7991], Appendix B.2)
+  attribute pn { text }? # (see [RFC7991bis], Appendix B.2)
 
 # Extend attribute set for <texttable>
 attlist.texttable &=
@@ -427,7 +427,7 @@ attlist.xref &=
 v3_aside =
   element aside {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     t+
   }
 
@@ -452,7 +452,7 @@ v3_blockquote =
   element blockquote {
     attribute anchor { xsd:ID }?,
     attribute cite { URI }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     attribute quotedFrom { ATEXT }?,
     (
       (artwork 
@@ -480,7 +480,7 @@ v3_blockquote =
 # Boilerplate (see Section 12.3)
 v3_boilerplate =
   element boilerplate {
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     section+
   }
 
@@ -494,7 +494,7 @@ v3_displayreference =
 # Definition List Description Element (see Section 12.6)
 v3_dd =
   element dd {
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     ((t
       | v3_dl)+ | 
     (TEXT
@@ -512,7 +512,7 @@ v3_dd =
 v3_dl =
   element dl {
     attribute hanging { "false" | "true" }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     attribute spacing { "normal" | "compact" }?,
     (v3_dt, v3_dd)+
   }
@@ -521,7 +521,7 @@ v3_dl =
 v3_dt =
   element dt {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     (TEXT
       | cref
       | eref
@@ -545,7 +545,7 @@ v3_em =
 v3_li =
   element li {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     ((v3_dl | v3_ol  | t | v3_ul )+ 
       | 
     (TEXT
@@ -572,7 +572,7 @@ v3_link =
 # Section/Figure/Table Name (see Section 12.12)
 v3_name =
   element name {
-    attribute slugifiedName { text }?, # (see [RFC7991], Appendix B.2)
+    attribute slugifiedName { text }?, # (see [RFC7991bis], Appendix B.2)
     (TEXT
       | cref
       | v3_em
@@ -584,7 +584,7 @@ v3_name =
 v3_ol =
   element ol {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     attribute start { TEXT }?,
     attribute group { TEXT }?,
     attribute type { TEXT }?,
@@ -619,7 +619,7 @@ v3_refcontent =
 v3_sourcecode =
   element sourcecode {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     attribute x:lang { "" }?,
     TEXT
   }
@@ -650,7 +650,7 @@ v3_sup =
 v3_table =
   element table {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     v3_name?,
     iref*,
     v3_thead?,
@@ -662,7 +662,7 @@ v3_table =
 v3_tbody =
   element tbody {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     v3_tr+
   }
 
@@ -672,7 +672,7 @@ v3_td =
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     attribute rowspan { text }?,
     ( (t
        | v3_dl
@@ -697,7 +697,7 @@ v3_td =
 v3_tfoot =
   element tfoot {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     v3_tr
   }
 
@@ -707,7 +707,7 @@ v3_th =
     attribute anchor { xsd:ID }?,
     attribute align { "left" | "center" | "right" }?,
     attribute colspan { text }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     attribute rowspan { text }?,
     ( (t
        | v3_dl
@@ -732,7 +732,7 @@ v3_th =
 v3_thead =
   element thead {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     v3_tr
   }
 
@@ -740,7 +740,7 @@ v3_thead =
 v3_tr =
   element tr {
     attribute anchor { xsd:ID }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     (
       v3_td
       | v3_th
@@ -761,7 +761,7 @@ v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,
     attribute empty { TEXT }?,
-    attribute pn { text }?, # (see [RFC7991], Appendix B.2)
+    attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     v3_li+
   }
 
