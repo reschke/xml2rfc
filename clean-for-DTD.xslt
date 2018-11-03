@@ -1394,7 +1394,7 @@
 </xsl:template>
 
 <xsl:template name="process-dl">
-  <xsl:variable name="hang" select="@hanging"/>
+  <xsl:variable name="hang" select="@newline"/>
   <xsl:variable name="spac" select="@spacing"/>
   <xsl:processing-instruction name="rfc">
     <xsl:choose>

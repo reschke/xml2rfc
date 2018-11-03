@@ -3159,7 +3159,7 @@ attlist.xref &amp;=
 /># Definition List (see <xref target="v3.dl"/>)</em>
 <x:ref>v3_dl</x:ref> =
   element dl {
-    attribute hanging { "false" | "true" }?,
+    attribute newline { "false" | "true" }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     attribute spacing { "normal" | "compact" }?,
     (<x:ref>v3_dt</x:ref>, <x:ref>v3_dd</x:ref>)+
