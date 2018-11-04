@@ -652,6 +652,7 @@ v3_sup =
 v3_table =
   element table {
     attribute anchor { xsd:ID }?,
+    attribute align { "left" | "center" | "right" }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     v3_name?,
     iref*,

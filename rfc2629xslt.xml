@@ -3313,6 +3313,7 @@ attlist.xref &amp;=
 <x:ref>v3_table</x:ref> =
   element table {
     attribute anchor { xsd:ID }?,
+    attribute align { "left" | "center" | "right" }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     <x:ref>v3_name</x:ref>?,
     iref*,
