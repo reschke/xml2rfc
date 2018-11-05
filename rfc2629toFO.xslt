@@ -607,8 +607,9 @@
   <xsl:variable name="spac" select="@spacing"/>
   <xsl:variable name="width">
     <xsl:choose>
-      <xsl:when test="@x:indent">
-        <xsl:value-of select="@x:indent"/>
+      <xsl:when test="@indent">
+        <xsl:value-of select="@indent div 2"/>
+        <xsl:text>em</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <!-- find longest label and use it to calculate indentation-->

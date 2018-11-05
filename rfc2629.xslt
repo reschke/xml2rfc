@@ -2428,6 +2428,10 @@
 
 <xsl:template match="dd">
   <dd>
+    <xsl:variable name="indent" select="../@indent"/>
+    <xsl:if test="number($indent)=$indent">
+      <xsl:attribute name="style">margin-left: <xsl:value-of select="$indent div 2"/>em</xsl:attribute>
+    </xsl:if>
     <xsl:variable name="block-level-children" select="t | dl"/>
     <xsl:choose>
       <xsl:when test="$block-level-children">
@@ -10245,11 +10249,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1047 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1047 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1048 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1048 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2018/11/04 13:32:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/11/04 13:32:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2018/11/05 17:03:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2018/11/05 17:03:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

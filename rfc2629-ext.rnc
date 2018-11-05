@@ -512,6 +512,7 @@ v3_dd =
 # Definition List (see Section 12.7)
 v3_dl =
   element dl {
+    attribute indent { text }?,
     attribute newline { "false" | "true" }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     attribute spacing { "normal" | "compact" }?,
