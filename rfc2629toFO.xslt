@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to XSL-FO
       
-    Copyright (c) 2006-2018, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2019, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1113,7 +1113,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="reference">
+<xsl:template match="reference|referencegroup">
 
   <xsl:variable name="target">
     <xsl:call-template name="link-ref-title-to"/>
