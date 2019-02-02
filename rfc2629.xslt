@@ -5268,7 +5268,7 @@
       </xsl:when>
 
       <!-- Reference links -->
-      <xsl:when test="$node/self::reference">
+      <xsl:when test="$node/self::reference or $node/self::referencegroup">
         <xsl:call-template name="xref-to-reference">
           <xsl:with-param name="from" select="$xref"/>
           <xsl:with-param name="to" select="$node"/>
@@ -10244,11 +10244,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1052 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1052 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1053 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1053 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/01/04 11:24:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/01/04 11:24:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/02/02 16:40:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/02 16:40:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
