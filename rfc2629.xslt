@@ -3329,22 +3329,6 @@
 
   <xsl:call-template name="check-anchor"/>
 
-  <xsl:variable name="target">
-    <xsl:call-template name="link-ref-title-to"/>
-  </xsl:variable>
-
-  <xsl:variable name="front" select="front[1]|document(x:source/@href)/rfc/front[1]"/>
-  <xsl:if test="count($front)=0">
-    <xsl:call-template name="error">
-      <xsl:with-param name="msg">&lt;front> element missing for '<xsl:value-of select="@anchor"/>'</xsl:with-param>
-    </xsl:call-template>
-  </xsl:if>
-  <xsl:if test="count($front)>1">
-    <xsl:call-template name="warning">
-      <xsl:with-param name="msg">&lt;front> can be omitted when &lt;x:source> is specified (for '<xsl:value-of select="@anchor"/>')</xsl:with-param>
-    </xsl:call-template>
-  </xsl:if>
-  
   <dt id="{@anchor}">
     <xsl:call-template name="insertInsDelClass"/>
     <xsl:variable name="del-node" select="ancestor::ed:del"/>
@@ -3358,8 +3342,34 @@
     <xsl:call-template name="reference-name"/>
   </dt>
 
+  <xsl:call-template name="insert-reference-body"/>
+
+</xsl:template>
+
+<xsl:template name="insert-reference-body">
+
+  <xsl:variable name="front" select="front[1]|document(x:source/@href)/rfc/front[1]"/>
+  <xsl:if test="count($front)=0">
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg">&lt;front> element missing for '<xsl:value-of select="@anchor"/>'</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:if test="count($front)>1">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">&lt;front> can be omitted when &lt;x:source> is specified (for '<xsl:value-of select="@anchor"/>')</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  
+  <xsl:variable name="target">
+    <xsl:call-template name="link-ref-title-to"/>
+  </xsl:variable>
+
   <dd>
     <xsl:call-template name="insertInsDelClass"/>
+    <xsl:if test="parent::referencegroup">
+      <xsl:call-template name="copy-anchor"/>
+    </xsl:if>
+    
     <xsl:for-each select="$front[1]/author">
       <xsl:choose>
         <xsl:when test="@surname and @surname!=''">
@@ -3556,9 +3566,53 @@
       <br />
       <xsl:apply-templates />
     </xsl:for-each>
-
   </dd>
+</xsl:template>
 
+<xsl:template match="referencegroup">
+  <xsl:call-template name="check-no-text-content"/>
+
+  <!-- check for reference to reference -->
+  <xsl:variable name="anchor" select="@anchor"/>
+  <xsl:choose>
+    <xsl:when test="not(@anchor)">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">missing anchor on reference: <xsl:value-of select="."/></xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="not(ancestor::ed:del) and (ancestor::rfc and not(key('xref-item',$anchor)))">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">unused reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="not(ancestor::ed:del) and (not(ancestor::rfc) and not($src//xref[@target=$anchor]))">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">unused (included) reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+
+  <xsl:call-template name="check-anchor"/>
+
+  <dt id="{@anchor}">
+    <xsl:call-template name="insertInsDelClass"/>
+    <xsl:variable name="del-node" select="ancestor::ed:del"/>
+    <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
+    <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
+    <xsl:for-each select="../..">
+      <xsl:call-template name="insert-issue-pointer">
+        <xsl:with-param name="deleted-anchor" select="$deleted"/>
+      </xsl:call-template>
+    </xsl:for-each>
+    <xsl:call-template name="reference-name"/>
+  </dt>
+
+  <dd>
+    <xsl:for-each select="reference">
+      <xsl:call-template name="insert-reference-body"/>
+    </xsl:for-each>
+  </dd>
 </xsl:template>
 
 <xsl:template match="references">
@@ -10244,11 +10298,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1053 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1053 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1054 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1054 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/02/02 16:40:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/02 16:40:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/02/03 15:47:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/03 15:47:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
