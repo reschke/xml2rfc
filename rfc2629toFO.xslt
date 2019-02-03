@@ -1113,23 +1113,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="reference|referencegroup">
-
-  <xsl:variable name="target">
-    <xsl:call-template name="link-ref-title-to"/>
-  </xsl:variable>
-
-  <xsl:variable name="front" select="front[1]|document(x:source/@href)/rfc/front[1]"/>
-  <xsl:if test="count($front)=0">
-    <xsl:call-template name="error">
-      <xsl:with-param name="msg">&lt;front> element missing for '<xsl:value-of select="@anchor"/>'</xsl:with-param>
-    </xsl:call-template>
-  </xsl:if>
-  <xsl:if test="count($front)>1">
-    <xsl:call-template name="warning">
-      <xsl:with-param name="msg">&lt;front> can be omitted when &lt;x:source> is specified (for '<xsl:value-of select="@anchor"/>')</xsl:with-param>
-    </xsl:call-template>
-  </xsl:if>
+<xsl:template match="reference">
 
   <fo:list-item space-after=".5em">
     <fo:list-item-label end-indent="label-end()">
@@ -1143,8 +1127,54 @@
       </fo:block>
     </fo:list-item-label>
     
-    <fo:list-item-body start-indent="body-start()"><fo:block>
+    <xsl:call-template name="insert-reference-body"/>
+  </fo:list-item>
+</xsl:template>
 
+<xsl:template match="referencegroup">
+
+  <fo:list-item space-after=".5em">
+    <fo:list-item-label end-indent="label-end()">
+      <fo:block id="{@anchor}">
+        <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+          <xsl:attribute name="index-key">
+            <xsl:value-of select="concat('xrefitem=',@anchor,',primary')"/>
+          </xsl:attribute>
+        </xsl:if>
+        <xsl:call-template name="reference-name"/>
+      </fo:block>
+    </fo:list-item-label>
+    
+    <xsl:for-each select="reference">
+      <xsl:call-template name="insert-reference-body"/>
+    </xsl:for-each>
+  </fo:list-item>
+</xsl:template>
+
+<xsl:template name="insert-reference-body">
+
+  <xsl:variable name="front" select="front[1]|document(x:source/@href)/rfc/front[1]"/>
+  <xsl:if test="count($front)=0">
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg">&lt;front> element missing for '<xsl:value-of select="@anchor"/>'</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:if test="count($front)>1">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">&lt;front> can be omitted when &lt;x:source> is specified (for '<xsl:value-of select="@anchor"/>')</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+
+  <xsl:variable name="target">
+    <xsl:call-template name="link-ref-title-to"/>
+  </xsl:variable>
+
+  <fo:list-item-body start-indent="body-start()">
+    <xsl:if test="parent::referencegroup">
+      <xsl:call-template name="copy-anchor"/>
+    </xsl:if>
+
+    <fo:block>
       <xsl:for-each select="$front[1]/author">
         <xsl:variable name="initials">
           <xsl:call-template name="format-initials"/>
@@ -1187,7 +1217,7 @@
           <xsl:otherwise />
         </xsl:choose>
       </xsl:for-each>
-
+  
       <xsl:variable name="quoted" select="not($front[1]/title/@x:quotes='false') and not(@quote-title='false')"/>
       <xsl:if test="$quoted">"<!--&#8220;--></xsl:if>
       <xsl:choose>
@@ -1207,7 +1237,7 @@
         <xsl:if test="$quoted">"<!--&#8221;--></xsl:if>
         <xsl:text>)</xsl:text>
       </xsl:if> 
-
+  
       <xsl:variable name="si" select="seriesInfo|$front[1]/seriesInfo"/>
       <xsl:if test="seriesInfo and $front[1]/seriesInfo">
         <xsl:call-template name="warning">
@@ -1228,14 +1258,14 @@
           <xsl:otherwise/>
         </xsl:choose>
       </xsl:variable>
-
+  
       <xsl:for-each select="$si">
         <xsl:call-template name="emit-series-info">
           <xsl:with-param name="multiple-rfcs" select="count($si[@name='RFC']) > 1"/>
           <xsl:with-param name="doi" select="$doi"/>
         </xsl:call-template>
       </xsl:for-each>
-
+  
       <!-- fall back to x:source when needed -->
       <xsl:if test="not($si) and x:source/@href">
         <xsl:variable name="derivedsi" myns:namespaceless-elements="xml2rfc">
@@ -1251,7 +1281,7 @@
           <xsl:call-template name="emit-series-info"/>
         </xsl:for-each>
       </xsl:if>
-
+  
       <!-- Insert DOI for RFCs -->
       <xsl:if test="$xml2rfc-ext-insert-doi='yes' and $doi!='' and not(.//seriesInfo[@name='DOI'])">
         <xsl:variable name="uri">
@@ -1262,13 +1292,13 @@
         <xsl:text>, </xsl:text>
         <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="{$uri}">DOI&#160;<xsl:value-of select="$doi"/></fo:basic-link>
       </xsl:if>
-
+  
       <!-- avoid hacks using seriesInfo when it's not really series information -->
       <xsl:for-each select="x:prose|refcontent">
         <xsl:text>, </xsl:text>
         <xsl:apply-templates/>
       </xsl:for-each>
-
+  
       <xsl:choose>
         <xsl:when test="$front[1]/date/@year!=''">
           <xsl:text>, </xsl:text>
@@ -1280,7 +1310,7 @@
         </xsl:when>
         <xsl:otherwise/>
       </xsl:choose>
-
+  
       <xsl:choose>
         <xsl:when test="string-length(normalize-space(@target)) &gt; 0">
           <xsl:text>, &lt;</xsl:text>
@@ -1317,15 +1347,15 @@
         </xsl:when>
         <xsl:otherwise/>
       </xsl:choose>
-
+  
       <xsl:text>.</xsl:text>
       
       <xsl:for-each select="annotation">
         <fo:block><xsl:apply-templates /></fo:block>
       </xsl:for-each>
       
-    </fo:block></fo:list-item-body>
-  </fo:list-item>
+    </fo:block>
+  </fo:list-item-body>
 </xsl:template>
 
 <xsl:template match="references">
