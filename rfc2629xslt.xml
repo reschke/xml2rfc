@@ -1626,6 +1626,14 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="referencegroup Element" anchor="v3.referencegroup">
+  <iref item="V3 Extension Elements" subitem="referencegroup" primary="true"/>
+  <iref item="referencegroup V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.referencegroup"/>.
+</t>
+</section>
+
 <section title="relref Element" anchor="v3.relref">
   <iref item="V3 Extension Elements" subitem="relref" primary="true"/>
   <iref item="relref V3 Extension Element" primary="true"/>
@@ -2860,6 +2868,7 @@ include "rfc2629.rnc" {
       attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
       <strong><x:ref>v3_name</x:ref>?</strong>,
       (reference
+       | <strong><x:ref>v3_referencegroup</x:ref></strong>
        | <x:ref>xi_include</x:ref>)+
     }
 
@@ -3271,6 +3280,15 @@ attlist.xref &amp;=
   element refcontent {
     (TEXT
       | <x:ref>v3_em</x:ref>)*
+  }
+
+<em anchor="v3_referencegroup"><iref item="referencegroup V3 Extension Element"/><iref item="V3 Extension Elements" subitem="referencegroup"
+/># reference group (see <xref target="v3.referencegroup"/>)</em>
+<x:ref>v3_referencegroup</x:ref> =
+  element referencegroup {
+    attribute anchor { xsd:ID },
+    (reference
+      | <x:ref>xi_include</x:ref>)+
   }
 
 <em anchor="v3_sourcecode"><iref item="sourcecode V3 Extension Element"/><iref item="V3 Extension Elements" subitem="sourcecode"
