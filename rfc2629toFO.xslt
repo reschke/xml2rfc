@@ -1148,14 +1148,30 @@
     </fo:list-item-label>
     
     <fo:list-item-body start-indent="body-start()">
-      <xsl:for-each select="reference">
-        <xsl:call-template name="insert-reference-body"/>
-      </xsl:for-each>
+      <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
+      <xsl:choose>
+        <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
+          <xsl:for-each select="reference|$included">
+            <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
+            <xsl:call-template name="insert-reference-body">
+              <xsl:with-param name="in-reference-group" select="true()"/>
+            </xsl:call-template>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:for-each select="reference|$included">
+            <xsl:call-template name="insert-reference-body">
+              <xsl:with-param name="in-reference-group" select="true()"/>
+            </xsl:call-template>
+          </xsl:for-each>
+        </xsl:otherwise>
+      </xsl:choose>
     </fo:list-item-body>
   </fo:list-item>
 </xsl:template>
 
 <xsl:template name="insert-reference-body">
+  <xsl:param name="in-reference-group" select="false()"/>
 
   <xsl:variable name="front" select="front[1]|document(x:source/@href)/rfc/front[1]"/>
   <xsl:if test="count($front)=0">
@@ -1174,7 +1190,7 @@
   </xsl:variable>
 
   <fo:block>
-    <xsl:if test="parent::referencegroup">
+    <xsl:if test="$in-reference-group">
       <xsl:call-template name="copy-anchor"/>
     </xsl:if>
     <xsl:for-each select="$front[1]/author">
@@ -1434,7 +1450,7 @@
     <xsl:choose>
       <xsl:when test="$xml2rfc-symrefs='no'">[99]</xsl:when>
       <xsl:otherwise>
-        <xsl:for-each select="//reference">
+        <xsl:for-each select="//reference|//referencegroup|exslt:node-set($includeDirectives)/myns:include/reference">
           <xsl:sort select="string-length(@anchor)" order="descending" data-type="number"/>
           <xsl:if test="position()=1">
             <xsl:value-of select="@anchor" />

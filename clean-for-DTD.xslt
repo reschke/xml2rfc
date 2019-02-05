@@ -1183,10 +1183,12 @@
     <xsl:if test="$xml2rfc-ext-xml2rfc-backend >= 201706">
       <xsl:attribute name="quote-title">false</xsl:attribute>
     </xsl:if>
+    <xsl:comment>...expanded &lt;referencegroup>...</xsl:comment>
     <front>
       <title>
         <xsl:text>Consisting of: </xsl:text>
-        <xsl:for-each select="reference">
+        <xsl:variable xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt" name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
+        <xsl:for-each select="reference|$included">
           <xsl:value-of select="concat('[',@anchor,']')"/>
           <xsl:choose>
             <xsl:when test="position() &lt; last() - 1">, </xsl:when>
@@ -1727,7 +1729,7 @@
 </xsl:template>
 
 <!-- x:include -->
-<xsl:template match="/rfc/back/references/xi:include" mode="cleanup">
+<xsl:template match="/rfc/back/references/xi:include|/rfc/back/references/referencegroup/xi:include" mode="cleanup">
   <xsl:copy-of select="document(@href)"/>
 </xsl:template>
 
