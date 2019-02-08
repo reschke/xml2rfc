@@ -3531,11 +3531,14 @@
 
     <xsl:choose>
       <xsl:when test="string-length(normalize-space(@target)) &gt; 0">
-        <xsl:text>, &lt;</xsl:text>
-        <a href="{normalize-space(@target)}"><xsl:value-of select="normalize-space(@target)"/></a>
-        <xsl:text>&gt;</xsl:text>
+        <!-- hack: suppress specified target in reference group when it appears to be an info link to the RFC editor page -->
+        <xsl:if test="not($in-reference-group) or not(contains(@target,'www.rfc-editor.org/info/rfc'))">
+          <xsl:text>, &lt;</xsl:text>
+          <a href="{normalize-space(@target)}"><xsl:value-of select="normalize-space(@target)"/></a>
+          <xsl:text>&gt;</xsl:text>
+        </xsl:if>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and $si[@name='BCP'] and starts-with(@anchor, 'BCP')">
+      <xsl:when test="not($in-reference-group) and $xml2rfc-ext-link-rfc-to-info-page='yes' and $si[@name='BCP'] and starts-with(@anchor, 'BCP')">
         <xsl:text>, &lt;</xsl:text>
         <xsl:variable name="uri">
           <xsl:call-template name="compute-rfc-info-uri">
@@ -3546,7 +3549,7 @@
         <a href="{$uri}"><xsl:value-of select="$uri"/></a>
         <xsl:text>&gt;</xsl:text>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and $si[@name='RFC']">
+      <xsl:when test="not($in-reference-group) and $xml2rfc-ext-link-rfc-to-info-page='yes' and $si[@name='RFC']">
         <xsl:text>, &lt;</xsl:text>
         <xsl:variable name="uri">
           <xsl:call-template name="compute-rfc-info-uri">
@@ -10322,11 +10325,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1058 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1058 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1059 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1059 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/02/08 05:17:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/08 05:17:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/02/08 15:44:47 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/08 15:44:47 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

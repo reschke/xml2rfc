@@ -1339,13 +1339,16 @@
 
     <xsl:choose>
       <xsl:when test="string-length(normalize-space(@target)) &gt; 0">
-        <xsl:text>, &lt;</xsl:text>
-          <xsl:call-template name="format-uri">
-            <xsl:with-param name="s" select="@target"/>
-          </xsl:call-template>
-        <xsl:text>&gt;</xsl:text>
+        <!-- hack: suppress specified target in reference group when it appears to be an info link to the RFC editor page -->
+        <xsl:if test="not($in-reference-group) or not(contains(@target,'www.rfc-editor.org/info/rfc'))">
+          <xsl:text>, &lt;</xsl:text>
+            <xsl:call-template name="format-uri">
+              <xsl:with-param name="s" select="@target"/>
+            </xsl:call-template>
+          <xsl:text>&gt;</xsl:text>
+        </xsl:if>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and .//seriesInfo[@name='BCP'] and starts-with(@anchor, 'BCP')">
+      <xsl:when test="not($in-reference-group) and $xml2rfc-ext-link-rfc-to-info-page='yes' and .//seriesInfo[@name='BCP'] and starts-with(@anchor, 'BCP')">
         <xsl:text>, &lt;</xsl:text>
         <xsl:variable name="uri">
           <xsl:call-template name="compute-rfc-info-uri">
@@ -1358,7 +1361,7 @@
         </xsl:call-template>
         <xsl:text>&gt;</xsl:text>
       </xsl:when>
-      <xsl:when test="$xml2rfc-ext-link-rfc-to-info-page='yes' and .//seriesInfo[@name='RFC']">
+      <xsl:when test="not($in-reference-group) and $xml2rfc-ext-link-rfc-to-info-page='yes' and .//seriesInfo[@name='RFC']">
         <xsl:text>, &lt;</xsl:text>
         <xsl:variable name="uri">
           <xsl:call-template name="compute-rfc-info-uri">
