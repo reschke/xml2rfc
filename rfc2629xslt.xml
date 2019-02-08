@@ -3287,6 +3287,7 @@ attlist.xref &amp;=
 <x:ref>v3_referencegroup</x:ref> =
   element referencegroup {
     attribute anchor { xsd:ID },
+		attribute target { URI }?,
     (reference
       | <x:ref>xi_include</x:ref>)+
   }

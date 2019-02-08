@@ -622,6 +622,7 @@ v3_refcontent =
 v3_referencegroup =
   element referencegroup {
     attribute anchor { xsd:ID },
+		attribute target { URI }?,
     (reference
       | xi_include)+
   }

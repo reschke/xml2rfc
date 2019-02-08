@@ -1166,6 +1166,14 @@
           </xsl:for-each>
         </xsl:otherwise>
       </xsl:choose>
+      <xsl:if test="@target">
+        <fo:block>
+          <xsl:call-template name="format-uri">
+            <xsl:with-param name="s" select="@target"/>
+          </xsl:call-template>
+          <xsl:text>&gt;</xsl:text>
+        </fo:block>
+      </xsl:if>
     </fo:list-item-body>
   </fo:list-item>
 </xsl:template>

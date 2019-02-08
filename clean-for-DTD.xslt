@@ -1180,6 +1180,7 @@
 
 <xsl:template match="referencegroup" mode="cleanup">
   <reference anchor="{@anchor}">
+    <xsl:copy-of select="@target"/>
     <xsl:if test="$xml2rfc-ext-xml2rfc-backend >= 201706">
       <xsl:attribute name="quote-title">false</xsl:attribute>
     </xsl:if>
