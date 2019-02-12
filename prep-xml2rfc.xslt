@@ -1,7 +1,7 @@
 <!--
     Experimental implementation of xml2rfc v3 preptool
 
-    Copyright (c) 2016-2018, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2016-2019, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1376,7 +1376,7 @@
   <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/> not allowed in SVG content (dropped)</xsl:message>
 </xsl:template>
 
-<xsl:template match="svg:a|svg:defs|svg:desc|svg:ellipse|svg:g|svg:line|svg:path|svg:polygon|svg:rect|svg:style|svg:text|svg:title|svg:tspan" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:a|svg:defs|svg:desc|svg:ellipse|svg:g|svg:line|svg:path|svg:polyline|svg:polygon|svg:rect|svg:style|svg:text|svg:title|svg:tspan|svg:use" mode="prep-sanitizesvg" priority="9">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-sanitizesvg"/></xsl:copy>
 </xsl:template>
 
@@ -1404,6 +1404,10 @@
   <xsl:copy/>
 </xsl:template>
 
+<xsl:template match="svg:polyline/@points" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
 <xsl:template match="svg:rect/@class|svg:rect/@height|svg:rect/@rx|svg:rect/@ry|svg:rect/@stroke-width|svg:rect/@width|svg:rect/@x|svg:rect/@y" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
@@ -1417,6 +1421,10 @@
 </xsl:template>
 
 <xsl:template match="svg:tspan/@fill|svg:tspan/@x|svg:tspan/@y" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="svg:use/@transform|svg:use/@x|svg:use/@y|svg:use/@xlink:href" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
