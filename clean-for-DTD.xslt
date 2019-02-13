@@ -953,6 +953,12 @@
 
 <xsl:template match="artwork[not(ancestor::figure)]" mode="cleanup">
   <figure>
+    <!-- move irefs up -->
+    <xsl:for-each select="iref">
+      <iref>
+        <xsl:copy-of select="@*"/>
+      </iref>
+    </xsl:for-each>
     <xsl:call-template name="insert-markup"/>
   </figure>
 </xsl:template>
