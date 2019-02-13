@@ -2885,11 +2885,12 @@ include "rfc2629.rnc" {
       back?
     }
 
-  <em># Redefine &lt;section> to allow our extension elements</em>
+  <em># Redefine &lt;section> to allow new elements</em>
   section =
     element section {
       attlist.x_section,
       (t
+       | artwork
        | figure
        | texttable
        | iref
