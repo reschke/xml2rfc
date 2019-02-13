@@ -951,7 +951,7 @@
   <xsl:call-template name="insert-markup"/>
 </xsl:template>
 
-<xsl:template match="artwork[not(parent::figure)]" mode="cleanup">
+<xsl:template match="artwork[not(ancestor::figure)]" mode="cleanup">
   <figure>
     <xsl:call-template name="insert-markup"/>
   </figure>
