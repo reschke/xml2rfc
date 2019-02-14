@@ -1449,39 +1449,34 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:choose>
-    <xsl:when test="@align='right'">
-      <div style="display:table; margin-left: auto; margin-right: 0em;">
-        <xsl:call-template name="insert-begin-code"/>
-        <pre style="margin-left: 0em;">
-          <xsl:call-template name="add-artwork-class"/>
-          <xsl:call-template name="insertInsDelClass"/>
-          <xsl:copy-of select="$display"/>
-        </pre>
-        <xsl:call-template name="insert-end-code"/>
-      </div>
-    </xsl:when>
-    <xsl:when test="@align='center'">
-      <div style="display:table; margin-left: auto; margin-right: auto;">
-        <xsl:call-template name="insert-begin-code"/>
-        <pre style="margin-left: 0em;">
-          <xsl:call-template name="add-artwork-class"/>
-          <xsl:call-template name="insertInsDelClass"/>
-          <xsl:copy-of select="$display"/>
-        </pre>
-        <xsl:call-template name="insert-end-code"/>
-      </div>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:call-template name="insert-begin-code"/>
-      <pre>
-        <xsl:call-template name="add-artwork-class"/>
-        <xsl:call-template name="insertInsDelClass"/>
-        <xsl:copy-of select="$display"/>
-      </pre>
-      <xsl:call-template name="insert-end-code"/>
-    </xsl:otherwise>
-  </xsl:choose>
+  <xsl:variable name="divstyle">
+    <xsl:choose>
+      <xsl:when test="self::artwork and @align='right'">display:table; margin-left: auto; margin-right: 0em;</xsl:when>
+      <xsl:when test="self::artwork and @align='center'">display:table; margin-left: auto; margin-right: auto;</xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="prestyle">
+    <xsl:choose>
+      <xsl:when test="self::artwork and (@align='right' or @align='center')">margin-left: 0em;</xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+  </xsl:variable>
+  <div>
+    <xsl:if test="$divstyle!=''">
+      <xsl:attribute name="style"><xsl:value-of select="$divstyle"/></xsl:attribute>
+    </xsl:if>
+    <xsl:call-template name="insert-begin-code"/>
+    <pre>
+      <xsl:if test="$prestyle!=''">
+        <xsl:attribute name="style"><xsl:value-of select="$prestyle"/></xsl:attribute>
+      </xsl:if>
+      <xsl:call-template name="add-artwork-class"/>
+      <xsl:call-template name="insertInsDelClass"/>
+      <xsl:copy-of select="$display"/>
+    </pre>
+    <xsl:call-template name="insert-end-code"/>
+  </div>
   <xsl:call-template name="check-artwork-width">
     <xsl:with-param name="content"><xsl:apply-templates/></xsl:with-param>
     <xsl:with-param name="indent"><xsl:value-of select="string-length(@x:indent-with)"/></xsl:with-param>
@@ -10325,11 +10320,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1060 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1060 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1061 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1061 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/02/13 14:53:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/13 14:53:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/02/14 11:10:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/14 11:10:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
