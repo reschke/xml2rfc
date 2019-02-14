@@ -8780,55 +8780,54 @@ dd, li, p {
 </xsl:template>
 
 <xsl:template name="get-paragraph-number">
-  <!-- no paragraph numbers in certain containers -->
-  <xsl:if test="not(ancestor::ul) and not(ancestor::dl) and not(ancestor::ol) and not(ancestor::ed:del) and not(ancestor::ed:ins)">
+  <xsl:choose>
+    <!-- no numbering inside certain containers -->
+    <xsl:when test="ancestor::dl or ancestor::ol or ancestor::ul or ancestor::ed:del or ancestor::ed:ins"/>
   
-    <xsl:choose>
-      <xsl:when test="parent::blockquote or parent::x:blockquote">
-        <!-- boilerplate -->
-        <xsl:for-each select="parent::blockquote|parent::x:blockquote"><xsl:call-template name="get-paragraph-number" />.</xsl:for-each>
-        <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/>
-      </xsl:when>
-  
-      <xsl:when test="parent::aside or parent::x:note">
-        <!-- boilerplate -->
-        <xsl:for-each select="parent::aside|parent::x:note"><xsl:call-template name="get-paragraph-number" />.</xsl:for-each>
-        <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/>
-      </xsl:when>
+    <xsl:when test="parent::blockquote or parent::x:blockquote">
+      <!-- boilerplate -->
+      <xsl:for-each select="parent::blockquote|parent::x:blockquote"><xsl:call-template name="get-paragraph-number" />.</xsl:for-each>
+      <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/>
+    </xsl:when>
 
-      <xsl:when test="ancestor::section">
-        <!-- get section number of ancestor section element, then add t number -->
-        <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
-        <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/></xsl:variable>
-        <xsl:choose>
-          <xsl:when test="parent::section and ../@removeInRFC='true' and ../t[1]!=$section-removeInRFC">
-            <xsl:value-of select="1 + $b"/>
-          </xsl:when>
-          <xsl:otherwise><xsl:value-of select="$b"/></xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-  
-      <xsl:when test="ancestor::note">
-        <!-- or get section number of ancestor note element, then add t number -->
-        <xsl:for-each select="ancestor::note[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
-        <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/></xsl:variable>
-        <xsl:choose>
-          <xsl:when test="parent::note and ../@removeInRFC='true' and ../t[1]!=$note-removeInRFC">
-            <xsl:value-of select="1 + $b"/>
-          </xsl:when>
-          <xsl:otherwise><xsl:value-of select="$b"/></xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-  
-      <!-- abstract -->
-      <xsl:when test="ancestor::abstract">
-        <xsl:text>p.</xsl:text>
-        <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/>
-      </xsl:when>
-  
-      <xsl:otherwise/>
-    </xsl:choose>  
-  </xsl:if>
+    <xsl:when test="parent::aside or parent::x:note">
+      <!-- boilerplate -->
+      <xsl:for-each select="parent::aside|parent::x:note"><xsl:call-template name="get-paragraph-number" />.</xsl:for-each>
+      <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/>
+    </xsl:when>
+
+    <xsl:when test="ancestor::section">
+      <!-- get section number of ancestor section element, then add t number -->
+      <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
+      <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/></xsl:variable>
+      <xsl:choose>
+        <xsl:when test="parent::section and ../@removeInRFC='true' and ../t[1]!=$section-removeInRFC">
+          <xsl:value-of select="1 + $b"/>
+        </xsl:when>
+        <xsl:otherwise><xsl:value-of select="$b"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+
+    <xsl:when test="ancestor::note">
+      <!-- or get section number of ancestor note element, then add t number -->
+      <xsl:for-each select="ancestor::note[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
+      <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/></xsl:variable>
+      <xsl:choose>
+        <xsl:when test="parent::note and ../@removeInRFC='true' and ../t[1]!=$note-removeInRFC">
+          <xsl:value-of select="1 + $b"/>
+        </xsl:when>
+        <xsl:otherwise><xsl:value-of select="$b"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+
+    <!-- abstract -->
+    <xsl:when test="ancestor::abstract">
+      <xsl:text>p.</xsl:text>
+      <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol"/>
+    </xsl:when>
+
+    <xsl:otherwise/>
+  </xsl:choose>  
 </xsl:template>
 
 <xsl:template name="editingMark">
@@ -10320,11 +10319,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1062 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1062 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1063 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1063 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/02/14 12:27:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/14 12:27:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/02/14 13:02:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/14 13:02:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
