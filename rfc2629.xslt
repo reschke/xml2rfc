@@ -2326,9 +2326,6 @@
 <!-- v3 lists -->
 
 <xsl:template match="ol[string-length(@type)>1]">
-  <xsl:variable name="p">
-    <xsl:call-template name="get-paragraph-number" />
-  </xsl:variable>
   <xsl:variable name="start">
     <xsl:choose>
       <xsl:when test="@group">
@@ -2342,50 +2339,27 @@
       <xsl:otherwise>1</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:choose>
-    <xsl:when test="$p!=''">
-      <div id="{$anchor-pref}section.{$p}">
-        <dl>
+  <div>
+    <xsl:call-template name="attach-paragraph-number-as-id"/>
+    <dl>
+      <xsl:call-template name="copy-anchor"/>
+      <xsl:for-each select="li">
+        <xsl:variable name="label">
+          <xsl:call-template name="expand-format-percent">
+            <xsl:with-param name="format" select="../@type"/>
+            <xsl:with-param name="pos" select="$start - 1 + position()"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <dt>
           <xsl:call-template name="copy-anchor"/>
-          <xsl:for-each select="li">
-            <xsl:variable name="label">
-              <xsl:call-template name="expand-format-percent">
-                <xsl:with-param name="format" select="../@type"/>
-                <xsl:with-param name="pos" select="$start - 1 + position()"/>
-              </xsl:call-template>
-            </xsl:variable>
-            <dt>
-              <xsl:call-template name="copy-anchor"/>
-              <xsl:value-of select="$label"/>
-            </dt>
-            <dd>
-              <xsl:apply-templates/>
-            </dd>
-          </xsl:for-each>
-        </dl>
-      </div>
-    </xsl:when>
-    <xsl:otherwise>
-      <dl>
-        <xsl:call-template name="copy-anchor"/>
-        <xsl:for-each select="li">
-          <xsl:variable name="label">
-            <xsl:call-template name="expand-format-percent">
-              <xsl:with-param name="format" select="../@type"/>
-              <xsl:with-param name="pos" select="$start - 1 + position()"/>
-            </xsl:call-template>
-          </xsl:variable>
-          <dt>
-            <xsl:call-template name="copy-anchor"/>
-            <xsl:value-of select="$label"/>
-          </dt>
-          <dd>
-            <xsl:apply-templates/>
-          </dd>
-        </xsl:for-each>
-      </dl>
-    </xsl:otherwise>
-  </xsl:choose>
+          <xsl:value-of select="$label"/>
+        </dt>
+        <dd>
+          <xsl:apply-templates/>
+        </dd>
+      </xsl:for-each>
+    </dl>
+  </div>
 </xsl:template>
 
 <xsl:template match="dl">
@@ -10329,11 +10303,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1064 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1064 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1065 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1065 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/02/14 14:19:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/14 14:19:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/02/14 14:35:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/14 14:35:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
