@@ -550,7 +550,14 @@ v3_li =
   element li {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
-    ((v3_blockquote | v3_dl | v3_ol  | t | v3_ul )+ 
+    ((artwork
+      | v3_blockquote
+      | v3_dl
+      | v3_ol
+      | t
+      | v3_sourcecode
+      | v3_ul
+    )+ 
       | 
     (TEXT
       | cref
