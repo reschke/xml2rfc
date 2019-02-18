@@ -404,6 +404,8 @@ attlist.street &=
 
 # Extend attribute set for <c> (see Section 11.24)
 attlist.t &=
+  attribute keepWithNext { text }?,
+  attribute keepWithPrevious { text }?,
   attribute pn { text }? # (see [RFC7991bis], Appendix B.2)
 
 # Extend attribute set for <texttable>

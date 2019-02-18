@@ -3052,6 +3052,8 @@ attlist.street &amp;=
 
 <em># Extend attribute set for &lt;c> (see <xref target="ext-rfc2629.iref"/>)</em>
 attlist.t &amp;=
+  attribute keepWithNext { text }?,
+  attribute keepWithPrevious { text }?,
   attribute pn { text }? # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
 
 <em># Extend attribute set for &lt;texttable></em>
