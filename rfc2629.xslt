@@ -6877,7 +6877,7 @@ ul.ind li li {
   font-weight: normal;
   line-height: 150%;
   margin-left: 0em;
-}<xsl:if test="//svg:svg">
+}</xsl:if><xsl:if test="//svg:svg">
 @namespace svg url(http://www.w3.org/2000/svg);
 svg|svg {
   margin-left: 3em;
@@ -6894,7 +6894,7 @@ svg {
 <xsl:if test="//t/@keepWithPrevious">.avoidbreakbefore {
   page-break-before: avoid;
 }
-</xsl:if></xsl:if><xsl:if test="//*[@removeInRFC='true']">section.rfcEditorRemove > div:first-of-type {
+</xsl:if><xsl:if test="//*[@removeInRFC='true']">section.rfcEditorRemove > div:first-of-type {
   font-style: italic;
 }</xsl:if><xsl:if test="//x:bcp14|//bcp14">.bcp14 {
   font-style: normal;
@@ -10298,11 +10298,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1074 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1074 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1075 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1075 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/02/18 21:25:50 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/18 21:25:50 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/02/19 10:14:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/19 10:14:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
