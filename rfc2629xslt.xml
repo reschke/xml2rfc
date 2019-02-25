@@ -26,7 +26,7 @@
          	<country>Germany</country>
        	</postal>
   		  <email>julian.reschke@greenbytes.de</email>	
-  		  <uri>http://greenbytes.de/tech/webdav/</uri>	
+  		  <uri>https://greenbytes.de/tech/webdav/</uri>	
   		</address>
   	</author>
      
@@ -65,7 +65,7 @@
   </list>
 </t>
 <t>
-  The full distribution is available at <eref target="http://greenbytes.de/tech/webdav/rfc2629xslt.zip"/>.
+  The full distribution is available at <eref target="https://greenbytes.de/tech/webdav/rfc2629xslt.zip"/>.
   A mirror of the non-public source repository can be found at <eref target="https://github.com/reschke/xml2rfc"/>;
   this is also a good place for reporting issues.
 </t>
@@ -1834,7 +1834,7 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 <figure>
 <preamble>
-For instance, as of 2008-07-12, the script produces for <eref target="http://greenbytes.de/tech/webdav/rfc2518.xml"/>:
+For instance, as of 2008-07-12, the script produces for <eref target="https://greenbytes.de/tech/webdav/rfc2518.xml"/>:
 </preamble>
 <artwork type="example">
 > saxon rfc2518.xml check-references.xslt intended-status=PROPOSED \
