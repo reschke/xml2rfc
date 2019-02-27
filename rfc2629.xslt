@@ -1394,13 +1394,13 @@
 </xsl:template>
 
 <xsl:template name="insert-begin-code">
-  <xsl:if test="@x:is-code-component='yes'">
+  <xsl:if test="(self::artwork and @x:is-code-component='yes') or (self::sourcecode and @markers='true')">
     <pre class="ccmarker cct"><span>&lt;CODE BEGINS></span></pre>
   </xsl:if>
 </xsl:template>
 
 <xsl:template name="insert-end-code">
-  <xsl:if test="@x:is-code-component='yes'">
+  <xsl:if test="(self::artwork and @x:is-code-component='yes') or (self::sourcecode and @markers='true')">
     <pre class="ccmarker ccb"><span>&lt;CODE ENDS></span></pre>
   </xsl:if>
 </xsl:template>
@@ -6661,7 +6661,7 @@ pre {
   background-color: lightyellow;
   padding: .25em;
   page-break-inside: avoid;
-}<xsl:if test="//artwork[@x:is-code-component='yes']"><!-- support "<CODE BEGINS>" and "<CODE ENDS>" markers-->
+}<xsl:if test="//artwork[@x:is-code-component='yes']|//sourcecode[@markers='true']"><!-- support "<CODE BEGINS>" and "<CODE ENDS>" markers-->
 pre.ccmarker {
   background-color: white;
   color: gray;
@@ -10298,11 +10298,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1075 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1075 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1076 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1076 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/02/19 10:14:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/19 10:14:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/02/27 11:23:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/27 11:23:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

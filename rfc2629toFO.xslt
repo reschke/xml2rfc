@@ -184,7 +184,7 @@
     <xsl:if test="not(ancestor::figure)">
       <xsl:attribute name="start-indent">2em</xsl:attribute>
     </xsl:if>
-    <xsl:if test="@x:isCodeComponent='yes'">
+    <xsl:if test="(self::artwork and @x:is-code-component='yes') or (self::sourcecode and @markers='true')">
       <fo:block font-family="monospace" color="gray">&lt;CODE BEGINS></fo:block>
     </xsl:if>
     <fo:block font-family="monospace" padding=".5em"
@@ -193,7 +193,7 @@
       <xsl:call-template name="add-artwork-attr"/>
       <xsl:apply-templates/>
     </fo:block>
-    <xsl:if test="@x:isCodeComponent='yes'">
+    <xsl:if test="(self::artwork and @x:is-code-component='yes') or (self::sourcecode and @markers='true')">
       <fo:block font-family="monospace" color="gray">&lt;CODE ENDS></fo:block>
     </xsl:if>
   </fo:block>

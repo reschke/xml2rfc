@@ -3308,6 +3308,7 @@ attlist.xref &amp;=
   element sourcecode {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
+    attribute markers { text }?, #(see <eref target="https://tools.ietf.org/html/draft-levkowetz-xml2rfc-v3-implementation-notes-08#section-3.1.22"/>)
     attribute type { text }?,
     attribute x:lang { "" }?,
     TEXT
