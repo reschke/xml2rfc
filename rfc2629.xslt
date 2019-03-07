@@ -4187,6 +4187,7 @@
         <a href="#{$anchor-pref}section.{$sectionNumber}">
           <xsl:call-template name="emit-section-number">
             <xsl:with-param name="no" select="$sectionNumber"/>
+            <xsl:with-param name="appendixPrefix" select="true()"/>
           </xsl:call-template>
         </a>
         <xsl:text>&#0160;</xsl:text>
@@ -10304,11 +10305,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1077 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1077 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1078 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1078 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/02/27 16:54:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/02/27 16:54:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/03/07 11:04:01 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/07 11:04:01 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -10422,6 +10423,8 @@ dd, li, p {
 
 <xsl:template name="emit-section-number">
   <xsl:param name="no"/>
+  <xsl:param name="appendixPrefix" select="false()"/>
+  <xsl:if test="$appendixPrefix and translate($no,$ucase,'')=''">Appendix </xsl:if>
   <xsl:value-of select="$no"/><xsl:if test="not(contains($no,'.')) or $xml2rfc-ext-sec-no-trailing-dots!='no'">.</xsl:if>
 </xsl:template>
 

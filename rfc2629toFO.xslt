@@ -1665,6 +1665,7 @@
   <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,$unnumbered))">
     <xsl:call-template name="emit-section-number">
       <xsl:with-param name="no" select="$sectionNumber"/>
+      <xsl:with-param name="appendixPrefix" select="true()"/>
     </xsl:call-template>
     <xsl:text>&#0160;&#0160;</xsl:text>
   </xsl:if>
