@@ -2350,6 +2350,7 @@
     <xsl:when test="$depth = 0">
       <fo:block space-before="1em" font-weight="bold" text-align-last="justify">
         <xsl:if test="$number!='' and not(contains($number,$unnumbered))">
+          <xsl:if test="translate($number,$ucase,'')=''">Appendix </xsl:if>
           <xsl:value-of select="$number" />
           <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
           <xsl:text>&#0160;&#0160;</xsl:text>
