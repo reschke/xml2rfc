@@ -654,7 +654,7 @@
 
 <xsl:template match="dl/dd">
   <fo:list-item-body start-indent="body-start()">
-    <xsl:variable name="block-level-children" select="t | dl"/>
+    <xsl:variable name="block-level-children" select="artwork|dl|sourcecode|t"/>
     <xsl:choose>
       <xsl:when test="$block-level-children">
         <!-- TODO: improve error handling-->
@@ -3412,5 +3412,8 @@
   </xsl:copy>
 </xsl:template>
 <xsl:template match="@id" mode="strip-ids"/>
+
+<!-- suppress new elements temporarily -->
+<xsl:template match="artset|u"/>
 
 </xsl:transform>

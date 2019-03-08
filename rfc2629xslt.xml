@@ -3155,8 +3155,10 @@ attlist.xref &amp;=
 <x:ref>v3_dd</x:ref> =
   element dd {
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
-    ((t
-      | <x:ref>v3_dl</x:ref>)+ | 
+    ((artwork
+      | t
+      | <x:ref>v3_dl</x:ref> 
+      | <x:ref>v3_sourcecode</x:ref>)+ | 
     (TEXT
       | cref
       | eref

@@ -501,8 +501,10 @@ v3_displayreference =
 v3_dd =
   element dd {
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
-    ((t
-      | v3_dl)+ | 
+    ((artwork
+      | t
+      | v3_dl 
+      | v3_sourcecode)+ | 
     (TEXT
       | cref
       | eref
