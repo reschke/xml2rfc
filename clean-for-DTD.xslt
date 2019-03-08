@@ -1091,6 +1091,9 @@
 <!-- title extensions -->
 <xsl:template match="title/@x:quotes" mode="cleanup"/>
 
+<!-- organization extensions -->
+<xsl:template match="organization/@showOnFrontPage" mode="cleanup"/>
+
 <!-- RDF info stripped -->
 <xsl:template match="rdf:*" mode="cleanup"/>
 

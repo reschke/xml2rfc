@@ -3007,7 +3007,8 @@ attlist.preamble &amp;=
 
 <em># Extend attribute set for &lt;organization></em>
 attlist.organization &amp;=
-  attribute ascii { ATEXT }?
+  attribute ascii { ATEXT }?,
+  attribute showOnFrontPage { "false" | "true" }?
 
 <em># Extend attribute set for &lt;reference></em>
 attlist.reference &amp;=
