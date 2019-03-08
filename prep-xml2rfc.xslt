@@ -1120,12 +1120,19 @@
     <xsl:when test="self::note">s-note-<xsl:number count="note"/></xsl:when>
     <xsl:when test="self::table">t-<xsl:number count="table" level="any"/></xsl:when>
     <xsl:when test="self::references">
-      <xsl:text>s-</xsl:text>
-      <xsl:value-of select="1 + count(../../middle/section)"/>
-      <xsl:if test="count(../references)!=1">
-        <xsl:text>.</xsl:text>
-        <xsl:value-of select="1 + count(preceding-sibling::references)"/>
-      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="parent::references">
+          <xsl:for-each select=".."><xsl:call-template name="pn-sn"/></xsl:for-each>.<xsl:number count="references"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>s-</xsl:text>
+          <xsl:value-of select="1 + count(../../middle/section)"/>
+          <xsl:if test="count(../references)!=1">
+            <xsl:text>.</xsl:text>
+            <xsl:value-of select="1 + count(preceding-sibling::references)"/>
+          </xsl:if>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:when>
     <xsl:when test="self::section and parent::back">s-<xsl:number count="section" format="a"/></xsl:when>
     <xsl:when test="self::section and parent::middle">s-<xsl:number count="section"/></xsl:when>
