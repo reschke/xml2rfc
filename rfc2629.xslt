@@ -500,10 +500,10 @@
 
 <xsl:variable name="includeDirectives">
   <xsl:call-template name="getIncludes">
-    <xsl:with-param name="nodes" select="/rfc/back/references/processing-instruction('rfc')|/rfc/back/references/referencegroup/processing-instruction('rfc')"/>
+    <xsl:with-param name="nodes" select="/rfc/back//references/processing-instruction('rfc')|/rfc/back//references/referencegroup/processing-instruction('rfc')"/>
   </xsl:call-template>
   <xsl:call-template name="getXIncludes">
-    <xsl:with-param name="nodes" select="/rfc/back/references/xi:include|/rfc/back/references/referencegroup/xi:include"/>
+    <xsl:with-param name="nodes" select="/rfc/back//references/xi:include|/rfc/back//references/referencegroup/xi:include"/>
   </xsl:call-template>
 </xsl:variable>
 
@@ -10308,11 +10308,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1082 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1082 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1083 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1083 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/03/08 17:21:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/08 17:21:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/03/08 17:32:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/08 17:32:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
