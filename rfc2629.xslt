@@ -10308,11 +10308,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1083 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1083 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1084 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1084 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/03/08 17:32:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/08 17:32:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/03/09 04:49:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/09 04:49:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -10384,7 +10384,7 @@ dd, li, p {
     </xsl:when>
     <xsl:otherwise>
       <xsl:choose>
-        <xsl:when test="self::references">
+        <xsl:when test="self::references and not(parent::references)">
           <xsl:choose>
             <xsl:when test="count(/*/back/references)=1">
               <xsl:call-template name="get-references-section-number"/>
@@ -10393,6 +10393,9 @@ dd, li, p {
               <xsl:call-template name="get-references-section-number"/>.<xsl:number count="references"/>
             </xsl:otherwise>
           </xsl:choose>
+        </xsl:when>
+        <xsl:when test="self::references and parent::references">
+          <xsl:for-each select=".."><xsl:call-template name="get-section-number"/></xsl:for-each>.<xsl:number count="references"/>
         </xsl:when>
         <xsl:when test="self::reference">
           <xsl:for-each select="parent::references">
