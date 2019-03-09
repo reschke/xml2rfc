@@ -3608,6 +3608,8 @@
   <xsl:variable name="refseccount" select="count(/rfc/back/references)+count(/rfc/back/ed:replace/ed:ins/references)"/>
 
   <xsl:choose>
+    <!-- handled in make-references -->
+    <xsl:when test="ancestor::references"/>
     <!-- insert pseudo section when needed -->
     <xsl:when test="not(preceding::references) and $refseccount!=1">
       <xsl:call-template name="insert-conditional-hrule"/>
@@ -3661,6 +3663,7 @@
 
   <xsl:variable name="elemtype">
     <xsl:choose>
+      <xsl:when test="$nested and count(ancestor::references)&gt;=2">h4</xsl:when>
       <xsl:when test="$nested">h3</xsl:when>
       <xsl:otherwise>h2</xsl:otherwise>
     </xsl:choose>
@@ -3715,20 +3718,35 @@
  
       <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
       <xsl:variable name="refs" select="reference|referencegroup|ed:del|ed:ins|ed:replace|$included"/>
-      <xsl:if test="$refs">
-        <dl class="{$css-reference}">
-          <xsl:choose>
-            <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
-              <xsl:apply-templates select="$refs">
-                <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
-              </xsl:apply-templates>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:apply-templates select="$refs"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </dl>
-      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="references">
+          <xsl:for-each select="references">
+            <xsl:call-template name="make-references">
+              <xsl:with-param name="nested" select="true()"/>
+            </xsl:call-template>
+          </xsl:for-each>
+          <xsl:if test="$refs">
+            <xsl:call-template name="error">
+              <xsl:with-param name="msg">Cannot mix &lt;references> elements with other child nodes such as <xsl:value-of select="local-name($refs[1])"/> (these will be ignored)</xsl:with-param>
+            </xsl:call-template>
+          </xsl:if>
+        </xsl:when>
+        <xsl:when test="$refs">
+          <dl class="{$css-reference}">
+            <xsl:choose>
+              <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
+                <xsl:apply-templates select="$refs">
+                  <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
+                </xsl:apply-templates>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:apply-templates select="$refs"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </dl>
+        </xsl:when>
+        <xsl:otherwise/>
+      </xsl:choose>
     </div>
   </section>
 </xsl:template>
@@ -10311,11 +10329,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1086 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1086 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1087 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1087 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/03/09 12:35:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/09 12:35:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/03/09 15:37:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/09 15:37:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

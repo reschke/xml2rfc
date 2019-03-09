@@ -1389,7 +1389,7 @@
 <xsl:template match="references">
 
   <xsl:variable name="name">
-    <xsl:number/>      
+    <xsl:number level="multiple"/>      
   </xsl:variable>
 
   <!-- insert pseudo section when needed -->
@@ -1410,7 +1410,7 @@
   </xsl:if>
 
   <xsl:choose>
-    <xsl:when test="count(/*/back/references)=1">
+    <xsl:when test="count(/*/back/references)=1 and not(ancestor::references)">
       <fo:block xsl:use-attribute-sets="h1 newpage">
         <xsl:call-template name="copy-anchor"/>
         <fo:wrapper id="{$anchor-pref}references" >
@@ -1473,20 +1473,31 @@
 
   <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
   <xsl:variable name="refs" select="reference|referencegroup|$included"/>
-  <xsl:if test="$refs">
-    <fo:list-block provisional-distance-between-starts="{string-length($l) * 0.8}em">
-      <xsl:choose>
-        <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
-          <xsl:apply-templates select="$refs">
-            <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
-          </xsl:apply-templates>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:apply-templates select="$refs"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </fo:list-block>
-  </xsl:if>
+  <xsl:choose>
+    <xsl:when test="references">
+      <xsl:apply-templates select="references"/>
+      <xsl:if test="$refs">
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg">Cannot mix &lt;references> elements with other child nodes such as <xsl:value-of select="local-name($refs[1])"/> (these will be ignored)</xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
+    </xsl:when>
+    <xsl:when test="$refs">
+      <fo:list-block provisional-distance-between-starts="{string-length($l) * 0.8}em">
+        <xsl:choose>
+          <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
+            <xsl:apply-templates select="$refs">
+              <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
+            </xsl:apply-templates>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="$refs"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </fo:list-block>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
 </xsl:template>
 
 <!-- handled above -->
