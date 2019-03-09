@@ -1472,19 +1472,21 @@
   </xsl:variable>
 
   <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
-  <xsl:variable name="refs" select="*[not(self::references)]|$included"/>
-  <fo:list-block provisional-distance-between-starts="{string-length($l) * 0.8}em">
-    <xsl:choose>
-      <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
-        <xsl:apply-templates select="$refs">
-          <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
-        </xsl:apply-templates>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates select="$refs"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </fo:list-block>
+  <xsl:variable name="refs" select="reference|referencegroup|$included"/>
+  <xsl:if test="$refs">
+    <fo:list-block provisional-distance-between-starts="{string-length($l) * 0.8}em">
+      <xsl:choose>
+        <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
+          <xsl:apply-templates select="$refs">
+            <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
+          </xsl:apply-templates>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="$refs"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </fo:list-block>
+  </xsl:if>
 </xsl:template>
 
 <!-- handled above -->
