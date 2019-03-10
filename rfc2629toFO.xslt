@@ -2755,22 +2755,7 @@
     </xsl:when>
     <xsl:when test="count(/*/back/references) = 1">
       <xsl:for-each select="/*/back/references">
-        <xsl:variable name="title">
-          <xsl:choose>
-            <xsl:when test="name"><xsl:apply-templates select="name/node()"/></xsl:when>
-            <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
-            <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
-      
-        <fo:bookmark internal-destination="{$anchor-pref}references">
-          <fo:bookmark-title>
-            <xsl:call-template name="get-references-section-number"/>
-            <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
-            <xsl:text> </xsl:text>
-            <xsl:value-of select="normalize-space($title)"/>
-          </fo:bookmark-title>
-        </fo:bookmark>
+        <xsl:call-template name="references-entry-bookmarks"/>
       </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>
@@ -2785,31 +2770,46 @@
 
         <!-- ...with subsections... -->    
         <xsl:for-each select="/*/back/references">
-          <xsl:variable name="title">
-            <xsl:choose>
-              <xsl:when test="name"><xsl:apply-templates select="name/node()"/></xsl:when>
-              <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
-              <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
-            </xsl:choose>
-          </xsl:variable>
-        
-          <xsl:variable name="sectionNumber">
-            <xsl:call-template name="get-section-number" />
-            <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
-          </xsl:variable>
-  
-          <xsl:variable name="num">
-            <xsl:number/>
-          </xsl:variable>
-  
-          <fo:bookmark internal-destination="{$anchor-pref}references.{$num}">
-            <fo:bookmark-title><xsl:value-of select="concat($sectionNumber,' ',normalize-space($title))"/></fo:bookmark-title>
-          </fo:bookmark>
+          <xsl:call-template name="references-entry-bookmarks"/>
         </xsl:for-each>
       </fo:bookmark>
 
     </xsl:otherwise>
   </xsl:choose>
+</xsl:template>
+
+<xsl:template name="references-entry-bookmarks">
+  <xsl:variable name="title">
+    <xsl:choose>
+      <xsl:when test="name"><xsl:apply-templates select="name/node()"/></xsl:when>
+      <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
+      <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+  <xsl:variable name="sectionNumber">
+    <xsl:call-template name="get-section-number" />
+    <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
+  </xsl:variable>
+
+  <xsl:variable name="num">
+    <xsl:number level="any"/>
+  </xsl:variable>
+
+  <xsl:variable name="tnum">
+    <xsl:choose>
+      <xsl:when test="$num=1"/>
+      <xsl:otherwise>.<xsl:value-of select="$num"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+  <fo:bookmark internal-destination="{$anchor-pref}references{$tnum}">
+    <fo:bookmark-title><xsl:value-of select="concat($sectionNumber,' ',normalize-space($title))"/></fo:bookmark-title>
+
+    <xsl:for-each select="references">
+      <xsl:call-template name="references-entry-bookmarks"/>
+    </xsl:for-each>
+  </fo:bookmark>
 </xsl:template>
 
 <xsl:template match="rfc" mode="bookmarks">
