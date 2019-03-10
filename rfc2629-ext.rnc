@@ -219,9 +219,12 @@ include "rfc2629.rnc" {
       attribute anchor { xsd:ID }?,
       attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
       v3_name?,
-      (reference
-       | v3_referencegroup
-       | xi_include)+
+      (references+
+       | 
+        (reference
+         | v3_referencegroup
+         | xi_include)+
+       )
     }
 
   # Redefine <rfc> to allow our extension elements
