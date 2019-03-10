@@ -2661,6 +2661,7 @@
   <fo:bookmark internal-destination="{$anchor-pref}section.{$sectionNumber}">
     <fo:bookmark-title>
       <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,$unnumbered))">
+        <xsl:if test="translate($sectionNumber,$ucase,'')=''">Appendix </xsl:if>
         <xsl:value-of select="$sectionNumber"/>
         <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
         <xsl:text> </xsl:text>
