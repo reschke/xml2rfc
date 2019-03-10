@@ -8379,6 +8379,14 @@ dd, li, p {
             <xsl:with-param name="title" select="$title"/>
             <xsl:with-param name="name" select="name"/>
           </xsl:call-template>
+
+          <xsl:if test="references">
+            <ul>
+              <xsl:for-each select="references">
+                <xsl:call-template name="references-toc-entry"/>
+              </xsl:for-each>
+            </ul>
+          </xsl:if>
         </li>
       </xsl:for-each>
     </xsl:when>
@@ -8396,34 +8404,46 @@ dd, li, p {
         <ul>
           <!-- ...with subsections... -->
           <xsl:for-each select="$refsecs">
-            <xsl:variable name="title">
-              <xsl:choose>
-                <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
-                <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
-              </xsl:choose>
-            </xsl:variable>
-
-            <xsl:variable name="sectionNumber">
-              <xsl:call-template name="get-section-number" />
-            </xsl:variable>
-
-            <xsl:variable name="num">
-              <xsl:number level="any"/>
-            </xsl:variable>
-
-            <li>
-              <xsl:call-template name="insert-toc-line">
-                <xsl:with-param name="number" select="$sectionNumber"/>
-                <xsl:with-param name="target" select="concat($anchor-pref,'references','.',$num)"/>
-                <xsl:with-param name="title" select="$title"/>
-                <xsl:with-param name="name" select="name"/>
-              </xsl:call-template>
-            </li>
+            <xsl:call-template name="references-toc-entry"/>
           </xsl:for-each>
         </ul>
       </li>
     </xsl:otherwise>
   </xsl:choose>
+</xsl:template>
+
+<xsl:template name="references-toc-entry">
+  <xsl:variable name="title">
+    <xsl:choose>
+      <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
+      <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+  <xsl:variable name="sectionNumber">
+    <xsl:call-template name="get-section-number" />
+  </xsl:variable>
+
+  <xsl:variable name="num">
+    <xsl:number level="any"/>
+  </xsl:variable>
+
+  <li>
+    <xsl:call-template name="insert-toc-line">
+      <xsl:with-param name="number" select="$sectionNumber"/>
+      <xsl:with-param name="target" select="concat($anchor-pref,'references','.',$num)"/>
+      <xsl:with-param name="title" select="$title"/>
+      <xsl:with-param name="name" select="name"/>
+    </xsl:call-template>
+
+    <xsl:if test="references">
+      <ul>
+        <xsl:for-each select="references">
+          <xsl:call-template name="references-toc-entry"/>
+        </xsl:for-each>
+      </ul>
+    </xsl:if>
+  </li>
 </xsl:template>
 
 <xsl:template match="section|appendix" mode="toc">
@@ -10329,11 +10349,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1087 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1087 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1088 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1088 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/03/09 15:37:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/09 15:37:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/03/10 16:42:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/10 16:42:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

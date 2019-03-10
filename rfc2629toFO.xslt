@@ -1389,7 +1389,7 @@
 <xsl:template match="references">
 
   <xsl:variable name="name">
-    <xsl:number level="multiple"/>      
+    <xsl:number level="any"/>      
   </xsl:variable>
 
   <!-- insert pseudo section when needed -->
@@ -1448,6 +1448,14 @@
           </xsl:call-template>
           <xsl:text>&#160;&#160;</xsl:text>
           <xsl:choose>
+            <xsl:when test="name">
+              <xsl:if test="@title">
+                <xsl:call-template name="warning">
+                  <xsl:with-param name="msg">both @title attribute and name child node present</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+              <xsl:apply-templates select="name/node()"/>
+            </xsl:when>
             <xsl:when test="@title!=''"><xsl:value-of select="@title"/></xsl:when>
             <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
           </xsl:choose>
@@ -2276,6 +2284,12 @@
           <xsl:with-param name="title" select="$title"/>
           <xsl:with-param name="name" select="name"/>
         </xsl:call-template>
+
+        <xsl:if test="references">
+          <xsl:for-each select="references">
+            <xsl:call-template name="references-toc-entry"/>
+          </xsl:for-each>
+        </xsl:if>
       </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>
@@ -2290,30 +2304,40 @@
   
       <!-- ...with subsections... -->    
       <xsl:for-each select="/*/back/references">
-        <xsl:variable name="title">
-          <xsl:choose>
-            <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
-            <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
-      
-        <xsl:variable name="sectionNumber">
-          <xsl:call-template name="get-section-number" />
-        </xsl:variable>
-
-        <xsl:variable name="num">
-          <xsl:number/>
-        </xsl:variable>
-
-        <xsl:call-template name="insert-toc-line">
-          <xsl:with-param name="number" select="$sectionNumber"/>
-          <xsl:with-param name="target" select="concat($anchor-pref,'references','.',$num)"/>
-          <xsl:with-param name="title" select="$title"/>
-          <xsl:with-param name="name" select="name"/>
-        </xsl:call-template>
+        <xsl:call-template name="references-toc-entry"/>
       </xsl:for-each>
     </xsl:otherwise>
   </xsl:choose>
+</xsl:template>
+
+<xsl:template name="references-toc-entry">
+  <xsl:variable name="title">
+    <xsl:choose>
+      <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
+      <xsl:otherwise><xsl:value-of select="$xml2rfc-refparent"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+  <xsl:variable name="sectionNumber">
+    <xsl:call-template name="get-section-number" />
+  </xsl:variable>
+
+  <xsl:variable name="num">
+    <xsl:number level="any"/>
+  </xsl:variable>
+
+  <xsl:call-template name="insert-toc-line">
+    <xsl:with-param name="number" select="$sectionNumber"/>
+    <xsl:with-param name="target" select="concat($anchor-pref,'references','.',$num)"/>
+    <xsl:with-param name="title" select="$title"/>
+    <xsl:with-param name="name" select="name"/>
+  </xsl:call-template>
+
+  <xsl:if test="references">
+    <xsl:for-each select="references">
+      <xsl:call-template name="references-toc-entry"/>
+    </xsl:for-each>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="section" mode="toc">
