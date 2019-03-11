@@ -51,7 +51,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi xinclude rfc2629ext figextract artwork cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck preprocesssvg sanitizesvg preptime</xsl:text>
+  <xsl:text>pi xinclude rfc2629ext figextract artwork references cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck preprocesssvg sanitizesvg preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -138,6 +138,10 @@
         <xsl:when test="$s='preptime'">
           <xsl:message>Step: preptime</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-preptime"/>
+        </xsl:when>
+        <xsl:when test="$s='references'">
+          <xsl:message>Step: references</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-references"/>
         </xsl:when>
         <xsl:when test="$s='removeinrfc'">
           <xsl:message>Step: removeinrfc</xsl:message>
@@ -1178,6 +1182,28 @@
     <xsl:apply-templates select="@*" mode="prep-preptime"/>
     <xsl:apply-templates select="node()" mode="prep-preptime"/>
   </xsl:copy>
+</xsl:template>
+
+<!-- references step -->
+
+<xsl:template match="node()|@*" mode="prep-references">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-references"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="references[parent::back]" mode="prep-references">
+  <xsl:choose>
+    <xsl:when test="not(preceding-sibling::references) and count(../references)!=1">
+      <references>
+        <name>References</name>
+        <xsl:copy-of select="."/>
+        <xsl:apply-templates select="following-sibling::references" mode="prep-references"/>
+      </references>
+    </xsl:when>
+    <xsl:when test="not(preceding-sibling::references) and count(../references)=1">
+      <xsl:copy-of select="."/>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
 </xsl:template>
 
 <!-- removeinrfc step -->
