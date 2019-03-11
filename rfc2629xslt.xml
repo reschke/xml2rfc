@@ -2876,7 +2876,7 @@ include "rfc2629.rnc" {
       attribute anchor { xsd:ID }?,
       attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
       <strong><x:ref>v3_name</x:ref>?</strong>,
-      (references+
+      (references+ # (see <xref target="V3IMPNOTES" x:sec="3.1.16"/>)
        | 
         (reference
          | <strong><x:ref>v3_referencegroup</x:ref></strong>

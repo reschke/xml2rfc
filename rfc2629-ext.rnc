@@ -219,7 +219,7 @@ include "rfc2629.rnc" {
       attribute anchor { xsd:ID }?,
       attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
       v3_name?,
-      (references+
+      (references+ # (see [V3IMPNOTES], Section 3.1.16)
        | 
         (reference
          | v3_referencegroup
