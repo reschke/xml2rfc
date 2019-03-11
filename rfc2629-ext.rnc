@@ -572,6 +572,7 @@ v3_li =
       | eref
       | iref
       | xref
+      | v3_bcp14
       | v3_em
       | v3_strong
       | v3_sub
