@@ -1326,9 +1326,27 @@
     </xsl:for-each>
 
     <xsl:choose>
-      <xsl:when test="$front[1]/date/@year!=''">
+      <xsl:when test="$front[1]/date/@year != ''">
+        <xsl:if test="string(number($front[1]/date/@year)) = 'NaN'">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">date/@year should be a number: '<xsl:value-of select="$front[1]/date/@year"/>' in reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
         <xsl:text>, </xsl:text>
-        <xsl:value-of select="$front[1]/date/@month" />&#0160;<xsl:value-of select="$front[1]/date/@year" />
+        <xsl:if test="$front[1]/date/@month!=''">
+          <xsl:choose>
+            <xsl:when test="not(local-name($front[1]/..)='reference') and ($front[1]/date/@month=number($front[1]/date/@month))">
+              <xsl:call-template name="get-month-as-name">
+                <xsl:with-param name="month" select="number($front[1]/date/@month)"/>
+              </xsl:call-template>
+              <xsl:text>&#160;</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$front[1]/date/@month" /><xsl:text>&#160;</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:if>
+        <xsl:value-of select="$front[1]/date/@year" />
       </xsl:when>
       <xsl:when test="document(x:source/@href)/rfc/front">
         <!-- is the date element maybe included and should be defaulted? -->
