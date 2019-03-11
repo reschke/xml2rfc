@@ -2632,6 +2632,15 @@ done
   <x:source href="draft-iab-rfc7991bis-01.xml" basename="draft-iab-rfc7991bis-01"/>
 </reference>
 
+<reference anchor='V3IMPNOTES'>
+  <front>
+    <title>Implementation notes for RFC7991, "The 'xml2rfc' Version 3 Vocabulary"</title>
+    <author initials='H' surname='Levkowetz' fullname='Henrik Levkowetz'/>
+    <date month='February' day='14' year='2019' />
+  </front>
+  <seriesInfo name='Internet-Draft' value='draft-levkowetz-xml2rfc-v3-implementation-notes-08' />
+</reference>
+
 </references>
 
   <section title="RELAX NG Compact Schema" anchor="grammar">
@@ -3315,7 +3324,7 @@ attlist.xref &amp;=
   element sourcecode {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
-    attribute markers { text }?, #(see <eref target="https://tools.ietf.org/html/draft-levkowetz-xml2rfc-v3-implementation-notes-08#section-3.1.22"/>)
+    attribute markers { text }?, #(see <xref target="V3IMPNOTES" x:sec="3.1.22"/>)
     attribute type { text }?,
     attribute x:lang { "" }?,
     TEXT
