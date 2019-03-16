@@ -5574,23 +5574,102 @@
   </xsl:if>
 </xsl:template>
 
+<!-- author name handling -->
+
+<xsl:template name="get-surname-from-fullname">
+  <xsl:param name="s"/>
+  <xsl:variable name="n" select="normalize-space($s)"/>
+  <xsl:choose>
+    <xsl:when test="contains($n,' ')">
+      <xsl:call-template name="get-surname-from-fullname">
+        <xsl:with-param name="s" select="substring-after($n,' ')"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$n"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-author-surname">
+  <xsl:variable name="s" select="normalize-space(@surname)"/>
+  <xsl:choose>
+    <xsl:when test="$s='' and normalize-space(@fullname)!=''">
+      <xsl:variable name="computed">
+        <xsl:call-template name="get-surname-from-fullname">
+          <xsl:with-param name="s" select="@fullname"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:call-template name="info">
+        <xsl:with-param name="msg">author/@surname is missing for author with fullname '<xsl:value-of select="@fullname"/>', extracted as '<xsl:value-of select="normalize-space($computed)"/>'</xsl:with-param>
+      </xsl:call-template>
+      <xsl:value-of select="normalize-space($computed)"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$s"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-initials-from-fullname">
+  <xsl:param name="s"/>
+  <xsl:variable name="n" select="normalize-space($s)"/>
+  <xsl:choose>
+    <xsl:when test="contains($n,' ')">
+      <xsl:value-of select="substring($n,1,1)"/><xsl:text>. </xsl:text>
+      <xsl:call-template name="get-initials-from-fullname">
+        <xsl:with-param name="s" select="substring-after($n,' ')"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-author-initials">
+  <xsl:variable name="s" select="normalize-space(@initials)"/>
+  <xsl:choose>
+    <xsl:when test="$s='' and normalize-space(@fullname)!='' and normalize-space(@surname)=''">
+      <xsl:variable name="computed">
+        <xsl:call-template name="get-initials-from-fullname">
+          <xsl:with-param name="s" select="@fullname"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:call-template name="info">
+        <xsl:with-param name="msg">author/@initials is missing for author with fullname '<xsl:value-of select="@fullname"/>', extracted as '<xsl:value-of select="normalize-space($computed)"/>'</xsl:with-param>
+      </xsl:call-template>
+      <xsl:value-of select="normalize-space($computed)"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$s"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="collectRightHeaderColumn">
   <xsl:for-each select="author">
+    <xsl:variable name="surname">
+      <xsl:call-template name="get-author-surname"/>
+    </xsl:variable>
+    <xsl:variable name="rawinitials">
+      <xsl:call-template name="get-author-initials"/>
+    </xsl:variable>
     <xsl:variable name="initials">
-      <xsl:call-template name="format-initials"/>
+      <xsl:call-template name="format-initials">
+        <xsl:with-param name="initials" select="$rawinitials"/>
+      </xsl:call-template>
     </xsl:variable>
     <xsl:variable name="truncated-initials">
       <xsl:call-template name="truncate-initials">
         <xsl:with-param name="initials" select="$initials"/>
       </xsl:call-template>
     </xsl:variable>
-    <xsl:if test="@surname">
+    <xsl:if test="$surname!=''">
       <myns:item>
         <xsl:value-of select="$truncated-initials"/>
         <xsl:if test="$truncated-initials!=''">
           <xsl:text> </xsl:text>
         </xsl:if>
-        <xsl:value-of select="@surname" />
+        <xsl:value-of select="$surname" />
         <xsl:if test="@asciiInitials!='' or @asciiSurname!=''">
           <xsl:text> (</xsl:text>
             <xsl:value-of select="@asciiInitials"/>
@@ -10361,11 +10440,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1089 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1089 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1090 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1090 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/03/11 17:06:49 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/11 17:06:49 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/03/16 08:39:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/16 08:39:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -10532,7 +10611,8 @@ dd, li, p {
 
 <!-- reformat contents of author/@initials -->
 <xsl:template name="format-initials">
-  <xsl:variable name="normalized" select="normalize-space(@initials)"/>
+  <xsl:param name="initials" select="@initials"/>
+  <xsl:variable name="normalized" select="normalize-space($initials)"/>
 
   <xsl:choose>
     <xsl:when test="$normalized=''">
