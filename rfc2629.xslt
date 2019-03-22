@@ -3874,9 +3874,23 @@
         <!-- DC creator, see RFC2731 -->
         <xsl:for-each select="front/author">
           <xsl:variable name="initials">
-            <xsl:call-template name="format-initials"/>
+            <xsl:call-template name="get-author-initials"/>
           </xsl:variable>
-          <meta name="dcterms.creator" content="{concat(@surname,', ',$initials)}" />
+          <xsl:variable name="surname">
+            <xsl:call-template name="get-author-surname"/>
+          </xsl:variable>
+          <xsl:variable name="disp">
+            <xsl:if test="$surname!=''">
+              <xsl:value-of select="$surname"/>
+              <xsl:if test="$initials!=''">
+                <xsl:text>, </xsl:text>
+                <xsl:value-of select="$initials"/>
+              </xsl:if>
+            </xsl:if>
+          </xsl:variable>
+          <xsl:if test="normalize-space($disp)!=''">
+            <meta name="dcterms.creator" content="{normalize-space($disp)}" />
+          </xsl:if>
         </xsl:for-each>
 
         <xsl:if test="$xml2rfc-private=''">
@@ -10438,11 +10452,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1092 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1092 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1093 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1093 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/03/22 18:16:27 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/22 18:16:27 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/03/22 19:14:49 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/22 19:14:49 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
