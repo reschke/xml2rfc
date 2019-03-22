@@ -10062,20 +10062,18 @@ dd, li, p {
 </xsl:template>
 
 <xsl:template name="t-alignment">
-  <xsl:if test="@align and @align!=''">
-    <xsl:attribute name="class">
-      <xsl:choose>
-        <xsl:when test="@align='left'"><xsl:value-of select="$css-left"/></xsl:when>
-        <xsl:when test="@align='right'"><xsl:value-of select="$css-right"/></xsl:when>
-        <xsl:when test="@align='center'">center</xsl:when>
-        <xsl:otherwise>
-          <xsl:call-template name="warning">
-            <xsl:with-param name="msg">Unknown align attribute: <xsl:value-of select="@align"/></xsl:with-param>
-          </xsl:call-template>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:attribute>
-  </xsl:if>
+  <xsl:attribute name="class">
+    <xsl:choose>
+      <xsl:when test="@align='left' or not(@align) or @align=''"><xsl:value-of select="$css-left"/></xsl:when>
+      <xsl:when test="@align='right'"><xsl:value-of select="$css-right"/></xsl:when>
+      <xsl:when test="@align='center'"><xsl:value-of select="$css-center"/></xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">Unknown align attribute: <xsl:value-of select="@align"/></xsl:with-param>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:attribute>
 </xsl:template>
 
 <xsl:template match="td">
@@ -10440,11 +10438,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1090 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1090 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1091 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1091 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/03/16 08:39:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/16 08:39:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/03/22 08:50:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/22 08:50:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
