@@ -3082,7 +3082,7 @@
     <xsl:when test="$truncated-initials='' and @surname">
       <xsl:value-of select="@surname"/>
     </xsl:when>
-    <xsl:when test="position()=last() and position()!=1">
+    <xsl:when test="$not-reversed">
       <xsl:value-of select="concat($truncated-initials,' ',@surname)" />
     </xsl:when>
     <xsl:otherwise>
@@ -10438,11 +10438,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1091 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1091 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1092 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1092 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/03/22 08:50:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/22 08:50:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/03/22 18:16:27 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/22 18:16:27 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
