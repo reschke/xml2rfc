@@ -6922,14 +6922,14 @@ caption.caption-top {
 }
 </xsl:if>
 <xsl:if test="//table">
-table:not([class]) tr {
+table.v3 tr {
     vertical-align: top;
 }
-table:not([class]) th {
+table.v3 th {
   background-color: #e9e9e9;
   vertical-align: top;
 }
-table:not([class]) tr:nth-child(2n) > td {
+table.v3 tr:nth-child(2n) > td {
   background-color: #f5f5f5;
   vertical-align: top;
 }
@@ -10021,11 +10021,11 @@ dd, li, p {
     <xsl:call-template name="copy-anchor"/>
     <xsl:apply-templates select="iref"/>
     <xsl:variable name="style">
-      <xsl:value-of select="$css-tt"/>
+      <xsl:text>v3 </xsl:text>
       <xsl:choose>
-        <xsl:when test="@align='left'"><xsl:text> </xsl:text><xsl:value-of select="$css-tleft"/></xsl:when>
-        <xsl:when test="@align='right'"><xsl:text> </xsl:text><xsl:value-of select="$css-tright"/></xsl:when>
-        <xsl:when test="@align='center' or not(@align) or @align=''"><xsl:text> </xsl:text><xsl:value-of select="$css-tcenter"/></xsl:when>
+        <xsl:when test="@align='left'"><xsl:value-of select="$css-tleft"/></xsl:when>
+        <xsl:when test="@align='right'"><xsl:value-of select="$css-tright"/></xsl:when>
+        <xsl:when test="@align='center' or not(@align) or @align=''"><xsl:value-of select="$css-tcenter"/></xsl:when>
         <xsl:otherwise/>
       </xsl:choose>
     </xsl:variable>
@@ -10456,11 +10456,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1094 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1094 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1095 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1095 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/03/22 19:30:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/22 19:30:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/03/26 15:14:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/03/26 15:14:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
