@@ -2820,7 +2820,8 @@ include "rfc2629.rnc" {
       attlist.cref,
       (TEXT
         | eref
-        | xref)*
+        | xref
+        | <x:ref>x_ref</x:ref>)*
     }
 
   <em># Redefine &lt;figure> to allow more child elements</em>
