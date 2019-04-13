@@ -3262,6 +3262,11 @@
   </xsl:choose>
 </xsl:template>
 
+<!-- Unicode -->
+<xsl:template match="u">
+  <xsl:call-template name="emit-u"/>
+</xsl:template>
+
 <!-- BCP14 keywords -->
 <xsl:template match="x:bcp14|bcp14">
   <!-- TODO: figure out something that prints well -->
@@ -3471,6 +3476,6 @@
 <xsl:template match="@id" mode="strip-ids"/>
 
 <!-- suppress new elements temporarily -->
-<xsl:template match="artset|u"/>
+<xsl:template match="artset"/>
 
 </xsl:transform>

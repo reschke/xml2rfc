@@ -164,6 +164,11 @@
 <xsl:template match="rfc/@version" mode="cleanup"/>
 <xsl:template match="@pn" mode="cleanup"/>
 
+<xsl:template match="x:u-map" mode="cleanup"/>
+<xsl:template match="u" mode="cleanup">
+  <xsl:call-template name="emit-u"/>
+</xsl:template>
+
 <!-- extensions -->
 
 <xsl:template match="x:abnf-char-sequence" mode="cleanup">
