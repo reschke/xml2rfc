@@ -3263,6 +3263,7 @@
 </xsl:template>
 
 <!-- Unicode -->
+<xsl:template match="x:u-map"/>
 <xsl:template match="u">
   <xsl:call-template name="emit-u"/>
 </xsl:template>
