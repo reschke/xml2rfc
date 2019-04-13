@@ -442,6 +442,12 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>xml2rfc-ext-xref-with-text-generate<iref item="xml2rfc-ext-xref-with-text-generate"/> <iref item="Parameters" subitem="xml2rfc-ext-xref-with-text-generate"/></c>
   <c>'text'</c>
   <c>Determines whether &lt;xref> with text content generates additional text as in traditional text output ("text"), or just generates a link around the text ("nothing"). Note that the default might change in the future in order to achieve compatibility with other formatters.</c>
+
+  <c>rfc-ext</c>
+  <c>ucd-file<iref item="ucd-file PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="ucd-file"/></c>
+  <c>xml2rfc-ext-ucd-file<iref item="xml2rfc-ext-ucd-file"/> <iref item="Parameters" subitem="xml2rfc-ext-ucd-file"/></c>
+  <c></c>
+  <c>Specifies an external resource containing Unicode character database information, as described in <xref target="ext.element.u-map"/>.</c>
 </texttable>
 </section>
 
@@ -1109,6 +1115,30 @@ mkepub.sh rfc2616.xml
   </t>
 </section>
 
+<section title="&lt;c> element" anchor="ext.element.c">
+  <iref item="Extension Elements" subitem="c" primary="true"/>
+  <iref item="c Extension Element" primary="true"/>
+  <x:anchor-alias value="c"/>
+  <t>
+    Contains mapping information for a single Unicode code points.
+    Attributes are "c" (the actual character), "n" (the code point), and
+    "d" (the name/description).
+  </t>
+  <t>
+    For instance:
+  </t>
+<figure>
+    <artwork type="example" x:lang="">
+&lt;x:u-map>
+  &lt;x:c n="8364" c="&amp;#8364;" d="EURO SIGN"/>
+&lt;x:u-map>
+</artwork></figure>
+  <t>
+    (The format is deliberately terse so that the size of a mapping file
+    containing the whole Unicode character database is minimized).
+  </t>
+</section>
+
 <section title="&lt;dfn> element" anchor="ext.element.dfn">
   <iref item="Extension Elements" subitem="dfn" primary="true"/>
   <iref item="dfn Extension Element" primary="true"/>
@@ -1354,6 +1384,25 @@ Content-Length: &lt;x:length-of target="req"/>
   </t>
   <t>
     <em>See also &lt;sup&gt; (<xref target="v3.sup"/>).</em>
+  </t>
+</section>
+
+<section title="&lt;u-map> element" anchor="ext.element.u-map">
+  <iref item="Extension Elements" subitem="u-map" primary="true"/>
+  <iref item="u-map Extension Element" primary="true"/>
+  <x:anchor-alias value="u-map"/>
+  <t>
+    Needed for the lookup of Unicode character database information; this
+    element can either appear in-band in the source document, or off-band
+    as specified using the xml2rfc-ext-ucd-file parameter/PI.
+  </t>
+  <t>
+    Contains multiple &lt;x:c> elements (see <xref target="ext.element.c"/>).
+  </t>
+  <t>
+    The utility XSLT <tt>convert-ucd.xslt</tt> can be used to create
+    a mapping file based on the Unicode XML database format, as available
+    from <eref target="https://unicode.org/ucd/#UCDinXML"/>. 
   </t>
 </section>
 
@@ -1780,6 +1829,28 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="tt V3 Extension Element" primary="true"/>
 <t>
   See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.tt"/>.
+</t>
+</section>
+
+<section title="u Element" anchor="v3.u">
+  <iref item="V3 Extension Elements" subitem="u" primary="true"/>
+  <iref item="u V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="A.1"/>.
+</t>
+<t>
+  Note that in this implementation, this element needs mapping information
+  in two cases:
+</t>
+<ol>
+  <li>When in XSLT 1.0: to compute the Unicode code point of a given character
+  (when non-ASCII),</li>
+  <li>In any case: to lookup the Unicode name of a character.</li>
+</ol>
+<t>
+  The mapping information can be supplied inline using the &lt;x:u-map>
+  element, or in an external file. See <xref target="ext.element.u-map"/>
+  for details.
 </t>
 </section>
 
@@ -2920,6 +2991,7 @@ include "rfc2629.rnc" {
        <strong>| <x:ref>x_contributor</x:ref></strong>
        <strong>| <x:ref>x_include-author</x:ref></strong>
        <strong>| <x:ref>x_note</x:ref></strong>
+       <strong>| <x:ref>x_u-map</x:ref></strong>
        <strong>| <x:ref>rdf_Description</x:ref></strong>)*
     }
 
@@ -2953,6 +3025,7 @@ include "rfc2629.rnc" {
        <strong>| <x:ref>v3_sub</x:ref></strong>
        <strong>| <x:ref>v3_sup</x:ref></strong>
        <strong>| <x:ref>v3_tt</x:ref></strong>
+       <strong>| <x:ref>v3_u</x:ref></strong>
        <strong>| <x:ref>x_abnf-char-sequence</x:ref></strong>
        <strong>| <x:ref>x_anchor-alias</x:ref></strong>
        <strong>| <x:ref>x_bcp14</x:ref></strong>
@@ -3178,7 +3251,8 @@ attlist.xref &amp;=
       | xref
       | <x:ref>v3_em</x:ref>
       | <x:ref>v3_tt</x:ref>
-      | <x:ref>v3_strong</x:ref>)*
+      | <x:ref>v3_strong</x:ref>
+      | <x:ref>v3_u</x:ref>)*
     )
   }
 
@@ -3474,6 +3548,15 @@ attlist.xref &amp;=
       | <x:ref>x_ref</x:ref>)*
   }
 
+<em anchor="v3_u"><iref item="u V3 Extension Element"/><iref item="V3 Extension Elements" subitem="u"
+/># Non-ASCII characters (see <xref target="v3.u"/>)</em>
+<x:ref>v3_u</x:ref> =
+  element u {
+    attribute ascii { text }?,
+    attribute format { text }?,
+    TEXT
+  }
+
 <em anchor="v3_ul"><iref item="ul V3 Extension Element"/><iref item="V3 Extension Elements" subitem="ul"
 /># Unordered List (see <xref target="v3.ul"/>)</em>
 <x:ref>v3_ul</x:ref> =
@@ -3617,6 +3700,15 @@ attlist.xref &amp;=
       | <x:ref>x_ref</x:ref>)* 
   }
 
+<em anchor="x_c"><iref item="c Extension Element"/><iref item="Extension Elements" subitem="c"
+/># Unicode character map entry (see <xref target="ext.element.c"/>)</em>
+<x:ref>x_c</x:ref> =
+  element x:c {
+    attribute c { TEXT },
+    attribute d { TEXT }?,
+    attribute n { TEXT }
+  }
+
 <em anchor="x_defines"><iref item="defines Extension Element"/><iref item="Extension Elements" subitem="defines"
 /># declaration of definition in external reference<!-- (see <xref target="ext.element.sup"/>)--></em>
 <x:ref>x_defines</x:ref> =
@@ -3738,6 +3830,13 @@ attlist.xref &amp;=
     attribute x:lang { "" }?,
     (TEXT
       | <x:ref>x_parse-xml</x:ref>)* 
+  }
+
+<em anchor="x_u-map"><iref item="u-map Extension Element"/><iref item="Extension Elements" subitem="u-map"
+/># Unicode character map (see <xref target="ext.element.u-map"/>)</em>
+<x:ref>x_u-map</x:ref> =
+  element x:u-map {
+    <x:ref>x_c</x:ref>*
   }
 
 <em anchor="x_x"><iref item="x Extension Element"/><iref item="Extension Elements" subitem="x"
