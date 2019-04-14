@@ -485,8 +485,21 @@
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:variable name="uri">
+          <xsl:choose>
+            <xsl:when test="starts-with(@href,'https://xml2rfc.ietf.org/public/rfc/')">
+              <xsl:call-template name="warning">
+                <xsl:with-param name="msg">rewriting URI to /xml2rfc.tools.ietf.org for <xsl:value-of select="@href"/> - see in order to avoid broken server's 403 response (see https://mailarchive.ietf.org/arch/msg/xml2rfc/56sDqFVKF0baqdgEjHQtxOUMf4o).</xsl:with-param>
+              </xsl:call-template>
+              <xsl:value-of select="concat('https://xml2rfc.tools.ietf.org/public/rfc/',substring-after(@href,'https://xml2rfc.ietf.org/public/rfc/'))"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="@href"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
         <xsl:variable name="doc">
-          <xsl:copy-of select="document(@href)"/>
+          <xsl:copy-of select="document($uri)"/>
         </xsl:variable>
         <xsl:if test="count(exslt:node-set($doc)) = 1">
           <myns:include from="{@href}" in="{generate-id(..)}">
@@ -10463,11 +10476,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1096 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1096 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1097 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1097 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/04/13 11:05:56 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/13 11:05:56 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/04/14 11:44:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/14 11:44:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
