@@ -1557,15 +1557,15 @@
     <xsl:message terminate="yes">FATAL: &lt;xi:include> xpointer not supported.</xsl:message>
   </xsl:if>
   <xsl:variable name="uri">
-    <xsl:choose>
+    <!--<xsl:choose>
       <xsl:when test="starts-with(@href,'https://xml2rfc.ietf.org/public/rfc/')">
         <xsl:message>INFO: rewriting URI from xml2rfc.ietf.org to xml2rfc.tools.ietf.org - see https://mailarchive.ietf.org/arch/msg/xml2rfc/56sDqFVKF0baqdgEjHQtxOUMf4o</xsl:message>
         <xsl:value-of select="concat('https://xml2rfc.tools.ietf.org/public/rfc/',substring-after(@href,'https://xml2rfc.ietf.org/public/rfc/'))"/>
       </xsl:when>
-      <xsl:otherwise>
+      <xsl:otherwise>-->
         <xsl:value-of select="@href"/>
-      </xsl:otherwise>
-    </xsl:choose>
+      <!--</xsl:otherwise>
+    </xsl:choose>-->
   </xsl:variable>
   <xsl:variable name="content" select="document($uri)"/>
   <xsl:variable name="href" select="@href"/>
