@@ -1142,7 +1142,7 @@
     <xsl:when test="self::section and parent::middle">s-<xsl:number count="section"/></xsl:when>
     <xsl:when test="self::section and ancestor::boilerplate">s-boilerplate-<xsl:number count="section"/></xsl:when>
     <xsl:when test="self::section"><xsl:for-each select=".."><xsl:call-template name="pn-sn"/></xsl:for-each>.<xsl:number count="section"/></xsl:when>
-    <xsl:when test="self::artwork or self::aside or self::blockquote or self::dd or self::dl or self::dt or self::li or self::ol or self::sourcecode or self::t or self::tbody or self::td or self::th or self::thead or self::tr or self::ul">
+    <xsl:when test="self::artset or self::artwork or self::aside or self::blockquote or self::dd or self::dl or self::dt or self::li or self::ol or self::sourcecode or self::t or self::tbody or self::td or self::th or self::thead or self::tr or self::ul">
       <xsl:for-each select="..">
         <xsl:call-template name="pn-sn"/>
         <xsl:choose>
@@ -1150,13 +1150,13 @@
           <xsl:otherwise>.</xsl:otherwise>
         </xsl:choose>
       </xsl:for-each>
-      <xsl:number count="artwork|aside|blockquote|dd|dl|dt|li|ol|sourcecode|t|tbody|td|th|thead|tr|ul"/>
+      <xsl:number count="artset|artwork|aside|blockquote|dd|dl|dt|li|ol|sourcecode|t|tbody|td|th|thead|tr|ul"/>
     </xsl:when>
     <xsl:otherwise/>
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="abstract|artwork|aside|blockquote|boilerplate|dd|dl|dt|figure|li|note|ol|references|section|sourcecode|t|table|tbody|td|th|thead|tr|ul" mode="prep-pn">
+<xsl:template match="abstract|artset|artwork|aside|blockquote|boilerplate|dd|dl|dt|figure|li|note|ol|references|section|sourcecode|t|table|tbody|td|th|thead|tr|ul" mode="prep-pn">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-pn"/>
     <!-- https://github.com/rfc-format/draft-iab-rfcv3-preptool-bis/issues/7 -->
