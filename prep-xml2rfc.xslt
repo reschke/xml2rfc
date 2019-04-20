@@ -731,35 +731,33 @@
     <xsl:apply-templates select="@*" mode="prep-slug">
       <xsl:with-param name="root" select="$root"/>
     </xsl:apply-templates>
-    <xsl:if test="not(../@anchor)">
-      <xsl:variable name="fr">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.'"()+-_ :%,/@=&lt;&gt;</xsl:variable>
-      <xsl:variable name="to">abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789.__----_---------</xsl:variable>
-      <xsl:variable name="canslug" select="translate(normalize-space(.),$fr,'')=''"/>
-      <xsl:choose>
-        <xsl:when test="$canslug">
-          <xsl:variable name="slug" select="translate(normalize-space(.),$fr,$to)"/>
-          <xsl:variable name="conflicts" select="$root//*[not(@anchor)]/name[$slug=translate(normalize-space(.),$fr,$to)]"/>
-          <xsl:attribute name="slugifiedName">
-            <xsl:choose>
-              <xsl:when test="count($conflicts)>1">
-                <xsl:variable name="c" select="preceding::*[not(@anchor)]/name[$slug=translate(normalize-space(.),$fr,$to)]"/>
-                <xsl:value-of select="concat('n-',$slug,'_',(1+count($c)))"/>
-                <!--<xsl:message><xsl:value-of select="concat('n-',$slug,'_',(1+count($c)))"/></xsl:message>-->
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="concat('n-',$slug)"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:attribute>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:call-template name="info">
-            <xsl:with-param name="msg" select="concat('No usable name for slug, using random ID instead: ',normalize-space(.))"/>
-          </xsl:call-template>
-          <xsl:attribute name="slugifiedName">n-id_<xsl:value-of select="generate-id(.)"/></xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:if>
+    <xsl:variable name="fr">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.'"()+-_ :%,/@=&lt;&gt;</xsl:variable>
+    <xsl:variable name="to">abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789.__----_---------</xsl:variable>
+    <xsl:variable name="canslug" select="translate(normalize-space(.),$fr,'')=''"/>
+    <xsl:choose>
+      <xsl:when test="$canslug">
+        <xsl:variable name="slug" select="translate(normalize-space(.),$fr,$to)"/>
+        <xsl:variable name="conflicts" select="$root//*[not(@anchor)]/name[$slug=translate(normalize-space(.),$fr,$to)]"/>
+        <xsl:attribute name="slugifiedName">
+          <xsl:choose>
+            <xsl:when test="count($conflicts)>1">
+              <xsl:variable name="c" select="preceding::*[not(@anchor)]/name[$slug=translate(normalize-space(.),$fr,$to)]"/>
+              <xsl:value-of select="concat('n-',$slug,'_',(1+count($c)))"/>
+              <!--<xsl:message><xsl:value-of select="concat('n-',$slug,'_',(1+count($c)))"/></xsl:message>-->
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="concat('n-',$slug)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="info">
+          <xsl:with-param name="msg" select="concat('No usable name for slug, using random ID instead: ',normalize-space(.))"/>
+        </xsl:call-template>
+        <xsl:attribute name="slugifiedName">n-id_<xsl:value-of select="generate-id(.)"/></xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates select="node()" mode="prep-slug">
       <xsl:with-param name="root" select="$root"/>
     </xsl:apply-templates>
