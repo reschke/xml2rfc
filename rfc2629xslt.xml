@@ -1554,6 +1554,14 @@ Content-Length: &lt;x:length-of target="req"/>
   the "v3" vocabulary is still being developed.</em>
 </t>
 
+<section title="artset Element" anchor="v3.artset">
+  <iref item="V3 Extension Elements" subitem="artset" primary="true"/>
+  <iref item="artset V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.1"/>.
+</t>
+</section>
+
 <section title="aside Element" anchor="v3.aside">
   <iref item="V3 Extension Elements" subitem="aside" primary="true"/>
   <iref item="aside V3 Extension Element" primary="true"/>
@@ -2979,6 +2987,7 @@ include "rfc2629.rnc" {
        | texttable
        | iref
        | section
+       <strong>| <x:ref>v3_artset</x:ref></strong>
        <strong>| <x:ref>v3_aside</x:ref></strong>
        <strong>| <x:ref>v3_blockquote</x:ref></strong>
        <strong>| <x:ref>v3_dl</x:ref></strong>
@@ -3163,6 +3172,14 @@ attlist.xref &amp;=
   attribute x:rel  { ATEXT }?,
   attribute x:sec  { ATEXT }?
 
+<em anchor="v3_artset"><iref item="artset V3 Extension Element"/><iref item="V3 Extension Elements" subitem="artset"
+/># Set of artwork (see <xref target="v3.artset"/>)</em>
+<x:ref>v3_artset</x:ref> =
+  element artset {
+    attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
+    artwork+
+  }
+
 <em anchor="v3_aside"><iref item="aside V3 Extension Element"/><iref item="V3 Extension Elements" subitem="aside"
 /># Side Note (see <xref target="v3.aside"/>)</em>
 <x:ref>v3_aside</x:ref> =
@@ -3241,7 +3258,8 @@ attlist.xref &amp;=
 <x:ref>v3_dd</x:ref> =
   element dd {
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
-    ((artwork
+    ((<x:ref>v3_artset</x:ref>
+      | artwork
       | t
       | <x:ref>v3_dl</x:ref> 
       | <x:ref>v3_sourcecode</x:ref>)+ | 
@@ -3300,7 +3318,8 @@ attlist.xref &amp;=
   element li {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
-    ((artwork
+    ((<x:ref>v3_artset</x:ref>
+      | artwork
       | <x:ref>v3_blockquote</x:ref>
       | <x:ref>v3_dl</x:ref>
       | <x:ref>v3_ol</x:ref>

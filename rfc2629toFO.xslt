@@ -3476,7 +3476,12 @@
 </xsl:template>
 <xsl:template match="@id" mode="strip-ids"/>
 
-<!-- suppress new elements temporarily -->
-<xsl:template match="artset"/>
+<xsl:template match="artset">
+  <!-- see https://tools.ietf.org/html/draft-levkowetz-xml2rfc-v3-implementation-notes-08#section-3.1.1 -->
+  <!-- for now, naively selecting the first child element -->
+  <xsl:if test="artwork">
+    <xsl:apply-templates select="artwork[1]"/>
+  </xsl:if>
+</xsl:template>
 
 </xsl:transform>
