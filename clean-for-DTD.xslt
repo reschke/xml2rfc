@@ -970,6 +970,8 @@
   </figure>
 </xsl:template>
 
+<xsl:template match="artwork/@anchor" mode="cleanup"/>
+
 <xsl:template name="insert-markup">
   <xsl:variable name="content2"><xsl:apply-templates select="node()"/></xsl:variable>
   <xsl:variable name="content" select="translate($content2,'&#160;&#x2500;&#x2502;&#x2508;&#x250c;&#x2510;&#x2514;&#x2518;&#x251c;&#x2524;',' -|+++++++')"/>
@@ -1640,7 +1642,7 @@
       <figure>
         <xsl:apply-templates select=".//iref" mode="cleanup"/>
         <artwork>
-          <xsl:copy-of select="@anchor|@type"/>
+          <xsl:copy-of select="@type"/>
           <xsl:if test="@markers='true'">&lt;CODE BEGINS>&#10;</xsl:if>
           <xsl:if test="starts-with(.,'&#10;')">
             <xsl:text>&#10;</xsl:text>

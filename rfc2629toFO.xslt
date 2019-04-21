@@ -181,6 +181,7 @@
 
 <xsl:template match="artwork|sourcecode">
   <fo:block>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:if test="not(ancestor::figure)">
       <xsl:attribute name="start-indent">2em</xsl:attribute>
     </xsl:if>

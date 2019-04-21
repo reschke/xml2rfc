@@ -1491,12 +1491,14 @@
     </xsl:choose>
   </xsl:variable>
   <div>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:call-template name="attach-paragraph-number-as-id"/>
     <xsl:if test="$divstyle!=''">
       <xsl:attribute name="style"><xsl:value-of select="$divstyle"/></xsl:attribute>
     </xsl:if>
     <xsl:call-template name="insert-begin-code"/>
     <pre>
+      <xsl:call-template name="copy-anchor"/>
       <xsl:if test="$prestyle!=''">
         <xsl:attribute name="style"><xsl:value-of select="$prestyle"/></xsl:attribute>
       </xsl:if>
@@ -10484,11 +10486,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1099 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1099 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1100 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1100 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/04/21 04:23:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/21 04:23:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/04/21 11:48:50 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/21 11:48:50 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
