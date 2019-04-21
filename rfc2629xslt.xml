@@ -3547,7 +3547,7 @@ attlist.xref &amp;=
   element thead {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
-    <x:ref>v3_tr</x:ref>
+    <x:ref>v3_tr</x:ref>+
   }
 
 <em anchor="v3_tr"><iref item="tre V3 Extension Element"/><iref item="V3 Extension Elements" subitem="tr"

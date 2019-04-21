@@ -783,7 +783,7 @@ v3_thead =
   element thead {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
-    v3_tr
+    v3_tr+
   }
 
 # Table Row (see Section 12.32)

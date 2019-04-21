@@ -1677,6 +1677,12 @@
     <xsl:if test="$title!=''">
       <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
     </xsl:if>
+    <xsl:if test="count(thead/tr) > 1">
+      <xsl:call-template name="error">
+        <xsl:with-param name="inline">no</xsl:with-param>
+        <xsl:with-param name="msg">Multiple table header lines not supported</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:for-each select="thead/tr/*">
       <xsl:variable name="p" select="position()"/>
       <!-- in texttable the whole column has the same alignment; we try
