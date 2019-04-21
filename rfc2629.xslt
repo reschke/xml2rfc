@@ -5374,7 +5374,7 @@
       </xsl:when>
 
       <!-- Paragraph links -->
-      <xsl:when test="$node/self::t or $node/self::aside or $node/self::blockquote or $node/self::dl or $node/self::ol or $node/self::ul or $node/self::dt or $node/self::li">
+      <xsl:when test="$node/self::t or $node/self::aside or $node/self::blockquote or $node/self::dl or $node/self::ol or $node/self::ul or $node/self::dt or $node/self::li or $node/self::artwork or $node/self::sourcecode">
         <xsl:call-template name="xref-to-paragraph">
           <xsl:with-param name="from" select="$xref"/>
           <xsl:with-param name="to" select="$node"/>
@@ -10486,11 +10486,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1100 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1100 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1101 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1101 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/04/21 11:48:50 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/21 11:48:50 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/04/21 14:46:55 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/21 14:46:55 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
