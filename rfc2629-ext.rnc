@@ -517,9 +517,12 @@ v3_dd =
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     ((v3_artset
       | artwork
+      | figure
       | t
       | v3_dl 
-      | v3_sourcecode)+ | 
+      | v3_ol 
+      | v3_sourcecode 
+      | v3_ul)+ | 
     (TEXT
       | cref
       | eref
@@ -573,6 +576,7 @@ v3_li =
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     ((v3_artset
       | artwork
+      | figure
       | v3_blockquote
       | v3_dl
       | v3_ol
