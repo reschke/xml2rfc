@@ -1027,6 +1027,13 @@
   
 </xsl:template>
 
+<xsl:template match="artset" mode="cleanup">
+  <!-- naive impl to start with -->
+  <xsl:if test="artwork">
+    <xsl:apply-templates select="artwork[1]" mode="cleanup"/>
+  </xsl:if>
+</xsl:template>
+
 <!-- email repetitions -->
 <xsl:template match="email" mode="cleanup">
   <!-- combine in a single element -->
