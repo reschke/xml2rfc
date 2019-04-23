@@ -3480,9 +3480,15 @@
 <xsl:template match="artset">
   <!-- see https://tools.ietf.org/html/draft-levkowetz-xml2rfc-v3-implementation-notes-08#section-3.1.1 -->
   <!-- for now, naively selecting the first child element -->
-  <xsl:if test="artwork">
-    <xsl:apply-templates select="artwork[1]"/>
-  </xsl:if>
+  <xsl:choose>
+    <xsl:when test="artwork">
+      <xsl:apply-templates select="artwork[1]"/>
+    </xsl:when>
+    <xsl:when test="@anchor">
+      <fo:block id="{@anchor}"/>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
 </xsl:template>
 
 </xsl:transform>

@@ -1428,9 +1428,19 @@
 <xsl:template match="artset">
   <!-- see https://tools.ietf.org/html/draft-levkowetz-xml2rfc-v3-implementation-notes-08#section-3.1.1 -->
   <!-- for now, naively selecting the first child element -->
-  <xsl:if test="artwork">
-    <xsl:apply-templates select="artwork[1]"/>
-  </xsl:if>
+  <xsl:choose>
+    <xsl:when test="artwork">
+      <xsl:apply-templates select="artwork[1]"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <p>
+        <xsl:call-template name="attach-paragraph-number-as-id"/>
+        <xsl:if test="@anchor">
+          <span id="{@anchor}"/>
+        </xsl:if>
+      </p>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="artwork|sourcecode">
@@ -8960,7 +8970,7 @@ dd, li, p {
     <xsl:when test="ancestor::section">
       <!-- get section number of ancestor section element, then add t number -->
       <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
-      <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol|artwork|sourcecode"/></xsl:variable>
+      <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol|artwork|artset|sourcecode"/></xsl:variable>
       <xsl:choose>
         <xsl:when test="parent::section and ../@removeInRFC='true' and ../t[1]!=$section-removeInRFC">
           <xsl:value-of select="1 + $b"/>
@@ -8972,7 +8982,7 @@ dd, li, p {
     <xsl:when test="ancestor::note">
       <!-- or get section number of ancestor note element, then add t number -->
       <xsl:for-each select="ancestor::note[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
-      <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol|artwork|sourcecode"/></xsl:variable>
+      <xsl:variable name="b"><xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol|artwork|artset|sourcecode"/></xsl:variable>
       <xsl:choose>
         <xsl:when test="parent::note and ../@removeInRFC='true' and ../t[1]!=$note-removeInRFC">
           <xsl:value-of select="1 + $b"/>
@@ -8984,7 +8994,7 @@ dd, li, p {
     <!-- abstract -->
     <xsl:when test="ancestor::abstract">
       <xsl:text>p.</xsl:text>
-      <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol|artwork|sourcecode"/>
+      <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol|artwork|artset|sourcecode"/>
     </xsl:when>
 
     <xsl:otherwise/>
@@ -10482,11 +10492,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1103 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1103 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1104 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1104 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/04/23 06:16:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/23 06:16:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/04/23 14:31:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/23 14:31:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
