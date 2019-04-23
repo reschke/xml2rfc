@@ -815,6 +815,7 @@
 
 <xsl:template match="ul">
   <fo:list-block provisional-distance-between-starts="1.5em">
+    <xsl:call-template name="copy-anchor"/>
     <xsl:if test="self::ul and parent::section|parent::note|parent::abstract">
       <xsl:attribute name="start-indent">2em</xsl:attribute>
     </xsl:if>
@@ -857,6 +858,7 @@
 
 <xsl:template match="ol[not(@type) or string-length(@type)=1]">
   <fo:list-block provisional-distance-between-starts="1.5em">
+    <xsl:call-template name="copy-anchor"/>
     <xsl:if test="self::ol and parent::section|parent::note|parent::abstract">
       <xsl:attribute name="start-indent">2em</xsl:attribute>
     </xsl:if>
