@@ -2840,7 +2840,10 @@ include "rfc2629.rnc" {
       <strong><x:ref>v3_name</x:ref>?</strong>,
       iref*,
       preamble?,
-      ( artwork | <strong><x:ref>v3_sourcecode</x:ref></strong>),
+      (artwork 
+        | <strong><x:ref>v3_sourcecode</x:ref></strong>
+        | <strong><x:ref>v3_artset</x:ref></strong>
+      ),
       postamble?
     }
 

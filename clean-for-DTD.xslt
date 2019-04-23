@@ -938,7 +938,7 @@
       <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
     </xsl:if>
     <xsl:apply-templates select=".//artwork//iref|.//sourcecode//iref" mode="cleanup"/>
-    <xsl:apply-templates select="iref|preamble|artwork|sourcecode|postamble|ed:replace|ed:ins|ed:del" mode="cleanup" />
+    <xsl:apply-templates select="iref|preamble|artwork|artset|sourcecode|postamble|ed:replace|ed:ins|ed:del" mode="cleanup" />
   </figure>
 </xsl:template>
 <xsl:template match="figure/name" mode="cleanup"/>
@@ -1031,6 +1031,9 @@
   <!-- naive impl to start with -->
   <xsl:if test="artwork">
     <xsl:apply-templates select="artwork[1]" mode="cleanup"/>
+  </xsl:if>
+  <xsl:if test="not(artwork) and parent::figure">
+    <artwork/>
   </xsl:if>
 </xsl:template>
 

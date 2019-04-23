@@ -104,7 +104,10 @@ include "rfc2629.rnc" {
       v3_name?,
       iref*,
       preamble?,
-      ( artwork | v3_sourcecode),
+      (artwork 
+        | v3_sourcecode
+        | v3_artset
+      ),
       postamble?
     }
 
