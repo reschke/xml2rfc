@@ -3180,6 +3180,7 @@ attlist.xref &amp;=
 /># Set of artwork (see <xref target="v3.artset"/>)</em>
 <x:ref>v3_artset</x:ref> =
   element artset {
+    attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     artwork+
   }

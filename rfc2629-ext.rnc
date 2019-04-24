@@ -443,6 +443,7 @@ attlist.xref &=
 # Set of artwork (see Section 12.1)
 v3_artset =
   element artset {
+    attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     artwork+
   }
