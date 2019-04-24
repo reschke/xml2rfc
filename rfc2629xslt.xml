@@ -3182,7 +3182,7 @@ attlist.xref &amp;=
   element artset {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
-    artwork+
+    artwork*
   }
 
 <em anchor="v3_aside"><iref item="aside V3 Extension Element"/><iref item="V3 Extension Elements" subitem="aside"
