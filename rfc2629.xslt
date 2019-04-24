@@ -1502,7 +1502,16 @@
     </xsl:choose>
   </xsl:variable>
   <div>
-    <xsl:call-template name="attach-paragraph-number-as-id"/>
+    <xsl:choose>
+      <xsl:when test="parent::artset">
+        <xsl:for-each select="..">
+          <xsl:call-template name="attach-paragraph-number-as-id"/>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="attach-paragraph-number-as-id"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:if test="$divstyle!=''">
       <xsl:attribute name="style"><xsl:value-of select="$divstyle"/></xsl:attribute>
     </xsl:if>
@@ -10493,11 +10502,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1106 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1106 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1107 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1107 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/04/24 08:15:55 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/24 08:15:55 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/04/24 16:58:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/24 16:58:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11669,7 +11678,7 @@ prev: <xsl:value-of select="$prev"/>
 </xsl:template>
 
 <!-- artwork/sourcecode element -->
-<xsl:template match="figure/artwork | figure/ed:replace/ed:*/artwork | section/artwork | li/artwork | dd/artwork" mode="validate" priority="9">
+<xsl:template match="figure/artwork | figure/ed:replace/ed:*/artwork | section/artwork | li/artwork | dd/artwork | artset/artwork" mode="validate" priority="9">
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
 <xsl:template match="figure/sourcecode | figure/ed:replace/ed:*/sourcecode | section/sourcecode | li/sourcecode | dd/sourcecode | td/sourcecode" mode="validate" priority="9">
