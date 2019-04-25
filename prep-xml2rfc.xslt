@@ -245,6 +245,18 @@
 <xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]/@originalSrc" mode="prep-artwork"/>
 <xsl:template match="artwork/svg:svg" mode="prep-artwork"/>
 
+<!-- anchor handling for artset -->
+<xsl:template match="artset/artwork/@anchor" mode="prep-artwork"/>
+<xsl:template match="artset" mode="prep-artwork">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-artwork"/>
+    <xsl:if test="not(@anchor) and artwork/@anchor">
+      <xsl:copy-of select="artwork/@anchor[1]"/>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-artwork"/>
+  </xsl:copy>
+</xsl:template>
+
 <!-- boilerplate step -->
 
 <xsl:template match="rfc/front/boilerplate" mode="prep-boilerplate">
