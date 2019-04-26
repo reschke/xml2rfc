@@ -921,6 +921,10 @@
   </xsl:for-each>
   <figure>
     <xsl:apply-templates select="@align|@alt|@anchor|@height|@src|@suppress-title|@width" mode="cleanup" />
+    <xsl:if test="not(@anchor) and artset/artwork/@anchor">
+      <!-- propagate anchor -->
+      <xsl:copy-of select="artset/artwork/@anchor[1]"/>
+    </xsl:if>
     <xsl:variable name="title">
       <xsl:choose>
         <xsl:when test="name">
@@ -960,6 +964,10 @@
 
 <xsl:template match="artwork[not(ancestor::figure)]" mode="cleanup">
   <figure>
+    <!-- propagate anchor -->
+    <xsl:if test="parent::artset and not(../@anchor)">
+      <xsl:copy-of select="@anchor"/>
+    </xsl:if>
     <!-- move irefs up -->
     <xsl:for-each select="iref">
       <iref>
