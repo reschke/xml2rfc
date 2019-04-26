@@ -1036,13 +1036,19 @@
 </xsl:template>
 
 <xsl:template match="artset" mode="cleanup">
-  <!-- naive impl to start with -->
-  <xsl:if test="artwork">
-    <xsl:apply-templates select="artwork[1]" mode="cleanup"/>
-  </xsl:if>
-  <xsl:if test="not(artwork) and parent::figure">
-    <artwork/>
-  </xsl:if>
+  <!-- see https://tools.ietf.org/html/draft-levkowetz-xml2rfc-v3-implementation-notes-08#section-3.1.1 -->
+  <xsl:choose>
+    <xsl:when test="artwork[not(svg:svg or normalize-space(.)='' or @src!='')]">
+      <xsl:apply-templates select="artwork[not(svg:svg or normalize-space(.)='' or @src!='')][1]" mode="cleanup"/>
+    </xsl:when>
+    <xsl:when test="artwork">
+      <xsl:apply-templates select="artwork[1]" mode="cleanup"/>
+    </xsl:when>
+    <xsl:when test="not(artwork) and parent::figure">
+      <artwork/>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
 </xsl:template>
 
 <!-- email repetitions -->

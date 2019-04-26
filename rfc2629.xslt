@@ -1428,8 +1428,10 @@
 <xsl:template match="artset">
   <xsl:call-template name="check-no-text-content"/>
   <!-- see https://tools.ietf.org/html/draft-levkowetz-xml2rfc-v3-implementation-notes-08#section-3.1.1 -->
-  <!-- for now, naively selecting the first child element -->
   <xsl:choose>
+    <xsl:when test="artwork[svg:svg or normalize-space(.)='' or @src!='']">
+      <xsl:apply-templates select="artwork[svg:svg or normalize-space(.)='' or @src!=''][1]"/>
+    </xsl:when>
     <xsl:when test="artwork">
       <xsl:apply-templates select="artwork[1]"/>
     </xsl:when>
@@ -10502,11 +10504,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1107 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1107 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1108 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1108 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/04/24 16:58:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/24 16:58:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/04/26 12:06:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/26 12:06:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
