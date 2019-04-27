@@ -1610,7 +1610,29 @@
     </xsl:choose>
     <xsl:choose>
       <xsl:when test="svg:svg">
-        <xsl:copy-of select="svg:svg"/>
+        <xsl:choose>
+          <xsl:when test="parent::artset and ../@anchor">
+            <div>
+              <xsl:copy-of select="../@anchor"/>
+              <xsl:copy-of select="svg:svg"/>
+            </div>
+          </xsl:when>
+          <xsl:when test="parent::artset and ../artwork/@anchor">
+            <div>
+              <xsl:copy-of select="../artwork[@anchor][1]/@anchor"/>
+              <xsl:copy-of select="svg:svg"/>
+            </div>
+          </xsl:when>
+          <xsl:when test="@anchor">
+            <div>
+              <xsl:copy-of select="@anchor"/>
+              <xsl:copy-of select="svg:svg"/>
+            </div>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:copy-of select="svg:svg"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="alt">
@@ -5405,7 +5427,7 @@
       </xsl:when>
 
       <!-- Paragraph links -->
-      <xsl:when test="$node/self::t or $node/self::aside or $node/self::blockquote or $node/self::dl or $node/self::ol or $node/self::ul or $node/self::dt or $node/self::li or $node/self::artwork or $node/self::sourcecode">
+      <xsl:when test="$node/self::t or $node/self::aside or $node/self::blockquote or $node/self::dl or $node/self::ol or $node/self::ul or $node/self::dt or $node/self::li or $node/self::artwork or $node/self::sourcecode or $node/self::artset">
         <xsl:call-template name="xref-to-paragraph">
           <xsl:with-param name="from" select="$xref"/>
           <xsl:with-param name="to" select="$node"/>
@@ -10514,11 +10536,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1110 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1110 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1111 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1111 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/04/27 09:35:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/27 09:35:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/04/27 17:17:01 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/27 17:17:01 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
