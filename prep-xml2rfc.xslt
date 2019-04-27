@@ -250,8 +250,9 @@
 <xsl:template match="artset" mode="prep-artwork">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="prep-artwork"/>
-    <xsl:if test="not(@anchor) and artwork/@anchor">
-      <xsl:copy-of select="artwork/@anchor[1]"/>
+    <xsl:variable name="anchored-artwork" select="artwork[@anchor]"/>
+    <xsl:if test="not(@anchor) and $anchored-artwork">
+      <xsl:copy-of select="$anchored-artwork[1]/@anchor"/>
     </xsl:if>
     <xsl:apply-templates select="node()" mode="prep-artwork"/>
   </xsl:copy>
