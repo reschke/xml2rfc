@@ -214,6 +214,18 @@
     <xsl:choose>
       <xsl:when test="svg:svg">
         <fo:instream-foreign-object>
+          <xsl:choose>
+            <xsl:when test="parent::artset and ../@anchor">
+              <xsl:attribute name="id"><xsl:value-of select="../@anchor"/></xsl:attribute>
+            </xsl:when>
+            <xsl:when test="parent::artset and ../artwork/@anchor">
+              <xsl:attribute name="id"><xsl:value-of select="../artwork[@anchor][1]/@anchor"/></xsl:attribute>
+            </xsl:when>
+            <xsl:when test="@anchor">
+              <xsl:attribute name="id"><xsl:value-of select="/@anchor"/></xsl:attribute>
+            </xsl:when>
+            <xsl:otherwise/>
+          </xsl:choose>
           <xsl:copy-of select="svg:svg"/>
         </fo:instream-foreign-object>
       </xsl:when>
