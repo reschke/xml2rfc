@@ -4695,7 +4695,7 @@
         <xsl:with-param name="target" select="$href"/>
         <xsl:with-param name="id" select="$anchor"/>
         <xsl:with-param name="child-nodes" select="*|text()"/>
-        <xsl:with-param name="index-item" select="@target"/>
+        <xsl:with-param name="index-item" select="$target"/>
         <xsl:with-param name="index-subitem" select="$ssec"/>
       </xsl:call-template>
     </xsl:when>
@@ -4775,7 +4775,7 @@
       </xsl:if>
 
       <xsl:call-template name="emit-link">
-        <xsl:with-param name="target" select="concat('#',@target)"/>
+        <xsl:with-param name="target" select="concat('#',$target)"/>
         <xsl:with-param name="id">
           <xsl:if test="@format='none'"><xsl:value-of select="$anchor"/></xsl:if>
         </xsl:with-param>
@@ -10534,11 +10534,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1114 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1114 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1115 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1115 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/05/02 09:29:39 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/05/02 09:29:39 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/05/02 10:31:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/05/02 10:31:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
