@@ -4662,9 +4662,11 @@
   <xsl:variable name="xref" select="."/>
   <xsl:variable name="is-xref" select="self::xref"/>
 
-  <xsl:variable name="target" select="@target" />
+  <xsl:variable name="target">
+    <xsl:call-template name="get-target-anchor"/>
+  </xsl:variable>
   <xsl:variable name="node" select="key('anchor-item',$target)" />
-  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]|relref[@target=$target]"/></xsl:variable>
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="$target"/>.<xsl:number level="any" count="xref[@target=$target]|relref[@target=$target]"/></xsl:variable>
 
   <xsl:variable name="sfmt">
     <xsl:call-template name="get-section-xref-format"/>
@@ -5374,12 +5376,34 @@
   
 </xsl:template>
 
+<xsl:template name="get-target-anchor">
+  <xsl:variable name="xref" select="."/>
+  <xsl:for-each select="$src">
+    <xsl:variable name="tn" select="key('anchor-item',$xref/@target)|exslt:node-set($includeDirectives)//reference[@anchor=$xref/@target]"/>
+    <xsl:for-each select="$src">
+      <xsl:choose>
+        <xsl:when test="$tn/parent::artset and $tn/../@anchor">
+          <xsl:value-of select="$tn/../@anchor"/>
+        </xsl:when>
+        <xsl:when test="$tn/parent::artset and $tn/../artwork/@anchor">
+          <xsl:value-of select="$tn/../artwork[@anchor][1]/@anchor"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$xref/@target"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:for-each>
+</xsl:template>
 
 <xsl:template match="xref[not(*|text())]|relref[not(*|text())]">
 
   <xsl:variable name="xref" select="."/>
 
-  <xsl:variable name="target" select="@target" />
+  <xsl:variable name="target">
+    <xsl:call-template name="get-target-anchor"/>
+  </xsl:variable>
+
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="$target"/>.<xsl:number level="any" count="xref[@target=$target]|relref[@target=$target]"/></xsl:variable>
   
   <!-- ensure we have the right context, this <xref> may be processed from within the boilerplate -->
@@ -10536,11 +10560,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1116 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1116 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1117 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1117 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/05/02 13:59:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/05/02 13:59:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/05/02 17:57:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/05/02 17:57:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
