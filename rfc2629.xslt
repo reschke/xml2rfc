@@ -4708,7 +4708,7 @@
             <xsl:with-param name="id" select="$anchor"/>
             <xsl:with-param name="citation-title" select="normalize-space($node/front/title)"/>
             <xsl:with-param name="child-nodes" select="*|text()"/>
-            <xsl:with-param name="index-item" select="@target"/>
+            <xsl:with-param name="index-item" select="$target"/>
             <xsl:with-param name="index-subitem" select="$ssec"/>
           </xsl:call-template>
         </xsl:when>
@@ -4730,7 +4730,7 @@
       <xsl:choose>
         <xsl:when test="@format='none' or $xml2rfc-ext-xref-with-text-generate='nothing'">
           <xsl:call-template name="emit-link">
-            <xsl:with-param name="target" select="concat('#',@target)"/>
+            <xsl:with-param name="target" select="concat('#',$target)"/>
             <xsl:with-param name="id">
               <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"><xsl:value-of select="$anchor"/></xsl:if>
             </xsl:with-param>
@@ -4739,7 +4739,7 @@
         </xsl:when>
         <xsl:otherwise>
           <!-- index links to this xref -->
-          <xsl:variable name="ireftargets" select="key('iref-xanch',$xref/@target) | key('iref-xanch','')[../@anchor=$xref/@target]"/>
+          <xsl:variable name="ireftargets" select="key('iref-xanch',$target) | key('iref-xanch','')[../@anchor=$target]"/>
 
           <xsl:apply-templates/>
           <xsl:text> (</xsl:text>
@@ -4769,7 +4769,7 @@
         <xsl:variable name="r-is-normative" select="$t-r-is-normative/@x:nrm='true'"/>
         <xsl:if test="not($r-is-normative)">
           <xsl:call-template name="warning">
-            <xsl:with-param name="msg" select="concat('Potentially normative reference to ',@target,' not referenced normatively')"/>
+            <xsl:with-param name="msg" select="concat('Potentially normative reference to ',$target,' not referenced normatively')"/>
           </xsl:call-template>
         </xsl:if>
       </xsl:if>
@@ -10534,11 +10534,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1113 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1113 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1114 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1114 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/04/29 07:19:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/04/29 07:19:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/05/02 09:29:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/05/02 09:29:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
