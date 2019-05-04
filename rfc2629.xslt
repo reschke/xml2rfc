@@ -9020,6 +9020,13 @@ dd, li, p {
 
 <xsl:template name="get-paragraph-number">
   <xsl:choose>
+    <!-- inside artset -->
+    <xsl:when test="parent::artset">
+      <xsl:for-each select="..">
+        <xsl:call-template name="get-paragraph-number"/>
+      </xsl:for-each>
+    </xsl:when>
+
     <!-- no numbering inside certain containers -->
     <xsl:when test="ancestor::dl or ancestor::figure or ancestor::ol or ancestor::ul or ancestor::ed:del or ancestor::ed:ins"/>
   
@@ -10560,11 +10567,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1117 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1117 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1118 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1118 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/05/02 17:57:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/05/02 17:57:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/05/04 14:11:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/05/04 14:11:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
