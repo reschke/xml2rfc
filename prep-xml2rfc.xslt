@@ -214,6 +214,28 @@
   </xsl:copy>
 </xsl:template>
 
+<!-- xref to artwork inside artset -->
+<xsl:template match="@target" mode="prep-artset">
+  <xsl:variable name="r" select="ancestor::rfc[1]"/>
+  <xsl:variable name="tn" select="$r//*[@anchor=current()]"/>
+  <!--<xsl:message>link to <xsl:value-of select="local-name($tn)"/></xsl:message>-->
+  <xsl:choose>
+    <xsl:when test="$tn/self::artwork and $tn/parent::artset and $tn/../@anchor">
+      <xsl:attribute name="target">
+        <xsl:value-of select="$tn/../@anchor"/>
+      </xsl:attribute>
+    </xsl:when>
+    <xsl:when test="$tn/self::artwork and $tn/parent::artset">
+      <xsl:attribute name="target">
+        <xsl:value-of select="$tn/../artwork[@anchor][1]/@anchor"/>
+      </xsl:attribute>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:copy-of select="."/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 
 <!-- artwork step -->
 
