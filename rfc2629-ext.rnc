@@ -362,6 +362,7 @@ attlist.list &=
 attlist.x_note &=
   attribute anchor { xsd:ID }?,
   attribute title { ATEXT }?,
+  attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
   attribute removeInRFC { "false" | "true" }? # see Section 12.21.2
 
 # Extend attribute set for <preamble>

@@ -3098,6 +3098,7 @@ attlist.list &amp;=
 attlist.x_note &amp;=
   attribute anchor { xsd:ID }?,
   attribute title { ATEXT }?,
+  attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
   attribute removeInRFC { "false" | "true" }? # see <xref target="v3.section.removeInRFC"/>
 
 <em># Extend attribute set for &lt;preamble></em>
