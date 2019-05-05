@@ -436,6 +436,7 @@ attlist.uri &=
 
 # Extend attribute set for <xref> (see Section 11.30)
 attlist.xref &=
+  attribute derivedContent { text }?, # (see [RFC7991bis], Appendix B.3)
   attribute x:fmt  { "()" | "," | "of" | "number" | "sec" |
                      "none" }?,
   attribute x:rel  { ATEXT }?,
@@ -645,10 +646,11 @@ v3_postalLine =
 # EXPERIMENTAL DO NOT USE YET (see Section 12.18)
 v3_relref =
   element relref {
-    attribute target { xsd:IDREF },
+    attribute derivedLink { text }?, # (see [RFC7991bis], Appendix B.3)
     attribute displayFormat { "of" | "comma" | "parens" | "bare" }?,
-    attribute section { text },
     attribute relative { text }?,
+    attribute section { text },
+    attribute target { xsd:IDREF },
     TEXT
   }
 

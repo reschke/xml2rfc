@@ -3172,6 +3172,7 @@ attlist.uri &amp;=
 
 <em># Extend attribute set for &lt;xref> (see <xref target="ext-rfc2629.xref"/>)</em>
 attlist.xref &amp;=
+  attribute derivedContent { text }?, # (see <xref target="RFC7991bis" x:rel="#prepatts"/>)
   attribute x:fmt  { "()" | "," | "of" | "number" | "sec" |
                      "none" }?,
   attribute x:rel  { ATEXT }?,
@@ -3397,10 +3398,11 @@ attlist.xref &amp;=
 /># EXPERIMENTAL DO NOT USE YET (see <xref target="v3.relref"/>)</em>
 <x:ref>v3_relref</x:ref> =
   element relref {
-    attribute target { xsd:IDREF },
+    attribute derivedLink { text }?, # (see <xref target="RFC7991bis" x:rel="#prepatts"/>)
     attribute displayFormat { "of" | "comma" | "parens" | "bare" }?,
-    attribute section { text },
     attribute relative { text }?,
+    attribute section { text },
+    attribute target { xsd:IDREF },
     TEXT
   }
 
