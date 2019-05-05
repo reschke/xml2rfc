@@ -3131,6 +3131,7 @@ attlist.rfc &amp;=
   attribute indexInclude { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.indexInclude"/>)
   attribute tocDepth { text }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.tocDepth"/>)
   attribute tocInclude { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.tocInclude"/>)
+  attribute scripts { text }?, # (see <xref target="RFC7991bis" x:rel="#prepatts"/>)
   attribute sortRefs { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.sortRefs"/>)
   attribute symRefs { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.symRefs"/>)
   attribute version { text }? # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.symRefs"/>)

@@ -395,6 +395,7 @@ attlist.rfc &=
   attribute indexInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.4)
   attribute tocDepth { text }?, # (see [RFC7991bis], Section 2.44.14)
   attribute tocInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.15)
+  attribute scripts { text }?, # (see [RFC7991bis], Appendix B.3)
   attribute sortRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.11)
   attribute symRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.13)
   attribute version { text }? # (see [RFC7991bis], Section 2.44.13)
