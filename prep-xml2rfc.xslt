@@ -51,7 +51,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi xinclude rfc2629ext figextract artwork references cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck preprocesssvg sanitizesvg preptime</xsl:text>
+  <xsl:text>pi xinclude rfc2629ext figextract artset artwork references cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck preprocesssvg sanitizesvg preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -74,6 +74,10 @@
       <xsl:choose>
         <xsl:when test="contains(concat(' ',$skip-steps,' '),concat(' ',$s,' '))">
           <xsl:copy-of select="$nodes"/>
+        </xsl:when>
+        <xsl:when test="$s='artset'"> 
+          <xsl:message>Step: artset</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-artset"/>
         </xsl:when>
         <xsl:when test="$s='artwork'"> 
           <xsl:message>Step: artwork</xsl:message>
@@ -190,6 +194,27 @@
   </xsl:choose>
 </xsl:function>
 
+
+<!-- artset step -->
+
+<xsl:template match="node()|@*" mode="prep-artset">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-artset"/></xsl:copy>
+</xsl:template>
+
+<!-- anchor handling for artset -->
+<xsl:template match="artset/artwork/@anchor" mode="prep-artset"/>
+<xsl:template match="artset" mode="prep-artset">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="prep-artset"/>
+    <xsl:variable name="anchored-artwork" select="artwork[@anchor]"/>
+    <xsl:if test="not(@anchor) and $anchored-artwork">
+      <xsl:copy-of select="$anchored-artwork[1]/@anchor"/>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="prep-artset"/>
+  </xsl:copy>
+</xsl:template>
+
+
 <!-- artwork step -->
 
 <xsl:template match="node()|@*" mode="prep-artwork">
@@ -244,19 +269,6 @@
 <xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]/@type" mode="prep-artwork"/>
 <xsl:template match="artwork[@src and (@type='svg' or @type='image/svg+xml')]/@originalSrc" mode="prep-artwork"/>
 <xsl:template match="artwork/svg:svg" mode="prep-artwork"/>
-
-<!-- anchor handling for artset -->
-<xsl:template match="artset/artwork/@anchor" mode="prep-artwork"/>
-<xsl:template match="artset" mode="prep-artwork">
-  <xsl:copy>
-    <xsl:apply-templates select="@*" mode="prep-artwork"/>
-    <xsl:variable name="anchored-artwork" select="artwork[@anchor]"/>
-    <xsl:if test="not(@anchor) and $anchored-artwork">
-      <xsl:copy-of select="$anchored-artwork[1]/@anchor"/>
-    </xsl:if>
-    <xsl:apply-templates select="node()" mode="prep-artwork"/>
-  </xsl:copy>
-</xsl:template>
 
 <!-- boilerplate step -->
 
