@@ -3112,7 +3112,8 @@ attlist.organization &amp;=
 
 <em># Extend attribute set for &lt;reference></em>
 attlist.reference &amp;=
-  attribute quoteTitle { "false" | "true" }? # (see <xref target="v3.reference.quoteTitle"/>)
+  attribute quoteTitle { "false" | "true" }?, # (see <xref target="v3.reference.quoteTitle"/>)
+  attribute xml:base { text }? # (see <xref target="RFC7991bis" x:rel="#elements"/>)
 
 <em># Extend attribute set for &lt;references></em>
 attlist.references &amp;=

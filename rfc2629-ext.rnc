@@ -376,7 +376,8 @@ attlist.organization &=
 
 # Extend attribute set for <reference>
 attlist.reference &=
-  attribute quoteTitle { "false" | "true" }? # (see Section 12.20.1)
+  attribute quoteTitle { "false" | "true" }?, # (see Section 12.20.1)
+  attribute xml:base { text }? # (see [RFC7991bis], Section 2)
 
 # Extend attribute set for <references>
 attlist.references &=
