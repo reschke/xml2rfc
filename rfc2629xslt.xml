@@ -3058,6 +3058,7 @@ attlist.abstract &amp;=
 <em># Allow extension attributes on &lt;artwork> (<xref target="ext-rfc2629.artwork"/>)</em>
 attlist.artwork &amp;=
   attribute anchor { xsd:ID }?,
+  attribute originalSrc { text }?, # (see <xref target="RFC7991bis" x:rel="#prepatts"/>)
   attribute x:indent-with { ATEXT }?,
   attribute x:lang { "" }?,
   attribute x:is-code-component { "no" | "yes" }?

@@ -322,6 +322,7 @@ attlist.abstract &=
 # Allow extension attributes on <artwork> (Section 11.25)
 attlist.artwork &=
   attribute anchor { xsd:ID }?,
+  attribute originalSrc { text }?, # (see [RFC7991bis], Appendix B.3)
   attribute x:indent-with { ATEXT }?,
   attribute x:lang { "" }?,
   attribute x:is-code-component { "no" | "yes" }?
