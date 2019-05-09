@@ -1226,7 +1226,7 @@
         </xsl:call-template>
       </xsl:variable>
       <xsl:choose>
-        <xsl:when test="@surname and @surname!=''">
+        <xsl:when test="@surname!='' or (@fullname!='' and normalize-space(@fullname)!=normalize-space(organization))">
           <xsl:call-template name="displayname-for-author">
             <xsl:with-param name="not-reversed" select="position()=last() and position()!=1"/>
           </xsl:call-template>

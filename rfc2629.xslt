@@ -3417,14 +3417,8 @@
     </xsl:if>
     
     <xsl:for-each select="$front[1]/author">
-      <xsl:if test="@fullname and not(@surname) and (not(organization) or organization='')">
-        <xsl:call-template name="error">
-          <xsl:with-param name="msg">Missing @surname for author '<xsl:value-of select="@fullname"/>' - will ignore</xsl:with-param>
-        </xsl:call-template>
-      </xsl:if>
-
       <xsl:choose>
-        <xsl:when test="@surname and @surname!=''">
+        <xsl:when test="@surname!='' or (@fullname!='' and normalize-space(@fullname)!=normalize-space(organization))">
           <xsl:variable name="displayname">
             <xsl:call-template name="displayname-for-author">
               <xsl:with-param name="not-reversed" select="position()=last() and position()!=1"/>
@@ -10578,11 +10572,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1119 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1119 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1120 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1120 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/05/05 10:54:50 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/05/05 10:54:50 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/05/09 17:26:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/05/09 17:26:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
