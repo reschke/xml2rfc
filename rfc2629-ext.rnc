@@ -606,6 +606,7 @@ v3_li =
       | v3_sub
       | v3_sup
       | v3_tt
+      | v3_u
       | x_ref)*
     )
   }

@@ -3353,6 +3353,7 @@ attlist.xref &amp;=
       | <x:ref>v3_sub</x:ref>
       | <x:ref>v3_sup</x:ref>
       | <x:ref>v3_tt</x:ref>
+      | <x:ref>v3_u</x:ref>
       | <x:ref>x_ref</x:ref>)*
     )
   }
