@@ -1436,6 +1436,9 @@
       <xsl:apply-templates select="artwork[1]"/>
     </xsl:when>
     <xsl:otherwise>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg">artset needs to contain at least one artwork child element</xsl:with-param>
+      </xsl:call-template>
       <p>
         <xsl:call-template name="attach-paragraph-number-as-id"/>
         <xsl:if test="@anchor">
@@ -10618,11 +10621,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1123 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1123 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1124 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1124 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/05/15 07:57:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/05/15 07:57:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/05/16 05:56:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/05/16 05:56:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
