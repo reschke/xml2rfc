@@ -450,7 +450,7 @@ v3_artset =
   element artset {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
-    artwork*
+    artwork+
   }
 
 # Side Note (see Section 12.2)
