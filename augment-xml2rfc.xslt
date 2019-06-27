@@ -91,10 +91,10 @@
   <xsl:variable name="s" select="$ts[self::xref and not(text()) and (not(@format) or @format='default') and //reference[@anchor=$ts/@target]]"/>
   <xsl:variable name="tp" select="preceding-sibling::*[1]"/>
   <xsl:variable name="p" select="$tp[self::xref and not(text()) and (not(@format) or @format='default') and //reference[@anchor=$tp/@target]]"/>
-  <xsl:variable name="secnum">([0-9A-Z](\.[0-9A-Z])*)</xsl:variable>
-  <xsl:variable name="sp">(.*)(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)\s+of\s*$</xsl:variable>
-  <xsl:variable name="sp2">((.*)(Sections|Appendices|Section|Appendix)\s+)(<xsl:value-of select="$secnum"/>*)\s+and\s+(<xsl:value-of select="$secnum"/>*)\s+of\s*$</xsl:variable>
-  <xsl:variable name="pp">^,\s+(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)(.*)</xsl:variable>
+  <xsl:variable name="secnum">([0-9A-Z]+(\.[0-9A-Z]+)*)</xsl:variable>
+  <xsl:variable name="sp">(.*)(Section|Appendix)\s+<xsl:value-of select="$secnum"/>\s+of\s*$</xsl:variable>
+  <xsl:variable name="sp2">((.*)(Sections|Appendices|Section|Appendix)\s+)<xsl:value-of select="$secnum"/>\s+and\s+(<xsl:value-of select="$secnum"/>*)\s+of\s*$</xsl:variable>
+  <xsl:variable name="pp">^,\s+(Section|Appendix)\s+<xsl:value-of select="$secnum"/>(.*)</xsl:variable>
   <xsl:variable name="pp2">^(,\s+(Sections|Appendices|Section|Appendix)\s+)<xsl:value-of select="$secnum"/>\s+and\s+<xsl:value-of select="$secnum"/>(.*)</xsl:variable>
   <xsl:variable name="bad1">^\s+(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)(.*)</xsl:variable>
   <xsl:variable name="bad2">^;\s+(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)(.*)</xsl:variable>
@@ -117,7 +117,7 @@
           <xsl:value-of select="replace(., $sp2, '$1', 's')"/>
           <xref target="{$s/@target}" x:fmt="number" x:sec="{replace(., $sp2, '$4', 's')}"/>
           <xsl:text> and </xsl:text>
-          <xref target="{$s/@target}" x:fmt="number" x:sec="{replace(., $sp2, '$7', 's')}"/>
+          <xref target="{$s/@target}" x:fmt="number" x:sec="{replace(., $sp2, '$6', 's')}"/>
           <xsl:text> of </xsl:text>
         </xsl:when>
         <xsl:otherwise>
@@ -144,7 +144,7 @@
       <xsl:variable name="reftarget" select="//reference[@anchor=$p/@target]"/>
       <xsl:choose>
         <xsl:when test="$reftarget and $reftarget[seriesInfo/@name='RFC' or seriesInfo/@name='Internet-Draft']">
-          <xref INSERT="preceding" target="{$p/@target}" x:fmt="," x:sec="{replace(., $pp, '$2', 's')}"/><xsl:value-of select="replace(., $pp, '$5', 's')"/>
+          <xref INSERT="preceding" target="{$p/@target}" x:fmt="," x:sec="{replace(., $pp, '$2', 's')}"/><xsl:value-of select="replace(., $pp, '$4', 's')"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:copy-of select="."/>
