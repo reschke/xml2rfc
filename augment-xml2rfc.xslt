@@ -95,6 +95,7 @@
   <xsl:variable name="sp">(.*)(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)\s+of\s*$</xsl:variable>
   <xsl:variable name="sp2">((.*)(Sections|Appendices|Section|Appendix)\s+)(<xsl:value-of select="$secnum"/>*)\s+and\s+(<xsl:value-of select="$secnum"/>*)\s+of\s*$</xsl:variable>
   <xsl:variable name="pp">^,\s+(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)(.*)</xsl:variable>
+  <xsl:variable name="pp2">^(,\s+(Sections|Appendices|Section|Appendix)\s+)<xsl:value-of select="$secnum"/>\s+and\s+<xsl:value-of select="$secnum"/>(.*)</xsl:variable>
   <xsl:variable name="bad1">^\s+(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)(.*)</xsl:variable>
   <xsl:variable name="bad2">^;\s+(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)(.*)</xsl:variable>
   <xsl:choose>
@@ -118,6 +119,21 @@
           <xsl:text> and </xsl:text>
           <xref target="{$s/@target}" x:fmt="number" x:sec="{replace(., $sp2, '$7', 's')}"/>
           <xsl:text> of </xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:copy-of select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:when test="$p and matches(., $pp2,'s')">
+      <xsl:variable name="reftarget" select="//reference[@anchor=$p/@target]"/>
+      <xsl:choose>
+        <xsl:when test="$reftarget and $reftarget[seriesInfo/@name='RFC' or seriesInfo/@name='Internet-Draft']">
+          <xsl:value-of select="replace(., $pp2, '$1', 's')"/>
+          <xref target="{$p/@target}" x:fmt="number" x:sec="{replace(., $pp2, '$3', 's')}"/>
+          <xsl:text> and </xsl:text>
+          <xref target="{$p/@target}" x:fmt="number" x:sec="{replace(., $pp2, '$5', 's')}"/>
+          <xsl:value-of select="replace(., $pp2, '$7', 's')"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:copy-of select="."/>
