@@ -93,7 +93,7 @@
   <xsl:variable name="p" select="$tp[self::xref and not(text()) and (not(@format) or @format='default') and //reference[@anchor=$tp/@target]]"/>
   <xsl:variable name="secnum">([0-9A-Z](\.[0-9A-Z])*)</xsl:variable>
   <xsl:variable name="sp">(.*)(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)\s+of\s*$</xsl:variable>
-  <xsl:variable name="sp2">((.*)(Sections|Appendices)\s+)(<xsl:value-of select="$secnum"/>*)\s+and\s+(<xsl:value-of select="$secnum"/>*)\s+of\s*$</xsl:variable>
+  <xsl:variable name="sp2">((.*)(Sections|Appendices|Section|Appendix)\s+)(<xsl:value-of select="$secnum"/>*)\s+and\s+(<xsl:value-of select="$secnum"/>*)\s+of\s*$</xsl:variable>
   <xsl:variable name="pp">^,\s+(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)(.*)</xsl:variable>
   <xsl:variable name="bad1">^\s+(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)(.*)</xsl:variable>
   <xsl:variable name="bad2">^;\s+(Section|Appendix)\s+(<xsl:value-of select="$secnum"/>*)(.*)</xsl:variable>
