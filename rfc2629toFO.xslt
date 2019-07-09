@@ -875,13 +875,23 @@
 </xsl:template>
 
 <xsl:template match="ul">
-  <fo:list-block provisional-distance-between-starts="1.5em">
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:if test="self::ul and parent::section|parent::note|parent::abstract">
-      <xsl:attribute name="start-indent">2em</xsl:attribute>
-    </xsl:if>
-    <xsl:apply-templates />
-  </fo:list-block>
+  <xsl:choose>
+    <xsl:when test="not(li) and @x:when-empty">
+      <fo:block>
+        <xsl:call-template name="copy-anchor"/>
+        <xsl:value-of select="@x:when-empty"/>
+      </fo:block>
+    </xsl:when>
+    <xsl:otherwise>
+      <fo:list-block provisional-distance-between-starts="1.5em">
+        <xsl:call-template name="copy-anchor"/>
+        <xsl:if test="self::ul and parent::section|parent::note|parent::abstract">
+          <xsl:attribute name="start-indent">2em</xsl:attribute>
+        </xsl:if>
+        <xsl:apply-templates />
+      </fo:list-block>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="ul[not(@empty='true')]/li | list[@style='symbols' or (not(@style) and ancestor::list[@style='symbols'])]/t" priority="1">
