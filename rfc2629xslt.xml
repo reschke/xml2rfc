@@ -2185,7 +2185,10 @@ The picture below shows the RFC dependencies in RFC2629.
   This feature is currently tested with:
 </t>
 <ol>
-  <li>Mozilla Firefox, and</li>
+  <li>Mozilla Firefox (where, to be able to reload from the local filesystem, Firefox
+  needs to be configured with <tt>security.fileuri.strict_origin_policy</tt> set to
+  <tt>false</tt> in <tt>about:config</tt>, see
+  <eref target="https://developer.mozilla.org/en-US/docs/Archive/Misc_top_level/Same-origin_policy_for_file:_URIs">Mozilla documentation</eref>), and</li>
   <li>Google Chome (where, to be able to reload from the local filesystem, Chrome
   needs to be started with the command line option <tt>--allow-file-access-from-files</tt>).</li>
 </ol>  
@@ -2219,7 +2222,8 @@ The picture below shows the RFC dependencies in RFC2629.
 &lt;/rfc></artwork>
 <postamble>
 ...open it in both text editor and browser, start editing and of course
-ocasionally save.
+ocasionally save. And don't forget to put <tt>rfc2629.xslt</tt> into the same
+folder.
 </postamble>
 </figure>
 </section>
