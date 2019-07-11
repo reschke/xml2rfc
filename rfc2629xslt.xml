@@ -2169,26 +2169,26 @@ The picture below shows the RFC dependencies in RFC2629.
 </t>
 <t anchor="html.live.refresh.requirements">
   The requirements for this mode are:
-  <list style="numbers">
-    <t>
-      A browser that supports the <tt>DOMParser</tt>
-      and <tt>XSLTProcessor</tt> APIs.
-    </t>
-    <t>
-      The ability to reload the source code and the XSLT code from within
-      Javascript; in some browsers this is forbidden for "file:" URIs due to
-      perceived security problems.
-    </t>
-  </list>
 </t>
+<ol>
+  <li>
+    A browser that supports the <tt>DOMParser</tt>
+    and <tt>XSLTProcessor</tt> APIs.
+  </li>
+  <li>
+    The ability to reload the source code and the XSLT code from within
+    Javascript; in some browsers this is forbidden for "file:" URIs due to
+    perceived security problems.
+  </li>
+</ol>
 <t>
   This feature is currently tested with:
-  <list style="numbers">
-    <t>Mozilla Firefox, and</t>
-    <t>Google Chome (where, to be able to reload from the local filesystem, Chrome
-    needs to be started with the command line option <tt>--allow-file-access-from-files</tt>).</t>
-  </list>
 </t>
+<ol>
+  <li>Mozilla Firefox, and</li>
+  <li>Google Chome (where, to be able to reload from the local filesystem, Chrome
+  needs to be started with the command line option <tt>--allow-file-access-from-files</tt>).</li>
+</ol>  
 <t>
   Use of this feature requires the inclusion of a processing instruction that 
   holds the name of the XML source, such as:
