@@ -1766,7 +1766,7 @@
               <xsl:variable name="region-and-code">
                 <xsl:value-of select="$region"/>
                 <xsl:if test="$region!='' and $code!=''">
-                  <xsl:text>&#160;</xsl:text>
+                  <xsl:text> </xsl:text>
                 </xsl:if>
                 <xsl:value-of select="$code"/>
               </xsl:variable>
@@ -3600,7 +3600,7 @@
           <xsl:with-param name="doi" select="$doi"/>
         </xsl:call-template>
       </xsl:variable>
-      <a href="{$uri}">DOI&#160;<xsl:value-of select="$doi"/></a>
+      <a href="{$uri}">DOI <xsl:value-of select="$doi"/></a>
     </xsl:if>
 
     <!-- avoid hacks using seriesInfo when it's not really series information -->
@@ -4645,7 +4645,7 @@
           <xsl:text>"</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
+          <xsl:value-of select="normalize-space(concat($refname,' ',$refnum))"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:otherwise>
@@ -4925,7 +4925,7 @@
       <xsl:value-of select="$to/@title" />
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
+      <xsl:value-of select="normalize-space(concat('Figure ',$figcnt))"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -4972,7 +4972,7 @@
       </xsl:choose>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="normalize-space(concat('Table&#160;',$tabcnt))"/>
+      <xsl:value-of select="normalize-space(concat('Table ',$tabcnt))"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -5090,7 +5090,7 @@
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="pn" select="normalize-space(substring-after($tcnt,'p.'))"/>
-      <xsl:text>Paragraph&#160;</xsl:text>
+      <xsl:text>Paragraph </xsl:text>
       <xsl:choose>
         <xsl:when test="$pn=''">
           <xsl:text>?</xsl:text>
@@ -5141,7 +5141,7 @@
           <xsl:value-of select="$to/@title" />
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="normalize-space(concat('Comment&#160;',$name))"/>
+          <xsl:value-of select="normalize-space(concat('Comment ',$name))"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:with-param>
@@ -10654,11 +10654,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1128 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1128 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1129 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1129 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/07/13 10:54:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/07/13 10:54:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/07/13 11:05:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/07/13 11:05:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
