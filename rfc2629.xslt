@@ -3609,41 +3609,9 @@
       <xsl:apply-templates/>
     </xsl:for-each>
 
-    <xsl:if test="not($front[1]/date)">
-      <xsl:call-template name="warning">
-        <xsl:with-param name="msg">&lt;date&gt; missing in reference '<xsl:value-of select="@anchor"/>' (note that it can be empty)</xsl:with-param>
-      </xsl:call-template>
-    </xsl:if>
-
-    <xsl:choose>
-      <xsl:when test="$front[1]/date/@year != ''">
-        <xsl:if test="string(number($front[1]/date/@year)) = 'NaN'">
-          <xsl:call-template name="warning">
-            <xsl:with-param name="msg">date/@year should be a number: '<xsl:value-of select="$front[1]/date/@year"/>' in reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
-          </xsl:call-template>
-        </xsl:if>
-        <xsl:text>, </xsl:text>
-        <xsl:if test="$front[1]/date/@month!=''">
-          <xsl:choose>
-            <xsl:when test="not(local-name($front[1]/..)='reference') and ($front[1]/date/@month=number($front[1]/date/@month))">
-              <xsl:call-template name="get-month-as-name">
-                <xsl:with-param name="month" select="number($front[1]/date/@month)"/>
-              </xsl:call-template>
-              <xsl:text>&#160;</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="$front[1]/date/@month" /><xsl:text>&#160;</xsl:text>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:if>
-        <xsl:value-of select="$front[1]/date/@year" />
-      </xsl:when>
-      <xsl:when test="document(x:source/@href)/rfc/front">
-        <!-- is the date element maybe included and should be defaulted? -->
-        <xsl:value-of select="concat(', ',$xml2rfc-ext-pub-month,'&#160;',$xml2rfc-ext-pub-year)"/>
-      </xsl:when>
-      <xsl:otherwise/>
-    </xsl:choose>
+    <xsl:call-template name="insert-pub-date">
+      <xsl:with-param name="front" select="$front[1]"/>
+    </xsl:call-template>
 
     <xsl:choose>
       <xsl:when test="string-length(normalize-space(@target)) &gt; 0">
@@ -3686,6 +3654,50 @@
       <xsl:apply-templates />
     </xsl:for-each>
   </dd>
+</xsl:template>
+
+<xsl:template name="insert-pub-date">
+  <xsl:param name="front"/>
+  
+  <xsl:if test="not($front/date)">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">&lt;date&gt; missing in reference '<xsl:value-of select="@anchor"/>' (note that it can be empty)</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+
+  <xsl:choose>
+    <xsl:when test="$front/date/@year != ''">
+      <xsl:if test="string(number($front/date/@year)) = 'NaN'">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">date/@year should be a number: '<xsl:value-of select="$front/date/@year"/>' in reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:text>, </xsl:text>
+      <xsl:if test="$front/date/@month!=''">
+        <xsl:if test="front/date/@day!='' and front/date/@x:include-day='true'">
+          <xsl:value-of select="front/date/@day"/>
+          <xsl:text> </xsl:text>
+        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="not(local-name($front/..)='reference') and ($front/date/@month=number($front/date/@month))">
+            <xsl:call-template name="get-month-as-name">
+              <xsl:with-param name="month" select="number($front/date/@month)"/>
+            </xsl:call-template>
+            <xsl:text>&#160;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$front/date/@month" /><xsl:text>&#160;</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:if>
+      <xsl:value-of select="$front/date/@year" />
+    </xsl:when>
+    <xsl:when test="document(x:source/@href)/rfc/front">
+      <!-- is the date element maybe included and should be defaulted? -->
+      <xsl:value-of select="concat(', ',$xml2rfc-ext-pub-month,'&#160;',$xml2rfc-ext-pub-year)"/>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="referencegroup">
@@ -5910,6 +5922,10 @@
   </xsl:for-each>
   <myns:item>
     <xsl:if test="$xml2rfc-ext-pub-month!=''">
+      <xsl:if test="$xml2rfc-ext-pub-day!='' and /rfc/front/date/@x:include-day='true' and /rfc/@number">
+        <xsl:value-of select="number($xml2rfc-ext-pub-day)" />
+        <xsl:text> </xsl:text>
+      </xsl:if>
       <xsl:value-of select="$xml2rfc-ext-pub-month" />
       <xsl:if test="$xml2rfc-ext-pub-day!='' and /rfc/@ipr and not(/rfc/@number)">
         <xsl:text> </xsl:text>
@@ -10638,11 +10654,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1126 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1126 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1127 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1127 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/07/13 08:01:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/07/13 08:01:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/07/13 10:43:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/07/13 10:43:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -10660,6 +10676,10 @@ dd, li, p {
 </xsl:template>
 
 <xsl:template name="get-header-right">
+  <xsl:if test="$xml2rfc-ext-pub-day!='' and /rfc/front/date/@x:include-day='true' and /rfc/@number">
+    <xsl:value-of select="number($xml2rfc-ext-pub-day)" />
+    <xsl:text> </xsl:text>
+  </xsl:if>
   <xsl:value-of select="concat($xml2rfc-ext-pub-month, ' ', $xml2rfc-ext-pub-year)" />
 </xsl:template>
 

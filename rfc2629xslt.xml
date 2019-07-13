@@ -1432,6 +1432,21 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="Extensions to &lt;date&gt; element" anchor="ext-rfc2629.date">
+<t>
+  The attribute "x:include-day" ("true", "false") can be used to control whether the day-of-month
+  should be included in the output. This can be used to adjust the rendering
+  of dates for April-1st-RFCs to the desired special format, including the "1".
+</t>
+<t>
+  In particular: on the front page, the attribute defaults to "true", <em>unless</em>
+  when generating RFCs. The output format also varies depending on RFC-ness: it's
+  "day month year" for RFCs, but "month day, year" otherwise. In references, the
+  attribute defaults to "false", and when set to true, the day is just inserted
+  in front of the month.
+</t>
+</section>
+
 <section title="Extensions to &lt;iref&gt; element" anchor="ext-rfc2629.iref">
 <t>
   The extension attribute below is allowed on the standard &lt;iref&gt; element:
@@ -3075,7 +3090,7 @@ attlist.author &amp;=
   attribute anchor { xsd:ID }?,
   attribute x:annotation { ATEXT }?
   
-<em># Extend attribute set for &lt;c> (see <xref target="ext-rfc2629.iref"/>)</em>
+<em># Extend attribute set for &lt;c></em>
 attlist.c &amp;=
   attribute anchor { xsd:ID }?
 
@@ -3090,6 +3105,10 @@ attlist.code &amp;=
 <em># Extend attribute set for &lt;country></em>
 attlist.country &amp;=
   attribute ascii { ATEXT }?
+
+<em># Extend attribute set for &lt;date> (see <xref target="ext-rfc2629.date"/>)</em>
+attlist.date &amp;=
+  attribute x:include-day { "false" | "true" }?
 
 <em># Extend attribute set for &lt;iref> (see <xref target="ext-rfc2629.iref"/>)</em>
 attlist.iref &amp;=

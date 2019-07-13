@@ -335,7 +335,7 @@ attlist.author &=
   attribute anchor { xsd:ID }?,
   attribute x:annotation { ATEXT }?
   
-# Extend attribute set for <c> (see Section 11.26)
+# Extend attribute set for <c>
 attlist.c &=
   attribute anchor { xsd:ID }?
 
@@ -351,11 +351,15 @@ attlist.code &=
 attlist.country &=
   attribute ascii { ATEXT }?
 
-# Extend attribute set for <iref> (see Section 11.26)
+# Extend attribute set for <date> (see Section 11.26)
+attlist.date &=
+  attribute x:include-day { "false" | "true" }?
+
+# Extend attribute set for <iref> (see Section 11.27)
 attlist.iref &=
   attribute x:for-anchor { ATEXT }?
 
-# Extend attribute set for <list> (see Section 11.27)
+# Extend attribute set for <list> (see Section 11.28)
 attlist.list &=
   attribute x:indent { ATEXT }?
 
@@ -400,7 +404,7 @@ attlist.rfc &=
   attribute symRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.13)
   attribute version { text }? # (see [RFC7991bis], Section 2.44.13)
 
-# Extend/Relax attribute set for <section> (see Section 11.29)
+# Extend/Relax attribute set for <section> (see Section 11.30)
 attlist.x_section &=
   attribute anchor { xsd:ID }?,
   attribute title { ATEXT }?,
@@ -418,7 +422,7 @@ attlist.spanx &=
 attlist.street &=
   attribute ascii { ATEXT }?
 
-# Extend attribute set for <c> (see Section 11.26)
+# Extend attribute set for <c> (see Section 11.27)
 attlist.t &=
   attribute keepWithNext { text }?,
   attribute keepWithPrevious { text }?,
@@ -437,7 +441,7 @@ attlist.title &=
 attlist.uri &=
   attribute x:annotation { ATEXT }?
 
-# Extend attribute set for <xref> (see Section 11.30)
+# Extend attribute set for <xref> (see Section 11.31)
 attlist.xref &=
   attribute derivedContent { text }?, # (see [RFC7991bis], Appendix B.3)
   attribute x:fmt  { "()" | "," | "of" | "number" | "sec" |
