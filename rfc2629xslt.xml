@@ -2734,9 +2734,9 @@ done
   <front>
     <title>Implementation notes for RFC7991, "The 'xml2rfc' Version 3 Vocabulary"</title>
     <author initials='H' surname='Levkowetz' fullname='Henrik Levkowetz'/>
-    <date month='February' day='14' year='2019' />
+    <date month='June' day='28' year='2019' />
   </front>
-  <seriesInfo name='Internet-Draft' value='draft-levkowetz-xml2rfc-v3-implementation-notes-08' />
+  <seriesInfo name='Internet-Draft' value='draft-levkowetz-xml2rfc-v3-implementation-notes-09' />
 </reference>
 
 </references>
