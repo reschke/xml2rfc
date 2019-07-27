@@ -3396,8 +3396,8 @@
   <xsl:variable name="anchor" select="@anchor"/>
   <xsl:choose>
     <xsl:when test="not(@anchor)">
-      <xsl:call-template name="warning">
-        <xsl:with-param name="msg">missing anchor on reference: <xsl:value-of select="."/></xsl:with-param>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg">missing anchor attribute on reference, containing the text: <xsl:value-of select="normalize-space(.)"/></xsl:with-param>
       </xsl:call-template>
     </xsl:when>
     <xsl:when test="not(ancestor::ed:del) and (ancestor::rfc and not(key('xref-item',$anchor)))">
@@ -10654,11 +10654,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1129 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1129 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1130 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1130 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/07/13 11:05:42 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/07/13 11:05:42 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/07/27 15:32:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/07/27 15:32:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
