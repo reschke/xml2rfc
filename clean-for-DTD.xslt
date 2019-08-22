@@ -1175,6 +1175,9 @@
     <xsl:processing-instruction name="rfc">toc="yes"</xsl:processing-instruction>
   </xsl:if>
   <rfc>
+    <xsl:if test="not(@version) and $xml2rfc-ext-xml2rfc-voc >= 3">
+      <xsl:attribute name="version"><xsl:value-of select="$xml2rfc-ext-xml2rfc-voc"/></xsl:attribute>
+    </xsl:if>
     <xsl:apply-templates select="@*|node()" mode="cleanup"/>
   </rfc>
 </xsl:template>
