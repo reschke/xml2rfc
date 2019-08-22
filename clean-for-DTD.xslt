@@ -1428,12 +1428,8 @@
   <section>
     <xsl:copy-of select="@anchor|@toc"/>
     <xsl:choose>
-      <xsl:when test="$xml2rfc-ext-xml2rfc-backend >= 201706">
+      <xsl:when test="$xml2rfc-ext-xml2rfc-backend >= 201610">
         <xsl:copy-of select="@numbered"/>
-      </xsl:when>
-      <xsl:when test="$xml2rfc-ext-xml2rfc-backend >= 201610 and @numbered='false'">
-        <!-- rewrite false to no, see https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/313 -->
-        <xsl:attribute name="numbered">no</xsl:attribute>
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
