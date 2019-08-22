@@ -69,6 +69,7 @@
     <xsl:with-param name="default" select="$default"/>
   </xsl:call-template>
 </xsl:param>
+<xsl:param name="xml2rfc-ext-xml2rfc-voc">2</xsl:param>
 
 <!-- kick into cleanup mode -->
 <xsl:template match="/">
@@ -79,6 +80,8 @@
 </xsl:comment>
 <xsl:text>&#10;</xsl:text>
 <xsl:comment>TARGET-GENERATOR: <xsl:value-of select="$xml2rfc-ext-xml2rfc-backend"/></xsl:comment>
+<xsl:text>&#10;</xsl:text>
+<xsl:comment>TARGET-VOCABULARY: <xsl:value-of select="$xml2rfc-ext-xml2rfc-voc"/></xsl:comment>
   <xsl:apply-templates select="/" mode="cleanup"/>
 </xsl:template>
 
