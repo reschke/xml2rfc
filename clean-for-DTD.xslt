@@ -1698,6 +1698,19 @@
 
 <!-- Tables -->
 <xsl:template match="table" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <table>
+        <xsl:apply-templates select="@*|node()" mode="cleanup"/>
+      </table>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="table-to-v2"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="table-to-v2">
   <texttable>
     <xsl:apply-templates select="@anchor|@align" mode="cleanup"/>
     <xsl:if test="not(@align)">
