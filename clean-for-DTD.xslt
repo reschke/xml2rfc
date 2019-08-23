@@ -980,6 +980,18 @@
 </xsl:template>
 
 <xsl:template match="artwork[not(ancestor::figure)]" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <xsl:apply-templates select=".//iref" mode="cleanup"/>
+      <xsl:call-template name="insert-markup"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="bare-artwork-to-v2"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="bare-artwork-to-v2">
   <figure>
     <!-- propagate anchor -->
     <xsl:if test="parent::artset and not(../@anchor)">
