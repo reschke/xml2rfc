@@ -1693,7 +1693,13 @@
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
       <ul>
-        <xsl:apply-templates select="@*|node()" mode="cleanup"/>
+        <xsl:apply-templates select="@*" mode="cleanup"/>
+        <xsl:if test="not(li) and @x:when-empty">
+          <li>
+            <xsl:value-of select="@x:when-empty"/>
+          </li>
+        </xsl:if>
+        <xsl:apply-templates select="node()" mode="cleanup"/>
       </ul>
     </xsl:when>
     <xsl:otherwise>
@@ -1701,6 +1707,7 @@
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
+<xsl:template match="ul/@x:when-empty" mode="cleanup"/>
 
 <xsl:template name="ul-to-v2">
   <xsl:choose>
