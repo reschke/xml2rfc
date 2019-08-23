@@ -1481,6 +1481,19 @@
 <!-- Definition Lists -->
 <xsl:template match="dl" mode="cleanup">
   <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <dl>
+        <xsl:apply-templates select="@*|node()" mode="cleanup"/>
+      </dl>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="dl-to-v2"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="dl-to-v2">
+  <xsl:choose>
     <xsl:when test="parent::dd">
       <xsl:call-template name="process-dl"/>
     </xsl:when>
