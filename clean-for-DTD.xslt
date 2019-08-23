@@ -1546,6 +1546,19 @@
 
 <!-- List items -->
 <xsl:template match="li" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <li>
+        <xsl:apply-templates select="@*|node()" mode="cleanup"/>
+      </li>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="li-to-v2"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="li-to-v2">
   <t>
     <xsl:copy-of select="@anchor"/>
     <xsl:apply-templates mode="cleanup"/>
@@ -1635,6 +1648,19 @@
 
 <!-- Unordered Lists -->
 <xsl:template match="ul" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <ul>
+        <xsl:apply-templates select="@*|node()" mode="cleanup"/>
+      </ul>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="ul-to-v2"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="ul-to-v2">
   <xsl:choose>
     <xsl:when test="not(li) and @x:when-empty">
       <t>
