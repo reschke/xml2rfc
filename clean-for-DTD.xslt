@@ -1767,6 +1767,13 @@
   <xsl:variable name="content" select="translate($content2,'&#160;&#x2500;&#x2502;&#x2508;&#x250c;&#x2510;&#x2514;&#x2518;&#x251c;&#x2524;',' -|+++++++')"/>
 
   <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <xsl:apply-templates select=".//iref" mode="cleanup"/>
+      <sourcecode>
+        <xsl:copy-of select="@*"/>
+        <xsl:value-of select="$content"/>
+      </sourcecode>
+    </xsl:when>
     <xsl:when test="parent::figure">
       <artwork>
         <xsl:copy-of select="@anchor|@type"/>
