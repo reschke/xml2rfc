@@ -380,6 +380,19 @@
 </xsl:template>
 
 <xsl:template match="x:note|aside" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <aside>
+        <xsl:apply-templates select="@*|node()" mode="cleanup"/>
+      </aside>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="aside-to-v2"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="aside-to-v2">
   <t>
     <xsl:apply-templates select="@anchor" mode="cleanup"/>
     <list>
