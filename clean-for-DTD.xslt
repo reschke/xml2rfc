@@ -1618,6 +1618,19 @@
 
 <!-- Ordered Lists -->
 <xsl:template match="ol[not(@type) or string-length(@type)=1]" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <ol>
+        <xsl:apply-templates select="@*|node()" mode="cleanup"/>
+      </ol>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="ol-to-v2"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="ol-to-v2">
   <t>
     <xsl:copy-of select="@anchor"/>
     <xsl:if test="@start and @start!='1'">
