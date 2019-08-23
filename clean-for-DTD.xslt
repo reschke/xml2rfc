@@ -1564,13 +1564,41 @@
     <xsl:apply-templates mode="cleanup"/>
   </t>
 </xsl:template>
+
 <xsl:template match="li/t" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <t>
+        <xsl:apply-templates select="@*|node()" mode="cleanup"/>
+      </t>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="li-t-to-v2"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="li-t-to-v2">
   <xsl:apply-templates mode="cleanup"/>
   <xsl:if test="position()!=last()">
     <vspace blankLines="1"/>
   </xsl:if>
 </xsl:template>
+
 <xsl:template match="li/ul" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <ul>
+        <xsl:apply-templates select="@*|node()" mode="cleanup"/>
+      </ul>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="li-ul-to-v2"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+  
+<xsl:template name="li-ul-to-v2">
   <list style="symbols">
     <xsl:apply-templates mode="cleanup"/>
   </list>
@@ -1578,6 +1606,7 @@
     <vspace blankLines="1"/>
   </xsl:if>
 </xsl:template>
+
 <xsl:template match="li/ol" mode="cleanup">
   <list style="numbers">
     <xsl:apply-templates mode="cleanup"/>
