@@ -369,7 +369,16 @@
 </xsl:template>
 
 <xsl:template match="x:h" mode="cleanup">
-  <xsl:apply-templates mode="cleanup" />
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <strong>
+        <xsl:apply-templates mode="cleanup"/>
+      </strong>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates mode="cleanup" />
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="x:highlight" mode="cleanup">
