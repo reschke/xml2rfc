@@ -194,7 +194,16 @@
 <xsl:template match="x:anchor-alias" mode="cleanup"/>
 
 <xsl:template match="x:bcp14|bcp14" mode="cleanup">
-  <xsl:apply-templates/>
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <bcp14>
+        <xsl:apply-templates mode="cleanup"/>
+      </bcp14>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates mode="cleanup"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="x:assign-section-number" mode="cleanup"/>  
