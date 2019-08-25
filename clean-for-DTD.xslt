@@ -624,6 +624,12 @@
   </xsl:variable>
   
   <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and @x:sec and @x:fmt='of'">
+      <xref target="{@target}" section="{@x:sec}"/>
+    </xsl:when>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and @x:sec and @x:fmt=','">
+      <xref target="{@target}" displayFormat="," section="{@x:sec}"/>
+    </xsl:when>
     <xsl:when test="$sfmt='comma'">
       <xref>
         <xsl:apply-templates select="@target|@format|@pageno|text()|*" mode="cleanup"/>
