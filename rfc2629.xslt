@@ -8939,9 +8939,18 @@ dd, li, p {
     </xsl:when>
     <xsl:when test="string(number($name))=$name">
       <xsl:variable name="uri">
-        <xsl:call-template name="compute-rfc-uri">
-          <xsl:with-param name="rfc" select="$name"/>
-        </xsl:call-template>
+        <xsl:variable name="refs" select="exslt:node-set($includeDirectives)//reference|/rfc/back/references//reference"/>
+        <xsl:variable name="ref" select="$refs[not(contains(front/title,'Erratum')) and seriesInfo[@name='RFC' and @value=$name]]"/>
+        <xsl:choose>
+          <xsl:when test="$ref">
+            <xsl:value-of select="concat('#',$ref/@anchor)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:call-template name="compute-rfc-uri">
+              <xsl:with-param name="rfc" select="$name"/>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:variable>
       <a href="{$uri}"><xsl:value-of select="$name"/></a>
       <xsl:call-template name="check-front-matter-ref">
@@ -10654,11 +10663,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1130 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1130 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1131 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1131 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/07/27 15:32:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/07/27 15:32:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/08/28 11:40:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/08/28 11:40:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
