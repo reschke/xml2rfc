@@ -8940,7 +8940,7 @@ dd, li, p {
     <xsl:when test="string(number($name))=$name">
       <xsl:variable name="uri">
         <xsl:variable name="refs" select="exslt:node-set($includeDirectives)//reference|/rfc/back/references//reference"/>
-        <xsl:variable name="ref" select="$refs[not(contains(front/title,'Erratum')) and seriesInfo[@name='RFC' and @value=$name]]"/>
+        <xsl:variable name="ref" select="$refs[not(starts-with(front/title,'Erratum ID')) and seriesInfo[@name='RFC' and @value=$name]]"/>
         <xsl:choose>
           <xsl:when test="$ref">
             <xsl:value-of select="concat('#',$ref/@anchor)"/>
@@ -8990,16 +8990,18 @@ dd, li, p {
 
 <xsl:template name="check-front-matter-ref">
   <xsl:param name="name"/>
+  <xsl:variable name="refs" select="exslt:node-set($includeDirectives)//reference|/rfc/back/references//reference"/>
   <xsl:choose>
     <xsl:when test="starts-with($name,'draft-')">
-      <xsl:if test="not(//references//reference//seriesInfo[@name='Internet-Draft' and @value=$name])">
+      <xsl:if test="not($refs//seriesInfo[@name='Internet-Draft' and @value=$name])">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg" select="concat('front matter mentions I-D ',$name,' for which there is no reference element')"/>
         </xsl:call-template>
       </xsl:if>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:if test="not(//references//reference//seriesInfo[@name='RFC' and @value=$name])">
+      <xsl:variable name="ref" select="$refs[not(starts-with(front/title,'Erratum ID')) and seriesInfo[@name='RFC' and @value=$name]]"/>
+      <xsl:if test="not($ref)">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg" select="concat('front matter mentions RFC ',$name,' for which there is no reference element')"/>
         </xsl:call-template>
@@ -10663,11 +10665,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1131 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1131 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1132 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1132 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/08/28 11:40:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/08/28 11:40:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/08/29 11:29:27 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/08/29 11:29:27 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
