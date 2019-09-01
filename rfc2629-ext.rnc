@@ -96,6 +96,13 @@ include "rfc2629.rnc" {
         | x_ref)*
     }
 
+  # Redefine <date> to allow text content (see Section 11.26)
+  date =
+    element date {
+      attlist.date,
+      TEXT?
+    }
+
   # Redefine <figure> to allow more child elements
   figure =
     element figure {
