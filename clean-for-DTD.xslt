@@ -1416,6 +1416,21 @@
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
+
+
+<xsl:template match="date[ancestor::reference]" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="@year!='' or normalize-space(.)=''">
+      <date>
+        <xsl:apply-templates select="@*" mode="cleanup"/>
+      </date>
+    </xsl:when>
+    <xsl:otherwise>
+      <date year="{normalize-space(.)}"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="front" mode="cleanup">
   <front>
     <xsl:apply-templates select="title|author" mode="cleanup"/>
@@ -1427,7 +1442,6 @@
     <xsl:apply-templates select="text()|node()[not(self::seriesInfo or self::title or self::author or self::date)]" mode="cleanup"/>
   </front>
 </xsl:template>
-
 <!-- Note titles -->
 <xsl:template match="note" mode="cleanup">
   <note>
