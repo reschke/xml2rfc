@@ -1649,6 +1649,14 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="extaddr Element" anchor="v3.extaddr">
+  <iref item="V3 Extension Elements" subitem="extaddr" primary="true"/>
+  <iref item="extaddr V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
+</t>
+</section>
+
 <section title="li Element" anchor="v3.li">
   <iref item="V3 Extension Elements" subitem="li" primary="true"/>
   <iref item="li V3 Extension Element" primary="true"/>
@@ -2924,6 +2932,7 @@ include "rfc2629.rnc" {
         (city
           | code
           | country
+          | v3_extaddr
           | region
           | street)*
         <strong>| <x:ref>v3_postalLine</x:ref></strong>+)
@@ -3348,6 +3357,14 @@ attlist.xref &amp;=
       | <x:ref>x_ref</x:ref>)*
   }
 
+<em anchor="v3_extaddr"><iref item="extaddr V3 Extension Element"/><iref item="V3 Extension Elements" subitem="extaddr"
+/># Extended Postal Address (see <xref target="v3.extaddr"/>)</em>
+<x:ref>v3_extaddr</x:ref> =
+  element extaddr {
+    attribute ascii { ATEXT }?,
+    TEXT
+  }
+
 <em anchor="v3_li"><iref item="li V3 Extension Element"/><iref item="V3 Extension Elements" subitem="li"
 /># Definition List (see <xref target="v3.li"/>)</em>
 <x:ref>v3_li</x:ref> =
@@ -3446,7 +3463,7 @@ attlist.xref &amp;=
 <x:ref>v3_referencegroup</x:ref> =
   element referencegroup {
     attribute anchor { xsd:ID },
-		attribute target { URI }?,
+    attribute target { URI }?,
     (reference
       | <x:ref>xi_include</x:ref>)+
   }
