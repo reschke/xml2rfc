@@ -3249,17 +3249,7 @@ attlist.xref &amp;=
 /># BCP14/RFC2119 keywords (see <xref target="v3.bcp14"/>)</em>
 <x:ref>v3_bcp14</x:ref> =
   element bcp14 {
-    "MAY"
-    | "MUST"
-    | "MUST NOT"
-    | "NOT RECOMMENDED"
-    | "OPTIONAL"
-    | "RECOMMENDED"
-    | "REQUIRED"
-    | "SHALL"
-    | "SHALL NOT"
-    | "SHOULD"
-    | "SHOULD NOT"
+    TEXT
   }
 
 <em anchor="v3_blockquote"><iref item="blockquote V3 Extension Element"/><iref item="V3 Extension Elements" subitem="blockquote"
@@ -3756,17 +3746,7 @@ attlist.xref &amp;=
 /># BCP14/RFC2119 keywords (see <xref target="ext.element.bcp14"/>)</em>
 <x:ref>x_bcp14</x:ref> =
   element x:bcp14 {
-    "MAY"
-    | "MUST"
-    | "MUST NOT"
-    | "NOT RECOMMENDED"
-    | "OPTIONAL"
-    | "RECOMMENDED"
-    | "REQUIRED"
-    | "SHALL"
-    | "SHALL NOT"
-    | "SHOULD"
-    | "SHOULD NOT"
+    TEXT
   }
   
 <em anchor="x_blockquote"><iref item="blockquote Extension Element"/><iref item="Extension Elements" subitem="blockquote"

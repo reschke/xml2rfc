@@ -476,17 +476,7 @@ v3_aside =
 # BCP14/RFC2119 keywords (see Section 12.3)
 v3_bcp14 =
   element bcp14 {
-    "MAY"
-    | "MUST"
-    | "MUST NOT"
-    | "NOT RECOMMENDED"
-    | "OPTIONAL"
-    | "RECOMMENDED"
-    | "REQUIRED"
-    | "SHALL"
-    | "SHALL NOT"
-    | "SHOULD"
-    | "SHOULD NOT"
+    TEXT
   }
 
 # Blockquote (see Section 12.4)
@@ -943,17 +933,7 @@ x_bc =
 # BCP14/RFC2119 keywords (see Section 11.4)
 x_bcp14 =
   element x:bcp14 {
-    "MAY"
-    | "MUST"
-    | "MUST NOT"
-    | "NOT RECOMMENDED"
-    | "OPTIONAL"
-    | "RECOMMENDED"
-    | "REQUIRED"
-    | "SHALL"
-    | "SHALL NOT"
-    | "SHOULD"
-    | "SHOULD NOT"
+    TEXT
   }
   
 # Blockquote (see Section 11.7)
