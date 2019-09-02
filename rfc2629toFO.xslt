@@ -200,6 +200,30 @@
   </fo:block>
 </xsl:template>
 
+<xsl:template match="artwork[xi:include]" priority="9">
+  <xsl:variable name="resolved" xmlns="">
+    <xsl:element name="artwork" namespace="">
+      <xsl:copy-of select="@*"/>
+      <xsl:for-each select="node()">
+        <xsl:choose>
+          <xsl:when test="self::xi:include">
+            <xsl:if test="(@parse and @parse!='xml') or @xpointer">
+              <xsl:call-template name="error">
+                <xsl:with-param name="msg" select="'Unsupported attributes on x:include element'"/>
+              </xsl:call-template>
+            </xsl:if>
+            <xsl:copy-of select="document(@href)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:copy-of select="."/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:for-each>
+    </xsl:element>
+  </xsl:variable>
+  <xsl:apply-templates select="exslt:node-set($resolved)/*"/>
+</xsl:template>
+
 <xsl:template match="artwork[@src and (starts-with(@type,'image/') or @type='svg')]|artwork[svg:svg]">
   <fo:block>
     <xsl:choose>
