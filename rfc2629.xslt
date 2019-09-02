@@ -403,13 +403,17 @@
       </xsl:call-template>
     </xsl:variable>
     <xsl:if test="$uri1!=''">
-      <xsl:variable name="ends-with-xml" select="substring($uri1, string-length($uri1)-3)='.xml'"/>
-      <xsl:variable name="for-draft" select="contains($uri1,'reference.I-D')"/>
-      <xsl:variable name="uri2" select="concat($uri1,'.xml')"/>
-      <xsl:variable name="uri3r" select="concat($toolsBaseUriForRFCReferences,$uri1)"/>
-      <xsl:variable name="uri4r" select="concat($toolsBaseUriForRFCReferences,$uri1,'.xml')"/>
-      <xsl:variable name="uri3i" select="concat($toolsBaseUriForIDReferences,$uri1)"/>
-      <xsl:variable name="uri4i" select="concat($toolsBaseUriForIDReferences,$uri1,'.xml')"/>
+      <xsl:variable name="tbase" select="substring-before($uri1, '?')"/>
+      <xsl:variable name="base"><xsl:choose><xsl:when test="$tbase!=''"><xsl:value-of select="$tbase"/></xsl:when><xsl:otherwise><xsl:value-of select="$uri1"/></xsl:otherwise></xsl:choose></xsl:variable>
+      <xsl:variable name="tquery" select="substring-after($uri1, '?')"/>
+      <xsl:variable name="query"><xsl:if test="$tquery!=''">?</xsl:if><xsl:value-of select="$tquery"/></xsl:variable>
+      <xsl:variable name="ends-with-xml" select="substring($base, string-length($base)-3)='.xml'"/>
+      <xsl:variable name="for-draft" select="contains($base,'reference.I-D')"/>
+      <xsl:variable name="uri2" select="concat($base,'.xml',$query)"/>
+      <xsl:variable name="uri3r" select="concat($toolsBaseUriForRFCReferences,$base,$query)"/>
+      <xsl:variable name="uri4r" select="concat($toolsBaseUriForRFCReferences,$base,'.xml',$query)"/>
+      <xsl:variable name="uri3i" select="concat($toolsBaseUriForIDReferences,$base,$query)"/>
+      <xsl:variable name="uri4i" select="concat($toolsBaseUriForIDReferences,$base,'.xml',$query)"/>
       <xsl:choose>
         <xsl:when test="not($ends-with-xml) and document($uri2)/reference">
           <xsl:call-template name="include-uri-warning">
@@ -10664,11 +10668,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1135 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1135 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1136 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1136 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/02 12:09:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/02 12:09:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/02 17:29:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/02 17:29:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
