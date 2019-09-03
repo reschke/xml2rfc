@@ -626,10 +626,10 @@
   <!--<xsl:comment><xsl:value-of select="concat($sfmt, ' ', $tsec, ' ', @x:sec)"/></xsl:comment>-->
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@'))  and $sfmt='of'">
-      <relref target="{@target}" section="{$tsec}"/>
+      <xref target="{@target}" section="{$tsec}"/>
     </xsl:when>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@'))  and $sfmt='comma'">
-      <relref target="{@target}" displayFormat="comma" section="{$tsec}"/>
+      <xref target="{@target}" sectionFormat="comma" section="{$tsec}"/>
     </xsl:when>
     <xsl:when test="$sfmt='comma'">
       <xref>
