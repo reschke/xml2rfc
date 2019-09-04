@@ -3242,7 +3242,8 @@ attlist.xref &amp;=
   element aside {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
-    t+
+    (t
+      | <x:ref>v3_ul</x:ref>)*
   }
 
 <em anchor="v3_bcp14"><iref item="bcp14 V3 Extension Element"/><iref item="V3 Extension Elements" subitem="bcp14"

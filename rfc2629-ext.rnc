@@ -470,7 +470,8 @@ v3_aside =
   element aside {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
-    t+
+    (t
+      | v3_ul)*
   }
 
 # BCP14/RFC2119 keywords (see Section 12.3)

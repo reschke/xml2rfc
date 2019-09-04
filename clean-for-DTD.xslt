@@ -631,7 +631,7 @@
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='comma'">
       <xref target="{@target}" sectionFormat="comma" section="{$tsec}"/>
     </xsl:when>
-    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='number-only'">
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='bare'">
       <xref target="{@target}" sectionFormat="bare" section="{$tsec}"/>
     </xsl:when>
     <xsl:when test="$sfmt='comma'">
@@ -648,7 +648,7 @@
       <xsl:text> </xsl:text>
       <xsl:value-of select="$sec"/>
     </xsl:when>
-    <xsl:when test="$sfmt='number-only'">
+    <xsl:when test="$sfmt='bare'">
       <xsl:value-of select="$sec"/>
     </xsl:when>
     <xsl:when test="$sfmt='parens'">
