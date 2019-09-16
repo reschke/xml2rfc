@@ -5650,6 +5650,12 @@
 <xsl:template name="collectLeftHeaderColumn">
   <!-- default case -->
   <xsl:if test="$xml2rfc-private=''">
+    <xsl:if test="count(/rfc/front/workgroup)>1">
+      <xsl:call-template name="error">
+        <xsl:with-param name="inline">no</xsl:with-param>
+        <xsl:with-param name="msg">There are multiple /rfc/front/workgroup elements; ignoring all but the first</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="/rfc/@number and $header-format='2010' and $submissionType='independent'">
         <myns:item>Independent Submission</myns:item>
@@ -8304,14 +8310,14 @@ dd, li, p {
           development activities.  These results might not be suitable for
           deployment.
           <xsl:choose>
-            <xsl:when test="$consensus='yes' and front/workgroup!=''">
+            <xsl:when test="$consensus='yes' and front/workgroup[1]!=''">
               This RFC represents the consensus of the
-              <xsl:value-of select="front/workgroup"/> Research Group of the Internet
+              <xsl:value-of select="front/workgroup[1]"/> Research Group of the Internet
               Research Task Force (IRTF).
             </xsl:when>
-            <xsl:when test="$consensus='no' and front/workgroup!=''">
+            <xsl:when test="$consensus='no' and front/workgroup[1]!=''">
               This RFC represents the individual opinion(s) of one or more
-              members of the <xsl:value-of select="front/workgroup"/> Research Group of the
+              members of the <xsl:value-of select="front/workgroup[1]"/> Research Group of the
               Internet Research Task Force (IRTF).
             </xsl:when>
             <xsl:otherwise>
@@ -10699,11 +10705,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1140 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1140 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1141 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1141 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/13 07:50:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/13 07:50:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/16 11:48:30 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/16 11:48:30 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
