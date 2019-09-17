@@ -1080,6 +1080,15 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- for testing: switch to disable code that gets the system time -->
+<xsl:param name="xml2rfc-ext-use-system-time">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'use-system-time'"/>
+    <xsl:with-param name="default" select="'yes'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- warning re: absent node-set ext. function -->
 <xsl:variable name="node-set-warning">
   This stylesheet requires either an XSLT-1.0 processor with node-set()
@@ -10705,11 +10714,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1141 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1141 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1142 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1142 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/16 11:48:30 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/16 11:48:30 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/17 10:10:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/17 10:10:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11223,6 +11232,7 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='sec-no-trailing-dots'"/>
                       <xsl:when test="$attrname='trace-parse-xml'"/>
                       <xsl:when test="$attrname='ucd-file'"/>
+                      <xsl:when test="$attrname='use-system-time'"/>
                       <xsl:when test="$attrname='vspace-pagebreak'"/>
                       <xsl:when test="$attrname='xml2rfc-backend'"/>
                       <xsl:when test="$attrname='xref-with-text-generate'"/>
@@ -11439,6 +11449,7 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:variable name="current-year">
   <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-use-system-time='no'"/>
     <xsl:when test="function-available('date:date-time')" use-when="function-available('date:date-time')">
       <xsl:value-of select="substring-before(date:date-time(),'-')"/>
     </xsl:when>
@@ -11451,6 +11462,7 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:variable name="current-month">
   <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-use-system-time='no'"/>
     <xsl:when test="function-available('date:date-time')" use-when="function-available('date:date-time')">
       <xsl:value-of select="substring-before(substring-after(date:date-time(),'-'),'-')"/>
     </xsl:when>
@@ -11463,6 +11475,7 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:variable name="current-day">
   <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-use-system-time='no'"/>
     <xsl:when test="function-available('date:date-time')" use-when="function-available('date:date-time')">
       <xsl:value-of select="substring-after(substring-after(substring-before(date:date-time(),'T'),'-'),'-')"/>
     </xsl:when>
