@@ -3012,7 +3012,43 @@ include "rfc2629.rnc" {
   <em># Redefine &lt;rfc> to allow our extension elements</em>
   rfc =
     element rfc {
-      attlist.rfc,
+      attribute xml:lang { text }?,
+      attribute grddl:transformation { ATEXT }?,
+      attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
+      attribute category { "std" | "bcp" | "info" | "exp" | "historic" }?,
+      attribute consensus { "false" | "true" | "no" | "yes" }?,
+      attribute docName { text }?,
+      attribute indexInclude { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.indexInclude"/>)
+      attribute ipr {
+        "full2026"
+        | "noDerivativeWorks2026"
+        | "none"
+        | "full3667"
+        | "noModification3667"
+        | "noDerivatives3667"
+        | "full3978"
+        | "noModification3978"
+        | "noDerivatives3978"
+        | "trust200811"
+        | "noModificationTrust200811"
+        | "noDerivativesTrust200811"
+        | "trust200902"
+        | "noModificationTrust200902"
+        | "noDerivativesTrust200902"
+        | "pre5378Trust200902"
+      }?,
+      attribute iprExtract { xsd:IDREF }?,
+      attribute number { text }?,
+      attribute obsoletes { text }?,
+      attribute tocDepth { text }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.tocDepth"/>)
+      attribute tocInclude { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.tocInclude"/>)
+      attribute scripts { text }?, # (see <xref target="RFC7991bis" x:rel="#prepatts"/>)
+      attribute seriesNo { text }?,
+      attribute sortRefs { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.sortRefs"/>)
+      attribute submissionType { "IETF" | "IAB" | "IRTF" | "independent" }?,
+      attribute symRefs { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.symRefs"/>)
+      attribute updates { text }?,
+      attribute version { text }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.symRefs"/>)
       <strong><x:ref>v3_link</x:ref>*,</strong>
       <strong><x:ref>x_link</x:ref>*,</strong>
       <strong><x:ref>x_feedback</x:ref>?,</strong>
@@ -3169,18 +3205,6 @@ attlist.references &amp;=
 <em># Extend attribute set for &lt;region></em>
 attlist.region &amp;=
   attribute ascii { ATEXT }?
-
-<em># Extend attribute set for &lt;rfc></em>
-attlist.rfc &amp;=
-  attribute grddl:transformation { ATEXT }?,
-  attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
-  attribute indexInclude { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.indexInclude"/>)
-  attribute tocDepth { text }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.tocDepth"/>)
-  attribute tocInclude { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.tocInclude"/>)
-  attribute scripts { text }?, # (see <xref target="RFC7991bis" x:rel="#prepatts"/>)
-  attribute sortRefs { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.sortRefs"/>)
-  attribute symRefs { "true" | "false" }?, # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.symRefs"/>)
-  attribute version { text }? # (see <xref target="RFC7991bis" x:rel="#element.rfc.attribute.symRefs"/>)
 
 <em># Extend/Relax attribute set for &lt;section> (see <xref target="ext-rfc2629.section"/>)</em>
 attlist.x_section &amp;=

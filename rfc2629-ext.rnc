@@ -242,7 +242,43 @@ include "rfc2629.rnc" {
   # Redefine <rfc> to allow our extension elements
   rfc =
     element rfc {
-      attlist.rfc,
+      attribute xml:lang { text }?,
+      attribute grddl:transformation { ATEXT }?,
+      attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
+      attribute category { "std" | "bcp" | "info" | "exp" | "historic" }?,
+      attribute consensus { "false" | "true" | "no" | "yes" }?,
+      attribute docName { text }?,
+      attribute indexInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.4)
+      attribute ipr {
+        "full2026"
+        | "noDerivativeWorks2026"
+        | "none"
+        | "full3667"
+        | "noModification3667"
+        | "noDerivatives3667"
+        | "full3978"
+        | "noModification3978"
+        | "noDerivatives3978"
+        | "trust200811"
+        | "noModificationTrust200811"
+        | "noDerivativesTrust200811"
+        | "trust200902"
+        | "noModificationTrust200902"
+        | "noDerivativesTrust200902"
+        | "pre5378Trust200902"
+      }?,
+      attribute iprExtract { xsd:IDREF }?,
+      attribute number { text }?,
+      attribute obsoletes { text }?,
+      attribute tocDepth { text }?, # (see [RFC7991bis], Section 2.44.14)
+      attribute tocInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.15)
+      attribute scripts { text }?, # (see [RFC7991bis], Appendix B.3)
+      attribute seriesNo { text }?,
+      attribute sortRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.11)
+      attribute submissionType { "IETF" | "IAB" | "IRTF" | "independent" }?,
+      attribute symRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.13)
+      attribute updates { text }?,
+      attribute version { text }?, # (see [RFC7991bis], Section 2.44.13)
       v3_link*,
       x_link*,
       x_feedback?,
@@ -399,18 +435,6 @@ attlist.references &=
 # Extend attribute set for <region>
 attlist.region &=
   attribute ascii { ATEXT }?
-
-# Extend attribute set for <rfc>
-attlist.rfc &=
-  attribute grddl:transformation { ATEXT }?,
-  attribute x:maturity-level { "proposed" | "draft" | "internet" }?,
-  attribute indexInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.4)
-  attribute tocDepth { text }?, # (see [RFC7991bis], Section 2.44.14)
-  attribute tocInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.15)
-  attribute scripts { text }?, # (see [RFC7991bis], Appendix B.3)
-  attribute sortRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.11)
-  attribute symRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.13)
-  attribute version { text }? # (see [RFC7991bis], Section 2.44.13)
 
 # Extend/Relax attribute set for <section> (see Section 11.30)
 attlist.x_section &=
