@@ -1234,11 +1234,13 @@
 </xsl:variable>
 
 <!-- the reference to the latest and greatest headers-and-boilerplates document -->
-<xsl:variable name="hab-reference">
-  <xsl:choose>
-    <xsl:when test="$pub-yearmonth >= 201606 or ($rfcno=7846 or $rfcno=7865 or $rfcno=7866 or $rfcno=7873 or $rfcno=7879 or $rfcno=7892)">Section 2 of RFC 7841</xsl:when>
-    <xsl:otherwise>Section 2 of RFC 5741</xsl:otherwise>
-  </xsl:choose>
+<xsl:variable name="hab-reference" myns:namespaceless-elements="xml2rfc">
+  <eref>
+    <xsl:choose>
+      <xsl:when test="$pub-yearmonth >= 201606 or ($rfcno=7846 or $rfcno=7865 or $rfcno=7866 or $rfcno=7873 or $rfcno=7879 or $rfcno=7892)"><xsl:attribute name="target">https://tools.ietf.org/html/rfc7841#section-2</xsl:attribute>Section 2 of RFC 7841</xsl:when>
+      <xsl:otherwise><xsl:attribute name="target">https://tools.ietf.org/html/rfc5741#section-2</xsl:attribute>Section 2 of RFC 5741</xsl:otherwise>
+    </xsl:choose>
+  </eref>
 </xsl:variable>
 
 <xsl:variable name="id-boilerplate">
@@ -8356,14 +8358,14 @@ dd, li, p {
         <xsl:when test="$submissionType='IETF'">
           <xsl:choose>
             <xsl:when test="@category='bcp'">
-              Further information on BCPs is available in <xsl:value-of select="$hab-reference"/>.
+              Further information on BCPs is available in <xsl:copy-of select="$hab-reference"/>.
             </xsl:when>
             <xsl:when test="@category='std'">
-              Further information on Internet Standards is available in <xsl:value-of select="$hab-reference"/>.
+              Further information on Internet Standards is available in <xsl:copy-of select="$hab-reference"/>.
             </xsl:when>
             <xsl:otherwise>
               Not all documents approved by the IESG are <xsl:value-of select="$candidates"/> for any
-              level of Internet Standard; see <xsl:value-of select="$hab-reference"/>.
+              level of Internet Standard; see <xsl:copy-of select="$hab-reference"/>.
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
@@ -8378,7 +8380,7 @@ dd, li, p {
 
           Documents approved for publication by the
           <xsl:value-of select="$approver"/> are not <xsl:value-of select="$candidates"/> for any level
-          of Internet Standard; see <xsl:value-of select="$hab-reference"/>.
+          of Internet Standard; see <xsl:copy-of select="$hab-reference"/>.
         </xsl:otherwise>
       </xsl:choose>
     </t>
@@ -10714,11 +10716,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1142 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1142 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1143 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1143 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/17 10:10:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/17 10:10:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/18 08:01:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/18 08:01:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
