@@ -1996,13 +1996,32 @@
 
 </xsl:template>
 
+<xsl:template name="check-absolute-uri">
+  <xsl:variable name="potential-scheme" select="substring-before(@target,':')"/>
+  <xsl:variable name="invalid-scheme-chars" select="translate($potential-scheme,concat($alnum,'+-.'),'')"/>
+  <xsl:if test="$potential-scheme=''">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">target attribute not an absolute URI: <xsl:value-of select="@target"/></xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:if test="$potential-scheme!='' and $invalid-scheme-chars!=''">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">target attribute '<xsl:value-of select="@target"/>' contains invalid scheme name '<xsl:value-of select="$potential-scheme"/>'</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template match="eref[node()]">
-  <a href="{@target}"><xsl:apply-templates /></a>
+  <xsl:call-template name="check-absolute-uri"/>
+  <a href="{@target}">
+    <xsl:apply-templates/>
+  </a>
 </xsl:template>
 
 <xsl:template match="eref[not(node())]">
+  <xsl:call-template name="check-absolute-uri"/>
   <xsl:text>&lt;</xsl:text>
-  <a href="{@target}"><xsl:value-of select="@target" /></a>
+  <a href="{@target}"><xsl:value-of select="@target"/></a>
   <xsl:text>&gt;</xsl:text>
 </xsl:template>
 
@@ -10716,11 +10735,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1144 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1144 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1145 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1145 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/18 15:29:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/18 15:29:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/19 07:20:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/19 07:20:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
