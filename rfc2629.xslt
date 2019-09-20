@@ -3135,9 +3135,12 @@
     <xsl:when test="$node/name">
       <xsl:value-of select="$node/name"/>
     </xsl:when>
-    <xsl:otherwise>
+    <xsl:when test="$node/@title">
       <xsl:value-of select="$node/@title"/>
-    </xsl:otherwise>
+    </xsl:when>
+    <xsl:when test="$node/self::abstract">Abstract</xsl:when>
+    <xsl:when test="$node/self::references">References</xsl:when>
+    <xsl:otherwise/>
   </xsl:choose>
 </xsl:template>
 
@@ -4682,16 +4685,29 @@
   </xsl:variable>
   <xsl:choose>
     <xsl:when test="$from/@format='counter'">
-      <xsl:value-of select="$refnum"/>
+      <xsl:choose>
+        <xsl:when test="$to/self::abstract">
+          <xsl:call-template name="error">
+            <xsl:with-param name="inline">no</xsl:with-param>
+            <xsl:with-param name="msg">xref to abstract with format='counter' not allowed</xsl:with-param>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$refnum"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:when>
     <xsl:when test="$from/@format='title'">
       <xsl:choose>
         <xsl:when test="$to/name">
           <xsl:apply-templates select="$to/name/node()"/>
         </xsl:when>
-        <xsl:otherwise>
+        <xsl:when test="$to/@title">
           <xsl:value-of select="$to/@title"/>
-        </xsl:otherwise>
+        </xsl:when>
+        <xsl:when test="$to/self::abstract">Abstract</xsl:when>
+        <xsl:when test="$to/self::references">References</xsl:when>
+        <xsl:otherwise/>
       </xsl:choose>
     </xsl:when>
     <xsl:when test="$from/@format='none'">
@@ -5579,7 +5595,7 @@
     <xsl:choose>
 
       <!-- Section links -->
-      <xsl:when test="$node/self::section or $node/self::appendix or $node/self::references">
+      <xsl:when test="$node/self::section or $node/self::appendix or $node/self::references or $node/self::abstract">
         <!-- index links to this xref -->
         <xsl:variable name="ireftargets" select="key('iref-xanch',$target) | key('iref-xanch','')[../@anchor=$target]"/>
         
@@ -10736,11 +10752,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1146 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1146 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1147 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1147 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/20 13:35:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/20 13:35:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/20 14:21:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/20 14:21:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -10877,6 +10893,7 @@ dd, li, p {
 
 <xsl:template name="get-section-type">
   <xsl:choose>
+    <xsl:when test="self::abstract">Abstract</xsl:when>
     <xsl:when test="ancestor::back and not(self::references)">Appendix</xsl:when>
     <xsl:otherwise>Section</xsl:otherwise>
   </xsl:choose>
