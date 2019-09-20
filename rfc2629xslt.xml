@@ -521,9 +521,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   The following browsers seem to work fine:
   <list style="symbols">
     <x:lt>
-      <t><iref item="Internet Explorer 5.5"/>Internet Explorer 5.5 (Windows version, if MSXML3 is installed)</t>
-    </x:lt>
-    <x:lt>
       <t><iref item="Internet Explorer 6"/><iref item="Internet Explorer 7"/><iref item="Internet Explorer 8"/><iref item="Internet Explorer 9"/>Internet Explorer 6 and newer</t>
     </x:lt>
     <x:lt>
@@ -551,15 +548,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <t><iref item="Google Chrome"/>Google Chrome</t>
       <t>
         <list style="symbols">
-          <t>Date computation not available (see <eref target="https://bugs.webkit.org/show_bug.cgi?id=4079"/>)</t>
-        </list>
-      </t>
-    </x:lt>
-    <x:lt>
-      <t><iref item="Opera"/>Opera (starting with version 10)</t>
-      <t>
-        <list style="symbols">
-          <t>Date computation not available<!--DSK-336575@bugs.opera.com--></t>
+          <t>Date computation not available (see <eref target="https://bugs.chromium.org/p/chromium/issues/detail?id=1006210"/>)</t>
         </list>
       </t>
     </x:lt>
