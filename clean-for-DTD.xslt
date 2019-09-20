@@ -678,6 +678,8 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template match="abstract/@anchor" mode="cleanup"/>
+
 <xsl:template match="xref[(@x:fmt or @x:sec or @x:rel) and (*|text())]|relref[*|text()]" mode="cleanup">
   <xsl:call-template name="insert-iref-for-xref"/>
   <xsl:choose>
@@ -699,7 +701,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref[node() and (@target=//preamble/@anchor or @target=//spanx/@anchor or @target=//name//@anchor or @target=//references/@anchor or @target=//artwork/@anchor or @target=//sourcecode/@anchor or @target=//artset/@anchor)]" mode="cleanup">
+<xsl:template match="xref[node() and (@target=//abstract/@anchor or @target=//preamble/@anchor or @target=//spanx/@anchor or @target=//name//@anchor or @target=//references/@anchor or @target=//artwork/@anchor or @target=//sourcecode/@anchor or @target=//artset/@anchor)]" mode="cleanup">
   <!-- remove the link -->
   <xsl:apply-templates select="node()" mode="cleanup"/>
 </xsl:template>
@@ -709,7 +711,7 @@
   <xsl:apply-templates select="node()" mode="cleanup"/>
 </xsl:template>
 
-<xsl:template match="xref[not(node()) and (@target=//preamble/@anchor or @target=//spanx/@anchor or @target=//references/@anchor or @target=//artwork/@anchor or @target=//sourcecode/@anchor or @target=//artset/@anchor)]" mode="cleanup">
+<xsl:template match="xref[not(node()) and (@target=//abstract/@anchor or @target=//preamble/@anchor or @target=//spanx/@anchor or @target=//references/@anchor or @target=//artwork/@anchor or @target=//sourcecode/@anchor or @target=//artset/@anchor)]" mode="cleanup">
   <xsl:variable name="content">
     <xsl:apply-templates select="."/>
   </xsl:variable>

@@ -1376,8 +1376,9 @@
 
 <xsl:template match="abstract">
   <xsl:call-template name="check-no-text-content"/>
-  <section id="{$anchor-pref}abstract">
-    <h2><a href="#{$anchor-pref}abstract">Abstract</a></h2>
+  <section>
+    <xsl:call-template name="copy-anchor"/>
+    <h2 id="{$anchor-pref}abstract"><a href="#{$anchor-pref}abstract">Abstract</a></h2>
     <xsl:call-template name="insert-errata">
       <xsl:with-param name="section" select="'abstract'"/>
     </xsl:call-template>
@@ -10735,11 +10736,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1145 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1145 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1146 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1146 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/19 07:20:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/19 07:20:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/20 13:35:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/20 13:35:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
