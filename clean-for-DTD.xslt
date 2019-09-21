@@ -1564,6 +1564,7 @@
 </xsl:template>
 
 <xsl:template name="process-dl">
+  <xsl:copy-of select="@anchor"/>
   <xsl:variable name="newl" select="@newline"/>
   <xsl:variable name="spac" select="@spacing"/>
   <xsl:if test="parent::section">
