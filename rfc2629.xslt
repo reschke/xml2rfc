@@ -2966,8 +2966,9 @@
     <xsl:if test="@removeInRFC='true'">rfcEditorRemove</xsl:if>
   </xsl:variable>
   <xsl:variable name="num"><xsl:number/></xsl:variable>
-  <section id="{$anchor-pref}note.{$num}" class="{normalize-space($classes)}">
-    <h2>
+  <section class="{normalize-space($classes)}">
+    <xsl:call-template name="copy-anchor"/>
+    <h2 id="{$anchor-pref}note.{$num}" >
       <xsl:call-template name="insertInsDelClass"/>
       <a href="#{$anchor-pref}note.{$num}">
         <xsl:call-template name="insertTitle" />
@@ -5595,7 +5596,7 @@
     <xsl:choose>
 
       <!-- Section links -->
-      <xsl:when test="$node/self::section or $node/self::appendix or $node/self::references or $node/self::abstract">
+      <xsl:when test="$node/self::section or $node/self::appendix or $node/self::references or $node/self::abstract or $node/self::note">
         <!-- index links to this xref -->
         <xsl:variable name="ireftargets" select="key('iref-xanch',$target) | key('iref-xanch','')[../@anchor=$target]"/>
         
@@ -10752,11 +10753,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1149 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1149 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1150 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1150 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/22 05:04:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/22 05:04:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/22 17:57:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/22 17:57:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -10894,6 +10895,7 @@ dd, li, p {
 <xsl:template name="get-section-type">
   <xsl:choose>
     <xsl:when test="self::abstract">Abstract</xsl:when>
+    <xsl:when test="self::note">Note</xsl:when>
     <xsl:when test="ancestor::back and not(self::references)">Appendix</xsl:when>
     <xsl:otherwise>Section</xsl:otherwise>
   </xsl:choose>
