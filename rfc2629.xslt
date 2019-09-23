@@ -10753,11 +10753,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1152 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1152 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1153 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1153 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/23 10:17:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/23 10:17:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/23 13:58:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/23 13:58:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -10890,7 +10890,7 @@ dd, li, p {
 
 <!-- get the section number for the references section -->
 <xsl:template name="get-references-section-number">
-  <xsl:value-of select="count(/rfc/middle/section) + count(/rfc/middle/ed:replace/ed:ins/section) + 1"/>
+  <xsl:value-of select="count(/rfc/middle/section[not(@numbered) or @numbered!='false']) + count(/rfc/middle/ed:replace/ed:ins/section[not(@numbered) or @numbered!='false']) + 1"/>
 </xsl:template>
 
 <xsl:template name="emit-section-number">
