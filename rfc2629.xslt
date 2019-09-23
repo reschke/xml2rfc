@@ -10753,11 +10753,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1151 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1151 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1152 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1152 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/23 06:48:42 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/23 06:48:42 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/23 10:17:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/23 10:17:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -10827,12 +10827,20 @@ dd, li, p {
       <xsl:if test="@numbered='false'">
         <xsl:if test="ancestor::section or ancestor::section">
           <xsl:call-template name="error">
+            <xsl:with-param name="inline" select="'no'"/>
             <xsl:with-param name="msg">Only top-level sections can be unnumbered</xsl:with-param>
           </xsl:call-template>
         </xsl:if>
-        <xsl:if test="following-sibling::section[not(@numbered) or @numbered!='false'] or following-sibling::references">
+        <xsl:if test="following-sibling::section[not(@numbered) or @numbered!='false']">
           <xsl:call-template name="error">
+            <xsl:with-param name="inline" select="'no'"/>
             <xsl:with-param name="msg">Unnumbered section is followed by numbered sections</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="ancestor::middle and ../../back/references">
+          <xsl:call-template name="error">
+            <xsl:with-param name="inline" select="'no'"/>
+            <xsl:with-param name="msg">Unnumbered section is followed by (numbered) references section</xsl:with-param>
           </xsl:call-template>
         </xsl:if>
       </xsl:if>
