@@ -6757,47 +6757,41 @@ function getMeta(rfcno, container) {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
         var doc = xhr.responseXML;
-        var info = getChildByName(doc.documentElement, "info");
-  
+        var data = getDataFromXML(doc, rfcno);
+
         var cont = document.getElementById(container);
         // empty the container
         while (cont.firstChild) {
           cont.removeChild(myNode.firstChild);
         }      
-  
-        var c = getChildByName(info, "stdstatus");
-        if (c !== null) {
-          var bld = newElementWithText("b", c.textContent);
+
+        var c = data.status;
+        if (c) {
+          var bld = newElementWithText("b", c);
           cont.appendChild(bld);
         } else {
           cont.appendChild(newElementWithText("i", "(document status unknown)"));
         }
-  
-        c = getChildByName(info, "updatedby");
-        if (c !== null) {
+
+        c = data.updated_by;
+        if (c &amp;&amp; c.length > 0 &amp;&amp; c[0] !== null &amp;&amp; c[0].length > 0) {
           cont.appendChild(newElement("br"));
           cont.appendChild(newText("Updated by: "));
-          appendRfcLinks(cont, c.textContent.split(","));
+          appendRfcLinks(cont, c);
         }
-  
-        c = getChildByName(info, "obsoletedby");
-        if (c !== null) {
+
+        c = data.obsoleted_by;
+        if (c &amp;&amp; c.length > 0 &amp;&amp; c[0] !== null &amp;&amp; c[0].length > 0) {
           cont.appendChild(newElement("br"));
           cont.appendChild(newText("Obsoleted by: "));
-          appendRfcLinks(cont, c.textContent.split(","));
+          appendRfcLinks(cont, c);
         }
-        
-        c = getChildByName(info, "errata");
-        if (c !== null) {
-          var template = "<xsl:call-template name="replace-substring">
-              <xsl:with-param name="string" select="$xml2rfc-ext-rfc-errata-uri"/>
-              <xsl:with-param name="replace">"</xsl:with-param>
-              <xsl:with-param name="by">\"</xsl:with-param>
-            </xsl:call-template>";
 
+        c = data.errata_url;
+        if (c) {
           cont.appendChild(newElement("br"));
           var link = newElementWithText("a", "errata");
-          link.setAttribute("href", template.replace("{rfc}", rfcno));
+          link.setAttribute("href", c);
           var errata = newElementWithText("i", "This document has ");
           errata.appendChild(link);
           errata.appendChild(newText("."));
@@ -6814,6 +6808,39 @@ function getMeta(rfcno, container) {
     console.error(xhr.status + " " + xhr.statusText);
   };
   xhr.send(null);
+}
+
+// extract data from XML
+function getDataFromXML(doc, rfcno) {
+  var data = new Object();
+  var info = getChildByName(doc.documentElement, "info");
+
+  var c = getChildByName(info, "stdstatus");
+  if (c !== null) {
+    data.status = c.textContent;
+  }
+
+  c = getChildByName(info, "updatedby");
+  if (c !== null) {
+    data.updated_by = c.textContent.split(",");
+  }
+
+  c = getChildByName(info, "obsoletedby");
+  if (c !== null) {
+    data.obsoleted_by = c.textContent.split(",");
+  }
+
+  c = getChildByName(info, "errata");
+  if (c !== null) {
+    var template = "<xsl:call-template name="replace-substring">
+        <xsl:with-param name="string" select="$xml2rfc-ext-rfc-errata-uri"/>
+        <xsl:with-param name="replace">"</xsl:with-param>
+        <xsl:with-param name="by">\"</xsl:with-param>
+      </xsl:call-template>";
+    data.errata_url = template.replace("{rfc}", rfcno);
+  }
+
+  return data;
 }
 
 // DOM helpers
@@ -10754,11 +10781,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1157 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1157 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1158 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1158 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/27 12:54:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/27 12:54:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/28 14:15:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/28 14:15:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
