@@ -1029,7 +1029,7 @@
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
     <xsl:with-param name="attr" select="'rfc-errata-uri'"/>
-    <xsl:with-param name="default">https://www.rfc-editor.org/errata_search.php?rfc={rfc}</xsl:with-param>
+    <xsl:with-param name="default">https://www.rfc-editor.org/errata/rfc{rfc}</xsl:with-param>
   </xsl:call-template>
 </xsl:param>
 
@@ -10781,11 +10781,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1158 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1158 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1159 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1159 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/28 14:15:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/28 14:15:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/09/28 16:18:01 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/28 16:18:01 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
