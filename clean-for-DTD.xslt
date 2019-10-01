@@ -1226,7 +1226,7 @@
   <xsl:if test="@symRefs='false'">
     <xsl:processing-instruction name="rfc">symrefs="no"</xsl:processing-instruction>
   </xsl:if>
-  <xsl:if test="@parsedTocDepth!=3">
+  <xsl:if test="$parsedTocDepth!=3 and $xml2rfc-ext-xml2rfc-voc &lt; 3">
     <xsl:processing-instruction name="rfc">tocdepth="<xsl:value-of select="$parsedTocDepth"/>"</xsl:processing-instruction>
   </xsl:if>
   <xsl:if test="@version and (not(@tocInclude) or @tocInclude='true')">
@@ -1235,6 +1235,9 @@
   <rfc>
     <xsl:if test="not(@version) and $xml2rfc-ext-xml2rfc-voc >= 3">
       <xsl:attribute name="version"><xsl:value-of select="$xml2rfc-ext-xml2rfc-voc"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="not(@tocDepth) and $xml2rfc-ext-xml2rfc-voc >= 3 and $parsedTocDepth!=3">
+      <xsl:attribute name="tocDepth"><xsl:value-of select="$parsedTocDepth"/></xsl:attribute>
     </xsl:if>
     <xsl:apply-templates select="@*|node()" mode="cleanup"/>
   </rfc>
