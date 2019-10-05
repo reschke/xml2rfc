@@ -1826,6 +1826,7 @@
                 <xsl:with-param name="node" select="address/postal/country"/>
                 <xsl:with-param name="name" select="'address/postal/country'"/>
                 <xsl:with-param name="ascii" select="$ascii"/>
+                <xsl:with-param name="check-country" select="$ascii"/>
               </xsl:call-template>
             </xsl:with-param>
           </xsl:call-template>
@@ -10781,11 +10782,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1159 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1159 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1160 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1160 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/09/28 16:18:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/09/28 16:18:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/05 12:23:55 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/05 12:23:55 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11093,10 +11094,56 @@ prev: <xsl:value-of select="$prev"/>
   </xsl:choose>
 </xsl:template>
 
+<countries xmlns="#data">
+  <c c2="AR" c3="ARG" sn="Argentina"/>
+  <c c2="AU" c3="AUS" sn="Australia"/>
+  <c c2="AT" c3="AUT" sn="Austria"/>
+  <c c2="BE" c3="BEL" sn="Belgium"/>
+  <c c2="CA" c3="CAN" sn="Canada"/>
+  <c c2="CH" c3="CHN" sn="China"/>
+  <c c2="HR" c3="HRV" sn="Croatia"/>
+  <c c2="CZ" c3="CZE" sn="Czechia"/>
+  <c c2="DK" c3="DNK" sn="Denmark"/>
+  <c c2="DE" c3="DEU" sn="Germany"/>
+  <c c2="GR" c3="GRC" sn="Greece"/>
+  <c c2="FI" c3="FIN" sn="Finland"/>
+  <c c2="FR" c3="FRA" sn="France"/>
+  <c c2="HU" c3="HUN" sn="Hungary"/>
+  <c c2="IN" c3="IND" sn="India"/>
+  <c c2="IR" c3="IRL" sn="Ireland"/>
+  <c c2="IL" c3="ISR" sn="Israel"/>
+  <c c2="IT" c3="ITA" sn="Italy"/>
+  <c c2="JP" c3="JPN" sn="Japan"/>
+  <c c2="KR" c3="KOR" sn="Korea"/>
+  <c c2="LU" c3="LUX" sn="Luxembourg"/>
+  <c c2="MU" c3="MUS" sn="Mauritius"/>
+  <c c2="NL" c3="NLD" sn="Netherlands"/>
+  <c c2="NZ" c3="NZL" sn="New Zealand"/>
+  <c c2="NO" c3="NOR" sn="Norway"/>
+  <c c2="PL" c3="POL" sn="Poland"/>
+  <c c2="PT" c3="PRT" sn="Portugal"/>
+  <c c2="RO" c3="ROU" sn="Romania"/>
+  <c c2="RU" c3="RUS" sn="Russian Federation"/>
+  <c c2="SG" c3="SGP" sn="Singapore"/>
+  <c c2="SK" c3="SVK" sn="Slovakia"/>
+  <c c2="SI" c3="SVN" sn="Slovenia"/>
+  <c c2="ES" c3="ESP" sn="Spain"/>
+  <c c2="SE" c3="SWE" sn="Sweden"/>
+  <c c2="CH" c3="CHE" sn="Switzerland"/>
+  <c c2="TH" c3="THA" sn="Thailand"/>
+  <c c2="TR" c3="TUR" sn="Turkey"/>
+  <c c2="GB" c3="GBR" sn="United Kingdom of Great Britain and Northern Ireland" alias1="UK"/>
+  <c c2="US" c3="USA" sn="United States of America"/>
+  <c c2="UY" c3="URY" sn="Uruguay"/>
+</countries>
+
+<xsl:variable name="countries" xmlns:c="#data" select="document('')/*/c:countries/c:c"/>
+
 <xsl:template name="extract-normalized">
   <xsl:param name="node" select="."/>
   <xsl:param name="name"/>
   <xsl:param name="ascii" select="false()"/>
+  <xsl:param name="check-country" select="false()"/>
 
   <xsl:variable name="n">
     <xsl:choose>
@@ -11120,6 +11167,44 @@ prev: <xsl:value-of select="$prev"/>
       <xsl:with-param name="msg">missing text in <xsl:value-of select="$name"/></xsl:with-param>
     </xsl:call-template>
   </xsl:if>
+  
+  <xsl:if test="$check-country">
+    <xsl:variable name="short" select="translate(normalize-space(translate($text,'.','')),$lcase,$ucase)"/>
+    <xsl:choose>
+      <xsl:when test="$check-country and $countries[@sn=$text]">
+        <!-- all good -->
+      </xsl:when>
+      <xsl:when test="$short=''">
+        <!-- already warned -->
+      </xsl:when>
+      <xsl:when test="not($countries/@sn=$text) and ($countries/@c3=$short)">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[@c3=$short]/@sn"/>'?</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="not($countries/@sn=$text) and ($countries/@c2=$short)">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[@c2=$short]/@sn"/>'?</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="not($countries/@sn=$text) and ($countries/@alias1=$short)">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[@alias1=$short]/@sn"/>'?</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="$countries[starts-with(translate(@sn,$lcase,$ucase),$short)]">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[starts-with(translate(@sn,$lcase,$ucase),$short)][1]/@sn"/>'? (lookup of short names: https://www.iso.org/obp/ui/)</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">ISO country short name '<xsl:value-of select="$text"/>' unknown (lookup of short names: https://www.iso.org/obp/ui/)</xsl:with-param>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
+
   <xsl:value-of select="$text"/>
 </xsl:template>
 
