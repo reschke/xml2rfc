@@ -6751,20 +6751,22 @@ function toggleButton(node) {
 <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!=''">
 <script>
 function getMeta(rfcno, container) {
-
+  while (rfcno.length &lt; 4) {
+    rfcno = "0" + rfcno;
+  }
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", "https://tools.ietf.org/draft/rfc" + rfcno + "/state.xml", true);
+  xhr.open("GET", "https://www.rfc-editor.org/rfc/rfc" + rfcno + ".json", true);
   xhr.onload = function (e) {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
-        var doc = xhr.responseXML;
-        var data = getDataFromXML(doc, rfcno);
-
+        var doc = JSON.parse(xhr.response);
+        var data = doc[0];
+        
         var cont = document.getElementById(container);
         // empty the container
         while (cont.firstChild) {
           cont.removeChild(myNode.firstChild);
-        }      
+        }
 
         var c = data.status;
         if (c) {
@@ -6811,39 +6813,6 @@ function getMeta(rfcno, container) {
   xhr.send(null);
 }
 
-// extract data from XML
-function getDataFromXML(doc, rfcno) {
-  var data = new Object();
-  var info = getChildByName(doc.documentElement, "info");
-
-  var c = getChildByName(info, "stdstatus");
-  if (c !== null) {
-    data.status = c.textContent;
-  }
-
-  c = getChildByName(info, "updatedby");
-  if (c !== null) {
-    data.updated_by = c.textContent.split(",");
-  }
-
-  c = getChildByName(info, "obsoletedby");
-  if (c !== null) {
-    data.obsoleted_by = c.textContent.split(",");
-  }
-
-  c = getChildByName(info, "errata");
-  if (c !== null) {
-    var template = "<xsl:call-template name="replace-substring">
-        <xsl:with-param name="string" select="$xml2rfc-ext-rfc-errata-uri"/>
-        <xsl:with-param name="replace">"</xsl:with-param>
-        <xsl:with-param name="by">\"</xsl:with-param>
-      </xsl:call-template>";
-    data.errata_url = template.replace("{rfc}", rfcno);
-  }
-
-  return data;
-}
-
 // DOM helpers
 function newElement(name) {
   return document.createElement(name);
@@ -6856,21 +6825,6 @@ function newElementWithText(name, txt) {
 function newText(text) {
   return document.createTextNode(text);
 }
-
-function getChildByName(parent, name) {
-  if (parent === null) {
-    return null;
-  }
-  else {
-    for (var c = parent.firstChild; c !== null; c = c.nextSibling) {
-      if (name == c.nodeName) {
-        return c;
-      }
-    }
-    return null;
-  }
-}
-
 function appendRfcLinks(parent, updates) {
   var template = "<xsl:call-template name="replace-substring">
   <xsl:with-param name="string" select="$xml2rfc-ext-rfc-uri"/>
@@ -6878,7 +6832,7 @@ function appendRfcLinks(parent, updates) {
   <xsl:with-param name="by">\"</xsl:with-param>
 </xsl:call-template>";
   for (var i = 0; i &lt; updates.length; i++) {
-    var rfc = updates[i].trim();
+    var rfc = updates[i].trim().toLowerCase();
     if (rfc.substring(0, 3) == "rfc") {
       var no = rfc.substring(3);
       var link = newElement("a");
@@ -10782,11 +10736,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1160 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1160 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1161 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1161 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/05 12:23:55 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/05 12:23:55 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/05 16:49:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/05 16:49:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
