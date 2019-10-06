@@ -6751,9 +6751,6 @@ function toggleButton(node) {
 <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!=''">
 <script>
 function getMeta(rfcno, container) {
-  while (rfcno.length &lt; 4) {
-    rfcno = "0" + rfcno;
-  }
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "https://www.rfc-editor.org/rfc/rfc" + rfcno + ".json", true);
   xhr.onload = function (e) {
@@ -10736,11 +10733,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1161 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1161 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1162 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1162 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/05 16:49:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/05 16:49:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/06 05:46:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/06 05:46:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
