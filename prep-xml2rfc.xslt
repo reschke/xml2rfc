@@ -1462,6 +1462,10 @@
   <xsl:copy/>
 </xsl:template>
 
+<xsl:template match="svg:defs/@class" mode="prep-sanitizesvg" priority="9">
+  <xsl:copy/>
+</xsl:template>
+
 <xsl:template match="svg:ellipse/@cx|svg:ellipse/@cy|svg:ellipse/@rx|svg:ellipse/@ry" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
@@ -1498,7 +1502,7 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:tspan/@fill|svg:tspan/@font-size|svg:tspan/@x|svg:tspan/@y" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:tspan/@class|svg:tspan/@fill|svg:tspan/@font-size|svg:tspan/@x|svg:tspan/@y" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
