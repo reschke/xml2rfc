@@ -1608,6 +1608,14 @@
     <xsl:when test=".='normal' or .='bold' or .='bolder' or .='lighter'">
       <xsl:copy/>
     </xsl:when>
+    <xsl:when test=".='400'">
+      <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'normal')</xsl:message>
+      <xsl:attribute name="font-weight">normal</xsl:attribute>
+    </xsl:when>
+    <xsl:when test=".='700'">
+      <xsl:message>WARN: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (replaced by 'bold')</xsl:message>
+      <xsl:attribute name="font-weight">bold</xsl:attribute>
+    </xsl:when>
     <xsl:otherwise>
       <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (dropped)</xsl:message>
     </xsl:otherwise>
