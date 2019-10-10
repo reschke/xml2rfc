@@ -1478,7 +1478,7 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:polygon/@class|svg:polygon/@points|svg:polygon/@style" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:polygon/@class|svg:polygon/@points|svg:polygon/@stroke-width|svg:polygon/@style" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
