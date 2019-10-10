@@ -1599,6 +1599,17 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template match="svg:text/@font-weight|svg:tspan/@font-weight" mode="prep-sanitizesvg" priority="9">
+  <xsl:choose>
+    <xsl:when test=".='normal' or .='bold' or .='bolder' or .='lighter'">
+      <xsl:copy/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/>=<xsl:value-of select="."/> not allowed in SVG content (dropped)</xsl:message>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="svg:path/@stroke-linejoin|svg:rect/@stroke-linejoin" mode="prep-sanitizesvg" priority="9">
   <xsl:choose>
     <xsl:when test=".='miter' or .='round' or .='bevel'">
