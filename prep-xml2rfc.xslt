@@ -1498,7 +1498,7 @@
   <xsl:copy/>
 </xsl:template>
 
-<xsl:template match="svg:tspan/@fill|svg:tspan/@x|svg:tspan/@y" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:tspan/@fill|svg:tspan/@font-size|svg:tspan/@x|svg:tspan/@y" mode="prep-sanitizesvg" priority="9">
   <xsl:copy/>
 </xsl:template>
 
@@ -1528,7 +1528,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="svg:ellipse/@stroke|svg:line/@stroke|svg:path/@stroke|svg:polygon/@stroke|svg:rect/@stroke" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:ellipse/@stroke|svg:line/@stroke|svg:path/@stroke|svg:polygon/@stroke|svg:rect/@stroke|svg:tspan/@stroke" mode="prep-sanitizesvg" priority="9">
   <xsl:variable name="v" select="f:normalize-css-color(.)"/>
   <xsl:variable name="brightness" select="f:compute-css-color-brightness($v)"/>
 
@@ -1550,7 +1550,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="svg:text/@font-family" mode="prep-sanitizesvg" priority="9">
+<xsl:template match="svg:text/@font-family|svg:tspan/@font-family" mode="prep-sanitizesvg" priority="9">
   <xsl:choose>
     <xsl:when test=".='serif' or .='sans-serif' or .='monospace'">
       <xsl:copy/>
