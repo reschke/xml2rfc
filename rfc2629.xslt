@@ -1770,6 +1770,16 @@
             </xsl:with-param>
           </xsl:call-template>
         </xsl:for-each>
+        <xsl:for-each select="address/postal/pobox">
+          <xsl:call-template name="emit-postal-line">
+            <xsl:with-param name="value">
+              <xsl:call-template name="extract-normalized">
+                <xsl:with-param name="name" select="'address/postal/pobox'"/>
+                <xsl:with-param name="ascii" select="$ascii"/>
+              </xsl:call-template>
+            </xsl:with-param>
+          </xsl:call-template>
+        </xsl:for-each>
         <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
           <xsl:variable name="city">
             <xsl:if test="address/postal/city">
@@ -10739,11 +10749,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1166 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1166 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1167 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1167 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/09 06:02:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/09 06:02:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/11 16:46:45 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/11 16:46:45 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

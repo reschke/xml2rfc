@@ -1686,6 +1686,14 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="pobox Element" anchor="v3.pobox">
+  <iref item="V3 Extension Elements" subitem="pobox" primary="true"/>
+  <iref item="pobox V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
+</t>
+</section>
+
 <section title="postalLine Element" anchor="v3.postalLine">
   <iref item="V3 Extension Elements" subitem="postalLine" primary="true"/>
   <iref item="postalLine V3 Extension Element" primary="true"/>
@@ -2936,6 +2944,7 @@ include "rfc2629.rnc" {
           | code
           | country
           | v3_extaddr
+          | v3_pobox
           | region
           | street)*
         <strong>| <x:ref>v3_postalLine</x:ref></strong>+)
@@ -3446,6 +3455,14 @@ attlist.xref &amp;=
     attribute group { TEXT }?,
     attribute type { TEXT }?,
     <x:ref>v3_li</x:ref>+
+  }
+
+<em anchor="v3_pobox"><iref item="extaddr V3 Extension Element"/><iref item="V3 Extension Elements" subitem="pobox"
+/># Extended Postal Address (see <xref target="v3.pobox"/>)</em>
+<x:ref>v3_pobox</x:ref> =
+  element pobox {
+    attribute ascii { ATEXT }?,
+    TEXT
   }
 
 <em anchor="v3_postalLine"><iref item="postalLine V3 Extension Element"/><iref item="V3 Extension Elements" subitem="postalLine"
