@@ -1775,7 +1775,6 @@
             <xsl:with-param name="value">
               <xsl:for-each select="extaddr">
                 <xsl:call-template name="extract-normalized">
-                  <xsl:with-param name="name" select="'extaddr'"/>
                   <xsl:with-param name="ascii" select="$ascii"/>
                 </xsl:call-template>
                 <xsl:if test="position()!=last()">, </xsl:if>
@@ -1787,7 +1786,6 @@
           <xsl:call-template name="emit-postal-line">
             <xsl:with-param name="value">
               <xsl:call-template name="extract-normalized">
-                <xsl:with-param name="name" select="'street'"/>
                 <xsl:with-param name="ascii" select="$ascii"/>
               </xsl:call-template>
             </xsl:with-param>
@@ -1797,7 +1795,6 @@
           <xsl:call-template name="emit-postal-line">
             <xsl:with-param name="value">
               <xsl:call-template name="extract-normalized">
-                <xsl:with-param name="name" select="'pobox'"/>
                 <xsl:with-param name="ascii" select="$ascii"/>
               </xsl:call-template>
             </xsl:with-param>
@@ -1808,7 +1805,6 @@
             <xsl:if test="city">
               <xsl:call-template name="extract-normalized">
                 <xsl:with-param name="node" select="city"/>
-                <xsl:with-param name="name" select="'city'"/>
                 <xsl:with-param name="ascii" select="$ascii"/>
               </xsl:call-template>
             </xsl:if>
@@ -1817,7 +1813,6 @@
             <xsl:if test="region">
               <xsl:call-template name="extract-normalized">
                 <xsl:with-param name="node" select="region"/>
-                <xsl:with-param name="name" select="'region'"/>
                 <xsl:with-param name="ascii" select="$ascii"/>
               </xsl:call-template>
             </xsl:if>
@@ -1826,7 +1821,6 @@
             <xsl:if test="code">
               <xsl:call-template name="extract-normalized">
                 <xsl:with-param name="node" select="code"/>
-                <xsl:with-param name="name" select="'code'"/>
                 <xsl:with-param name="ascii" select="$ascii"/>
               </xsl:call-template>
             </xsl:if>
@@ -1857,7 +1851,6 @@
             <xsl:with-param name="value">
               <xsl:call-template name="extract-normalized">
                 <xsl:with-param name="node" select="country"/>
-                <xsl:with-param name="name" select="'country'"/>
                 <xsl:with-param name="ascii" select="$ascii"/>
                 <xsl:with-param name="check-country" select="$ascii"/>
               </xsl:call-template>
@@ -1880,7 +1873,6 @@
           <xsl:call-template name="emit-postal-line">
             <xsl:with-param name="value">
               <xsl:call-template name="extract-normalized">
-                <xsl:with-param name="name" select="'postalLine'"/>
                 <xsl:with-param name="ascii" select="$ascii"/>
               </xsl:call-template>
             </xsl:with-param>
@@ -1893,7 +1885,6 @@
     <xsl:variable name="phone">
       <xsl:call-template name="extract-normalized">
         <xsl:with-param name="node" select="phone"/>
-        <xsl:with-param name="name" select="'phone'"/>
       </xsl:call-template>
     </xsl:variable>
     <xsl:call-template name="emit-postal-line">
@@ -1906,7 +1897,6 @@
     <xsl:variable name="facsimile">
       <xsl:call-template name="extract-normalized">
         <xsl:with-param name="node" select="facsimile"/>
-        <xsl:with-param name="name" select="'facsimile'"/>
       </xsl:call-template>
     </xsl:variable>
     <xsl:call-template name="emit-postal-line">
@@ -10777,11 +10767,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1169 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1169 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1170 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1170 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/13 12:51:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/13 12:51:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/13 16:41:55 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/13 16:41:55 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11139,9 +11129,10 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:template name="extract-normalized">
   <xsl:param name="node" select="."/>
-  <xsl:param name="name"/>
   <xsl:param name="ascii" select="false()"/>
   <xsl:param name="check-country" select="false()"/>
+
+  <xsl:variable name="name" select="local-name(.)"/>
 
   <xsl:variable name="n">
     <xsl:choose>
