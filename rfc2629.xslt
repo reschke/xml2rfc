@@ -1744,7 +1744,25 @@
 
 <xsl:template name="emit-author-details">
   <xsl:param name="ascii"/>
-  <xsl:for-each select="address/postal">
+  <xsl:for-each select="address">
+    <xsl:choose>
+      <xsl:when test="position() != 1">
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg">Multiple &lt;address> elements inside &lt;author>, all but the first ignored.</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="emit-author-details2">
+          <xsl:with-param name="ascii" select="$ascii"/>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:for-each>
+</xsl:template>
+
+<xsl:template name="emit-author-details2">
+  <xsl:param name="ascii"/>
+  <xsl:for-each select="postal">
     <xsl:choose>
       <xsl:when test="position()!=1">
         <xsl:call-template name="error">
@@ -1871,11 +1889,11 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
-  <xsl:if test="address/phone">
+  <xsl:if test="phone">
     <xsl:variable name="phone">
       <xsl:call-template name="extract-normalized">
-        <xsl:with-param name="node" select="address/phone"/>
-        <xsl:with-param name="name" select="'address/phone'"/>
+        <xsl:with-param name="node" select="phone"/>
+        <xsl:with-param name="name" select="'phone'"/>
       </xsl:call-template>
     </xsl:variable>
     <xsl:call-template name="emit-postal-line">
@@ -1884,11 +1902,11 @@
       <xsl:with-param name="link" select="concat('tel:',translate($phone,' ',''))"/>
     </xsl:call-template>
   </xsl:if>
-  <xsl:if test="address/facsimile">
+  <xsl:if test="facsimile">
     <xsl:variable name="facsimile">
       <xsl:call-template name="extract-normalized">
-        <xsl:with-param name="node" select="address/facsimile"/>
-        <xsl:with-param name="name" select="'address/facsimile'"/>
+        <xsl:with-param name="node" select="facsimile"/>
+        <xsl:with-param name="name" select="'facsimile'"/>
       </xsl:call-template>
     </xsl:variable>
     <xsl:call-template name="emit-postal-line">
@@ -1897,7 +1915,7 @@
       <xsl:with-param name="link" select="concat('fax:',translate($facsimile,' ',''))"/>
     </xsl:call-template>
   </xsl:if>
-  <xsl:for-each select="address/email">
+  <xsl:for-each select="email">
     <xsl:variable name="email">
       <xsl:call-template name="extract-email"/>
     </xsl:variable>
@@ -1916,7 +1934,7 @@
       </xsl:with-param>
     </xsl:call-template>
   </xsl:for-each>
-  <xsl:for-each select="address/uri">
+  <xsl:for-each select="uri">
     <xsl:variable name="uri">
       <xsl:call-template name="extract-uri"/>
     </xsl:variable>
@@ -10759,11 +10777,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1168 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1168 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1169 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1169 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/13 09:56:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/13 09:56:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/13 12:51:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/13 12:51:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
