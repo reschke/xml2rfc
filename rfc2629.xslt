@@ -10767,11 +10767,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1170 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1170 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1171 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1171 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/13 16:41:55 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/13 16:41:55 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/13 18:39:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/13 18:39:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11127,6 +11127,46 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:variable name="countries" xmlns:c="#data" select="document('')/*/c:countries/c:c"/>
 
+<xsl:template name="check-country">
+  <xsl:param name="text"/>
+
+  <xsl:variable name="short" select="translate(normalize-space(translate($text,'.','')),$lcase,$ucase)"/>
+
+  <xsl:choose>
+    <xsl:when test="$countries[@sn=$text]">
+      <!-- all good -->
+    </xsl:when>
+    <xsl:when test="$short=''">
+      <!-- already warned -->
+    </xsl:when>
+    <xsl:when test="not($countries/@sn=$text) and ($countries/@c3=$short)">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[@c3=$short]/@sn"/>'?</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="not($countries/@sn=$text) and ($countries/@c2=$short)">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[@c2=$short]/@sn"/>'?</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="not($countries/@sn=$text) and ($countries/@alias1=$short)">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[@alias1=$short]/@sn"/>'?</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="$countries[starts-with(translate(@sn,$lcase,$ucase),$short)]">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[starts-with(translate(@sn,$lcase,$ucase),$short)][1]/@sn"/>'? (lookup of short names: https://www.iso.org/obp/ui/)</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">ISO country short name '<xsl:value-of select="$text"/>' unknown (lookup of short names: https://www.iso.org/obp/ui/)</xsl:with-param>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="extract-normalized">
   <xsl:param name="node" select="."/>
   <xsl:param name="ascii" select="false()"/>
@@ -11151,6 +11191,7 @@ prev: <xsl:value-of select="$prev"/>
       <xsl:with-param name="msg">excessive whitespace in <xsl:value-of select="$name"/>: '<xsl:value-of select="$n"/>'</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
+
   <xsl:if test="$text=''">
     <xsl:call-template name="warning">
       <xsl:with-param name="msg">missing text in <xsl:value-of select="$name"/></xsl:with-param>
@@ -11158,40 +11199,9 @@ prev: <xsl:value-of select="$prev"/>
   </xsl:if>
   
   <xsl:if test="$check-country">
-    <xsl:variable name="short" select="translate(normalize-space(translate($text,'.','')),$lcase,$ucase)"/>
-    <xsl:choose>
-      <xsl:when test="$check-country and $countries[@sn=$text]">
-        <!-- all good -->
-      </xsl:when>
-      <xsl:when test="$short=''">
-        <!-- already warned -->
-      </xsl:when>
-      <xsl:when test="not($countries/@sn=$text) and ($countries/@c3=$short)">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[@c3=$short]/@sn"/>'?</xsl:with-param>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="not($countries/@sn=$text) and ($countries/@c2=$short)">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[@c2=$short]/@sn"/>'?</xsl:with-param>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="not($countries/@sn=$text) and ($countries/@alias1=$short)">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[@alias1=$short]/@sn"/>'?</xsl:with-param>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="$countries[starts-with(translate(@sn,$lcase,$ucase),$short)]">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">'<xsl:value-of select="$text"/>' is not an ISO country short name, maybe you meant '<xsl:value-of select="$countries[starts-with(translate(@sn,$lcase,$ucase),$short)][1]/@sn"/>'? (lookup of short names: https://www.iso.org/obp/ui/)</xsl:with-param>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">ISO country short name '<xsl:value-of select="$text"/>' unknown (lookup of short names: https://www.iso.org/obp/ui/)</xsl:with-param>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="check-country">
+      <xsl:with-param name="text" select="$text"/>
+    </xsl:call-template>
   </xsl:if>
 
   <xsl:value-of select="$text"/>
