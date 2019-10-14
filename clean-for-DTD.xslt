@@ -540,13 +540,18 @@
   </title>
 </xsl:template>
 
+<xsl:template match="@x:optional-ascii" mode="cleanup"/>
 <xsl:template match="@ascii" mode="cleanup"/>
-<xsl:template match="postal/*[@ascii]" mode="cleanup">
+<xsl:template match="postal/*[@ascii or @x:optional-ascii]" mode="cleanup">
   <xsl:element name="{local-name()}">
     <xsl:apply-templates select="@*" mode="cleanup"/>
     <xsl:choose>
       <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
         <xsl:copy-of select="@ascii"/>
+        <xsl:if test="@x:optional-ascii and not(@ascii)">
+          <!-- workaround for https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/443 -->
+          <xsl:attribute name="ascii"><xsl:value-of select="@x:optional-ascii"/></xsl:attribute>
+        </xsl:if>
         <xsl:value-of select="text()"/>
       </xsl:when>
       <xsl:when test="@ascii!=''">
