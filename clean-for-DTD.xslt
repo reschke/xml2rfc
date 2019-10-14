@@ -628,13 +628,25 @@
   <!--<xsl:comment><xsl:value-of select="concat($sfmt, ' ', $tsec, ' ', @x:sec)"/></xsl:comment>-->
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='of'">
-      <xref target="{@target}" section="{$tsec}"/>
+      <xref target="{@target}" section="{$tsec}">
+        <xsl:if test="@x:rel">
+          <xsl:attribute name="relative"><xsl:value-of select="@x:rel"/></xsl:attribute>
+        </xsl:if>
+      </xref>
     </xsl:when>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='comma'">
-      <xref target="{@target}" sectionFormat="comma" section="{$tsec}"/>
+      <xref target="{@target}" sectionFormat="comma" section="{$tsec}">
+        <xsl:if test="@x:rel">
+          <xsl:attribute name="relative"><xsl:value-of select="@x:rel"/></xsl:attribute>
+        </xsl:if>
+      </xref>
     </xsl:when>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='bare'">
-      <xref target="{@target}" sectionFormat="bare" section="{$tsec}"/>
+      <xref target="{@target}" sectionFormat="bare" section="{$tsec}">
+        <xsl:if test="@x:rel">
+          <xsl:attribute name="relative"><xsl:value-of select="@x:rel"/></xsl:attribute>
+        </xsl:if>
+      </xref>
     </xsl:when>
     <xsl:when test="$sfmt='comma'">
       <xref>
