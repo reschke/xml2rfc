@@ -169,7 +169,16 @@
 
 <xsl:template match="x:u-map" mode="cleanup"/>
 <xsl:template match="u" mode="cleanup">
-  <xsl:call-template name="emit-u"/>
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <u>
+        <xsl:apply-templates select="node()|@*" mode="cleanup" />
+      </u>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="emit-u"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- extensions -->
