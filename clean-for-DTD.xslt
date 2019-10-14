@@ -545,6 +545,10 @@
   <xsl:element name="{local-name()}">
     <xsl:apply-templates select="@*" mode="cleanup"/>
     <xsl:choose>
+      <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+        <xsl:copy-of select="@ascii"/>
+        <xsl:value-of select="text()"/>
+      </xsl:when>
       <xsl:when test="@ascii!=''">
         <xsl:value-of select="@ascii"/>
       </xsl:when>
