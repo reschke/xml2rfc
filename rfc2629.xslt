@@ -1707,7 +1707,7 @@
   <address>
     <xsl:call-template name="emit-author"/>
 
-    <xsl:if test="@asciiFullname!='' or organization/@ascii!='' or postal/*/@ascii">
+    <xsl:if test="@asciiFullname!='' or organization/@ascii!='' or address/postal/*/@ascii">
       <br/><br/>
       <em>Additional contact information:</em>
       <br/>
@@ -10767,11 +10767,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1171 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1171 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1172 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1172 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/13 18:39:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/13 18:39:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/14 12:59:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/14 12:59:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
