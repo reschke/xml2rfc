@@ -10772,11 +10772,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1173 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1173 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1174 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1174 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/15 04:52:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/15 04:52:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/15 10:45:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/15 10:45:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11084,7 +11084,7 @@ prev: <xsl:value-of select="$prev"/>
   </xsl:choose>
 </xsl:template>
 
-<countries xmlns="#data">
+<countries xmlns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt">
   <c c2="AR" c3="ARG" sn="Argentina"/>
   <c c2="AU" c3="AUS" sn="Australia"/>
   <c c2="AT" c3="AUT" sn="Austria"/>
@@ -11130,7 +11130,7 @@ prev: <xsl:value-of select="$prev"/>
   <c c2="UY" c3="URY" sn="Uruguay"/>
 </countries>
 
-<xsl:variable name="countries" xmlns:c="#data" select="document('')/*/c:countries/c:c"/>
+<xsl:variable name="countries" select="document('')/*/myns:countries/myns:c"/>
 
 <xsl:template name="check-country">
   <xsl:param name="text"/>
