@@ -1986,21 +1986,21 @@
           </xsl:call-template>
         </xsl:variable>
         <xsl:choose>
-          <!-- A STREETADDRESS, C CITY, N NAME?, O ORG?, Z (ZIP)CODE  -->
-          <xsl:when test="/rfc/@version >= 3 and $format='%O%n%N%n%A%n%C %S %Z'">
+          <!-- A STREETADDRESS, C CITY, Z (ZIP)CODE  -->
+          <xsl:when test="/rfc/@version >= 3 and $format='%A%n%C %S %Z'">
             <xsl:call-template name="emit-postal-street"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-city-region-code"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-country"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-warnings"><xsl:with-param name="nodes" select="cityarea|sortingcode"/></xsl:call-template>
           </xsl:when>
-          <xsl:when test="/rfc/@version >= 3 and $format='%N%n%O%n%A%n%Z %C%n%S'">
+          <xsl:when test="/rfc/@version >= 3 and $format='A%n%Z %C%n%S'">
             <xsl:call-template name="emit-postal-street"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-code-city"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-region"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-country"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-warnings"><xsl:with-param name="nodes" select="cityarea|sortingcode"/></xsl:call-template>
           </xsl:when>
-          <xsl:when test="/rfc/@version >= 3 and $format='%N%n%O%n%A%n%Z %C'">
+          <xsl:when test="/rfc/@version >= 3 and $format='%A%n%Z %C'">
             <xsl:call-template name="emit-postal-street"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-code-city"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-country"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
@@ -10918,11 +10918,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1175 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1175 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1176 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1176 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/15 12:30:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/15 12:30:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/15 17:06:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/15 17:06:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11231,10 +11231,10 @@ prev: <xsl:value-of select="$prev"/>
 </xsl:template>
 
 <countries xmlns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt">
-  <c c2="AR" c3="ARG" sn="Argentina" fmt="%N%n%O%n%A%n%Z %C%n%S"/>
-  <c c2="AU" c3="AUS" sn="Australia" fmt="%O%n%N%n%A%n%C %S %Z"/>
-  <c c2="AT" c3="AUT" sn="Austria"/>
-  <c c2="BE" c3="BEL" sn="Belgium"/>
+  <c c2="AR" c3="ARG" sn="Argentina" fmt="A%n%Z %C%n%S"/>
+  <c c2="AU" c3="AUS" sn="Australia" fmt="A%n%C %S %Z"/>
+  <c c2="AT" c3="AUT" sn="Austria" fmt="%A%n%Z %C"/>
+  <c c2="BE" c3="BEL" sn="Belgium" fmt="%A%n%Z %C"/>
   <c c2="BR" c3="BRA" sn="Brazil"/>
   <c c2="CA" c3="CAN" sn="Canada"/>
   <c c2="CL" c3="CHL" sn="Chile"/>
@@ -11242,7 +11242,7 @@ prev: <xsl:value-of select="$prev"/>
   <c c2="HR" c3="HRV" sn="Croatia"/>
   <c c2="CZ" c3="CZE" sn="Czechia"/>
   <c c2="DK" c3="DNK" sn="Denmark"/>
-  <c c2="DE" c3="DEU" sn="Germany" fmt="%N%n%O%n%A%n%Z %C"/>
+  <c c2="DE" c3="DEU" sn="Germany" fmt="%A%n%Z %C"/>
   <c c2="GR" c3="GRC" sn="Greece"/>
   <c c2="FI" c3="FIN" sn="Finland"/>
   <c c2="FR" c3="FRA" sn="France"/>
@@ -11272,7 +11272,7 @@ prev: <xsl:value-of select="$prev"/>
   <c c2="TH" c3="THA" sn="Thailand"/>
   <c c2="TR" c3="TUR" sn="Turkey"/>
   <c c2="GB" c3="GBR" sn="United Kingdom of Great Britain and Northern Ireland" alias1="UK"/>
-  <c c2="US" c3="USA" sn="United States of America" fmt="%N%n%O%n%A%n%C, %S %Z"/>
+  <c c2="US" c3="USA" sn="United States of America" fmt="%A%n%C, %S %Z"/>
   <c c2="UY" c3="URY" sn="Uruguay"/>
 </countries>
 
