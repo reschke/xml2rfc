@@ -1963,13 +1963,29 @@
 
 <xsl:template name="emit-postal-code">
   <xsl:param name="ascii"/>
+  <xsl:param name="prefix"/>
   <xsl:if test="code">
+    <xsl:variable name="code">
+      <xsl:call-template name="extract-normalized">
+        <xsl:with-param name="node" select="code"/>
+        <xsl:with-param name="ascii" select="$ascii"/>
+      </xsl:call-template>
+    </xsl:variable>
     <xsl:call-template name="emit-postal-line">
       <xsl:with-param name="value">
-        <xsl:call-template name="extract-normalized">
-          <xsl:with-param name="node" select="code"/>
-          <xsl:with-param name="ascii" select="$ascii"/>
-        </xsl:call-template>
+      <xsl:if test="$code!=''">
+        <xsl:choose>
+          <xsl:when test="$prefix!='' and starts-with($code,$prefix)">
+            <xsl:call-template name="warning">
+              <xsl:with-param name="msg">Prefix '<xsl:value-of select="$prefix"/>' on &lt;code> '<xsl:value-of select="$code"/>' will be inserted automatically.</xsl:with-param>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$prefix"/>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:value-of select="$code"/>
+      </xsl:if>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:if>
@@ -2251,6 +2267,13 @@
             <xsl:call-template name="emit-postal-street"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-code"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-country"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
+            <xsl:call-template name="emit-postal-warnings"><xsl:with-param name="nodes" select="cityarea|sortingcode"/></xsl:call-template>
+          </xsl:when>
+          <xsl:when test="$format='%Z%n%S%n%A'">
+            <xsl:call-template name="emit-postal-country"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
+            <xsl:call-template name="emit-postal-code"><xsl:with-param name="ascii" select="$ascii"/><xsl:with-param name="prefix" select="$postprefix"/></xsl:call-template>
+            <xsl:call-template name="emit-postal-region"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
+            <xsl:call-template name="emit-postal-street"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-warnings"><xsl:with-param name="nodes" select="cityarea|sortingcode"/></xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
@@ -11165,11 +11188,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1197 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1197 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1198 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1198 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/16 19:33:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 19:33:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/16 20:16:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 20:16:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11498,7 +11521,7 @@ prev: <xsl:value-of select="$prev"/>
   <c c2="IR" c3="IRL" sn="Ireland" fmt="%A%n%D%n%C%n%S %Z"/>
   <c c2="IL" c3="ISR" sn="Israel" fmt="%A%n%C %Z"/>
   <c c2="IT" c3="ITA" sn="Italy" fmt="%A%n%Z %C %S"/>
-  <c c2="JP" c3="JPN" sn="Japan"/>
+  <c c2="JP" c3="JPN" sn="Japan" fmt="%Z%n%S%n%A" postprefix="&#12306;"/>
   <c c2="KR" c3="KOR" sn="Korea"/>
   <c c2="LU" c3="LUX" sn="Luxembourg"/>
   <c c2="MU" c3="MUS" sn="Mauritius"/>
