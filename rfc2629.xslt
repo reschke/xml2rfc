@@ -1845,6 +1845,37 @@
   </xsl:call-template>
 </xsl:template>
 
+<xsl:template name="emit-postal-code-city-region">
+  <xsl:param name="ascii"/>
+  <xsl:variable name="city">
+    <xsl:if test="city">
+      <xsl:call-template name="extract-normalized">
+        <xsl:with-param name="node" select="city"/>
+        <xsl:with-param name="ascii" select="$ascii"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:variable>
+  <xsl:variable name="region">
+    <xsl:if test="region">
+      <xsl:call-template name="extract-normalized">
+        <xsl:with-param name="node" select="region"/>
+        <xsl:with-param name="ascii" select="$ascii"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:variable>
+  <xsl:variable name="code">
+    <xsl:if test="code">
+      <xsl:call-template name="extract-normalized">
+        <xsl:with-param name="node" select="code"/>
+        <xsl:with-param name="ascii" select="$ascii"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:variable>
+  <xsl:call-template name="emit-postal-line">
+    <xsl:with-param name="value" select="concat($code,' ',$city,' ',$region)"/>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template name="emit-postal-city-comma-region-code">
   <xsl:param name="ascii"/>
   <xsl:variable name="city">
@@ -2157,6 +2188,12 @@
           <xsl:when test="$format='%A%n%C %S %Z'">
             <xsl:call-template name="emit-postal-street"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-city-region-code"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
+            <xsl:call-template name="emit-postal-country"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
+            <xsl:call-template name="emit-postal-warnings"><xsl:with-param name="nodes" select="cityarea|sortingcode"/></xsl:call-template>
+          </xsl:when>
+          <xsl:when test="$format='%A%n%Z %C %S'">
+            <xsl:call-template name="emit-postal-street"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
+            <xsl:call-template name="emit-postal-code-city-region"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-country"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-warnings"><xsl:with-param name="nodes" select="cityarea|sortingcode"/></xsl:call-template>
           </xsl:when>
@@ -11128,11 +11165,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1196 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1196 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1197 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1197 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/16 19:17:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 19:17:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/16 19:33:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 19:33:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11460,7 +11497,7 @@ prev: <xsl:value-of select="$prev"/>
   <c c2="IN" c3="IND" sn="India" fmt="%A%n%C %Z%n%S"/>
   <c c2="IR" c3="IRL" sn="Ireland" fmt="%A%n%D%n%C%n%S %Z"/>
   <c c2="IL" c3="ISR" sn="Israel" fmt="%A%n%C %Z"/>
-  <c c2="IT" c3="ITA" sn="Italy"/>
+  <c c2="IT" c3="ITA" sn="Italy" fmt="%A%n%Z %C %S"/>
   <c c2="JP" c3="JPN" sn="Japan"/>
   <c c2="KR" c3="KOR" sn="Korea"/>
   <c c2="LU" c3="LUX" sn="Luxembourg"/>
