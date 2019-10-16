@@ -1961,7 +1961,7 @@
       <xsl:with-param name="value">
         <xsl:if test="$code!=''">
           <xsl:choose>
-            <xsl:when test="starts-with($code,$prefix)">
+            <xsl:when test="$prefix!='' and starts-with($code,$prefix)">
               <xsl:call-template name="warning">
                 <xsl:with-param name="msg">Prefix '<xsl:value-of select="$prefix"/>' on &lt;code> '<xsl:value-of select="$code"/>' will be inserted automatically.</xsl:with-param>
               </xsl:call-template>
@@ -11060,11 +11060,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1182 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1182 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1183 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1183 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/16 10:02:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 10:02:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/16 10:23:01 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 10:23:01 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
