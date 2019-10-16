@@ -1847,52 +1847,42 @@
 
 <xsl:template name="emit-postal-city-comma-region-code">
   <xsl:param name="ascii"/>
-  <xsl:if test="city|region|code">
-    <xsl:variable name="city">
-      <xsl:if test="city">
-        <xsl:call-template name="extract-normalized">
-          <xsl:with-param name="node" select="city"/>
-          <xsl:with-param name="ascii" select="$ascii"/>
-        </xsl:call-template>
-      </xsl:if>
-    </xsl:variable>
-    <xsl:variable name="region">
-      <xsl:if test="region">
-        <xsl:call-template name="extract-normalized">
-          <xsl:with-param name="node" select="region"/>
-          <xsl:with-param name="ascii" select="$ascii"/>
-        </xsl:call-template>
-      </xsl:if>
-    </xsl:variable>
-    <xsl:variable name="code">
-      <xsl:if test="code">
-        <xsl:call-template name="extract-normalized">
-          <xsl:with-param name="node" select="code"/>
-          <xsl:with-param name="ascii" select="$ascii"/>
-        </xsl:call-template>
-      </xsl:if>
-    </xsl:variable>
-    <xsl:call-template name="emit-postal-line">
-      <xsl:with-param name="value">
+  <xsl:variable name="city">
+    <xsl:if test="city">
+      <xsl:call-template name="extract-normalized">
+        <xsl:with-param name="node" select="city"/>
+        <xsl:with-param name="ascii" select="$ascii"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:variable>
+  <xsl:variable name="region">
+    <xsl:if test="region">
+      <xsl:call-template name="extract-normalized">
+        <xsl:with-param name="node" select="region"/>
+        <xsl:with-param name="ascii" select="$ascii"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:variable>
+  <xsl:variable name="code">
+    <xsl:if test="code">
+      <xsl:call-template name="extract-normalized">
+        <xsl:with-param name="node" select="code"/>
+        <xsl:with-param name="ascii" select="$ascii"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:variable>
+  <xsl:call-template name="emit-postal-line">
+    <xsl:with-param name="value">
+      <xsl:value-of select="$city"/>
+      <xsl:variable name="region-and-code" select="concat($region,' ',$code)"/>
+      <xsl:if test="normalize-space($region-and-code)!=''">
         <xsl:if test="$city!=''">
-          <xsl:value-of select="$city"/>
+          <xsl:text>, </xsl:text>
         </xsl:if>
-        <xsl:variable name="region-and-code">
-          <xsl:value-of select="$region"/>
-          <xsl:if test="$region!='' and $code!=''">
-            <xsl:text> </xsl:text>
-          </xsl:if>
-          <xsl:value-of select="$code"/>
-        </xsl:variable>
-        <xsl:if test="$region-and-code!=''">
-          <xsl:if test="$city!=''">
-            <xsl:text>, </xsl:text>
-          </xsl:if>
-          <xsl:value-of select="$region-and-code"/>
-        </xsl:if>
-      </xsl:with-param>
-    </xsl:call-template>
-  </xsl:if>
+        <xsl:value-of select="$region-and-code"/>
+      </xsl:if>
+    </xsl:with-param>
+  </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="emit-postal-city-minus-region">
@@ -11144,11 +11134,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1191 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1191 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1192 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1192 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/16 14:40:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 14:40:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/16 14:55:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 14:55:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
