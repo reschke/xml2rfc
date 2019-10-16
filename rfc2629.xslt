@@ -11060,11 +11060,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1181 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1181 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1182 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1182 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/16 07:05:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 07:05:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/16 10:02:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 10:02:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11382,12 +11382,12 @@ prev: <xsl:value-of select="$prev"/>
   <c c2="CL" c3="CHL" sn="Chile" fmt="%A%n%Z %C%n%S"/>
   <c c2="CN" c3="CHN" sn="China" fmt="%Z%n%S%C%D%n%A"/>
   <c c2="HR" c3="HRV" sn="Croatia" fmt="%A%n%Z %C" postprefix="HR-"/>
-  <c c2="CZ" c3="CZE" sn="Czechia"/>
-  <c c2="DK" c3="DNK" sn="Denmark"/>
+  <c c2="CZ" c3="CZE" sn="Czechia" fmt="%A%n%Z %C"/>
+  <c c2="DK" c3="DNK" sn="Denmark" fmt="%A%n%Z %C"/>
   <c c2="DE" c3="DEU" sn="Germany" fmt="%A%n%Z %C"/>
-  <c c2="GR" c3="GRC" sn="Greece"/>
-  <c c2="FI" c3="FIN" sn="Finland"/>
-  <c c2="FR" c3="FRA" sn="France"/>
+  <c c2="GR" c3="GRC" sn="Greece" fmt="%A%n%Z %C"/>
+  <c c2="FI" c3="FIN" sn="Finland" fmt="%A%n%Z %C" postprefix="FI-"/>/>
+  <c c2="FR" c3="FRA" sn="France" fmt="%A%n%Z %C"/>
   <c c2="HU" c3="HUN" sn="Hungary"/>
   <c c2="IN" c3="IND" sn="India"/>
   <c c2="IR" c3="IRL" sn="Ireland"/>
