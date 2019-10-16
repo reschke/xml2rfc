@@ -11060,11 +11060,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1183 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1183 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1184 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1184 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/16 10:23:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 10:23:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/16 10:37:50 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 10:37:50 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11470,7 +11470,7 @@ prev: <xsl:value-of select="$prev"/>
   <xsl:param name="node" select="."/>
   <xsl:param name="ascii" select="false()"/>
 
-  <xsl:variable name="name" select="local-name(.)"/>
+  <xsl:variable name="name" select="local-name($node)"/>
 
   <xsl:variable name="n">
     <xsl:choose>
