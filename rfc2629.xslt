@@ -1918,7 +1918,7 @@
 
 <xsl:template name="emit-postal-cityarea">
   <xsl:param name="ascii"/>
-  <xsl:if test="code">
+  <xsl:if test="cityarea">
     <xsl:call-template name="emit-postal-line">
       <xsl:with-param name="value">
         <xsl:call-template name="extract-normalized">
@@ -1961,45 +1961,41 @@
 <xsl:template name="emit-postal-code-city">
   <xsl:param name="ascii"/>
   <xsl:param name="prefix"/>
-  <xsl:if test="city|code">
-    <xsl:variable name="city">
-      <xsl:if test="city">
-        <xsl:call-template name="extract-normalized">
-          <xsl:with-param name="node" select="city"/>
-          <xsl:with-param name="ascii" select="$ascii"/>
-        </xsl:call-template>
+  <xsl:variable name="city">
+    <xsl:if test="city">
+      <xsl:call-template name="extract-normalized">
+        <xsl:with-param name="node" select="city"/>
+        <xsl:with-param name="ascii" select="$ascii"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:variable>
+  <xsl:variable name="code">
+    <xsl:if test="code">
+      <xsl:call-template name="extract-normalized">
+        <xsl:with-param name="node" select="code"/>
+        <xsl:with-param name="ascii" select="$ascii"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:variable>
+  <xsl:call-template name="emit-postal-line">
+    <xsl:with-param name="value">
+      <xsl:if test="$code!=''">
+        <xsl:choose>
+          <xsl:when test="$prefix!='' and starts-with($code,$prefix)">
+            <xsl:call-template name="warning">
+              <xsl:with-param name="msg">Prefix '<xsl:value-of select="$prefix"/>' on &lt;code> '<xsl:value-of select="$code"/>' will be inserted automatically.</xsl:with-param>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$prefix"/>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:value-of select="$code"/>
       </xsl:if>
-    </xsl:variable>
-    <xsl:variable name="code">
-      <xsl:if test="code">
-        <xsl:call-template name="extract-normalized">
-          <xsl:with-param name="node" select="code"/>
-          <xsl:with-param name="ascii" select="$ascii"/>
-        </xsl:call-template>
-      </xsl:if>
-    </xsl:variable>
-    <xsl:call-template name="emit-postal-line">
-      <xsl:with-param name="value">
-        <xsl:if test="$code!=''">
-          <xsl:choose>
-            <xsl:when test="$prefix!='' and starts-with($code,$prefix)">
-              <xsl:call-template name="warning">
-                <xsl:with-param name="msg">Prefix '<xsl:value-of select="$prefix"/>' on &lt;code> '<xsl:value-of select="$code"/>' will be inserted automatically.</xsl:with-param>
-              </xsl:call-template>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="$prefix"/>
-            </xsl:otherwise>
-          </xsl:choose>
-          <xsl:value-of select="$code"/>
-        </xsl:if>
-        <xsl:if test="$city!=''">
-          <xsl:if test="$code!=''"><xsl:text> </xsl:text></xsl:if>
-          <xsl:value-of select="$city"/>
-        </xsl:if>
-      </xsl:with-param>
-    </xsl:call-template>
-  </xsl:if>
+      <xsl:text> </xsl:text>
+      <xsl:value-of select="$city"/>
+    </xsl:with-param>
+  </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="emit-postal-region">
@@ -11130,11 +11126,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1193 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1193 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1194 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1194 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/16 18:26:24 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 18:26:24 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/16 18:40:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/16 18:40:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
