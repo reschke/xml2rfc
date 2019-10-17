@@ -11202,11 +11202,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1202 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1202 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1203 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1203 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/17 18:09:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/17 18:09:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/17 18:41:47 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/17 18:41:47 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11540,19 +11540,19 @@ prev: <xsl:value-of select="$prev"/>
   <c c2="LU" c3="LUX" sn="Luxembourg" fmt="%A%n%Z %C" postprefix="L-"/>
   <c c2="MU" c3="MUS" sn="Mauritius" fmt="%A%n%Z%n%C"/>
   <c c2="MX" c3="MEX" sn="Mexico"/>
-  <c c2="NL" c3="NLD" sn="Netherlands"/>
+  <c c2="NL" c3="NLD" sn="Netherlands" fmt="%A%n%Z %C"/>
   <c c2="NZ" c3="NZL" sn="New Zealand"/>
-  <c c2="NO" c3="NOR" sn="Norway"/>
-  <c c2="PL" c3="POL" sn="Poland"/>
-  <c c2="PT" c3="PRT" sn="Portugal"/>
-  <c c2="RO" c3="ROU" sn="Romania"/>
+  <c c2="NO" c3="NOR" sn="Norway" fmt="%A%n%Z %C"/>
+  <c c2="PL" c3="POL" sn="Poland" fmt="%A%n%Z %C"/>
+  <c c2="PT" c3="PRT" sn="Portugal" fmt="%A%n%Z %C"/>
+  <c c2="RO" c3="ROU" sn="Romania" fmt="%A%n%Z %C"/>
   <c c2="RU" c3="RUS" sn="Russian Federation"/>
   <c c2="SG" c3="SGP" sn="Singapore"/>
-  <c c2="SK" c3="SVK" sn="Slovakia"/>
-  <c c2="SI" c3="SVN" sn="Slovenia"/>
+  <c c2="SK" c3="SVK" sn="Slovakia" fmt="%A%n%Z %C"/>
+  <c c2="SI" c3="SVN" sn="Slovenia" fmt="%A%n%Z %C" postprefix="SI-"/>
   <c c2="ES" c3="ESP" sn="Spain" fmt="%A%n%Z %C %S"/>
-  <c c2="SE" c3="SWE" sn="Sweden"/>
-  <c c2="CH" c3="CHE" sn="Switzerland"/>
+  <c c2="SE" c3="SWE" sn="Sweden" fmt="%A%n%Z %C" postprefix="SE-"/>
+  <c c2="CH" c3="CHE" sn="Switzerland" fmt="%A%n%Z %C" postprefix="CH-"/>
   <c c2="TH" c3="THA" sn="Thailand"/>
   <c c2="TR" c3="TUR" sn="Turkey"/>
   <c c2="GB" c3="GBR" sn="United Kingdom of Great Britain and Northern Ireland" alias1="UK" fmt="%A%n%C%n%Z"/>
