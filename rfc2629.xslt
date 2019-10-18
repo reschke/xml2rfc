@@ -4192,7 +4192,7 @@
 <xsl:template name="insert-pub-date">
   <xsl:param name="front"/>
   
-  <xsl:if test="not($front/date)">
+  <xsl:if test="not($front/date) and not (/rfc/@version >= 3)">
     <xsl:call-template name="warning">
       <xsl:with-param name="msg">&lt;date&gt; missing in reference '<xsl:value-of select="@anchor"/>' (note that it can be empty)</xsl:with-param>
     </xsl:call-template>
@@ -11202,11 +11202,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1203 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1203 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1204 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1204 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/17 18:41:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/17 18:41:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/18 09:29:15 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/18 09:29:15 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
