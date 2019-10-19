@@ -2327,6 +2327,12 @@
             <xsl:call-template name="emit-postal-country"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-warnings"><xsl:with-param name="nodes" select="sortingcode"/></xsl:call-template>
           </xsl:when>
+          <xsl:when test="$format='%A%n%Z'">
+            <xsl:call-template name="emit-postal-street"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
+            <xsl:call-template name="emit-postal-code"><xsl:with-param name="ascii" select="$ascii"/><xsl:with-param name="prefix" select="$postprefix"/></xsl:call-template>
+            <xsl:call-template name="emit-postal-country"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
+            <xsl:call-template name="emit-postal-warnings"><xsl:with-param name="nodes" select="city|cityarea|sortingcode"/></xsl:call-template>
+          </xsl:when>
           <xsl:otherwise>
             <xsl:call-template name="emit-postal-street"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-city-comma-region-code"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
@@ -11239,11 +11245,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1206 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1206 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1207 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1207 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/19 06:44:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/19 06:44:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/19 07:01:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/19 07:01:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11584,7 +11590,7 @@ prev: <xsl:value-of select="$prev"/>
   <c c2="PT" c3="PRT" sn="Portugal" fmt="%A%n%Z %C"/>
   <c c2="RO" c3="ROU" sn="Romania" fmt="%A%n%Z %C"/>
   <c c2="RU" c3="RUS" sn="Russian Federation"/>
-  <c c2="SG" c3="SGP" sn="Singapore"/>
+  <c c2="SG" c3="SGP" sn="Singapore" fmt="%A%n%Z" postprefix="SINGAPORE "/>
   <c c2="SK" c3="SVK" sn="Slovakia" fmt="%A%n%Z %C"/>
   <c c2="SI" c3="SVN" sn="Slovenia" fmt="%A%n%Z %C" postprefix="SI-"/>
   <c c2="ES" c3="ESP" sn="Spain" fmt="%A%n%Z %C %S"/>
