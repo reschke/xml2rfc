@@ -169,15 +169,17 @@ include "rfc2629.rnc" {
         | x_bcp14)*
   }
 
-  # Redefine <postal> to allow <postalLine>
+  # Redefine <postal> to allow <postalLine> and new detail elements
   postal =
     element postal {
       (
         (city
           | code
           | country
+          | v3_cityarea
           | v3_extaddr
           | v3_pobox
+          | v3_sortingcode
           | region
           | street)*
         | v3_postalLine+)
@@ -413,7 +415,7 @@ attlist.x_note &=
   attribute anchor { xsd:ID }?,
   attribute title { ATEXT }?,
   attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
-  attribute removeInRFC { "false" | "true" }? # see Section 12.23.2
+  attribute removeInRFC { "false" | "true" }? # see Section 12.25.2
 
 # Extend attribute set for <preamble>
 attlist.preamble &=
@@ -426,7 +428,7 @@ attlist.organization &=
 
 # Extend attribute set for <reference>
 attlist.reference &=
-  attribute quoteTitle { "false" | "true" }?, # (see Section 12.22.1)
+  attribute quoteTitle { "false" | "true" }?, # (see Section 12.24.1)
   attribute xml:base { text }? # (see [RFC7991bis], Section 2)
 
 # Extend attribute set for <references>
@@ -442,8 +444,8 @@ attlist.x_section &=
   attribute anchor { xsd:ID }?,
   attribute title { ATEXT }?,
   attribute toc { "include" | "exclude" | "default" }?,
-  attribute numbered { "false" | "true" }?, # see Section 12.23.1
-  attribute removeInRFC { "false" | "true" }?, # see Section 12.23.2
+  attribute numbered { "false" | "true" }?, # see Section 12.25.1
+  attribute removeInRFC { "false" | "true" }?, # see Section 12.25.2
   attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
   attribute x:fixed-section-number { ATEXT }?
 
@@ -468,7 +470,7 @@ attlist.texttable &=
 # Extend attribute set for <title>
 attlist.title &=
   attribute ascii { ATEXT }?,
-  attribute x:quotes { "true" | "false" }? # (deprecated, see Section 12.22.1))
+  attribute x:quotes { "true" | "false" }? # (deprecated, see Section 12.24.1))
 
 # Allow annotation attribute on <uri>
 attlist.uri &=
@@ -542,14 +544,21 @@ v3_boilerplate =
     section+
   }
 
-# Mapping of reference names to display names (see Section 12.6)
+# (see Section 12.6)
+v3_cityarea =
+  element cityarea {
+    attribute ascii { ATEXT }?,
+    TEXT
+  }
+
+# Mapping of reference names to display names (see Section 12.7)
 v3_displayreference =
   element displayreference {
     attribute target { xsd:IDREF },
     attribute to { ATEXT }
   }
 
-# Definition List Description Element (see Section 12.7)
+# Definition List Description Element (see Section 12.8)
 v3_dd =
   element dd {
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
@@ -573,7 +582,7 @@ v3_dd =
     )
   }
 
-# Definition List (see Section 12.8)
+# Definition List (see Section 12.9)
 v3_dl =
   element dl {
     attribute indent { text }?,
@@ -583,7 +592,7 @@ v3_dl =
     (v3_dt, v3_dd)+
   }
 
-# Definition List Description Term (see Section 12.9)
+# Definition List Description Term (see Section 12.10)
 v3_dt =
   element dt {
     attribute anchor { xsd:ID }?,
@@ -598,7 +607,7 @@ v3_dt =
       | v3_strong)*
   }
 
-# Emphasized Text (see Section 12.10)
+# Emphasized Text (see Section 12.11)
 v3_em =
   element em {
     (TEXT
@@ -607,14 +616,14 @@ v3_em =
       | x_ref)*
   }
 
-# Extended Postal Address (see Section 12.11)
+# Extended Postal Address (see Section 12.12)
 v3_extaddr =
   element extaddr {
     attribute ascii { ATEXT }?,
     TEXT
   }
 
-# Definition List (see Section 12.12)
+# Definition List (see Section 12.13)
 v3_li =
   element li {
     attribute anchor { xsd:ID }?,
@@ -646,14 +655,14 @@ v3_li =
     )
   }
 
-# Container for additional links (see Section 12.13)
+# Container for additional links (see Section 12.14)
 v3_link =
   element link {
     attribute href { text },
     attribute rel { text }?
   }
 
-# Section/Figure/Table Name (see Section 12.14)
+# Section/Figure/Table Name (see Section 12.15)
 v3_name =
   element name {
     attribute slugifiedName { text }?, # (see [RFC7991bis], Appendix B.2)
@@ -664,7 +673,7 @@ v3_name =
       | xref)*
   }
 
-# Ordered List (see Section 12.15)
+# Ordered List (see Section 12.16)
 v3_ol =
   element ol {
     attribute anchor { xsd:ID }?,
@@ -675,21 +684,21 @@ v3_ol =
     v3_li+
   }
 
-# Extended Postal Address (see Section 12.16)
+# Extended Postal Address (see Section 12.17)
 v3_pobox =
   element pobox {
     attribute ascii { ATEXT }?,
     TEXT
   }
 
-# Line in postal address (see Section 12.17)
+# Line in postal address (see Section 12.18)
 v3_postalLine =
   element postalLine {
     attribute ascii { TEXT }?,
     TEXT
   }
 
-# EXPERIMENTAL DO NOT USE YET (see Section 12.20)
+# EXPERIMENTAL DO NOT USE YET (see Section 12.21)
 v3_relref =
   element relref {
     attribute derivedLink { text }?, # (see [RFC7991bis], Appendix B.3)
@@ -700,14 +709,14 @@ v3_relref =
     TEXT
   }
 
-# additional content for references (see Section 12.18)
+# additional content for references (see Section 12.19)
 v3_refcontent =
   element refcontent {
     (TEXT
       | v3_em)*
   }
 
-# reference group (see Section 12.19)
+# reference group (see Section 12.20)
 v3_referencegroup =
   element referencegroup {
     attribute anchor { xsd:ID },
@@ -716,7 +725,14 @@ v3_referencegroup =
       | xi_include)+
   }
 
-# Source Code (see Section 12.21)
+# (see Section 12.22)
+v3_sortingcode =
+  element sortingcode {
+    attribute ascii { ATEXT }?,
+    TEXT
+  }
+
+# Source Code (see Section 12.23)
 v3_sourcecode =
   element sourcecode {
     attribute anchor { xsd:ID }?,
@@ -728,7 +744,7 @@ v3_sourcecode =
     TEXT
   }
 
-# Emphasized Text (see Section 12.24)
+# Emphasized Text (see Section 12.26)
 v3_strong =
   element strong {
     attribute anchor { xsd:ID }?,
@@ -738,19 +754,19 @@ v3_strong =
       | x_ref)*
   }
 
-# Subscript (see Section 12.25)
+# Subscript (see Section 12.27)
 v3_sub =
   element sub {
     (TEXT)*
   }
 
-# Superscript (see Section 12.26)
+# Superscript (see Section 12.28)
 v3_sup =
   element sup {
     (TEXT)*
   }
 
-# Table (see Section 12.28)
+# Table (see Section 12.30)
 v3_table =
   element table {
     attribute anchor { xsd:ID }?,
@@ -763,7 +779,7 @@ v3_table =
     v3_tfoot?
   }
 
-# Table Body (see Section 12.29)
+# Table Body (see Section 12.31)
 v3_tbody =
   element tbody {
     attribute anchor { xsd:ID }?,
@@ -771,7 +787,7 @@ v3_tbody =
     v3_tr+
   }
 
-# Table Contents Cell (see Section 12.30)
+# Table Contents Cell (see Section 12.32)
 v3_td =
   element td {
     attribute anchor { xsd:ID }?,
@@ -798,7 +814,7 @@ v3_td =
     )
   }
 
-# Table Footer (see Section 12.31)
+# Table Footer (see Section 12.33)
 v3_tfoot =
   element tfoot {
     attribute anchor { xsd:ID }?,
@@ -806,7 +822,7 @@ v3_tfoot =
     v3_tr
   }
 
-# Table Header Cell (see Section 12.32)
+# Table Header Cell (see Section 12.34)
 v3_th =
   element th {
     attribute anchor { xsd:ID }?,
@@ -833,7 +849,7 @@ v3_th =
     )
   }
 
-# Table Head (see Section 12.33)
+# Table Head (see Section 12.35)
 v3_thead =
   element thead {
     attribute anchor { xsd:ID }?,
@@ -841,7 +857,7 @@ v3_thead =
     v3_tr+
   }
 
-# Table Row (see Section 12.34)
+# Table Row (see Section 12.36)
 v3_tr =
   element tr {
     attribute anchor { xsd:ID }?,
@@ -852,7 +868,7 @@ v3_tr =
     )+
   }
 
-# Monospaced Text (see Section 12.35)
+# Monospaced Text (see Section 12.37)
 v3_tt =
   element tt {
     (TEXT
@@ -861,7 +877,7 @@ v3_tt =
       | x_ref)*
   }
 
-# Non-ASCII characters (see Section 12.36)
+# Non-ASCII characters (see Section 12.38)
 v3_u =
   element u {
     attribute ascii { text }?,
@@ -869,7 +885,7 @@ v3_u =
     TEXT
   }
 
-# Unordered List (see Section 12.37)
+# Unordered List (see Section 12.39)
 v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,
@@ -878,7 +894,7 @@ v3_ul =
     v3_li+
   }
 
-# SVG (see Section 12.27)
+# SVG (see Section 12.29)
 v3_svg =
   element svg:svg {
     (attribute * { text }
@@ -1117,7 +1133,7 @@ x_x =
     empty
   }
 
-# XInclude (see Section 12.38)
+# XInclude (see Section 12.40)
 xi_include =
   element xi:include {
     attribute href { text },

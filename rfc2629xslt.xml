@@ -1605,6 +1605,14 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="cityarea Element" anchor="v3.cityarea">
+  <iref item="V3 Extension Elements" subitem="cityarea" primary="true"/>
+  <iref item="cityarea V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
+</t>
+</section>
+
 <section title="displayreference Element" anchor="v3.displayreference">
   <iref item="V3 Extension Elements" subitem="displayreference" primary="true"/>
   <iref item="displayreference V3 Extension Element" primary="true"/>
@@ -1726,6 +1734,14 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 <t>
   <em>EXPERIMENTAL, might be removed again - see <eref target="https://github.com/rfc-format/draft-iab-xml2rfc-v3-bis/issues/26"/>.</em>
+</t>
+</section>
+
+<section title="sortingcode Element" anchor="v3.sortingcode">
+  <iref item="V3 Extension Elements" subitem="sortingcode" primary="true"/>
+  <iref item="sortingcode V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
 </t>
 </section>
 
@@ -2936,15 +2952,17 @@ include "rfc2629.rnc" {
         <strong>| <x:ref>x_bcp14</x:ref></strong>)*
   }
 
-  <em># Redefine &lt;postal> to allow &lt;postalLine></em>
+  <em># Redefine &lt;postal> to allow &lt;postalLine> and new detail elements</em>
   postal =
     element postal {
       (
         (city
           | code
           | country
-          | v3_extaddr
-          | v3_pobox
+          | <x:ref>v3_cityarea</x:ref>
+          | <x:ref>v3_extaddr</x:ref>
+          | <x:ref>v3_pobox</x:ref>
+          | <x:ref>v3_sortingcode</x:ref>
           | region
           | street)*
         <strong>| <x:ref>v3_postalLine</x:ref></strong>+)
@@ -3314,6 +3332,14 @@ attlist.xref &amp;=
     section+
   }
 
+<em anchor="v3_cityarea"><iref item="cityarea V3 Extension Element"/><iref item="V3 Extension Elements" subitem="cityarea"
+/># (see <xref target="v3.cityarea"/>)</em>
+<x:ref>v3_cityarea</x:ref> =
+  element cityarea {
+    attribute ascii { ATEXT }?,
+    TEXT
+  }
+
 <em anchor="v3_displayreference"><iref item="displayreference V3 Extension Element"/><iref item="V3 Extension Elements" subitem="displayreference"
 /># Mapping of reference names to display names (see <xref target="v3.displayreference"/>)</em>
 <x:ref>v3_displayreference</x:ref> =
@@ -3501,6 +3527,14 @@ attlist.xref &amp;=
     attribute target { URI }?,
     (reference
       | <x:ref>xi_include</x:ref>)+
+  }
+
+<em anchor="v3_sortingcode"><iref item="sortingcode V3 Extension Element"/><iref item="V3 Extension Elements" subitem="sortingcode"
+/># (see <xref target="v3.sortingcode"/>)</em>
+<x:ref>v3_sortingcode</x:ref> =
+  element sortingcode {
+    attribute ascii { ATEXT }?,
+    TEXT
   }
 
 <em anchor="v3_sourcecode"><iref item="sourcecode V3 Extension Element"/><iref item="V3 Extension Elements" subitem="sourcecode"
@@ -4145,7 +4179,7 @@ rdf_content =
 
   <section title="License" anchor="license">
   <t>
-Copyright (c) 2006-2018, Julian Reschke (julian.reschke@greenbytes.de)
+Copyright (c) 2006-2019, Julian Reschke (julian.reschke@greenbytes.de)
   </t>
   <t>
 All rights reserved.
