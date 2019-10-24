@@ -2211,7 +2211,7 @@
             </xsl:call-template>
           </xsl:if>
         </xsl:variable>
-        <xsl:if test="$ascii-country='' and (street|extaddr|code|area|city|cityarea|sortcode)">
+        <xsl:if test="$ascii and $ascii-country='' and (street|extaddr|code|area|city|cityarea|sortcode)">
           <xsl:call-template name="error">
             <xsl:with-param name="msg">Postal address is incomplete when country information is missing.</xsl:with-param>
             <xsl:with-param name="inline" select="'no'"/>
@@ -2224,6 +2224,11 @@
             </xsl:call-template>
           </xsl:if>
         </xsl:variable>
+        <xsl:if test="$ascii and contains($format,'%C') and street and not(city)">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">Postal address likely incomplete: street specified, but city is not.</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
         <xsl:variable name="postprefix">
           <xsl:call-template name="get-country-postprefix">
             <xsl:with-param name="country" select="$ascii-country"/>
@@ -11274,11 +11279,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1212 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1212 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1213 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1213 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/23 04:39:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/23 04:39:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/24 07:19:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/24 07:19:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
