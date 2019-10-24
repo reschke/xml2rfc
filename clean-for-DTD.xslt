@@ -1273,6 +1273,9 @@
       <!-- index gen broken in xml2rfc v3 mode for now, see https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/418 -->
       <xsl:attribute name="indexInclude">false</xsl:attribute>
     </xsl:if>
+    <xsl:if test="not(@sortRefs) and $xml2rfc-ext-xml2rfc-voc >= 3 and $xml2rfc-sortrefs='yes'">
+      <xsl:attribute name="sortRefs">true</xsl:attribute>
+    </xsl:if>
     <xsl:apply-templates select="@*|node()" mode="cleanup"/>
   </rfc>
 </xsl:template>
