@@ -1269,7 +1269,7 @@
     <xsl:if test="not(@tocDepth) and $xml2rfc-ext-xml2rfc-voc >= 3 and $parsedTocDepth!=3">
       <xsl:attribute name="tocDepth"><xsl:value-of select="$parsedTocDepth"/></xsl:attribute>
     </xsl:if>
-    <xsl:if test="not(@indedInclude) and $xml2rfc-ext-xml2rfc-voc >= 3">
+    <xsl:if test="not(@indexInclude) and $xml2rfc-ext-xml2rfc-voc >= 3">
       <!-- index gen broken in xml2rfc v3 mode for now, see https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/418 -->
       <xsl:attribute name="indexInclude">false</xsl:attribute>
     </xsl:if>
