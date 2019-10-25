@@ -402,6 +402,10 @@ attlist.country &=
 attlist.date &=
   attribute x:include-day { "false" | "true" }?
 
+# Extend attribute set for <eref>
+attlist.eref &=
+  attribute brackets { "none" | "angle" }?
+
 # Extend attribute set for <iref> (see Section 11.27)
 attlist.iref &=
   attribute x:for-anchor { ATEXT }?

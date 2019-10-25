@@ -615,13 +615,14 @@
 </xsl:template>
 
 <xsl:template match="eref[not(node())]">
-  <xsl:text>&lt;</xsl:text>
+  <xsl:variable name="in-angles" select="(not(/rfc/@version >= 3) and not(@brackets='none')) or @brackets='angle'"/>
+  <xsl:if test="$in-angles"><xsl:text>&lt;</xsl:text></xsl:if>
   <fo:basic-link external-destination="url('{@target}')" xsl:use-attribute-sets="external-link">
     <xsl:call-template name="format-uri">
       <xsl:with-param name="s" select="@target"/>
     </xsl:call-template>
   </fo:basic-link>
-  <xsl:text>&gt;</xsl:text>
+  <xsl:if test="$in-angles"><xsl:text>&gt;</xsl:text></xsl:if>
 </xsl:template>
 
 <!-- processed in a later stage -->

@@ -1443,6 +1443,13 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="Extensions to &lt;eref&gt; element" anchor="ext-rfc2629.eref">
+<t>
+  For v3 documents, angle brackets will only be produced if the attribute
+  "brackets" is set to "angle".
+</t>
+</section>
+
 <section title="Extensions to &lt;iref&gt; element" anchor="ext-rfc2629.iref">
 <t>
   The extension attribute below is allowed on the standard &lt;iref&gt; element:
@@ -3184,6 +3191,10 @@ attlist.country &amp;=
 <em># Extend attribute set for &lt;date> (see <xref target="ext-rfc2629.date"/>)</em>
 attlist.date &amp;=
   attribute x:include-day { "false" | "true" }?
+
+<em># Extend attribute set for &lt;eref> (see <xref target="ext-rfc2629.eref"/>)</em>
+attlist.eref &amp;=
+  attribute brackets { "none" | "angle" }?
 
 <em># Extend attribute set for &lt;iref> (see <xref target="ext-rfc2629.iref"/>)</em>
 attlist.iref &amp;=
