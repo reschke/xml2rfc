@@ -402,15 +402,15 @@ attlist.country &=
 attlist.date &=
   attribute x:include-day { "false" | "true" }?
 
-# Extend attribute set for <eref>
+# Extend attribute set for <eref> (see Section 11.27)
 attlist.eref &=
   attribute brackets { "none" | "angle" }?
 
-# Extend attribute set for <iref> (see Section 11.27)
+# Extend attribute set for <iref> (see Section 11.28)
 attlist.iref &=
   attribute x:for-anchor { ATEXT }?
 
-# Extend attribute set for <list> (see Section 11.28)
+# Extend attribute set for <list> (see Section 11.29)
 attlist.list &=
   attribute x:indent { ATEXT }?
 
@@ -443,7 +443,7 @@ attlist.references &=
 attlist.region &=
   attribute ascii { ATEXT }?
 
-# Extend/Relax attribute set for <section> (see Section 11.30)
+# Extend/Relax attribute set for <section> (see Section 11.31)
 attlist.x_section &=
   attribute anchor { xsd:ID }?,
   attribute title { ATEXT }?,
@@ -461,7 +461,7 @@ attlist.spanx &=
 attlist.street &=
   attribute ascii { ATEXT }?
 
-# Extend attribute set for <c> (see Section 11.27)
+# Extend attribute set for <c> (see Section 11.28)
 attlist.t &=
   attribute keepWithNext { text }?,
   attribute keepWithPrevious { text }?,
@@ -480,7 +480,7 @@ attlist.title &=
 attlist.uri &=
   attribute x:annotation { ATEXT }?
 
-# Extend attribute set for <xref> (see Section 11.31)
+# Extend attribute set for <xref> (see Section 11.32)
 attlist.xref &=
   attribute derivedContent { text }?, # (see [RFC7991bis], Appendix B.3)
   attribute x:fmt  { "()" | "," | "of" | "number" | "sec" |
