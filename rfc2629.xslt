@@ -2184,37 +2184,39 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:template name="author-name-for-diags">
+  <xsl:variable name="author" select="ancestor-or-self::author"/>
+  <xsl:choose>
+    <xsl:when test="$author/@fullname">
+      <xsl:value-of select="$author/@fullname"/>
+    </xsl:when>
+    <xsl:when test="$author/@surname">
+      <xsl:value-of select="$author/@surname"/>
+    </xsl:when>
+    <xsl:when test="$author/organization">
+      <xsl:text>(org) </xsl:text>
+      <xsl:value-of select="$author/organization"/>
+    </xsl:when>
+    <xsl:otherwise>???</xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="emit-postal-warnings">
   <xsl:param name="nodes"/>
   <xsl:for-each select="$nodes">
     <xsl:call-template name="warning">
-      <xsl:with-param name="msg">Element '<xsl:value-of select="local-name(.)"/>' with value '<xsl:value-of select="normalize-space(.)"/>' not displayed in postal address.</xsl:with-param>
+      <xsl:with-param name="msg">Element '<xsl:value-of select="local-name(.)"/>' with value '<xsl:value-of select="normalize-space(.)"/>' not displayed in postal address for '<xsl:call-template name="author-name-for-diags"/>'.</xsl:with-param>
     </xsl:call-template>
   </xsl:for-each>
 </xsl:template>
 
 <xsl:template name="emit-author-details2">
   <xsl:param name="ascii"/>
-  <xsl:variable name="name">
-    <xsl:choose>
-      <xsl:when test="../@fullname">
-        <xsl:value-of select="../@fullname"/>
-      </xsl:when>
-      <xsl:when test="../@surname">
-        <xsl:value-of select="../@surname"/>
-      </xsl:when>
-      <xsl:when test="../organization">
-        <xsl:text>(org) </xsl:text>
-        <xsl:value-of select="../organization"/>
-      </xsl:when>
-      <xsl:otherwise>???</xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
   <xsl:for-each select="postal">
     <xsl:choose>
       <xsl:when test="position()!=1">
         <xsl:call-template name="error">
-          <xsl:with-param name="msg">Multiple &lt;postal> elements inside &lt;address> for '<xsl:value-of select="$name"/>', all but the first ignored.</xsl:with-param>
+          <xsl:with-param name="msg">Multiple &lt;postal> elements inside &lt;address> for '<xsl:call-template name="author-name-for-diags"/>', all but the first ignored.</xsl:with-param>
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="not(postalLine)">
@@ -2228,7 +2230,7 @@
         </xsl:variable>
         <xsl:if test="$ascii and $ascii-country=''">
           <xsl:call-template name="error">
-            <xsl:with-param name="msg">Postal address for '<xsl:value-of select="$name"/>' is incomplete because country information is missing.</xsl:with-param>
+            <xsl:with-param name="msg">Postal address for '<xsl:call-template name="author-name-for-diags"/>' is incomplete because country information is missing.</xsl:with-param>
             <xsl:with-param name="inline" select="'no'"/>
           </xsl:call-template>
         </xsl:if>
@@ -2241,7 +2243,7 @@
         </xsl:variable>
         <xsl:if test="$ascii and contains($format,'%C') and street and not(city)">
           <xsl:call-template name="warning">
-            <xsl:with-param name="msg">Postal address for '<xsl:value-of select="$name"/>' likely incomplete: street specified, but city is not.</xsl:with-param>
+            <xsl:with-param name="msg">Postal address for '<xsl:call-template name="author-name-for-diags"/>' likely incomplete: street specified, but city is not.</xsl:with-param>
           </xsl:call-template>
         </xsl:if>
         <xsl:variable name="postprefix">
@@ -11295,11 +11297,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1215 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1215 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1216 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1216 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/29 07:02:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/29 07:02:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/10/29 13:04:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/29 13:04:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
