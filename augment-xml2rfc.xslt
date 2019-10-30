@@ -49,7 +49,7 @@
   </xsl:variable>
   <xsl:variable name="t2">
     <xsl:for-each select="$t1">
-      <xsl:apply-templates mode="strip-refs"/>
+      <xsl:apply-templates mode="strip-and-annotate-refs"/>
     </xsl:for-each>
   </xsl:variable>
   <xsl:variable name="t3">
@@ -84,6 +84,37 @@
 
 <xsl:template match="*|@*|comment()|processing-instruction()" mode="insert-refs">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="insert-refs"/></xsl:copy>
+</xsl:template>
+
+<xsl:template name="get-section-number">
+  <xsl:choose>
+    <xsl:when test="self::section and parent::back"><xsl:number count="section" format="a"/></xsl:when>
+    <xsl:when test="self::section and parent::middle"><xsl:number count="section"/></xsl:when>
+    <xsl:when test="self::section"><xsl:for-each select=".."><xsl:call-template name="get-section-number"/></xsl:for-each>.<xsl:number count="section"/></xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="insert-target-metadata">
+  <xsl:param name="file"/>
+  <xsl:param name="sec"/>
+  <xsl:if test="contains(concat(' ',$sibling-specs,' '),concat(' ',$file,' '))">
+    <xsl:variable name="src" select="document(concat($file,'.xml'))"/>
+    <xsl:if test="$src/rfc">
+      <!-- find target section -->
+      <xsl:for-each select="$src/rfc//section">
+        <xsl:variable name="n">
+          <xsl:call-template name="get-section-number"/>
+        </xsl:variable>
+        <xsl:if test="$n=$sec">
+          <xsl:if test="@anchor">
+            <xsl:processing-instruction name="aug-anchor"><xsl:value-of select="@anchor"/></xsl:processing-instruction>
+          </xsl:if>
+          <xsl:processing-instruction name="aug-title"><xsl:value-of select="@title"/></xsl:processing-instruction>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:if>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="text()" mode="insert-refs">
@@ -181,11 +212,11 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="*|@*|comment()|processing-instruction()" mode="strip-refs">
-  <xsl:copy><xsl:apply-templates select="node()|@*" mode="strip-refs"/></xsl:copy>
+<xsl:template match="*|@*|comment()|processing-instruction()" mode="strip-and-annotate-refs">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="strip-and-annotate-refs"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="xref[not(node())]" mode="strip-refs">
+<xsl:template match="xref[not(node())]" mode="strip-and-annotate-refs">
   <xsl:variable name="fx" select="following-sibling::*[1]"/>
   <xsl:variable name="f" select="$fx[self::xref and @INSERT='preceding']"/>
   <xsl:variable name="px" select="preceding-sibling::*[1]"/>
@@ -193,12 +224,22 @@
   <xsl:choose>
     <xsl:when test="$f or $p"/>
     <xsl:otherwise>
-      <xsl:copy><xsl:apply-templates select="node()|@*" mode="strip-refs"/></xsl:copy>
+      <xsl:copy>
+        <xsl:apply-templates select="@*" mode="strip-and-annotate-refs"/>
+        <xsl:variable name="reftarget" select="//reference[@anchor=current()/@target]"/>
+        <xsl:if test="@x:sec">
+          <xsl:call-template name="insert-target-metadata">
+            <xsl:with-param name="file" select="$reftarget/seriesInfo[@name='RFC' or @name='Internet-Draft']/@value"/>
+            <xsl:with-param name="sec" select="@x:sec"/>
+          </xsl:call-template>
+        </xsl:if>
+        <xsl:apply-templates select="node()" mode="strip-and-annotate-refs"/>
+      </xsl:copy>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref/@INSERT" mode="strip-refs"/>
+<xsl:template match="xref/@INSERT" mode="strip-and-annotate-refs"/>
 
 <xsl:template match="*|@*|comment()|processing-instruction()" mode="remove-kramdownleftovers">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="remove-kramdownleftovers"/></xsl:copy>
