@@ -2748,8 +2748,8 @@
         <xsl:variable name="docname" select="/rfc/@docName"/>
         <xsl:choose>
           <xsl:when test="$rfcno!=''">
-            <xsl:call-template name="warning">
-              <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' is ignored because an RFC number is specified as well.</xsl:with-param>
+            <xsl:call-template name="info">
+              <xsl:with-param name="msg">The @docName attribute '<xsl:value-of select="$docname"/>' is ignored because an RFC number (<xsl:value-of select="$rfcno"/>) is specified as well.</xsl:with-param>
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
@@ -11296,11 +11296,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1218 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1218 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1219 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1219 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/10/31 13:40:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/10/31 13:40:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/11/02 12:56:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/02 12:56:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
