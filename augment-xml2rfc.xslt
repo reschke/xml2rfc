@@ -35,7 +35,8 @@
                xmlns:x="http://purl.org/net/xml2rfc/ext"
 >
 
-<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="no" doctype-system=""/>
+<xsl:strip-space elements="abstract aside author address back dl front list middle note ol postal references reference rfc section table tbody thead tr ul"/>
+<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" doctype-system=""/>
 
 <!-- white-space separated list of specs which should be linked directly to -->
 <xsl:param name="sibling-specs"/>
