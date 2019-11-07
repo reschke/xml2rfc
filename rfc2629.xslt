@@ -8617,7 +8617,7 @@ dd, li, p {
   <section anchor="{$anchor-pref}status">
   <name>
     <xsl:choose>
-      <xsl:when test="$xml2rfc-rfcedstyle='yes'">Status of This Memo</xsl:when>
+      <xsl:when test="$xml2rfc-rfcedstyle='yes' or $src/rfc/@version >= 3">Status of This Memo</xsl:when>
       <xsl:otherwise>Status of this Memo</xsl:otherwise>
     </xsl:choose>
   </name>
@@ -11325,11 +11325,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1220 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1220 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1221 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1221 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/11/07 13:59:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/07 13:59:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/11/07 18:21:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/07 18:21:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
