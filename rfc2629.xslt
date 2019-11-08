@@ -9017,7 +9017,7 @@ dd, li, p {
       <section anchor="{$anchor-pref}copyrightnotice">
         <name>Copyright Notice</name>
         <t>
-          Copyright &#169; <xsl:value-of select="$xml2rfc-ext-pub-year" /> IETF Trust and the persons identified
+          Copyright (c) <xsl:value-of select="$xml2rfc-ext-pub-year" /> IETF Trust and the persons identified
           as the document authors.  All rights reserved.
         </t>
         <xsl:choose>
@@ -11331,11 +11331,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1224 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1224 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1225 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1225 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/11/08 10:14:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/08 10:14:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/11/08 13:45:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/08 13:45:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
