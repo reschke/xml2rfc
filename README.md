@@ -7,8 +7,10 @@ It's here to make it easier to submit bugs and change requests, and to follow th
 
 If you need the full distribution, please get it from
 
-   http://greenbytes.de/tech/webdav/rfc2629xslt.zip
+   https://greenbytes.de/tech/webdav/rfc2629xslt.zip
 
 (with full documentation both contained in the archive, and online at https://www.greenbytes.de/tech/webdav/rfc2629xslt/rfc2629xslt.html)
 
 Note that the full distribution contains derived/generated files that are needed for Epub and PDF generation.
+
+Chat on Slack: https://rfcformat.slack.com
