@@ -739,8 +739,8 @@
   <xsl:apply-templates select="node()" mode="cleanup"/>
 </xsl:template>
 
-<xsl:template match="xref[node() and @format='none' and (@target=//artwork//@anchor or @target=//sourcecode//@anchor)]" mode="cleanup">
-  <!-- remove the link -->
+<xsl:template match="xref[node() and @format='none' and (@target=//artwork//*/@anchor or @target=//sourcecode//*/@anchor)]" mode="cleanup">
+  <!-- remove links to elements inside <artwork> or <sourcecode> -->
   <xsl:apply-templates select="node()" mode="cleanup"/>
 </xsl:template>
 
