@@ -741,6 +741,7 @@
 
 <xsl:template match="dl/dd">
   <fo:list-item-body start-indent="body-start()">
+    <xsl:call-template name="copy-anchor"/>
     <xsl:variable name="block-level-children" select="artwork|dl|sourcecode|t"/>
     <xsl:choose>
       <xsl:when test="$block-level-children">

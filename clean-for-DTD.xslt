@@ -1673,7 +1673,14 @@
       <xsl:variable name="desc" select="following-sibling::dd[1]"/>
       <xsl:variable name="block-level-children" select="$desc/artwork | $desc/dl | $desc/ol | $desc/sourcecode | $desc/t | $desc/ul"/>
       <t hangText="{normalize-space($txt)}">
-        <xsl:copy-of select="@anchor"/>
+        <xsl:choose>
+          <xsl:when test="@anchor">
+            <xsl:copy-of select="@anchor"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:copy-of select="$desc/@anchor"/>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:if test="$newl='true'">
           <xsl:choose>
             <xsl:when test="$block-level-children">
@@ -1711,6 +1718,20 @@
       </t>
     </xsl:for-each>
   </list>
+</xsl:template>
+
+<!-- rewrite link target going to <dd> to use preceding <dt>'s anchor when present -->
+<xsl:template match="xref/@target[.=//dd/@anchor]" mode="cleanup">
+  <xsl:variable name="t" select="//dd[@anchor=current()]"/>
+  <xsl:variable name="p" select="$t/preceding-sibling::dt[1]"/>
+  <xsl:choose>
+    <xsl:when test="$p/@anchor">
+      <xsl:attribute name="target"><xsl:value-of select="$p/@anchor"/></xsl:attribute>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:attribute name="target"><xsl:value-of select="@target"/></xsl:attribute>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- List items -->

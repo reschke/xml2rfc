@@ -3177,6 +3177,7 @@
 
 <xsl:template match="dd">
   <dd>
+    <xsl:call-template name="copy-anchor"/>
     <xsl:variable name="indent" select="../@indent"/>
     <xsl:if test="number($indent)=$indent">
       <xsl:attribute name="style">margin-left: <xsl:value-of select="$indent div 2"/>em</xsl:attribute>
@@ -6225,7 +6226,7 @@
       </xsl:when>
 
       <!-- Paragraph links -->
-      <xsl:when test="$node/self::t or $node/self::aside or $node/self::x:note or $node/self::blockquote or $node/self::x:blockquote or $node/self::dl or $node/self::ol or $node/self::ul or $node/self::dt or $node/self::li or $node/self::artwork or $node/self::sourcecode or $node/self::artset">
+      <xsl:when test="$node/self::t or $node/self::aside or $node/self::x:note or $node/self::blockquote or $node/self::x:blockquote or $node/self::dl or $node/self::ol or $node/self::ul or $node/self::dd or $node/self::dt or $node/self::li or $node/self::artwork or $node/self::sourcecode or $node/self::artset">
         <xsl:call-template name="xref-to-paragraph">
           <xsl:with-param name="from" select="$xref"/>
           <xsl:with-param name="to" select="$node"/>
@@ -11331,11 +11332,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1225 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1225 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1226 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1226 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/11/08 13:45:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/08 13:45:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/11/10 15:59:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/10 15:59:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
