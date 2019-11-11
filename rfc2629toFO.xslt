@@ -734,6 +734,7 @@
   <fo:list-item-label end-indent="label-end()">
     <xsl:call-template name="copy-anchor"/>
     <fo:block>
+      <xsl:call-template name="attach-paragraph-number-as-id"/>
       <xsl:apply-templates/>
     </fo:block>
   </fo:list-item-label>
@@ -742,32 +743,35 @@
 <xsl:template match="dl/dd">
   <fo:list-item-body start-indent="body-start()">
     <xsl:call-template name="copy-anchor"/>
-    <xsl:variable name="block-level-children" select="artwork|dl|sourcecode|t"/>
-    <xsl:choose>
-      <xsl:when test="$block-level-children">
-        <!-- TODO: improve error handling-->
-        <xsl:for-each select="$block-level-children">
-          <xsl:choose>
-            <xsl:when test="self::t">
-              <fo:block>
-                <xsl:call-template name="copy-anchor"/>
-                <xsl:apply-templates/>
-              </fo:block>
-            </xsl:when>
-            <xsl:otherwise>
-              <fo:block>
-                <xsl:apply-templates select="."/>
-              </fo:block>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:for-each>
-      </xsl:when>
-      <xsl:otherwise>
-        <fo:block>
-          <xsl:apply-templates/>
-        </fo:block>
-      </xsl:otherwise>
-    </xsl:choose>
+    <fo:block>
+      <xsl:call-template name="attach-paragraph-number-as-id"/>
+      <xsl:variable name="block-level-children" select="artwork|dl|sourcecode|t"/>
+      <xsl:choose>
+        <xsl:when test="$block-level-children">
+          <!-- TODO: improve error handling-->
+          <xsl:for-each select="$block-level-children">
+            <xsl:choose>
+              <xsl:when test="self::t">
+                <fo:block>
+                  <xsl:call-template name="copy-anchor"/>
+                  <xsl:apply-templates/>
+                </fo:block>
+              </xsl:when>
+              <xsl:otherwise>
+                <fo:block>
+                  <xsl:apply-templates select="."/>
+                </fo:block>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <fo:block>
+            <xsl:apply-templates/>
+          </fo:block>
+        </xsl:otherwise>
+      </xsl:choose>
+    </fo:block>
   </fo:list-item-body>
 </xsl:template>
 

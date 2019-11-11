@@ -3171,7 +3171,10 @@
 <xsl:template match="dt">
   <dt>
     <xsl:call-template name="copy-anchor"/>
-    <xsl:apply-templates/>
+    <div>
+      <xsl:call-template name="attach-paragraph-number-as-id"/>
+      <xsl:apply-templates/>
+    </div>
   </dt>
 </xsl:template>
 
@@ -3183,29 +3186,32 @@
       <xsl:attribute name="style">margin-left: <xsl:value-of select="$indent div 2"/>em</xsl:attribute>
     </xsl:if>
     <xsl:variable name="block-level-children" select="artwork|dl|sourcecode|t"/>
-    <xsl:choose>
-      <xsl:when test="$block-level-children">
-        <!-- TODO: improve error handling-->
-        <xsl:for-each select="$block-level-children">
-          <xsl:choose>
-            <xsl:when test="self::t">
-              <p>
-                <xsl:call-template name="copy-anchor"/>
-                <xsl:apply-templates/>
-              </p>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:apply-templates select="."/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:for-each>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates/>
-      </xsl:otherwise>
-    </xsl:choose>
-    <!-- add one nbsp for empty dd elements -->
-    <xsl:if test="normalize-space(.)=''">&#160;</xsl:if>
+    <div>
+      <xsl:call-template name="attach-paragraph-number-as-id"/>
+      <xsl:choose>
+        <xsl:when test="$block-level-children">
+          <!-- TODO: improve error handling-->
+          <xsl:for-each select="$block-level-children">
+            <xsl:choose>
+              <xsl:when test="self::t">
+                <p>
+                  <xsl:call-template name="copy-anchor"/>
+                  <xsl:apply-templates/>
+                </p>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:apply-templates select="."/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <!-- add one nbsp for empty dd elements -->
+      <xsl:if test="normalize-space(.)=''">&#160;</xsl:if>
+    </div>
   </dd>
 </xsl:template>
 
@@ -9803,7 +9809,7 @@ dd, li, p {
     </xsl:when>
 
     <!-- no numbering inside certain containers -->
-    <xsl:when test="ancestor::dl or ancestor::figure or ancestor::ol or ancestor::ul or ancestor::ed:del or ancestor::ed:ins"/>
+    <xsl:when test="ancestor::figure or ancestor::ol or ancestor::ul or ancestor::ed:del or ancestor::ed:ins"/>
   
     <xsl:when test="parent::blockquote or parent::x:blockquote">
       <!-- boilerplate -->
@@ -9815,6 +9821,12 @@ dd, li, p {
       <!-- boilerplate -->
       <xsl:for-each select="parent::aside|parent::x:note"><xsl:call-template name="get-paragraph-number" />.</xsl:for-each>
       <xsl:number count="t|x:blockquote|blockquote|x:note|aside|ul|dl|ol|artwork|sourcecode"/>
+    </xsl:when>
+
+    <xsl:when test="parent::dl">
+      <!-- definition list -->
+      <xsl:for-each select=".."><xsl:call-template name="get-paragraph-number" />-</xsl:for-each>
+      <xsl:number count="dd|dt"/>
     </xsl:when>
 
     <xsl:when test="ancestor::section">
@@ -11332,11 +11344,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1226 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1226 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1227 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1227 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/11/10 15:59:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/10 15:59:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/11/11 06:39:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/11 06:39:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
