@@ -6305,6 +6305,14 @@
         <xsl:with-param name="msg">There are multiple /rfc/front/workgroup elements; ignoring all but the first</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
+    <xsl:for-each select="/rfc/front/workgroup">
+      <xsl:variable name="v" select="normalize-space(.)"/>
+      <xsl:if test="translate($v, $ucase, $lcase)='internet engineering task force' or $v=''">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">'<xsl:value-of select="$v"/>' definitively is not the name of a Working Group</xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
+    </xsl:for-each>
     <xsl:choose>
       <xsl:when test="/rfc/@number and $header-format='2010' and $submissionType='independent'">
         <myns:item>Independent Submission</myns:item>
@@ -11332,11 +11340,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1228 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1228 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1229 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1229 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/11/11 12:28:22 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/11 12:28:22 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/11/16 10:53:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/16 10:53:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
