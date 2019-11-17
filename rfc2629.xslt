@@ -259,6 +259,15 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- override CSS? -->
+
+<xsl:param name="xml2rfc-ext-css">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'css'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- CSS max page width -->
 
 <xsl:param name="xml2rfc-ext-maxwidth">
@@ -4653,7 +4662,20 @@
         <xsl:apply-templates select="front/title" mode="get-text-content" />
       </title>
       <xsl:call-template name="insertScripts" />
-      <xsl:call-template name="insertCss" />
+      <xsl:choose>
+        <xsl:when test="$xml2rfc-ext-css!='' and function-available('unparsed-text')">
+          <xsl:comment><xsl:value-of select="$xml2rfc-ext-css"/></xsl:comment>
+          <style><xsl:value-of select="unparsed-text($xml2rfc-ext-css,'UTF-8')"/></style>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:if test="$xml2rfc-ext-css!=''">
+            <xsl:call-template name="error">
+              <xsl:with-param name="msg">Support for css inclusion requires 'unparsed-text' function support (XSLT 2)</xsl:with-param>
+            </xsl:call-template>
+          </xsl:if>
+          <xsl:call-template name="insertCss" />
+        </xsl:otherwise>
+      </xsl:choose>
       <!-- <link rel="alternate stylesheet" media="screen" title="Plain (typewriter)" href="rfc2629tty.css" /> -->
 
       <!-- link elements -->
@@ -11359,11 +11381,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1230 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1230 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1231 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1231 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/11/17 09:44:54 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/17 09:44:54 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/11/17 15:03:01 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/17 15:03:01 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>

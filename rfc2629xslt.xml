@@ -322,6 +322,12 @@ xsltproc --param xml2rfc-toc '"yes"' \
   and appendices (this ordering was used a long time ago).</c>
 
   <c>rfc-ext</c>
+  <c>css<iref item="css PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="css"/></c>
+  <c>xml2rfc-ext-css<iref item="xml2rfc-ext-css"/> <iref item="Parameters" subitem="xml2rfc-ext-css"/></c>
+  <c></c>
+  <c>Name of CSS file to use instead of the built-in (experimental).</c>
+
+  <c>rfc-ext</c>
   <c>doi-uri<iref item="doi-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="doi-uri"/></c>
   <c>xml2rfc-ext-doi-uri<iref item="xml2rfc-ext-doi-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-doi-uri"/></c>
   <c>"http://dx.doi.org/{doi}"</c>
