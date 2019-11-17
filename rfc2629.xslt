@@ -921,11 +921,29 @@
 
 <xsl:template name="compute-internet-draft-uri">
   <xsl:param name="internet-draft"/>
-  <xsl:call-template name="replace-substring">
-    <xsl:with-param name="string" select="$xml2rfc-ext-internet-draft-uri"/>
-    <xsl:with-param name="replace" select="'{internet-draft}'"/>
-    <xsl:with-param name="by" select="$internet-draft"/>
-  </xsl:call-template>
+  <xsl:param name="ref" select="."/>
+  <xsl:variable name="local-link-template">
+    <xsl:call-template name="parse-pis">
+      <xsl:with-param name="nodes" select="$ref/processing-instruction('rfc-ext')"/>
+      <xsl:with-param name="attr" select="'internet-draft-uri'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="$local-link-template!=''">
+      <xsl:call-template name="replace-substring">
+        <xsl:with-param name="string" select="$local-link-template"/>
+        <xsl:with-param name="replace" select="'{internet-draft}'"/>
+        <xsl:with-param name="by" select="$internet-draft"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="replace-substring">
+        <xsl:with-param name="string" select="$xml2rfc-ext-internet-draft-uri"/>
+        <xsl:with-param name="replace" select="'{internet-draft}'"/>
+        <xsl:with-param name="by" select="$internet-draft"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:param name="xml2rfc-ext-diff-uri">
@@ -3683,6 +3701,7 @@
       <xsl:if test="not($endsWithLatest)">
         <xsl:call-template name="compute-internet-draft-uri">
           <xsl:with-param name="internet-draft" select="$draftName"/>
+          <xsl:with-param name="ref" select="$bib"/>
         </xsl:call-template>
         <xsl:if test="$ref and $sec!='' and $internetDraftUrlFragSection and $internetDraftUrlFragAppendix">
           <xsl:choose>
@@ -11340,11 +11359,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1229 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1229 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1230 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1230 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/11/16 10:53:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/16 10:53:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/11/17 09:44:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/17 09:44:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11965,12 +11984,14 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='html-pretty-print'"/>
                       <xsl:when test="$attrname='include-index'"/>
                       <xsl:when test="$attrname='include-references-in-index'"/>
+                      <xsl:when test="$attrname='internet-draft-uri'"/>
                       <xsl:when test="$attrname='justification'"/>
                       <xsl:when test="$attrname='paragraph-links'"/>
                       <xsl:when test="$attrname='parse-xml-in-artwork'"/>
                       <xsl:when test="$attrname='refresh-from'"/>
                       <xsl:when test="$attrname='refresh-interval'"/>
                       <xsl:when test="$attrname='refresh-xslt'"/>
+                      <xsl:when test="$attrname='rfc-uri'"/>
                       <xsl:when test="$attrname='sec-no-trailing-dots'"/>
                       <xsl:when test="$attrname='trace-parse-xml'"/>
                       <xsl:when test="$attrname='ucd-file'"/>

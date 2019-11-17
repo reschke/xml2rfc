@@ -369,7 +369,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>internet-draft-uri<iref item="internet-draft-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="internet-draft-uri"/></c>
   <c>xml2rfc-ext-internet-draft-uri<iref item="xml2rfc-ext-internet-draft-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-internet-draft-uri"/></c>
   <c>"https://tools.ietf.org/html/{internet-draft}"</c>
-  <c>URI template for Internet-Draft links.</c>
+  <c>URI template for Internet-Draft links (can be set locally inside the &lt;reference> element as well to override the default).</c>
 
   <c>rfc-ext</c>
   <c>isbn-uri<iref item="isbn-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="isbn-uri"/></c>
@@ -2766,6 +2766,7 @@ done
 </reference>
 
 <reference anchor='V3IMPNOTES'>
+  <?rfc-ext internet-draft-uri="https://www.ietf.org/id/{internet-draft}.html" ?>
   <front>
     <title>Implementation notes for RFC7991, "The 'xml2rfc' Version 3 Vocabulary"</title>
     <author initials='H' surname='Levkowetz' fullname='Henrik Levkowetz'/>
