@@ -261,10 +261,17 @@
 
 <!-- override CSS? -->
 
-<xsl:param name="xml2rfc-ext-css">
+<xsl:param name="xml2rfc-ext-css-resource">
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
-    <xsl:with-param name="attr" select="'css'"/>
+    <xsl:with-param name="attr" select="'css-resource'"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:param name="xml2rfc-ext-css-contents">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'css-contents'"/>
   </xsl:call-template>
 </xsl:param>
 
@@ -4663,12 +4670,21 @@
       </title>
       <xsl:call-template name="insertScripts" />
       <xsl:choose>
-        <xsl:when test="$xml2rfc-ext-css!='' and function-available('unparsed-text')">
-          <xsl:comment><xsl:value-of select="$xml2rfc-ext-css"/></xsl:comment>
-          <style><xsl:value-of select="unparsed-text($xml2rfc-ext-css,'UTF-8')"/></style>
+        <xsl:when test="$xml2rfc-ext-css-resource!='' and function-available('unparsed-text')">
+          <xsl:comment><xsl:value-of select="$xml2rfc-ext-css-resource"/></xsl:comment>
+          <style><xsl:value-of select="unparsed-text($xml2rfc-ext-css-resource,'UTF-8')"/></style>
+          <xsl:if test="$xml2rfc-ext-css-contents!=''">
+            <xsl:call-template name="warning">
+              <xsl:with-param name="msg">xml2rfc-ext-css-contents ignored, as xml2rfc-ext-css-resource was specified as well</xsl:with-param>
+            </xsl:call-template>
+          </xsl:if>
+        </xsl:when>
+        <xsl:when test="$xml2rfc-ext-css-contents!=''">
+          <xsl:comment>Specified as xml2rfc-ext-css-contents</xsl:comment>
+          <style><xsl:value-of select="$xml2rfc-ext-css-contents"/></style>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:if test="$xml2rfc-ext-css!=''">
+          <xsl:if test="$xml2rfc-ext-css-resource!=''">
             <xsl:call-template name="error">
               <xsl:with-param name="msg">Support for css inclusion requires 'unparsed-text' function support (XSLT 2)</xsl:with-param>
             </xsl:call-template>
@@ -11381,11 +11397,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1232 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1232 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1233 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1233 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/11/17 15:30:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/17 15:30:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/11/18 07:26:45 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/18 07:26:45 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -12002,6 +12018,8 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='allow-markup-in-artwork'"/>
                       <xsl:when test="$attrname='authors-section'"/>
                       <xsl:when test="$attrname='check-artwork-width'"/>
+                      <xsl:when test="$attrname='css-contents'"/>
+                      <xsl:when test="$attrname='css-resource'"/>
                       <xsl:when test="$attrname='duplex'"/>
                       <xsl:when test="$attrname='html-pretty-print'"/>
                       <xsl:when test="$attrname='include-index'"/>
