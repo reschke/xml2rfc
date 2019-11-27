@@ -11397,11 +11397,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1233 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1233 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1234 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1234 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/11/18 07:26:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/18 07:26:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/11/27 20:25:50 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/27 20:25:50 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -12708,6 +12708,15 @@ prev: <xsl:value-of select="$prev"/>
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
 <xsl:template match="artwork|sourcecode" mode="validate">
+  <xsl:call-template name="warninvalid"/>
+  <xsl:apply-templates select="@*|*" mode="validate"/>
+</xsl:template>
+
+<!-- author element -->
+<xsl:template match="front/author" mode="validate" priority="9">
+  <xsl:apply-templates select="@*|*" mode="validate"/>
+</xsl:template>
+<xsl:template match="author" mode="validate">
   <xsl:call-template name="warninvalid"/>
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
