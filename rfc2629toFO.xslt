@@ -1806,6 +1806,9 @@
 <!-- handled in section-maker -->
 <xsl:template match="section/name"/>
 
+<!-- suppress xml2rfc preptool artefacts -->
+<xsl:template match="section[author]" priority="9"/>
+
 <xsl:template match="section[count(ancestor::section) = 0 and (ancestor::boilerplate)]">
 
   <fo:block xsl:use-attribute-sets="h1">
@@ -2437,6 +2440,9 @@
   </xsl:if>
 </xsl:template>
 
+<!-- suppress xml2rfc preptool artefacts -->
+<xsl:template match="section[author]" mode="toc"/>
+
 <xsl:template match="section" mode="toc">
   <xsl:variable name="sectionNumber">
     <xsl:call-template name="get-section-number" />
@@ -2752,6 +2758,9 @@
     <xsl:apply-templates mode="bookmarks"/>
   </fo:bookmark>
 </xsl:template>
+
+<!-- suppress xml2rfc preptool artefacts -->
+<xsl:template match="section[author]" mode="bookmarks" priority="9"/>
 
 <xsl:template match="section[not(ancestor::boilerplate)]" mode="bookmarks">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
