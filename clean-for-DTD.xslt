@@ -1248,6 +1248,7 @@
 <xsl:template match="rfc/@symRefs" mode="cleanup"/>
 <xsl:template match="rfc/@tocInclude" mode="cleanup"/>
 <xsl:template match="rfc/@tocDepth" mode="cleanup"/>
+<xsl:template match="rfc/@consensus" mode="cleanup"/>
 
 <xsl:template match="rfc" mode="cleanup">
   <xsl:if test="@sortRefs='true'">
@@ -1276,6 +1277,13 @@
     <xsl:if test="not(@sortRefs) and $xml2rfc-ext-xml2rfc-voc >= 3 and $xml2rfc-sortrefs='yes'">
       <xsl:attribute name="sortRefs">true</xsl:attribute>
     </xsl:if>
+    <xsl:choose>
+      <xsl:when test="@consensus='yes' and $xml2rfc-ext-xml2rfc-voc >= 3"><xsl:attribute name="consensus">true</xsl:attribute></xsl:when>
+      <xsl:when test="@consensus='no' and $xml2rfc-ext-xml2rfc-voc >= 3"><xsl:attribute name="consensus">false</xsl:attribute></xsl:when>
+      <xsl:when test="@consensus='true' and $xml2rfc-ext-xml2rfc-voc &lt; 3"><xsl:attribute name="consensus">yes</xsl:attribute></xsl:when>
+      <xsl:when test="@consensus='false' and $xml2rfc-ext-xml2rfc-voc &lt; 3"><xsl:attribute name="consensus">no</xsl:attribute></xsl:when>
+      <xsl:otherwise><xsl:copy-of select="@consensus"/></xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates select="@*|node()" mode="cleanup"/>
   </rfc>
 </xsl:template>
