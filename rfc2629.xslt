@@ -1390,7 +1390,7 @@
 <xsl:variable name="published-as-rfc" select="/*/x:link[@rel='Alternate' and starts-with(@title,'RFC')]"/>
 
 
-<xsl:template match="text()[not(ancestor::artwork) and not(ancestor::sourcecode)]">
+<xsl:template match="text()[not(ancestor::artwork or ancestor::sourcecode)]">
   <xsl:variable name="ws" select="'&#9;&#10;&#13;&#32;'"/>
   <xsl:variable name="starts-with-ws" select="'' = translate(substring(.,1,1),$ws,'')"/>
   <xsl:variable name="ends-with-ws" select="'' = translate(substring(.,string-length(.),1),$ws,'')"/>
@@ -1539,7 +1539,7 @@
         <xsl:apply-templates/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="."/>
+        <xsl:call-template name="text-in-artwork"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -1588,19 +1588,43 @@
   </xsl:call-template>
 </xsl:template>
 
-<!-- special case for first text node in artwork or sourcecode -->
-<xsl:template match="artwork/text()[1]|sourcecode/text()[1]">
+<xsl:template name="text-in-artwork">
+  <xsl:param name="content" select="."/>
   <xsl:choose>
-    <xsl:when test="starts-with(.,'&#10;')">
-      <!-- reduce leading whitespace -->
-      <xsl:value-of select="substring(.,2)"/>
+    <xsl:when test="contains($content,'&#9;')">
+      <xsl:call-template name="text-in-artwork">
+        <xsl:with-param name="content" select="substring-before($content,'&#9;')"/>
+      </xsl:call-template>
+      <span class="error" title="HTAB character">&#x2409;</span>
+      <xsl:call-template name="text-in-artwork">
+        <xsl:with-param name="content" select="substring-after($content,'&#9;')"/>
+      </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="."/>
+      <xsl:value-of select="$content"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
+<!-- special case for first text node in artwork or sourcecode -->
+<xsl:template match="artwork/text()[1]|sourcecode/text()[1]" priority="9">
+  <xsl:choose>
+    <xsl:when test="starts-with(.,'&#10;')">
+      <!-- reduce leading whitespace -->
+      <xsl:call-template name="text-in-artwork">
+        <xsl:with-param name="content" select="substring(.,2)"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="text-in-artwork"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- other text nodes in artwork or sourcecode -->
+<xsl:template match="artwork//text()|sourcecode//text()">
+  <xsl:call-template name="text-in-artwork"/>
+</xsl:template>
 
 <xsl:template name="check-artwork-width">
   <xsl:param name="content"/>
@@ -11403,11 +11427,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1235 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1235 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1236 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1236 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/11/28 07:09:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/11/28 07:09:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/12/02 07:56:01 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/12/02 07:56:01 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
