@@ -745,7 +745,7 @@
     <xsl:call-template name="copy-anchor"/>
     <fo:block>
       <xsl:call-template name="attach-paragraph-number-as-id"/>
-      <xsl:variable name="block-level-children" select="artwork|dl|sourcecode|t"/>
+      <xsl:variable name="block-level-children" select="artwork|dl|sourcecode|t|table"/>
       <xsl:choose>
         <xsl:when test="$block-level-children">
           <!-- TODO: improve error handling-->

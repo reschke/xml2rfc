@@ -572,6 +572,7 @@ v3_dd =
       | t
       | v3_dl 
       | v3_ol 
+      | v3_table 
       | v3_sourcecode 
       | v3_ul)+ | 
     (TEXT
@@ -639,6 +640,7 @@ v3_li =
       | v3_dl
       | v3_ol
       | t
+      | v3_table
       | v3_sourcecode
       | v3_ul
     )+ 

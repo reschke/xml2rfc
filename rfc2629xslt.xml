@@ -3383,6 +3383,7 @@ attlist.xref &amp;=
       | t
       | <x:ref>v3_dl</x:ref> 
       | <x:ref>v3_ol</x:ref> 
+      | <x:ref>v3_table</x:ref> 
       | <x:ref>v3_sourcecode</x:ref> 
       | <x:ref>v3_ul</x:ref>)+ | 
     (TEXT
@@ -3455,6 +3456,7 @@ attlist.xref &amp;=
       | <x:ref>v3_dl</x:ref>
       | <x:ref>v3_ol</x:ref>
       | t
+      | <x:ref>v3_table</x:ref>
       | <x:ref>v3_sourcecode</x:ref>
       | <x:ref>v3_ul</x:ref>
     )+ 
