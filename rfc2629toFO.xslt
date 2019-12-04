@@ -3009,19 +3009,15 @@
       <xsl:apply-templates select="tfoot"/>
       <xsl:apply-templates select="tbody"/>
     </fo:table>
-    <xsl:if test="name or @anchor!=''">
-      <xsl:variable name="n"><xsl:call-template name="get-table-number"/></xsl:variable>
-      <fo:block text-align="center" space-before="1em" space-after="1em">
-        <xsl:if test="not(starts-with($n,'u'))">
-          <xsl:text>Table </xsl:text>
-          <xsl:value-of select="$n"/>
-          <xsl:if test="name">: </xsl:if>
-        </xsl:if>
-        <xsl:if test="name">
-          <xsl:apply-templates select="name/node()"/>
-        </xsl:if>
-      </fo:block>
-    </xsl:if>
+    <xsl:variable name="n"><xsl:call-template name="get-table-number"/></xsl:variable>
+    <fo:block text-align="center" space-before="1em" space-after="1em">
+      <xsl:text>Table </xsl:text>
+      <xsl:value-of select="$n"/>
+      <xsl:if test="name">
+        <xsl:text>: </xsl:text>
+        <xsl:apply-templates select="name/node()"/>
+      </xsl:if>
+    </fo:block>
   </fo:block>
 </xsl:template>
 <xsl:template match="table/name"/>

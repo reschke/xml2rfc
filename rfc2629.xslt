@@ -11005,19 +11005,15 @@ dd, li, p {
     </xsl:variable>
 
     <table class="{$style}">
-      <xsl:if test="name or @anchor!=''">
-        <xsl:variable name="n"><xsl:call-template name="get-table-number"/></xsl:variable>
-        <caption>
-          <xsl:if test="not(starts-with($n,'u'))">
-            <xsl:text>Table </xsl:text>
-            <xsl:value-of select="$n"/>
-            <xsl:if test="name">: </xsl:if>
-          </xsl:if>
-          <xsl:if test="name">
-            <xsl:apply-templates select="name/node()"/>
-          </xsl:if>
-        </caption>
-      </xsl:if>
+      <xsl:variable name="n"><xsl:call-template name="get-table-number"/></xsl:variable>
+      <caption>
+        <xsl:text>Table </xsl:text>
+        <xsl:value-of select="$n"/>
+        <xsl:if test="name">
+          <xsl:text>: </xsl:text>
+          <xsl:apply-templates select="name/node()"/>
+        </xsl:if>
+      </caption>
       <xsl:apply-templates select="*[not(self::iref)]"/>
     </table>
   </div>
@@ -11427,11 +11423,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1237 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1237 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1238 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1238 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/12/02 19:09:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/12/02 19:09:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/12/04 16:08:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/12/04 16:08:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11585,12 +11581,12 @@ dd, li, p {
 
 <xsl:template name="get-table-number">
   <xsl:choose>
-    <xsl:when test="@anchor!=''">
-      <xsl:number level="any" count="texttable[@anchor!='']|table[@anchor!='']" />
+    <xsl:when test="self::table or @anchor!=''">
+      <xsl:number level="any" count="texttable[@anchor!='']|table" />
     </xsl:when>
     <xsl:otherwise>
       <xsl:text>u.</xsl:text>
-      <xsl:number level="any" count="texttable[not(@anchor) or @anchor='']|table[not(@anchor) or @anchor='']" />
+      <xsl:number level="any" count="texttable[not(@anchor) or @anchor='']" />
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
