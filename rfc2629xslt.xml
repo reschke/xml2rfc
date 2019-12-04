@@ -1027,13 +1027,23 @@ mkepub.sh rfc2616.xml
   </t>
 </section>
 
-<section title="&lt;contributor> element" anchor="ext.element.contributor">
-  <iref item="Extension Elements" subitem="contributor" primary="true"/>
-  <iref item="contributor Extension Element" primary="true"/>
-  <x:anchor-alias value="contributor"/>
+<section title="&lt;bb> element" anchor="ext.element.bb">
+  <iref item="Extension Elements" subitem="bb" primary="true"/>
+  <iref item="bb Extension Element" primary="true"/>
+  <x:anchor-alias value="bb"/>
   <t>
-    This element can be used to include a contributor's contact information in
-    place where a paragraph (&lt;t>) would be allowed otherwise.
+    Marking up a string as &lt;bb> indicates that it represents the bottom 
+    line of a box drawing, replacing the "+" and "-" characters accordingly.
+  </t>
+</section>
+
+<section title="&lt;bc> element" anchor="ext.element.bc">
+  <iref item="Extension Elements" subitem="bc" primary="true"/>
+  <iref item="bc Extension Element" primary="true"/>
+  <x:anchor-alias value="bc"/>
+  <t>
+    Marking up a string as &lt;bc> indicates that it represents a center
+    line of a box drawing, replacing the "|" character accordingly.
   </t>
 </section>
 
@@ -1073,26 +1083,6 @@ mkepub.sh rfc2616.xml
  &lt;!ENTITY SHOULD-NOT "&lt;bcp14 xmlns='http://purl.org/net/xml2rfc/ext'
    >SHOULD NOT&lt;/bcp14>">]></artwork>
   </figure>
-</section>
-
-<section title="&lt;bb> element" anchor="ext.element.bb">
-  <iref item="Extension Elements" subitem="bb" primary="true"/>
-  <iref item="bb Extension Element" primary="true"/>
-  <x:anchor-alias value="bb"/>
-  <t>
-    Marking up a string as &lt;bb> indicates that it represents the bottom 
-    line of a box drawing, replacing the "+" and "-" characters accordingly.
-  </t>
-</section>
-
-<section title="&lt;bc> element" anchor="ext.element.bc">
-  <iref item="Extension Elements" subitem="bc" primary="true"/>
-  <iref item="bc Extension Element" primary="true"/>
-  <x:anchor-alias value="bc"/>
-  <t>
-    Marking up a string as &lt;bc> indicates that it represents a center
-    line of a box drawing, replacing the "|" character accordingly.
-  </t>
 </section>
 
 <section title="&lt;blockquote> element" anchor="ext.element.blockquote">
@@ -1137,6 +1127,16 @@ mkepub.sh rfc2616.xml
   <t>
     (The format is deliberately terse so that the size of a mapping file
     containing the whole Unicode character database is minimized).
+  </t>
+</section>
+
+<section title="&lt;contributor> element" anchor="ext.element.contributor">
+  <iref item="Extension Elements" subitem="contributor" primary="true"/>
+  <iref item="contributor Extension Element" primary="true"/>
+  <x:anchor-alias value="contributor"/>
+  <t>
+    This element can be used to include a contributor's contact information in
+    place where a paragraph (&lt;t>) would be allowed otherwise.
   </t>
 </section>
 

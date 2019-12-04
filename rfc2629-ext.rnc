@@ -928,7 +928,7 @@ x_anchor-alias =
     empty
   }
 
-# Contributor information (see Section 11.3)
+# Contributor information (see Section 11.9)
 # (experimental)
 x_contributor =
   element x:contributor {
@@ -960,7 +960,7 @@ x_assign-section-number =
     empty
   }
 
-# Bottom line of box drawing (see Section 11.5)
+# Bottom line of box drawing (see Section 11.3)
 x_bb =
   element x:bb {
     (TEXT
@@ -972,7 +972,7 @@ x_bb =
       | x_ref)* 
   }
 
-# Center line of box drawing (see Section 11.6)
+# Center line of box drawing (see Section 11.4)
 x_bc =
   element x:bc {
     (TEXT
@@ -985,13 +985,13 @@ x_bc =
       | x_ref)* 
   }
 
-# BCP14/RFC2119 keywords (see Section 11.4)
+# BCP14/RFC2119 keywords (see Section 11.5)
 x_bcp14 =
   element x:bcp14 {
     TEXT
   }
   
-# Blockquote (see Section 11.7)
+# Blockquote (see Section 11.6)
 x_blockquote =
   element x:blockquote {
     attribute anchor { xsd:ID }?,
@@ -999,7 +999,7 @@ x_blockquote =
     t+
   }
 
-# Top line of box drawing (see Section 11.8)
+# Top line of box drawing (see Section 11.7)
 x_bt =
   element x:bt {
     (TEXT
@@ -1011,7 +1011,7 @@ x_bt =
       | x_ref)* 
   }
 
-# Unicode character map entry (see Section 11.9)
+# Unicode character map entry (see Section 11.8)
 x_c =
   element x:c {
     attribute c { TEXT },
