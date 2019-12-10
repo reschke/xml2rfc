@@ -260,7 +260,16 @@
   </fo:block>
 </xsl:template>
 
-<xsl:template match="author|x:contributor">
+<xsl:template match="contact[ancestor::t]">
+  <xsl:value-of select="@fullname"/>
+  <xsl:if test="@asciiFullname">
+    <xsl:text> (</xsl:text>
+    <xsl:value-of select="@asciiFullname"/>
+    <xsl:text>)</xsl:text>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template match="author|contact|x:contributor">
   <fo:block start-indent="2em" space-before=".5em" space-after=".5em">
 
     <xsl:call-template name="emit-author"/>
@@ -316,7 +325,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </fo:wrapper>
-    <xsl:if test="@role">
+    <xsl:if test="not(self::contact) and @role">
       <fo:wrapper> (<xsl:value-of select="@role" />)</fo:wrapper>
     </xsl:if>
     <!-- annotation support for Martin "uuml" Duerst -->
