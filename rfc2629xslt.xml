@@ -1353,7 +1353,8 @@ Content-Length: &lt;x:length-of target="req"/>
   <t>
     Can be used to enhance a &lt;reference> with information about the
     location for the XML source. This can be used by the &lt;xref>
-    processing code to automatically extract the target section number.
+    processing code to automatically extract the target section number
+    (see <xref target="ext-rfc2629.xref"/>).
   </t>
   <figure>
     <preamble>
