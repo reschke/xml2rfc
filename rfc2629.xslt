@@ -2243,18 +2243,15 @@
 
 <xsl:template name="emit-postal-street">
   <xsl:param name="ascii"/>
-  <xsl:param name="reversed" select="false()"/>
-  <xsl:if test="extaddr and not($reversed)">
-    <xsl:for-each select="extaddr">
-      <xsl:call-template name="emit-postal-line">
-        <xsl:with-param name="value">
-          <xsl:call-template name="extract-normalized">
-            <xsl:with-param name="ascii" select="$ascii"/>
-          </xsl:call-template>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:for-each>
-  </xsl:if>
+  <xsl:for-each select="extaddr">
+    <xsl:call-template name="emit-postal-line">
+      <xsl:with-param name="value">
+        <xsl:call-template name="extract-normalized">
+          <xsl:with-param name="ascii" select="$ascii"/>
+        </xsl:call-template>
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:for-each>
   <xsl:for-each select="street">
     <xsl:call-template name="emit-postal-line">
       <xsl:with-param name="value">
@@ -2273,17 +2270,6 @@
       </xsl:with-param>
     </xsl:call-template>
   </xsl:for-each>
-  <xsl:if test="extaddr and $reversed">
-    <xsl:for-each select="extaddr">
-      <xsl:call-template name="emit-postal-line">
-        <xsl:with-param name="value">
-          <xsl:call-template name="extract-normalized">
-            <xsl:with-param name="ascii" select="$ascii"/>
-          </xsl:call-template>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:for-each>
-  </xsl:if>
 </xsl:template>
 
 <xsl:template name="author-name-for-diags">
@@ -2416,7 +2402,7 @@
             <xsl:call-template name="emit-postal-warnings"><xsl:with-param name="nodes" select="sortingcode"/></xsl:call-template>
           </xsl:when>
           <xsl:when test="$format='%Z%n%S%C%D%n%A'">
-            <xsl:call-template name="emit-postal-street"><xsl:with-param name="ascii" select="$ascii"/><xsl:with-param name="reversed" select="true()"/></xsl:call-template>
+            <xsl:call-template name="emit-postal-street"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-cityarea"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-city"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
             <xsl:call-template name="emit-postal-region-comma-code"><xsl:with-param name="ascii" select="$ascii"/></xsl:call-template>
@@ -11468,11 +11454,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1247 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1247 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1248 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1248 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2019/12/19 13:00:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/12/19 13:00:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2019/12/19 13:24:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2019/12/19 13:24:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
