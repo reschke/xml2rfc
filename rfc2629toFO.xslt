@@ -1261,7 +1261,7 @@
     </fo:list-item-label>
     
     <fo:list-item-body start-indent="body-start()">
-      <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
+      <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/*[self::reference or self::referencegroup]"/>
       <xsl:choose>
         <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
           <xsl:for-each select="reference|$included">
@@ -1584,7 +1584,7 @@
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
+  <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/*[self::reference or self::referencegroup]"/>
   <xsl:variable name="refs" select="reference|referencegroup|$included"/>
   <xsl:choose>
     <xsl:when test="references">

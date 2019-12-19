@@ -1357,7 +1357,7 @@
     <front>
       <title>
         <xsl:text>Consisting of: </xsl:text>
-        <xsl:variable xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt" name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
+        <xsl:variable xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt" name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/*[self::reference or self::referencegroup]"/>
         <xsl:for-each select="reference|$included">
           <xsl:value-of select="concat('[',@anchor,']')"/>
           <xsl:choose>
@@ -2106,7 +2106,7 @@
 
 <!-- x:include -->
 <xsl:template match="/rfc/back/references/xi:include|/rfc/back/references/referencegroup/xi:include" mode="cleanup">
-  <xsl:copy-of select="document(@href)"/>
+  <xsl:apply-templates select="document(@href)" mode="cleanup"/>
 </xsl:template>
 
 <!-- Display names for references -->
