@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to XSL-FO
       
-    Copyright (c) 2006-2019, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2020, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -754,7 +754,7 @@
     <xsl:call-template name="copy-anchor"/>
     <fo:block>
       <xsl:call-template name="attach-paragraph-number-as-id"/>
-      <xsl:variable name="block-level-children" select="artwork|dl|sourcecode|t|table"/>
+      <xsl:variable name="block-level-children" select="artwork|dl|figure|ol|sourcecode|t|table|ul"/>
       <xsl:choose>
         <xsl:when test="$block-level-children">
           <!-- TODO: improve error handling-->

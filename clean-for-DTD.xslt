@@ -1,7 +1,7 @@
 <!--
     Strip rfc2629.xslt extensions, generating XML input for "official" xml2rfc
 
-    Copyright (c) 2006-2019, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2020, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1679,7 +1679,7 @@
       </xsl:variable>
       <!-- TODO: check for more block-level elements -->
       <xsl:variable name="desc" select="following-sibling::dd[1]"/>
-      <xsl:variable name="block-level-children" select="$desc/artwork | $desc/dl | $desc/ol | $desc/sourcecode | $desc/t | $desc/ul"/>
+      <xsl:variable name="block-level-children" select="$desc/artwork | $desc/dl | $desc/figure | $desc/ol | $desc/sourcecode | $desc/t | $desc/table | $desc/ul"/>
       <t hangText="{normalize-space($txt)}">
         <xsl:choose>
           <xsl:when test="@anchor">
