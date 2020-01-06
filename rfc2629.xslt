@@ -7890,10 +7890,6 @@ table.full th {
   border-style: solid;
   border-width: 1px 1px 2px 1px;
 }
-table.headers th {
-  border-style: none none solid none;
-  border-width: 2px;
-}
 table.<xsl:value-of select="$css-tleft"/> {
   margin-right: auto;
 }
@@ -7957,7 +7953,8 @@ td.topnowrap {
   vertical-align: top;
   white-space: nowrap;
 }
-table.<xsl:value-of select="$css-header"/> td {<xsl:if test="not(contains($styles,' header-bw '))">
+table.<xsl:value-of select="$css-header"/> td {
+  vertical-align: top;<xsl:if test="not(contains($styles,' header-bw '))">
   background-color: gray;</xsl:if>
   width: 50%;
 }<xsl:if test="/rfc/@obsoletes | /rfc/@updates">
@@ -11454,11 +11451,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1249 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1249 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1250 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1250 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/01/03 13:20:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/01/03 13:20:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/01/06 13:55:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/01/06 13:55:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
