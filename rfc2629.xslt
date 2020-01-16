@@ -2559,6 +2559,14 @@
   <xsl:param name="ascii" select="true()"/>
   <b>
     <xsl:choose>
+      <xsl:when test="(not(@fullname) or @fullname='') and @surname!=''">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">fullname attribute should be specified for author (using surname instead)</xsl:with-param>
+        </xsl:call-template>
+        <xsl:call-template name="format-initials"/>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="@surname"/>
+      </xsl:when>
       <xsl:when test="@asciiFullname!='' and $ascii">
         <xsl:value-of select="@asciiFullname" />
       </xsl:when>
@@ -11451,11 +11459,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1251 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1251 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1252 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1252 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/01/09 06:00:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/01/09 06:00:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/01/16 15:49:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/01/16 15:49:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
