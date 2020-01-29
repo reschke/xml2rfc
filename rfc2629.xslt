@@ -2888,6 +2888,13 @@
           </xsl:otherwise>
         </xsl:choose>
         
+        <xsl:variable name="si" select="/rfc/front/seriesInfo[@name='Internet-Draft']"/>
+        <xsl:if test="$si and $si/@value!=$docname">
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg">Inconsistent draft names in /rfc/@docName ('<xsl:value-of select="$docname"/>') and /rfc/seriesInfo ('<xsl:value-of select="$si/@value"/>').</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+
         <xsl:call-template name="draft-name-legal">
           <xsl:with-param name="name" select="$docname"/>
         </xsl:call-template>
@@ -11459,11 +11466,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1252 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1252 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1253 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1253 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/01/16 15:49:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/01/16 15:49:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/01/29 17:50:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/01/29 17:50:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
