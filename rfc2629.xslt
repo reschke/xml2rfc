@@ -6318,9 +6318,24 @@
     <xsl:variable name="node" select="key('anchor-item',$target)|exslt:node-set($includeDirectives)//*[self::reference or self::referencegroup][@anchor=$target]"/>
     <xsl:if test="count($node)=0 and not($node/ancestor::ed:del)">
       <xsl:for-each select="$xref">
-        <xsl:call-template name="error">
-          <xsl:with-param name="msg" select="concat('Undefined target: ',$xref/@target)"/>
-        </xsl:call-template>
+        <xsl:choose>
+          <xsl:when test="not($xref/@target)">
+            <xsl:variable name="present">
+              <xsl:for-each select="$xref/@*">
+                <xsl:text> @</xsl:text>
+                <xsl:value-of select="local-name(.)"/>
+              </xsl:for-each>
+            </xsl:variable>
+            <xsl:call-template name="error">
+              <xsl:with-param name="msg">Undefined target: no @target attribute specified<xsl:if test="$present!=''"> (attributes found:<xsl:value-of select="$present"/>)</xsl:if></xsl:with-param>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:call-template name="error">
+              <xsl:with-param name="msg">Undefined target: '<xsl:value-of select="$xref/@target"/>'</xsl:with-param>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:for-each>
     </xsl:if>
 
@@ -11466,11 +11481,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1253 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1253 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1254 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1254 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/01/29 17:50:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/01/29 17:50:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/02/09 12:16:30 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/02/09 12:16:30 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
