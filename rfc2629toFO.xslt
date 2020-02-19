@@ -2079,6 +2079,9 @@
   </xsl:choose>
 </xsl:template>
 
+<!-- ignore for now -->
+<xsl:template match="br"/>
+
 <xsl:template match="*">
   <xsl:message terminate="yes">ERROR: unknown or unexpected element: {<xsl:value-of select="namespace-uri()" />}<xsl:value-of select="local-name()" /><xsl:call-template name="lineno"/>: '<xsl:value-of select="."/>'</xsl:message>
 </xsl:template>
