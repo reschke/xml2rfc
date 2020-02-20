@@ -567,7 +567,7 @@
   </xsl:if>
       
   <fo:block xsl:use-attribute-sets="title">
-    <xsl:apply-templates select="/rfc/front/title" mode="get-text-content" />
+    <xsl:apply-templates select="/rfc/front/title/node()"/>
     <xsl:if test="/rfc/@docName">
       <fo:block font-size="80%"><xsl:value-of select="/rfc/@docName" /></fo:block>
     </xsl:if>
@@ -1676,7 +1676,7 @@
     <fo:declarations>
       <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/">
-          <dc:title><xsl:value-of select="/rfc/front/title"/></dc:title>
+          <dc:title><xsl:apply-templates select="front/title" mode="get-text-content"/></dc:title>
           <dc:creator><xsl:call-template name="get-author-summary" /></dc:creator>
           <dc:description><xsl:value-of select="normalize-space(/rfc/front/abstract)"/></dc:description>
           <xsl:if test="/rfc/@number">
@@ -2079,8 +2079,9 @@
   </xsl:choose>
 </xsl:template>
 
-<!-- ignore for now -->
-<xsl:template match="br"/>
+<xsl:template match="br">
+  <fo:block/>
+</xsl:template>
 
 <xsl:template match="*">
   <xsl:message terminate="yes">ERROR: unknown or unexpected element: {<xsl:value-of select="namespace-uri()" />}<xsl:value-of select="local-name()" /><xsl:call-template name="lineno"/>: '<xsl:value-of select="."/>'</xsl:message>

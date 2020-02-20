@@ -5399,6 +5399,10 @@
   </xsl:call-template>
 </xsl:template>
 
+<xsl:template match="br">
+  <br/>
+</xsl:template>
+
 <!-- keep the root for the case when we process XSLT-inline markup -->
 <xsl:variable name="src" select="/" />
 
@@ -11482,11 +11486,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1255 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1255 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1256 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1256 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/02/10 17:06:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/02/10 17:06:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/02/20 09:08:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/02/20 09:08:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -11980,6 +11984,10 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:template match="text()" mode="get-text-content">
   <xsl:value-of select="normalize-space(.)"/>
+</xsl:template>
+
+<xsl:template match="br" mode="get-text-content">
+  <xsl:text> </xsl:text>
 </xsl:template>
 
 <xsl:template match="*" mode="get-text-content">
