@@ -3518,6 +3518,7 @@ attlist.xref &amp;=
     (TEXT
       | cref
       | <x:ref>v3_em</x:ref>
+      | <x:ref>v3_sup</x:ref>
       | <x:ref>v3_tt</x:ref>
       | xref)*
   }

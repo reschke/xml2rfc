@@ -690,6 +690,7 @@ v3_name =
     (TEXT
       | cref
       | v3_em
+      | v3_sup
       | v3_tt
       | xref)*
   }
