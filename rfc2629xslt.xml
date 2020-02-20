@@ -1625,6 +1625,14 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="br Element" anchor="v3.br">
+  <iref item="V3 Extension Elements" subitem="br" primary="true"/>
+  <iref item="br V3 Extension Element" primary="true"/>
+<t>
+  <cref>TBD.</cref>
+</t>
+</section>
+
 <section title="cityarea Element" anchor="v3.cityarea">
   <iref item="V3 Extension Elements" subitem="cityarea" primary="true"/>
   <iref item="cityarea V3 Extension Element" primary="true"/>
@@ -3147,6 +3155,7 @@ include "rfc2629.rnc" {
        | spanx
        | vspace
        <strong>| <x:ref>v3_bcp14</x:ref></strong>
+       <strong>| <x:ref>v3_br</x:ref></strong>
        <strong>| <x:ref>v3_em</x:ref></strong>
        <strong>| <x:ref>v3_relref</x:ref></strong>
        <strong>| <x:ref>v3_strong</x:ref></strong>
@@ -3163,6 +3172,14 @@ include "rfc2629.rnc" {
        <strong>| <x:ref>x_ref</x:ref></strong>
        <strong>| <x:ref>x_span</x:ref></strong>
        <strong>| <x:ref>x_sup</x:ref></strong>)*
+    }
+
+  <em># Redefine &lt;title> to allow &lt;br></em>
+  title =
+    element title {
+      attlist.title,
+      (TEXT
+        <strong>| <x:ref>v3_br</x:ref></strong>)*
     }
 }
 
@@ -3355,6 +3372,13 @@ attlist.xref &amp;=
   element boilerplate {
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     section+
+  }
+
+<em anchor="v3_br"><iref item="em V3 Extension Element"/><iref item="V3 Extension Elements" subitem="br"
+/># Forced Line Break (see <xref target="v3.br"/>)</em>
+<x:ref>v3_br</x:ref> =
+  element br {
+    empty
   }
 
 <em anchor="v3_cityarea"><iref item="cityarea V3 Extension Element"/><iref item="V3 Extension Elements" subitem="cityarea"
