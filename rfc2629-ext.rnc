@@ -580,6 +580,7 @@ v3_displayreference =
 # Definition List Description Element (see Section 12.9)
 v3_dd =
   element dd {
+    attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     ((v3_artset
       | artwork

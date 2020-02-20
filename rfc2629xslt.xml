@@ -3401,6 +3401,7 @@ attlist.xref &amp;=
 /># Definition List Description Element (see <xref target="v3.dd"/>)</em>
 <x:ref>v3_dd</x:ref> =
   element dd {
+    attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     ((<x:ref>v3_artset</x:ref>
       | artwork
