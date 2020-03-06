@@ -2,7 +2,7 @@
     Augment section links to RFCs and Internet Drafts, also cleanup 
     unneeded markup from kramdown2629
 
-    Copyright (c) 2017-2019, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2017-2020, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -45,8 +45,13 @@
 <xsl:param name="feedback"/>
 
 <xsl:template match="/">
+  <xsl:variable name="t0">
+    <xsl:apply-templates mode="refs-in-artwork"/>
+  </xsl:variable>
   <xsl:variable name="t1">
-    <xsl:apply-templates mode="insert-refs"/>
+    <xsl:for-each select="$t0">
+      <xsl:apply-templates mode="insert-refs"/>
+    </xsl:for-each>
   </xsl:variable>
   <xsl:variable name="t2">
     <xsl:for-each select="$t1">
@@ -320,6 +325,137 @@
   <xsl:processing-instruction name="rfc-ext">html-pretty-print="prettyprint https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"</xsl:processing-instruction>
   <xsl:text>&#10;</xsl:text>
   <xsl:copy-of select="."/>
+</xsl:template>
+
+<xsl:template match="*|@*|comment()|processing-instruction()" mode="refs-in-artwork">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="refs-in-artwork"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="rfc" mode="refs-in-artwork">
+  <!-- check whether we need to -->
+  <xsl:variable name="refs">
+    <xsl:for-each select="//artwork[not(*)][@type='abnf']|//sourcecode[not(*)][@type='abnf']">
+      <xsl:variable name="text" select="."/>
+      <xsl:for-each select="//reference">
+        <xsl:variable name="checkfor" select="concat('[',@anchor,']')"/>
+        <xsl:if test="$text[contains(.,$checkfor)]">
+          <xsl:value-of select="$checkfor"/>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:if test="$refs!=''">
+    <xsl:processing-instruction name="rfc-ext">allow-markup-in-artwork="yes"</xsl:processing-instruction>
+  </xsl:if>
+  <xsl:text>&#10;</xsl:text>
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="refs-in-artwork"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="artwork[not(*)][@type='abnf']|sourcecode[not(*)][@type='abnf']" mode="refs-in-artwork">
+  <xsl:variable name="text" select="."/>
+  <xsl:variable name="refs">
+    <xsl:for-each select="//reference">
+      <xsl:variable name="checkfor" select="concat('[',@anchor,']')"/>
+      <xsl:if test="$text[contains(.,$checkfor)]">
+        <xsl:value-of select="$checkfor"/><xsl:text> </xsl:text>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="$refs!=''">
+      <xsl:copy>
+        <xsl:apply-templates select="@*" mode="refs-in-artwork"/>
+        <xsl:call-template name="refs-in-artwork">
+          <xsl:with-param name="refs" select="$refs"/>
+        </xsl:call-template>
+      </xsl:copy>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:copy><xsl:apply-templates select="node()|@*" mode="refs-in-artwork"/></xsl:copy>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="refs-in-artwork">
+  <xsl:param name="refs"/>
+  <xsl:param name="text" select="."/>
+  <xsl:choose>
+    <xsl:when test="contains($text,'&#10;')">
+      <xsl:call-template name="refs-in-artwork-line">
+        <xsl:with-param name="refs" select="$refs"/>
+        <xsl:with-param name="text" select="substring-before($text,'&#10;')"/>
+      </xsl:call-template>
+      <xsl:text>&#10;</xsl:text>
+      <xsl:call-template name="refs-in-artwork">
+        <xsl:with-param name="refs" select="$refs"/>
+        <xsl:with-param name="text" select="substring-after($text,'&#10;')"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="refs-in-artwork-line">
+        <xsl:with-param name="refs" select="$refs"/>
+        <xsl:with-param name="text" select="$text"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="refs-in-artwork-line">
+  <xsl:param name="refs"/>
+  <xsl:param name="text"/>
+  <xsl:choose>
+    <xsl:when test="contains($text,'; ')">
+      <xsl:value-of select="substring-before($text,'; ')"/>
+      <xsl:text>; </xsl:text>
+      <xsl:call-template name="refs-in-artwork-comment">
+        <xsl:with-param name="refs" select="$refs"/>
+        <xsl:with-param name="text" select="substring-after($text,'; ')"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="contains($text,' &lt;')">
+      <xsl:value-of select="substring-before($text,' &lt;')"/>
+      <xsl:text> &lt;</xsl:text>
+      <xsl:call-template name="refs-in-artwork-comment">
+        <xsl:with-param name="refs" select="$refs"/>
+        <xsl:with-param name="text" select="substring-after($text,' &lt;')"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$text"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="refs-in-artwork-comment">
+  <xsl:param name="refs"/>
+  <xsl:param name="text"/>
+  <xsl:variable name="after-open" select="substring-after($text,'[')"/>
+  <xsl:choose>
+    <xsl:when test="$after-open!=''">
+      <xsl:value-of select="substring-before($text,'[')"/>
+      <xsl:variable name="contents" select="substring-before($after-open,']')"/>
+      <xsl:variable name="check-for" select="concat('[',$contents,']')"/>
+      <xsl:choose>
+        <xsl:when test="contains($refs,$check-for)">
+          <xref target="{$contents}"/>
+          <xsl:call-template name="refs-in-artwork-comment">
+            <xsl:with-param name="refs" select="$refs"/>
+            <xsl:with-param name="text" select="substring-after($text,']')"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>[</xsl:text>
+          <xsl:call-template name="refs-in-artwork-comment">
+            <xsl:with-param name="refs" select="$refs"/>
+            <xsl:with-param name="text" select="substring-after($text,'[')"/>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$text"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 </xsl:transform>
