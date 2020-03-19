@@ -251,7 +251,7 @@ include "rfc2629.rnc" {
       attribute category { "std" | "bcp" | "info" | "exp" | "historic" }?,
       attribute consensus { "false" | "true" | "no" | "yes" }?,
       attribute docName { text }?,
-      attribute indexInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.4)
+      attribute indexInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.48.4)
       attribute ipr {
         "full2026"
         | "noDerivativeWorks2026"
@@ -273,15 +273,15 @@ include "rfc2629.rnc" {
       attribute iprExtract { xsd:IDREF }?,
       attribute number { text }?,
       attribute obsoletes { text }?,
-      attribute tocDepth { text }?, # (see [RFC7991bis], Section 2.44.14)
-      attribute tocInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.15)
+      attribute tocDepth { text }?, # (see [RFC7991bis], Section 2.48.14)
+      attribute tocInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.48.15)
       attribute scripts { text }?, # (see [RFC7991bis], Appendix B.3)
       attribute seriesNo { text }?,
-      attribute sortRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.11)
+      attribute sortRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.48.11)
       attribute submissionType { "IETF" | "IAB" | "IRTF" | "independent" }?,
-      attribute symRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.13)
+      attribute symRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.48.13)
       attribute updates { text }?,
-      attribute version { text }?, # (see [RFC7991bis], Section 2.44.13)
+      attribute version { text }?, # (see [RFC7991bis], Section 2.48.13)
       v3_link*,
       x_link*,
       x_feedback?,

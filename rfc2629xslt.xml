@@ -1790,7 +1790,7 @@ Content-Length: &lt;x:length-of target="req"/>
 
 <section title="quoteTitle attribute" anchor="v3.reference.quoteTitle">
 <t>
-  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.reference.attribute.quoteTitle"/>.
+  See <xref target="RFC7991bis-01" x:fmt="of" x:rel="#element.reference.attribute.quoteTitle"/>.
 </t>
 </section>
 </section>
@@ -2782,8 +2782,12 @@ done
   <x:source href="rfc7749.xml" basename="rfc7749"/>
 </reference>
 
+<reference anchor="RFC7991bis-01">
+  <x:source href="draft-iab-rfc7991bis-01.xml" basename="draft-iab-rfc7991bis-01"/>
+</reference>
+
 <reference anchor="RFC7991bis">
-  <x:source href="draft-iab-rfc7991bis-01.xml" basename="draft-iab-rfc7991bis-02"/>
+  <x:source href="draft-iab-rfc7991bis-02.xml" basename="draft-iab-rfc7991bis-02"/>
 </reference>
 
 <reference anchor='V3IMPNOTES'>
