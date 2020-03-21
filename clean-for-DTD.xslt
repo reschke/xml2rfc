@@ -167,6 +167,17 @@
 <xsl:template match="rfc/@version" mode="cleanup"/>
 <xsl:template match="@pn" mode="cleanup"/>
 
+<xsl:template match="br" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <xsl:copy-of select="."/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text> </xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="x:u-map" mode="cleanup"/>
 <xsl:template match="u" mode="cleanup">
   <xsl:choose>
@@ -1642,19 +1653,31 @@
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
-    <xsl:attribute name="title">
-      <xsl:choose>
-        <xsl:when test="name">
-          <xsl:variable name="hold">
-            <xsl:apply-templates select="name/node()"/>
-          </xsl:variable>
-          <xsl:value-of select="normalize-space($hold)"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="@title"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:attribute>
+    <xsl:choose>
+      <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+        <xsl:apply-templates select="@title" mode="cleanup"/>
+        <xsl:if test="name">
+          <name>
+            <xsl:apply-templates select="name/node()" mode="cleanup"/>
+          </name>
+        </xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:attribute name="title">
+          <xsl:choose>
+            <xsl:when test="name">
+              <xsl:variable name="hold">
+                <xsl:apply-templates select="name/node()" mode="cleanup"/>
+              </xsl:variable>
+              <xsl:value-of select="normalize-space($hold)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="@title"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:if test="@removeInRFC='true' and (not(t) or t[1]!=$section-removeInRFC)">
       <t><xsl:value-of select="$section-removeInRFC"/></t>
     </xsl:if>
