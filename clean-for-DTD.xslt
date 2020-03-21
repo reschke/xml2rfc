@@ -1664,17 +1664,7 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:attribute name="title">
-          <xsl:choose>
-            <xsl:when test="name">
-              <xsl:variable name="hold">
-                <xsl:apply-templates select="name/node()" mode="cleanup"/>
-              </xsl:variable>
-              <xsl:value-of select="normalize-space($hold)"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="@title"/>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:call-template name="get-title-as-string"/>
         </xsl:attribute>
       </xsl:otherwise>
     </xsl:choose>
