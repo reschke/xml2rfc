@@ -5828,7 +5828,17 @@
   <xsl:param name="from"/>
   <xsl:param name="to"/>
 
+  <xsl:variable name="title">
+    <xsl:call-template name="get-title-as-string">
+      <xsl:with-param name="node" select="$to"/>
+    </xsl:call-template>
+  </xsl:variable>
   <a href="#{$from/@target}">
+    <xsl:if test="$title!=''">
+      <xsl:attribute name="title">
+        <xsl:value-of select="$title"/>
+      </xsl:attribute>
+    </xsl:if>
     <xsl:call-template name="xref-to-table-text">
       <xsl:with-param name="from" select="$from"/>
       <xsl:with-param name="to" select="$to"/>
@@ -11513,11 +11523,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1258 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1258 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1259 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1259 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/03/21 15:42:50 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/03/21 15:42:50 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/03/28 15:59:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/03/28 15:59:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
