@@ -11523,11 +11523,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1259 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1259 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1260 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1260 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/03/28 15:59:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/03/28 15:59:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/03/28 16:43:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/03/28 16:43:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -12939,7 +12939,7 @@ prev: <xsl:value-of select="$prev"/>
       <xsl:with-param name="n" select="$n"/>
     </xsl:call-template>
   </xsl:variable>
-  <xsl:apply-templates select="exslt:node-set($t)" mode="strip-ids"/>
+  <xsl:apply-templates select="exslt:node-set($t)" mode="strip-ids-and-linebreaks"/>
 </xsl:template>
 
 <!-- clean up links from HTML -->
@@ -12962,12 +12962,16 @@ prev: <xsl:value-of select="$prev"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
-<xsl:template match="node()|@*" mode="strip-ids">
+
+<xsl:template match="node()|@*" mode="strip-ids-and-linebreaks">
   <xsl:copy>
-	  <xsl:apply-templates select="node()|@*" mode="strip-ids" />
+	  <xsl:apply-templates select="node()|@*" mode="strip-ids-and-linebreaks" />
   </xsl:copy>
 </xsl:template>
-<xsl:template match="@id" mode="strip-ids"/>
+<xsl:template match="xhtml:br" mode="strip-ids-and-linebreaks">
+  <xsl:text> </xsl:text>
+</xsl:template>
+<xsl:template match="@id" mode="strip-ids-and-linebreaks"/>
 
 
 <!-- customization: these templates can be overridden in an XSLT that imports from this one -->

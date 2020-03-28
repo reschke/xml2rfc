@@ -3566,12 +3566,10 @@
 <xsl:template match="fo:basic-link" mode="strip-links">
 	<xsl:apply-templates select="node()" mode="strip-links" />
 </xsl:template>
-<xsl:template match="node()|@*" mode="strip-ids">
-  <xsl:copy>
-	  <xsl:apply-templates select="node()|@*" mode="strip-ids" />
-  </xsl:copy>
+
+<xsl:template match="fo:block" mode="strip-ids-and-linebreaks">
+  <xsl:text> </xsl:text>
 </xsl:template>
-<xsl:template match="@id" mode="strip-ids"/>
 
 <xsl:template match="artset">
   <!-- see https://tools.ietf.org/html/draft-levkowetz-xml2rfc-v3-implementation-notes-08#section-3.1.1 -->
