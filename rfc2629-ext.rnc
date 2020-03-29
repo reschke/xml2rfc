@@ -690,6 +690,7 @@ v3_name =
     attribute slugifiedName { text }?, # (see [RFC7991bis], Appendix B.2)
     (TEXT
       | cref
+      | v3_br
       | v3_em
       | v3_sup
       | v3_tt

@@ -3522,6 +3522,7 @@ attlist.xref &amp;=
     attribute slugifiedName { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     (TEXT
       | cref
+      | <x:ref>v3_br</x:ref>
       | <x:ref>v3_em</x:ref>
       | <x:ref>v3_sup</x:ref>
       | <x:ref>v3_tt</x:ref>
