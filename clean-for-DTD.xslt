@@ -566,11 +566,26 @@
   <title>
     <xsl:apply-templates select="@*" mode="cleanup"/>
     <xsl:choose>
+      <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+        <xsl:apply-templates select="node()" mode="cleanup"/>
+      </xsl:when>
       <xsl:when test="@ascii!=''">
         <xsl:value-of select="@ascii"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="text()"/>
+        <xsl:for-each select="node()">
+          <xsl:choose>
+            <xsl:when test="self::br">
+              <xsl:text> </xsl:text>
+            </xsl:when>
+            <xsl:when test="self::*">
+              <xsl:apply-templates select="node()" mode="cleanup"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="normalize-space(.)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
   </title>
@@ -1549,6 +1564,7 @@
     <xsl:apply-templates select="text()|node()[not(self::seriesInfo or self::title or self::author or self::date)]" mode="cleanup"/>
   </front>
 </xsl:template>
+
 <!-- Note titles -->
 <xsl:template match="note" mode="cleanup">
   <note>
