@@ -1358,13 +1358,17 @@
     </xsl:for-each>
 
     <xsl:variable name="quoted" select="not($front[1]/title/@x:quotes='false') and not(@quote-title='false')"/>
+    <xsl:variable name="title">
+      <xsl:apply-templates select="$front[1]/title/node()" mode="get-text-content"/>
+    </xsl:variable>
+
     <xsl:if test="$quoted">"<!--&#8220;--></xsl:if>
     <xsl:choose>
       <xsl:when test="string-length($target) &gt; 0">
-        <fo:basic-link external-destination="url('{$target}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="normalize-space($front[1]/title)" /></fo:basic-link>
+        <fo:basic-link external-destination="url('{$target}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="$title"/></fo:basic-link>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="normalize-space($front[1]/title)" />
+        <xsl:value-of select="$title"/>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="$quoted">"<!--&#8221;--></xsl:if>
