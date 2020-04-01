@@ -1555,14 +1555,14 @@
 
 <xsl:template match="front" mode="cleanup">
   <!-- silence certain xml2rfcv3 warning messages -->
-  <xsl:if test="not(ancestor::reference) and $xml2rfc-ext-xml2rfc-voc >= 3">
+  <xsl:if test="$xml2rfc-ext-xml2rfc-backend >= 201706 and not(ancestor::reference)">
     <xsl:if test="not(/rfc/@consensus)">
       <xsl:text>&#10;</xsl:text>
       <xsl:comment>see https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/420</xsl:comment>
       <xsl:text>&#10;</xsl:text>
       <xsl:processing-instruction name="v3xml2rfc">silence="Warning: Setting consensus="true" for IETF STD document"</xsl:processing-instruction>
     </xsl:if>
-    <xsl:if test="substring(/rfc/@docName, string-length(/rfc/@docName)-string-length('-latest')+1)='-latest'">
+    <xsl:if test="$xml2rfc-ext-xml2rfc-voc >= 3 and substring(/rfc/@docName, string-length(/rfc/@docName)-string-length('-latest')+1)='-latest'">
       <xsl:text>&#10;</xsl:text>
       <xsl:comment>see https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/439</xsl:comment>
       <xsl:text>&#10;</xsl:text>
