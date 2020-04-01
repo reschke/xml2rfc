@@ -1554,6 +1554,12 @@
 </xsl:template>
 
 <xsl:template match="front" mode="cleanup">
+  <xsl:if test="not(ancestor::reference) and substring(/rfc/@docName, string-length(/rfc/@docName) - string-length('-latest') +1) = '-latest'">
+    <xsl:text>&#10;</xsl:text>
+    <xsl:comment>see https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/439</xsl:comment>
+    <xsl:text>&#10;</xsl:text>
+    <xsl:processing-instruction name="v3xml2rfc">silence="The 'docName' attribute of the &lt;rfc/> element"</xsl:processing-instruction>
+  </xsl:if>
   <front>
     <xsl:apply-templates select="title|author" mode="cleanup"/>
     <xsl:apply-templates select="date" mode="cleanup"/>
