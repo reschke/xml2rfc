@@ -1099,6 +1099,11 @@
       <xsl:apply-templates select=".//iref" mode="cleanup"/>
       <xsl:call-template name="insert-markup"/>
     </xsl:when>
+    <xsl:when test="parent::blockquote">
+      <t>
+        <xsl:call-template name="bare-artwork-to-v2"/>
+      </t>
+    </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="bare-artwork-to-v2"/>
     </xsl:otherwise>
@@ -2022,44 +2027,50 @@
   </xsl:choose>
 </xsl:template>
 
-<!-- Source Code -->
-<xsl:template match="sourcecode" mode="cleanup">
+<xsl:template name="get-content-of-artwork">
   <xsl:variable name="content2"><xsl:apply-templates select="node()"/></xsl:variable>
   <xsl:variable name="content" select="translate($content2,'&#160;&#x2500;&#x2502;&#x2508;&#x250c;&#x2510;&#x2514;&#x2518;&#x251c;&#x2524;',' -|+++++++')"/>
+  <xsl:value-of select="$content"/>
+</xsl:template>
 
+<xsl:template name="insert-sourcecode-as-artwork">
+  <artwork>
+    <xsl:copy-of select="@type"/>
+    <xsl:if test="@markers='true'">&lt;CODE BEGINS>&#10;</xsl:if>
+    <xsl:if test="starts-with(.,'&#10;')">
+      <xsl:text>&#10;</xsl:text>
+      <xsl:value-of select="@x:indent-with"/>
+    </xsl:if>
+    <xsl:call-template name="get-content-of-artwork"/>
+    <xsl:if test="@markers='true'">&#10;&lt;CODE ENDS></xsl:if>
+  </artwork>
+</xsl:template>
+
+<!-- Source Code -->
+<xsl:template match="sourcecode" mode="cleanup">
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
       <xsl:apply-templates select=".//iref" mode="cleanup"/>
       <sourcecode>
         <xsl:copy-of select="@*"/>
-        <xsl:value-of select="$content"/>
+        <xsl:call-template name="get-content-of-artwork"/>
       </sourcecode>
     </xsl:when>
     <xsl:when test="parent::figure">
-      <artwork>
-        <xsl:copy-of select="@anchor|@type"/>
-        <xsl:if test="@markers='true'">&lt;CODE BEGINS>&#10;</xsl:if>
-        <xsl:if test="starts-with(.,'&#10;')">
-          <xsl:text>&#10;</xsl:text>
-          <xsl:value-of select="@x:indent-with"/>
-        </xsl:if>
-        <xsl:value-of select="$content"/>
-        <xsl:if test="@markers='true'">&#10;&lt;CODE ENDS></xsl:if>
-      </artwork>
+      <xsl:call-template name="insert-sourcecode-as-artwork"/>
+    </xsl:when>
+    <xsl:when test="parent::blockquote">
+      <t>
+        <figure>
+          <xsl:apply-templates select=".//iref" mode="cleanup"/>
+          <xsl:call-template name="insert-sourcecode-as-artwork"/>
+        </figure>
+      </t>
     </xsl:when>
     <xsl:otherwise>
       <figure>
         <xsl:apply-templates select=".//iref" mode="cleanup"/>
-        <artwork>
-          <xsl:copy-of select="@type"/>
-          <xsl:if test="@markers='true'">&lt;CODE BEGINS>&#10;</xsl:if>
-          <xsl:if test="starts-with(.,'&#10;')">
-            <xsl:text>&#10;</xsl:text>
-            <xsl:value-of select="@x:indent-with"/>
-          </xsl:if>
-          <xsl:value-of select="$content"/>
-          <xsl:if test="@markers='true'">&#10;&#10;&lt;CODE ENDS></xsl:if>
-        </artwork>
+        <xsl:call-template name="insert-sourcecode-as-artwork"/>
       </figure>
     </xsl:otherwise>
   </xsl:choose>

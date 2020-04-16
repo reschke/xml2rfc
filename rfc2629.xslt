@@ -11557,11 +11557,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1266 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1266 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1267 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1267 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/04/13 13:51:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/13 13:51:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/04/16 10:13:23 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/16 10:13:23 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -12871,10 +12871,10 @@ prev: <xsl:value-of select="$prev"/>
 </xsl:template>
 
 <!-- artwork/sourcecode element -->
-<xsl:template match="figure/artwork | figure/ed:replace/ed:*/artwork | section/artwork | li/artwork | dd/artwork | artset/artwork" mode="validate" priority="9">
+<xsl:template match="blockquote/artwork | figure/artwork | figure/ed:replace/ed:*/artwork | section/artwork | li/artwork | dd/artwork | artset/artwork" mode="validate" priority="9">
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
-<xsl:template match="figure/sourcecode | figure/ed:replace/ed:*/sourcecode | section/sourcecode | li/sourcecode | dd/sourcecode | td/sourcecode" mode="validate" priority="9">
+<xsl:template match="blockquote/sourcecode | figure/sourcecode | figure/ed:replace/ed:*/sourcecode | section/sourcecode | li/sourcecode | dd/sourcecode | td/sourcecode" mode="validate" priority="9">
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
 <xsl:template match="artwork|sourcecode" mode="validate">
