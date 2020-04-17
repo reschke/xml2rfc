@@ -1218,6 +1218,18 @@
   </xsl:if>
 </xsl:template>
 
+<!-- cref/@display -->
+<xsl:template match="cref/@display" mode="cleanup">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <xsl:copy-of select="."/>
+    </xsl:when>
+    <xsl:otherwise>
+      <!-- otherwise just drop -->
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <!-- markup inside cref -->
 <xsl:template match="cref//eref" mode="cleanup">
   <xsl:text>&lt;</xsl:text>
