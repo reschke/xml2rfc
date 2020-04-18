@@ -3561,6 +3561,18 @@
     
   </xsl:template>
 
+<xsl:template name="emit-message-inline">
+  <xsl:param name="message"/>
+  <xsl:choose>
+    <xsl:when test="ancestor::t">
+      <fo:inline color="red"><xsl:value-of select="$message"/></fo:inline>
+    </xsl:when>
+    <xsl:otherwise>
+      <fo:block color="red"><xsl:value-of select="$message"/></fo:block>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <!-- clean up links from HTML -->
 <xsl:template match="node()|@*" mode="strip-links">
   <xsl:copy>

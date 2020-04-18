@@ -11110,6 +11110,18 @@ dd, li, p {
   </xsl:call-template>
 </xsl:template>
 
+<xsl:template name="emit-message-inline">
+  <xsl:param name="message"/>
+  <xsl:choose>
+    <xsl:when test="ancestor::t">
+      <span class="{$css-error}"><xsl:value-of select="$message"/></span>
+    </xsl:when>
+    <xsl:otherwise>
+      <div class="{$css-error}"><xsl:value-of select="$message"/></div>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="emit-message">
   <xsl:param name="level">DEBUG</xsl:param>
   <xsl:param name="dlevel">0</xsl:param>
@@ -11121,14 +11133,9 @@ dd, li, p {
     <xsl:variable name="message"><xsl:value-of select="$level"/>: <xsl:value-of select="$msg"/><xsl:if test="$msg2!=''"> - <xsl:value-of select="$msg2"/></xsl:if><xsl:if test="$lineno"><xsl:call-template name="lineno"/></xsl:if></xsl:variable>
     <xsl:choose>
       <xsl:when test="$inline!='no'">
-        <xsl:choose>
-          <xsl:when test="ancestor::t">
-            <span class="{$css-error}"><xsl:value-of select="$message"/></span>
-          </xsl:when>
-          <xsl:otherwise>
-            <div class="{$css-error}"><xsl:value-of select="$message"/></div>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:call-template name="emit-message-inline">
+          <xsl:with-param name="message" select="$message"/>
+        </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
         <!-- this fails when the message contains characters not encodable in the output encoding -->
@@ -11578,11 +11585,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1269 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1269 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1270 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1270 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/04/18 09:46:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/18 09:46:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/04/18 12:20:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/18 12:20:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
