@@ -2605,7 +2605,9 @@
 
 <!-- this is a named template because <back> may be absent -->
 <xsl:template name="back">
-  <xsl:call-template name="check-no-text-content"/>
+  <xsl:for-each select="back">
+    <xsl:call-template name="check-no-text-content"/>
+  </xsl:for-each>
 
   <!-- add editorial comments -->
   <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
@@ -11557,11 +11559,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1267 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1267 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1268 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1268 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/04/16 10:13:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/16 10:13:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/04/18 09:00:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/18 09:00:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -12948,7 +12950,7 @@ prev: <xsl:value-of select="$prev"/>
   <xsl:for-each select="text()">
     <xsl:if test="normalize-space(.)!=''">
       <xsl:call-template name="warning">
-        <xsl:with-param name="msg">No text content allowed inside &lt;<xsl:value-of select="local-name(..)"/>&gt;, but found: <xsl:value-of select="."/></xsl:with-param>
+        <xsl:with-param name="msg">No text content allowed inside &lt;<xsl:value-of select="local-name(..)"/>&gt;, but found: '<xsl:value-of select="."/>'</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
   </xsl:for-each>
