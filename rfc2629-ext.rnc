@@ -611,6 +611,7 @@ v3_dd =
 # Definition List (see Section 12.10)
 v3_dl =
   element dl {
+    attribute anchor { xsd:ID }?, # (see [RFC7991bis], Section 2.21.1)
     attribute indent { text }?,
     attribute newline { "false" | "true" }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)

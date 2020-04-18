@@ -3437,6 +3437,7 @@ attlist.xref &amp;=
 /># Definition List (see <xref target="v3.dl"/>)</em>
 <x:ref>v3_dl</x:ref> =
   element dl {
+    attribute anchor { xsd:ID }?, # (see <xref target="RFC7991bis" x:rel="#element.dl.attribute.anchor"/>)
     attribute indent { text }?,
     attribute newline { "false" | "true" }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
