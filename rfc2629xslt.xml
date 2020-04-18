@@ -3189,6 +3189,7 @@ include "rfc2629.rnc" {
 
 <em># Extend attribute set for &lt;abstract></em>
 attlist.abstract &amp;=
+  attribute anchor { xsd:ID }?, # (see <xref target="RFC7991bis" x:rel="#element.abstract.attribute.anchor"/>)
   attribute pn { text }? # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
 
 <em># Allow extension attributes on &lt;artwork> (<xref target="ext-rfc2629.artwork"/>)</em>

@@ -373,6 +373,7 @@ include "rfc2629.rnc" {
 
 # Extend attribute set for <abstract>
 attlist.abstract &=
+  attribute anchor { xsd:ID }?, # (see [RFC7991bis], Section 2.1.1)
   attribute pn { text }? # (see [RFC7991bis], Appendix B.2)
 
 # Allow extension attributes on <artwork> (Section 11.25)
