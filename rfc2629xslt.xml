@@ -3223,6 +3223,10 @@ attlist.code &amp;=
 attlist.country &amp;=
   attribute ascii { ATEXT }?
 
+<em># Extend attribute set for &lt;cref> (see <xref target="RFC7991bis" x:fmt="of" x:rel="#element.cref.attribute.display"/>)</em>
+attlist.cref &amp;=
+  attribute display { "false" | "true" }?
+
 <em># Extend attribute set for &lt;date> (see <xref target="ext-rfc2629.date"/>)</em>
 attlist.date &amp;=
   attribute x:include-day { "false" | "true" }?
