@@ -2610,7 +2610,7 @@
   </xsl:for-each>
 
   <!-- add editorial comments -->
-  <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
+  <xsl:if test="//cref[not(@display) or display!='false'] and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
     <xsl:call-template name="insertComments" />
   </xsl:if>
 
@@ -5688,6 +5688,14 @@
       </xsl:choose>
     </xsl:when>
 
+    <xsl:when test="$node/self::cref and $node/@display='false'">
+      <xsl:for-each select="$xref">
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg" select="concat('Comment ',$node/@anchor,' is hidden and thus can not be referenced')"/>
+        </xsl:call-template>
+      </xsl:for-each>
+    </xsl:when>
+
     <xsl:when test="$node/self::cref and $xml2rfc-comments='no'">
       <xsl:call-template name="error">
         <xsl:with-param name="msg">xref to cref, but comments aren't included in the output</xsl:with-param>
@@ -6451,6 +6459,13 @@
       <!-- Comment links -->
       <xsl:when test="$node/self::cref">
         <xsl:choose>
+          <xsl:when test="$node/@display='false'">
+            <xsl:for-each select="$xref">
+              <xsl:call-template name="error">
+                <xsl:with-param name="msg" select="concat('Comment ',$node/@anchor,' is hidden and thus can not be referenced')"/>
+              </xsl:call-template>
+            </xsl:for-each>
+          </xsl:when>
           <xsl:when test="$xml2rfc-comments!='no'">
             <xsl:call-template name="xref-to-comment">
               <xsl:with-param name="from" select="$xref"/>
@@ -11349,7 +11364,11 @@ dd, li, p {
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="cref">
+<xsl:template match="cref[@display='false']">
+  <!-- hidden -->
+</xsl:template>
+
+<xsl:template match="cref[not(@display) or @display!='false']">
   <xsl:if test="$xml2rfc-comments!='no'">
     <xsl:variable name="cid">
       <xsl:call-template name="get-comment-name"/>
@@ -11399,7 +11418,7 @@ dd, li, p {
   </h2>
 
   <dl>
-    <xsl:for-each select="//cref">
+    <xsl:for-each select="//cref[not(@display) or @display!='false']">
       <xsl:variable name="cid">
         <xsl:choose>
           <xsl:when test="@anchor">
@@ -11559,11 +11578,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1268 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1268 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1269 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1269 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/04/18 09:00:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/18 09:00:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/04/18 09:46:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/18 09:46:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
