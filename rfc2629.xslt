@@ -7707,7 +7707,8 @@ function appendRfcLinks(parent, updates) {
   for (var i = 0; i &lt; updates.length; i++) {
     var rfc = updates[i].trim().toLowerCase();
     if (rfc.substring(0, 3) == "rfc") {
-      var no = rfc.substring(3);
+      var no = parseInt(rfc.substring(3), 10);
+      
       var link = newElement("a");
       link.setAttribute("href", template.replace("{rfc}", no));
       link.appendChild(newText(no));
@@ -11625,11 +11626,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1271 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1271 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1272 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1272 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/04/21 13:06:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/21 13:06:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/04/21 15:38:06 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/21 15:38:06 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
