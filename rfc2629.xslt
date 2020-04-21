@@ -6656,7 +6656,17 @@
     <myns:item>
        <xsl:choose>
         <xsl:when test="/rfc/@ipr and not(/rfc/@number)">Internet-Draft</xsl:when>
-        <xsl:otherwise>Request for Comments: <xsl:value-of select="/rfc/@number"/></xsl:otherwise>
+        <xsl:otherwise>
+          <xsl:text>Request for Comments: </xsl:text>
+          <xsl:value-of select="/rfc/@number"/>
+          <xsl:for-each select="/rfc/front/seriesInfo[@name='RFC']">
+            <xsl:if test="number(@value) != number(/rfc/@number)">
+              <xsl:call-template name="error">
+                <xsl:with-param name="msg">RFC number given in /rfc/front/seriesInfo (<xsl:value-of select="@value"/>) inconsistent with rfc element (<xsl:value-of select="/rfc/@number"/>)</xsl:with-param>
+              </xsl:call-template>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:otherwise>
       </xsl:choose>
     </myns:item>
     <xsl:if test="/rfc/@obsoletes!=''">
@@ -6671,9 +6681,39 @@
     <xsl:if test="/rfc/@seriesNo">
        <myns:item>
         <xsl:choose>
-          <xsl:when test="/rfc/@category='bcp'">BCP: <xsl:value-of select="/rfc/@seriesNo" /></xsl:when>
-          <xsl:when test="/rfc/@category='info'">FYI: <xsl:value-of select="/rfc/@seriesNo" /></xsl:when>
-          <xsl:when test="/rfc/@category='std'">STD: <xsl:value-of select="/rfc/@seriesNo" /></xsl:when>
+          <xsl:when test="/rfc/@category='bcp'">
+            <xsl:text>BCP: </xsl:text>
+            <xsl:value-of select="/rfc/@seriesNo"/>
+            <xsl:for-each select="/rfc/front/seriesInfo[@name='BCP']">
+              <xsl:if test="number(@value) != number(/rfc/@seriesNo)">
+                <xsl:call-template name="error">
+                  <xsl:with-param name="msg">BCP number given in /rfc/front/seriesInfo (<xsl:value-of select="@value"/>) inconsistent with rfc element (<xsl:value-of select="/rfc/@seriesNo"/>)</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:when test="/rfc/@category='info'">
+            <xsl:text>FYI: </xsl:text>
+            <xsl:value-of select="/rfc/@seriesNo"/>
+            <xsl:for-each select="/rfc/front/seriesInfo[@name='FYI']">
+              <xsl:if test="number(@value) != number(/rfc/@seriesNo)">
+                <xsl:call-template name="error">
+                  <xsl:with-param name="msg">FYI number given in /rfc/front/seriesInfo (<xsl:value-of select="@value"/>) inconsistent with rfc element (<xsl:value-of select="/rfc/@seriesNo"/>)</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:when test="/rfc/@category='std'">
+            <xsl:text>STD: </xsl:text>
+            <xsl:value-of select="/rfc/@seriesNo"/>
+            <xsl:for-each select="/rfc/front/seriesInfo[@name='STD']">
+              <xsl:if test="number(@value) != number(/rfc/@seriesNo)">
+                <xsl:call-template name="error">
+                  <xsl:with-param name="msg">STD number given in /rfc/front/seriesInfo (<xsl:value-of select="@value"/>) inconsistent with rfc element (<xsl:value-of select="/rfc/@seriesNo"/>)</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+            </xsl:for-each>
+          </xsl:when>
           <xsl:otherwise>
             <xsl:call-template name="warning">
               <xsl:with-param name="msg">There is no IETF document series called '<xsl:value-of select="/rfc/@category"/>'</xsl:with-param>
@@ -11113,7 +11153,7 @@ dd, li, p {
 <xsl:template name="emit-message-inline">
   <xsl:param name="message"/>
   <xsl:choose>
-    <xsl:when test="ancestor::t">
+    <xsl:when test="ancestor::t or ancestor-or-self::seriesInfo">
       <span class="{$css-error}"><xsl:value-of select="$message"/></span>
     </xsl:when>
     <xsl:otherwise>
@@ -11585,11 +11625,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1270 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1270 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1271 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1271 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/04/18 12:20:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/18 12:20:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/04/21 13:06:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/04/21 13:06:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
