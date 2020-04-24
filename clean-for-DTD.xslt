@@ -164,7 +164,11 @@
 <xsl:template match="boilerplate" mode="cleanup"/>
 <xsl:template match="link" mode="cleanup"/>
 <xsl:template match="rfc/@scripts" mode="cleanup"/>
-<xsl:template match="rfc/@version" mode="cleanup"/>
+<xsl:template match="rfc/@version" mode="cleanup">
+  <xsl:if test="$xml2rfc-ext-xml2rfc-voc >= 3">
+    <xsl:copy-of select="."/>
+  </xsl:if>
+</xsl:template>
 <xsl:template match="@pn" mode="cleanup"/>
 
 <xsl:template match="br" mode="cleanup">
