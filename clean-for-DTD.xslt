@@ -1596,7 +1596,11 @@
     </xsl:if>
   </xsl:if>
   <front>
-    <xsl:apply-templates select="title|author" mode="cleanup"/>
+    <xsl:apply-templates select="title" mode="cleanup"/>
+    <xsl:if test="$xml2rfc-ext-xml2rfc-voc >= 3 and seriesInfo">
+      <xsl:apply-templates select="seriesInfo" mode="cleanup"/>
+    </xsl:if>
+    <xsl:apply-templates select="author" mode="cleanup"/>
     <xsl:apply-templates select="date" mode="cleanup"/>
     <xsl:if test="not(date)">
       <!-- mandatory in v2 -->
