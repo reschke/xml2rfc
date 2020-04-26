@@ -1683,7 +1683,7 @@
           <dc:title><xsl:apply-templates select="front/title" mode="get-text-content"/></dc:title>
           <dc:creator><xsl:call-template name="get-author-summary" /></dc:creator>
           <dc:description><xsl:value-of select="normalize-space(/rfc/front/abstract)"/></dc:description>
-          <xsl:if test="/rfc/@number">
+          <xsl:if test="$is-rfc">
             <dc:isPartOf>urn:ISSN:2070-1721</dc:isPartOf>
           </xsl:if>      
           <xsl:if test="/rfc/front/keyword" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
