@@ -1583,7 +1583,7 @@
       <xsl:text>&#10;</xsl:text>
       <xsl:processing-instruction name="v3xml2rfc">silence="Warning: Setting consensus="true" for IETF STD document"</xsl:processing-instruction>
     </xsl:if>
-    <xsl:if test="$xml2rfc-ext-xml2rfc-voc >= 3 and not(/rfc/@submissionType) and not (/rfc/@number)">
+    <xsl:if test="$xml2rfc-ext-xml2rfc-voc >= 3 and not(/rfc/@submissionType) and not ($is-rfc)">
       <!-- issue to be raised -->
       <xsl:text>&#10;</xsl:text>
       <xsl:processing-instruction name="v3xml2rfc">silence="Warning: Expected a valid submissionType (stream) setting"</xsl:processing-instruction>
