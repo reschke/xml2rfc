@@ -1554,6 +1554,11 @@
       <!-- special case in RFC formatting since 2015 -->
       <seriesInfo name="Work in Progress," value="{@value}"/>
     </xsl:when>
+    <xsl:when test="@name='DOI' and starts-with(@value,'10.17487/RFC') and $xml2rfc-ext-insert-doi='no'">
+      <xsl:call-template name="info">
+        <xsl:with-param name="msg">Removing DOI <xsl:value-of select="@value"/> from &lt;reference> element</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
     <xsl:otherwise>
       <seriesInfo name="{@name}" value="{@value}"/>
     </xsl:otherwise>

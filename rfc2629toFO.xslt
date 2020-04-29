@@ -1179,53 +1179,6 @@
 <!-- processed elsewhere -->
 <xsl:template match="displayreference"/>
 
-<xsl:template name="emit-series-info">
-  <xsl:param name="multiple-rfcs" select="false()"/>
-  <xsl:param name="doi"/>
-
-  <xsl:text>, </xsl:text>
-  <xsl:choose>
-    <xsl:when test="not(@name) and not(@value) and ./text()"><xsl:value-of select="." /></xsl:when>
-    <xsl:when test="@name='RFC' and $multiple-rfcs">
-    <xsl:variable name="uri">
-      <xsl:call-template name="compute-doi-uri">
-        <xsl:with-param name="doi" select="@value"/>
-      </xsl:call-template>
-    </xsl:variable>
-      <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="{$uri}">
-        <xsl:value-of select="@name" />
-        <xsl:if test="@value!=''">&#0160;<xsl:value-of select="@value" /></xsl:if>
-      </fo:basic-link>
-    </xsl:when>
-    <xsl:when test="@name='DOI'">
-      <xsl:variable name="uri">
-        <xsl:call-template name="compute-doi-uri">
-          <xsl:with-param name="doi" select="@value"/>
-        </xsl:call-template>
-      </xsl:variable>
-      <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="{$uri}">
-        <xsl:value-of select="@name" />
-        <xsl:if test="@value!=''">&#0160;<xsl:value-of select="@value" /></xsl:if>
-      </fo:basic-link>
-      <xsl:if test="$doi!='' and $doi!=@value">
-        <xsl:call-template name="warning">
-          <xsl:with-param name="msg">Unexpected DOI for RFC, found <xsl:value-of select="@value"/>, expected <xsl:value-of select="$doi"/></xsl:with-param>
-        </xsl:call-template>
-      </xsl:if>
-    </xsl:when>
-    <xsl:when test="@name='Internet-Draft' and $rfcno > 7375">
-      <!-- special case in RFC formatting since 2015 -->            
-      <xsl:text>Work in Progress, </xsl:text>
-      <xsl:value-of select="@value" />
-    </xsl:when>
-   <xsl:otherwise>
-      <xsl:value-of select="@name" />
-      <xsl:if test="@value!=''">&#0160;<xsl:value-of select="@value" /></xsl:if>
-      <xsl:if test="translate(@name,$ucase,$lcase)='internet-draft'"> (work in progress)</xsl:if>
-    </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
-
 <xsl:template match="reference">
 
   <fo:list-item space-after=".5em">
@@ -1433,7 +1386,7 @@
         </xsl:call-template>
       </xsl:variable>
       <xsl:text>, </xsl:text>
-      <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="{$uri}">DOI&#160;<xsl:value-of select="$doi"/></fo:basic-link>
+      <fo:basic-link xsl:use-attribute-sets="external-link" external-destination="{$uri}"><xsl:text>DOI </xsl:text><xsl:value-of select="$doi"/></fo:basic-link>
     </xsl:if>
 
     <!-- avoid hacks using seriesInfo when it's not really series information -->
@@ -2009,6 +1962,27 @@
   <xsl:choose>
     <xsl:when test="$t!=''">
       <fo:basic-link internal-destination="{$t}" xsl:use-attribute-sets="internal-link">
+        <xsl:if test="$id!='' and $xml2rfc-ext-include-references-in-index='yes'">
+          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$index-item!='' and $xml2rfc-ext-include-references-in-index='yes'">
+          <xsl:attribute name="index-key">xrefitem=<xsl:value-of select="$index-item"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$index-subitem!='' and $xml2rfc-ext-include-references-in-index='yes'">
+          <fo:wrapper index-key="xrefitem={concat($index-item,'#',$index-subitem)}"/>
+        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="$child-nodes">
+            <xsl:apply-templates select="$child-nodes"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$text"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </fo:basic-link>
+    </xsl:when>
+    <xsl:when test="$target!=''">
+      <fo:basic-link external-destination="{$target}" xsl:use-attribute-sets="external-link">
         <xsl:if test="$id!='' and $xml2rfc-ext-include-references-in-index='yes'">
           <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
         </xsl:if>
