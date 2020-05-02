@@ -73,7 +73,12 @@
       <xsl:apply-templates mode="insert-feedback"/>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:for-each select="$t5">
+  <xsl:variable name="t6">
+    <xsl:for-each select="$t5">
+      <xsl:apply-templates mode="kramdown2629-fixup"/>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:for-each select="$t6">
     <xsl:apply-templates mode="insert-prettyprint"/>
   </xsl:for-each>
 </xsl:template>
@@ -315,6 +320,15 @@
     </xsl:if>
     <xsl:apply-templates select="node()" mode="insert-feedback"/>
   </xsl:copy>
+</xsl:template>
+
+<xsl:template match="*|@*|comment()|processing-instruction()" mode="kramdown2629-fixup">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="kramdown2629-fixup"/></xsl:copy>
+</xsl:template>
+
+<!--fix broken lists with contact elements -->
+<xsl:template match="t[contact and count(*)=1 and parent::t]" mode="kramdown2629-fixup">
+  <xsl:apply-templates select="node()|@*" mode="kramdown2629-fixup"/>
 </xsl:template>
 
 <xsl:template match="*|@*|comment()|processing-instruction()" mode="insert-prettyprint">
