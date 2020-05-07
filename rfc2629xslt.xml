@@ -449,18 +449,60 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>based on document date</c>
   <c>Used in <tt>clean-for-DTD.xslt</tt> (see <xref target="clean-for-dtd"/>).</c>
 
-  <c>rfc-ext</c>
-  <c>xref-with-text-generate<iref item="xref-with-text-generate PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xref-with-text-generate"/></c>
-  <c>xml2rfc-ext-xref-with-text-generate<iref item="xml2rfc-ext-xref-with-text-generate"/> <iref item="Parameters" subitem="xml2rfc-ext-xref-with-text-generate"/></c>
-  <c>'text'</c>
-  <c>Determines whether &lt;xref> with text content generates additional text as in traditional text output ("text"), or just generates a link around the text ("nothing"). Note that the default might change in the future in order to achieve compatibility with other formatters.</c>
-
-  <c>rfc-ext</c>
-  <c>ucd-file<iref item="ucd-file PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="ucd-file"/></c>
-  <c>xml2rfc-ext-ucd-file<iref item="xml2rfc-ext-ucd-file"/> <iref item="Parameters" subitem="xml2rfc-ext-ucd-file"/></c>
-  <c></c>
-  <c>Specifies an external resource containing Unicode character database information, as described in <xref target="ext.element.u-map"/>.</c>
 </texttable>
+
+<!--
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd></dd>
+      <dt>XSLT parameter name</dt>
+      <dd></dd>
+      <dt>default</dt>
+      <dd></dd>
+    </dl>
+     -->
+
+  <section title="xref-with-text-generate - Default Handling of &lt;xref> with Text Content">
+    <iref item="xref-with-text-generate PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xref-with-text-generate"/>
+    <iref item="xml2rfc-ext-xref-with-text-generate"/> <iref item="Parameters" subitem="xml2rfc-ext-xref-with-text-generate"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>xref-with-text-generate</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-xref-with-text-generate</dd>
+      <dt>default</dt>
+      <dd>'text'</dd>
+    </dl>
+    <t>
+      Determines whether &lt;xref> with text content generates additional text as in traditional text output ("text"), or just generates a link around the text ("nothing"). Note that the default might change in the future in order to achieve compatibility with other formatters.
+    </t>
+  </section>
+  
+  <section title="ucd-file - Filename of Unicode Database">
+    <iref item="ucd-file PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="ucd-file"/>
+    <iref item="xml2rfc-ext-ucd-file"/> <iref item="Parameters" subitem="xml2rfc-ext-ucd-file"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>ucd-file</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-ucd-file</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      Specifies an external resource containing Unicode character database information, as described in <xref target="ext.element.u-map"/>.
+    </t>
+    
+  </section>
+
 </section>
 
 </section>
