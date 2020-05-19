@@ -1180,6 +1180,9 @@ mkepub.sh rfc2616.xml
     This element can be used to include a contributor's contact information in
     place where a paragraph (&lt;t>) would be allowed otherwise.
   </t>
+  <t>
+    See <xref target="v3.contact"/> for a standard alternative.
+  </t>
 </section>
 
 <section title="&lt;dfn> element" anchor="ext.element.dfn">
@@ -1680,6 +1683,15 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="cityarea V3 Extension Element" primary="true"/>
 <t>
   See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
+</t>
+</section>
+
+<section title="contact Element" anchor="v3.contact">
+  <iref item="V3 Extension Elements" subitem="contact" primary="true"/>
+  <iref item="contact V3 Extension Element" primary="true"/>
+<t>
+  Can be used to embed contact information in a layout <em>similar</em>
+  to the one used for authors; mainly for use in a "Contributors" section.
 </t>
 </section>
 
@@ -3162,6 +3174,7 @@ include "rfc2629.rnc" {
        <strong>| <x:ref>v3_artset</x:ref></strong>
        <strong>| <x:ref>v3_aside</x:ref></strong>
        <strong>| <x:ref>v3_blockquote</x:ref></strong>
+       <strong>| <x:ref>v3_contact</x:ref></strong>
        <strong>| <x:ref>v3_dl</x:ref></strong>
        <strong>| <x:ref>v3_name</x:ref></strong>
        <strong>| <x:ref>v3_ol</x:ref></strong>
@@ -3438,6 +3451,20 @@ attlist.xref &amp;=
   element cityarea {
     attribute ascii { ATEXT }?,
     TEXT
+  }
+
+<em anchor="v3_contact"><iref item="contact V3 Extension Element"/><iref item="V3 Extension Elements" subitem="contact"
+/># (see <xref target="v3.contact"/>)</em>
+<x:ref>v3_contact</x:ref> =
+  element contact {
+    attribute initials { text }?,
+    attribute asciiInitials { text }?,
+    attribute surname { text }?,
+    attribute asciiSurname { text }?,
+    attribute fullname { text }?,
+    attribute asciiFullname { text }?,
+    organization?,
+    address?
   }
 
 <em anchor="v3_displayreference"><iref item="displayreference V3 Extension Element"/><iref item="V3 Extension Elements" subitem="displayreference"
