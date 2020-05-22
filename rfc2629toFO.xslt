@@ -186,7 +186,24 @@
       <xsl:attribute name="start-indent">2em</xsl:attribute>
     </xsl:if>
     <xsl:if test="(self::artwork and @x:is-code-component='yes') or (self::sourcecode and @markers='true')">
-      <fo:block font-family="monospace" color="gray">&lt;CODE BEGINS></fo:block>
+      <fo:block font-family="monospace" color="gray">
+        <xsl:text>&lt;CODE BEGINS></xsl:text>
+        <xsl:if test="self::sourcecode and @name">
+          <xsl:variable name="offending" select="translate(@name,concat($alnum,'-+.,;_~#'),'')"/>
+          <xsl:choose>
+            <xsl:when test="$offending!=''">
+              <xsl:call-template name="error">
+                <xsl:with-param name="msg">illegal characters in @name attribute '<xsl:value-of select="@name"/>': '<xsl:value-of select="$offending"/>'</xsl:with-param>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text> file "</xsl:text>
+              <xsl:value-of select="@name"/>
+              <xsl:text>"</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:if>
+      </fo:block>
     </xsl:if>
     <fo:block font-family="monospace" padding=".5em"
       white-space-treatment="preserve" linefeed-treatment="preserve"
