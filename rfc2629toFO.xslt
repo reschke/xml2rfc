@@ -461,67 +461,8 @@
       </xsl:call-template>
     </xsl:if>
   </xsl:if>
-  <xsl:if test="address/phone">
-    <xsl:variable name="phone">
-      <xsl:call-template name="extract-normalized">
-        <xsl:with-param name="node" select="address/phone"/>
-        <xsl:with-param name="name" select="'address/phone'"/>
-      </xsl:call-template>
-    </xsl:variable>
-    <xsl:call-template name="emit-postal-line">
-      <xsl:with-param name="prefix">Phone</xsl:with-param>
-      <xsl:with-param name="value" select="$phone"/>
-      <xsl:with-param name="link" select="concat('tel:',translate($phone,' ',''))"/>
-    </xsl:call-template>
-  </xsl:if>
-  <xsl:if test="address/facsimile">
-    <xsl:variable name="facsimile">
-      <xsl:call-template name="extract-normalized">
-        <xsl:with-param name="node" select="address/facsimile"/>
-        <xsl:with-param name="name" select="'address/facsimile'"/>
-      </xsl:call-template>
-    </xsl:variable>
-    <xsl:call-template name="emit-postal-line">
-      <xsl:with-param name="prefix">Fax</xsl:with-param>
-      <xsl:with-param name="value" select="$facsimile"/>
-      <xsl:with-param name="link" select="concat('fax:',translate($facsimile,' ',''))"/>
-    </xsl:call-template>
-  </xsl:if>
-  <xsl:if test="address/email">
-    <xsl:call-template name="emit-postal-line">
-      <xsl:with-param name="prefix">
-        <xsl:choose>
-          <xsl:when test="$xml2rfc-rfcedstyle='yes'">Email</xsl:when>
-          <xsl:otherwise>EMail</xsl:otherwise>
-        </xsl:choose>
-      </xsl:with-param>
-      <xsl:with-param name="values">
-        <xsl:for-each select="address/email">
-          <xsl:variable name="e">
-            <xsl:call-template name="extract-email"/>
-          </xsl:variable>
-          <v>
-            <xsl:if test="$xml2rfc-linkmailto!='no'">
-              <xsl:attribute name="href">
-                <xsl:value-of select="concat('mailto:',normalize-space($e))"/>
-              </xsl:attribute>
-            </xsl:if>
-            <xsl:value-of select="normalize-space($e)"/>
-          </v>
-        </xsl:for-each>
-      </xsl:with-param>
-    </xsl:call-template>
-  </xsl:if>
-  <xsl:for-each select="address/uri">
-    <xsl:variable name="uri">
-      <xsl:call-template name="extract-uri"/>
-    </xsl:variable>
-    <xsl:call-template name="emit-postal-line">
-      <xsl:with-param name="prefix">URI</xsl:with-param>
-      <xsl:with-param name="value" select="$uri"/>
-      <xsl:with-param name="link" select="$uri"/>
-      <xsl:with-param name="annotation" select="@x:annotation"/>
-    </xsl:call-template>
+  <xsl:for-each select="address[1]">
+    <xsl:call-template name="emit-address"/>
   </xsl:for-each>
 </xsl:template>
 
