@@ -307,13 +307,27 @@
 <xsl:template name="emit-postal-line">
   <xsl:param name="prefix"/>
   <xsl:param name="value"/>
+  <xsl:param name="values"/>
   <xsl:param name="link"/>
   <xsl:param name="annotation"/>
 
-  <xsl:if test="$value!=''">
+  <xsl:if test="normalize-space($value)!='' or $values">
     <fo:block>
       <xsl:if test="$prefix!=''"><xsl:value-of select="$prefix"/>: </xsl:if>
       <xsl:choose>
+        <xsl:when test="$values">
+          <xsl:for-each select="exslt:node-set($values)/*">
+            <xsl:choose>
+              <xsl:when test="@href">
+                <fo:basic-link external-destination="url('{@href}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="normalize-space(.)"/></fo:basic-link>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="normalize-space(.)"/>
+              </xsl:otherwise>
+            </xsl:choose>
+            <xsl:if test="position()!=last()">, </xsl:if>
+          </xsl:for-each>
+        </xsl:when>
         <xsl:when test="$link!=''">
           <fo:basic-link external-destination="url('{$link}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="$value"/></fo:basic-link>
         </xsl:when>
@@ -473,11 +487,7 @@
       <xsl:with-param name="link" select="concat('fax:',translate($facsimile,' ',''))"/>
     </xsl:call-template>
   </xsl:if>
-  <xsl:for-each select="address/email">
-    <xsl:variable name="email">
-      <xsl:call-template name="extract-email"/>
-    </xsl:variable>
-
+  <xsl:if test="address/email">
     <xsl:call-template name="emit-postal-line">
       <xsl:with-param name="prefix">
         <xsl:choose>
@@ -485,14 +495,23 @@
           <xsl:otherwise>EMail</xsl:otherwise>
         </xsl:choose>
       </xsl:with-param>
-      <xsl:with-param name="value" select="$email"/>
-      <xsl:with-param name="link">
-        <xsl:if test="$xml2rfc-linkmailto!='no'">
-          <xsl:value-of select="concat('mailto:',$email)"/>
-        </xsl:if>
+      <xsl:with-param name="values">
+        <xsl:for-each select="address/email">
+          <xsl:variable name="e">
+            <xsl:call-template name="extract-email"/>
+          </xsl:variable>
+          <v>
+            <xsl:if test="$xml2rfc-linkmailto!='no'">
+              <xsl:attribute name="href">
+                <xsl:value-of select="concat('mailto:',normalize-space($e))"/>
+              </xsl:attribute>
+            </xsl:if>
+            <xsl:value-of select="normalize-space($e)"/>
+          </v>
+        </xsl:for-each>
       </xsl:with-param>
     </xsl:call-template>
-  </xsl:for-each>
+  </xsl:if>
   <xsl:for-each select="address/uri">
     <xsl:variable name="uri">
       <xsl:call-template name="extract-uri"/>
