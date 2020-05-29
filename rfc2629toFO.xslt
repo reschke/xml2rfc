@@ -291,15 +291,13 @@
 
     <xsl:call-template name="emit-author"/>
 
-    <xsl:if test="@asciiFullname!='' or organization/@ascii!=''">
+    <xsl:if test="@asciiFullname!='' or organization/@ascii!='' or address/postal/*/@ascii">
       <fo:block space-before=".5em">
         Additional contact information:
       </fo:block>
-      <xsl:if test="@asciiFullname!='' and @asciiFullname!=@fullname">
-        <xsl:call-template name="emit-author">
-          <xsl:with-param name="ascii" select="false()"/>
-        </xsl:call-template>
-      </xsl:if>
+      <xsl:call-template name="emit-author">
+        <xsl:with-param name="ascii" select="false()"/>
+      </xsl:call-template>
     </xsl:if>
   </fo:block>
 </xsl:template>
@@ -348,6 +346,14 @@
   <fo:block>
     <fo:wrapper font-weight="bold">
       <xsl:choose>
+        <xsl:when test="(not(@fullname) or @fullname='') and @surname!=''">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">fullname attribute should be specified for author (using surname instead)</xsl:with-param>
+          </xsl:call-template>
+          <xsl:call-template name="format-initials"/>
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="@surname"/>
+        </xsl:when>
         <xsl:when test="@asciiFullname!='' and $ascii">
           <xsl:value-of select="@asciiFullname" />
         </xsl:when>
@@ -365,6 +371,7 @@
       <fo:wrapper font-style="italic"><xsl:value-of select="@x:annotation"/></fo:wrapper>
     </xsl:if>
   </fo:block>
+
   <xsl:if test="normalize-space(concat(organization,organization/@ascii)) != ''">
     <fo:block>
       <xsl:choose>
@@ -378,11 +385,9 @@
     </fo:block>
   </xsl:if>
 
-  <xsl:for-each select="address[1]">
-    <xsl:call-template name="emit-author-details2">
-      <xsl:with-param name="ascii" select="$ascii"/>
-    </xsl:call-template>
-  </xsl:for-each>
+  <xsl:call-template name="emit-author-details">
+    <xsl:with-param name="ascii" select="$ascii"/>
+  </xsl:call-template>  
 </xsl:template>
 
 <xsl:template match="back">
