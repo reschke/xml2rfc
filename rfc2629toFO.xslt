@@ -3182,8 +3182,10 @@
       <xsl:otherwise>
         <fo:inline xsl:use-attribute-sets="comment" id="{$cid}">
           <xsl:text>[</xsl:text>
-          <xsl:value-of select="$cid"/>
-          <xsl:text>: </xsl:text>
+          <xsl:if test="@anchor or (not(/rfc/@version) or /rfc/@version &lt; 3)">
+            <xsl:value-of select="$cid"/>
+            <xsl:text>: </xsl:text>
+          </xsl:if>
           <xsl:apply-templates select="node()"/>
           <xsl:if test="@source"> --<xsl:value-of select="@source"/></xsl:if>
           <xsl:text>]</xsl:text>
