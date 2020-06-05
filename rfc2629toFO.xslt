@@ -3157,7 +3157,11 @@
 
 <!-- cref support -->
 
-<xsl:template match="cref">
+<xsl:template match="cref[@display='false']">
+  <!-- hidden -->
+</xsl:template>
+
+<xsl:template match="cref[not(@display) or @display!='false']">
   <xsl:if test="$xml2rfc-comments!='no'">
     <xsl:variable name="cid">
       <xsl:call-template name="get-comment-name"/>
