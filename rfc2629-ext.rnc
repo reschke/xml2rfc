@@ -516,7 +516,14 @@ v3_aside =
   element aside {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
-    (t
+    (artwork
+      | figure
+      | iref
+      | t
+      | v3_blockquote
+      | v3_dl
+      | v3_ol
+      | v3_table
       | v3_ul)*
   }
 

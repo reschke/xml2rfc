@@ -3388,7 +3388,14 @@ attlist.xref &amp;=
   element aside {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
-    (t
+    (artwork
+      | figure
+      | iref
+      | t
+      | <x:ref>v3_blockquote</x:ref>
+      | <x:ref>v3_dl</x:ref>
+      | <x:ref>v3_ol</x:ref>
+      | <x:ref>v3_table</x:ref>
       | <x:ref>v3_ul</x:ref>)*
   }
 
