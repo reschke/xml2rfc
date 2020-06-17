@@ -7091,10 +7091,6 @@
           <xsl:copy-of select="@*|node()" />
         </xsl:element>
       </xsl:when>
-      <!-- workaround for opera, remove when Opera > 9.0.x comes out -->
-      <xsl:when test="self::text()">
-        <xsl:value-of select="."/>
-      </xsl:when>
       <xsl:otherwise>
         <xsl:copy-of select="." />
       </xsl:otherwise>
@@ -11763,11 +11759,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1294 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1294 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1295 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1295 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/06/17 13:10:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/06/17 13:10:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/06/17 13:29:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/06/17 13:29:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
