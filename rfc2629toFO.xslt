@@ -35,7 +35,7 @@
     xmlns:exslt="http://exslt.org/common"
     xmlns:fo="http://www.w3.org/1999/XSL/Format"
     xmlns:msxsl="urn:schemas-microsoft-com:xslt"
-    xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
+    xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rfc2629.xslt"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:svg="http://www.w3.org/2000/svg"
     xmlns:x="http://purl.org/net/xml2rfc/ext"
