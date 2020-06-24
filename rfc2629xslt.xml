@@ -2890,6 +2890,17 @@ namespace xi = "http://www.w3.org/2001/XInclude"
 <em># Include rfc2629bis RNC grammar</em>
 include "rfc2629.rnc" {
   
+  <em># Redefine &lt;address> to allow multiple email addresses</em>
+  address =
+    element address {
+      attlist.address,
+      postal?,
+      phone?,
+      facsimile?,
+      email*,
+      uri?
+  }
+
   <em># Redefine &lt;annotation> to allow more markup</em>
   annotation =
     element annotation {
