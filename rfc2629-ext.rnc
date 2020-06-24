@@ -623,6 +623,7 @@ v3_dd =
       | artwork
       | figure
       | t
+      | v3_br 
       | v3_dl 
       | v3_ol 
       | v3_table 
@@ -865,6 +866,7 @@ v3_td =
       )+
       | (TEXT
          | v3_bcp14
+         | v3_br
          | cref
          | v3_em
          | eref
