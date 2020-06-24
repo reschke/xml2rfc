@@ -3503,7 +3503,6 @@ attlist.xref &amp;=
       | artwork
       | figure
       | t
-      | <x:ref>v3_br</x:ref> 
       | <x:ref>v3_dl</x:ref> 
       | <x:ref>v3_ol</x:ref> 
       | <x:ref>v3_table</x:ref> 
@@ -3514,6 +3513,7 @@ attlist.xref &amp;=
       | eref
       | iref
       | xref
+      | <x:ref>v3_br</x:ref> 
       | <x:ref>v3_em</x:ref>
       | <x:ref>v3_tt</x:ref>
       | <x:ref>v3_strong</x:ref>
