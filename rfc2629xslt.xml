@@ -443,12 +443,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>"yes"</c>
   <c>Decides whether the HTML transformation should generate META tags according <xref target="rfc2731.properties"/>.</c>
 
-  <c>rfc-ext</c>
-  <c>xml2rfc-backend<iref item="xml2rfc-backend PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xml2rfc-backend"/></c>
-  <c>xml2rfc-ext-xml2rfc-backend<iref item="xml2rfc-ext-xml2rfc-backend parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-xml2rfc-backend"/></c>
-  <c>based on document date</c>
-  <c>Used in <tt>clean-for-DTD.xslt</tt> (see <xref target="clean-for-dtd"/>).</c>
-
 </texttable>
 
 <!--
@@ -463,6 +457,22 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dd></dd>
     </dl>
      -->
+
+  <section title="xml2rfc-backend - Select xml2rfc Target Version">
+    <iref item="xml2rfc-backend PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xml2rfc-backend"/>
+    <iref item="xml2rfc-ext-xml2rfc-backend parameter"/><iref item="Parameters" subitem="xml2rfc-ext-xml2rfc-backend"/>
+    
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>xml2rfc-backend</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-xml2rfc-backend</dd>
+      <dt>based on document date</dt>
+      <dd>Used in <tt>clean-for-DTD.xslt</tt> (see <xref target="clean-for-dtd"/>).</dd>
+    </dl>
+  </section>
 
   <section title="xref-with-text-generate - Default Handling of &lt;xref> with Text Content">
     <iref item="xref-with-text-generate PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xref-with-text-generate"/>
