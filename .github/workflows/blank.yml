@@ -19,9 +19,15 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Runs a single command using the runners shell
     - name: Run a one-line script
       run: make -f derived.mk
+
+    - name: Push generated files
+      run: |
+        git status --short rfc2629-no-doctype.xslt | fgrep -s " M " || exit 0
+        git config --global user.name "Julian's HTML Bot"
+        git config --global user.email "julian.reschke@gmx.de"
+        git commit -m "generated files" rfc2629-no-doctype.xslt
+        git push
