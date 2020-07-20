@@ -49,7 +49,7 @@
                 exclude-result-prefixes="date ed exslt fo msxsl myns rdf saxon saxon-old svg x xi xhtml"
                 >
 
-<xsl:strip-space elements="abstract address artset author back boilerplate dl figure front list middle note ol postal reference references rfc section table tbody thead tr texttable ul svg:svg"/>
+<xsl:strip-space elements="abstract address artset aside author back boilerplate dl figure front list middle note ol postal reference references rfc section table tbody thead tr texttable ul svg:svg"/>
 
 <xsl:output method="html" encoding="utf-8" doctype-system="about:legacy-compat" indent="no"/>
 
@@ -11759,11 +11759,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1296 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1296 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1297 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1297 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/07/01 12:00:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/07/01 12:00:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/07/20 12:48:21 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/07/20 12:48:21 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
