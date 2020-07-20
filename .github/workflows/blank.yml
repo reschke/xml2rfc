@@ -21,10 +21,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Run a one-line script
+    - name: Generate derived files
       run: make -f derived.mk
 
-    - name: Push generated files
+    - name: Push derived files
       run: |
         git status --short rfc2629-no-doctype.xslt | fgrep -s " M " || exit 0
         git config --global user.name "Julian's HTML Bot"
