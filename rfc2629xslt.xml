@@ -458,6 +458,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
      -->
 
+  <section title="include-generator - Switch for Disabling Generator Information in Output">
+    <iref item="include-generator PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-generator"/>
+    <iref item="xml2rfc-ext-include-generator"/> <iref item="Parameters" subitem="xml2rfc-ext-include-generator"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>include-generator</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-include-generator</dd>
+      <dt>default</dt>
+      <dd>'yes'</dd>
+    </dl>
+    <t>
+      Set to 'no' in order to disable inclusion of generator version information.
+    </t>
+  </section>
+
   <section title="ucd-file - Filename of Unicode Database">
     <iref item="ucd-file PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="ucd-file"/>
     <iref item="xml2rfc-ext-ucd-file"/> <iref item="Parameters" subitem="xml2rfc-ext-ucd-file"/>
