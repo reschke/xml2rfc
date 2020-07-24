@@ -1423,13 +1423,44 @@
   <!--<xsl:message> Orig: "<xsl:value-of select="."/>"</xsl:message>
   <xsl:message>Start: "<xsl:value-of select="$starts-with-ws"/>"</xsl:message>
   <xsl:message>  End: "<xsl:value-of select="$ends-with-ws"/>"</xsl:message> -->
-  <xsl:variable name="before" select="preceding-sibling::*[1]"/>
-  <xsl:if test="$starts-with-ws and (preceding-sibling::node() | parent::ed:ins | parent::ed:del) and not($before/self::x:anchor-alias)">
-    <xsl:text> </xsl:text>
+  <xsl:if test="$starts-with-ws">
+    <xsl:variable name="t">
+      <xsl:for-each select="preceding-sibling::node()">
+        <xsl:choose>
+          <xsl:when test="self::text()">
+            <xsl:value-of select="."/>
+          </xsl:when>
+          <xsl:when test="self::*">
+            <xsl:apply-templates select="."/>
+          </xsl:when>
+          <xsl:otherwise/>
+        </xsl:choose>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:variable name="text-before" select="normalize-space($t)"/>
+    <xsl:if test="$text-before!=''">
+      <xsl:text> </xsl:text>
+    </xsl:if>
   </xsl:if>
   <xsl:value-of select="$normalized"/>
-  <xsl:if test="$ends-with-ws and $normalized!='' and (following-sibling::node() | parent::ed:ins | parent::ed:del)">
-    <xsl:text> </xsl:text>
+  <xsl:if test="$ends-with-ws and $normalized!=''">
+    <xsl:variable name="t">
+      <xsl:for-each select="following-sibling::node()">
+        <xsl:choose>
+          <xsl:when test="self::text()">
+            <xsl:value-of select="."/>
+          </xsl:when>
+          <xsl:when test="self::*">
+            <xsl:apply-templates select="."/>
+          </xsl:when>
+          <xsl:otherwise/>
+        </xsl:choose>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:variable name="text-after" select="normalize-space($t)"/>
+    <xsl:if test="$text-after!='' and substring($t,1,1)!=' '">
+      <xsl:text> </xsl:text>
+    </xsl:if>
   </xsl:if>
 </xsl:template>
 
@@ -11771,11 +11802,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1299 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1299 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1300 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1300 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/07/23 12:40:22 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/07/23 12:40:22 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/07/24 17:37:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/07/24 17:37:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">

@@ -1989,6 +1989,23 @@
   </xsl:for-each>
 </xsl:template>
 
+<xsl:template match="text()[not(ancestor::artwork or ancestor::sourcecode)]">
+  <xsl:variable name="ws" select="'&#9;&#10;&#13;&#32;'"/>
+  <xsl:variable name="starts-with-ws" select="'' = translate(substring(.,1,1),$ws,'')"/>
+  <xsl:variable name="ends-with-ws" select="'' = translate(substring(.,string-length(.),1),$ws,'')"/>
+  <xsl:variable name="normalized" select="normalize-space(.)"/>
+  <!--<xsl:message> Orig: "<xsl:value-of select="."/>"</xsl:message>
+  <xsl:message>Start: "<xsl:value-of select="$starts-with-ws"/>"</xsl:message>
+  <xsl:message>  End: "<xsl:value-of select="$ends-with-ws"/>"</xsl:message> -->
+  <xsl:variable name="before" select="preceding-sibling::*[1]"/>
+  <xsl:if test="$starts-with-ws and (preceding-sibling::node() | parent::ed:ins | parent::ed:del) and not($before/self::x:anchor-alias)">
+    <xsl:text> </xsl:text>
+  </xsl:if>
+  <xsl:value-of select="$normalized"/>
+  <xsl:if test="$ends-with-ws and $normalized!='' and (following-sibling::node() | parent::ed:ins | parent::ed:del)">
+    <xsl:text> </xsl:text>
+  </xsl:if>
+</xsl:template>
 
 <xsl:template match="text()" mode="simple-html">
   <xsl:apply-templates select="." />
