@@ -1710,7 +1710,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="cityarea" primary="true"/>
   <iref item="cityarea V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="4.2.7"/>.
 </t>
 </section>
 
@@ -1767,7 +1767,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="extaddr" primary="true"/>
   <iref item="extaddr V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="4.2.7"/>.
 </t>
 </section>
 
@@ -1808,7 +1808,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="pobox" primary="true"/>
   <iref item="pobox V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="4.2.7"/>.
 </t>
 </section>
 
@@ -1851,7 +1851,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="sortingcode" primary="true"/>
   <iref item="sortingcode V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="4.2.7"/>.
 </t>
 </section>
 
@@ -2877,9 +2877,9 @@ done
   <front>
     <title>Implementation notes for RFC7991, "The 'xml2rfc' Version 3 Vocabulary"</title>
     <author initials='H' surname='Levkowetz' fullname='Henrik Levkowetz'/>
-    <date month='October' day='15' year='2019' />
+    <date month='July' day='21' year='2020' />
   </front>
-  <seriesInfo name='Internet-Draft' value='draft-levkowetz-xml2rfc-v3-implementation-notes-10' />
+  <seriesInfo name='Internet-Draft' value='draft-levkowetz-xml2rfc-v3-implementation-notes-11' />
 </reference>
 
 </references>
