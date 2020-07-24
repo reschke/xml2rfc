@@ -458,6 +458,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
      -->
 
+  <section title="ucd-file - Filename of Unicode Database">
+    <iref item="ucd-file PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="ucd-file"/>
+    <iref item="xml2rfc-ext-ucd-file"/> <iref item="Parameters" subitem="xml2rfc-ext-ucd-file"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>ucd-file</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-ucd-file</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      Specifies an external resource containing Unicode character database information, as described in <xref target="ext.element.u-map"/>.
+    </t>
+  </section>
+
   <section title="xml2rfc-backend - Select xml2rfc Target Version">
     <iref item="xml2rfc-backend PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xml2rfc-backend"/>
     <iref item="xml2rfc-ext-xml2rfc-backend parameter"/><iref item="Parameters" subitem="xml2rfc-ext-xml2rfc-backend"/>
@@ -491,26 +510,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
     <t>
       Determines whether &lt;xref> with text content generates additional text as in traditional text output ("text"), or just generates a link around the text ("nothing"). Note that the default might change in the future in order to achieve compatibility with other formatters.
     </t>
-  </section>
-  
-  <section title="ucd-file - Filename of Unicode Database">
-    <iref item="ucd-file PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="ucd-file"/>
-    <iref item="xml2rfc-ext-ucd-file"/> <iref item="Parameters" subitem="xml2rfc-ext-ucd-file"/>
-
-    <dl newline="true">
-      <dt>PI target</dt>
-      <dd>rfc-ext</dd>
-      <dt>PI pseudo-attribute</dt>
-      <dd>ucd-file</dd>
-      <dt>XSLT parameter name</dt>
-      <dd>xml2rfc-ext-ucd-file</dd>
-      <dt>default</dt>
-      <dd>none</dd>
-    </dl>
-    <t>
-      Specifies an external resource containing Unicode character database information, as described in <xref target="ext.element.u-map"/>.
-    </t>
-    
   </section>
 
 </section>
