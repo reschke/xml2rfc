@@ -451,9 +451,9 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
      -->
 
-  <section title="html-pretty-print - Switch for Enabling Pretty Printing of Code">
+  <section title="html-pretty-print - Switch for Enabling Pretty Printing of Code" anchor="xml2rfc-ext-html-pretty-print">
     <iref item="html-pretty-print PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="html-pretty-print"/>
-    <iref item="xml2rfc-ext-html-pretty-print"/> <iref item="Parameters" subitem="xml2rfc-ext-html-pretty-print"/>
+    <iref item="xml2rfc-ext-html-pretty-print parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-html-pretty-print"/>
 
     <dl newline="true">
       <dt>PI target</dt>
@@ -471,9 +471,9 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </t>
   </section>
 
-  <section title="include-generator - Switch for Disabling Generator Information in Output">
+  <section title="include-generator - Switch for Disabling Generator Information in Output" anchor="xml2rfc-ext-include-generator">
     <iref item="include-generator PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-generator"/>
-    <iref item="xml2rfc-ext-include-generator"/> <iref item="Parameters" subitem="xml2rfc-ext-include-generator"/>
+    <iref item="xml2rfc-ext-include-generator parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-include-generator"/>
 
     <dl newline="true">
       <dt>PI target</dt>
@@ -490,9 +490,9 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </t>
   </section>
 
-  <section title="ucd-file - Filename of Unicode Database">
+  <section title="ucd-file - Filename of Unicode Database" anchor="xml2rfc-ext-ucd-file">
     <iref item="ucd-file PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="ucd-file"/>
-    <iref item="xml2rfc-ext-ucd-file"/> <iref item="Parameters" subitem="xml2rfc-ext-ucd-file"/>
+    <iref item="xml2rfc-ext-ucd-file parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-ucd-file"/>
 
     <dl newline="true">
       <dt>PI target</dt>
@@ -509,7 +509,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </t>
   </section>
 
-  <section title="xml2rfc-backend - Select xml2rfc Target Version">
+  <section title="xml2rfc-backend - Select xml2rfc Target Version" anchor="xml2rfc-ext-xml2rfc-backend">
     <iref item="xml2rfc-backend PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xml2rfc-backend"/>
     <iref item="xml2rfc-ext-xml2rfc-backend parameter"/><iref item="Parameters" subitem="xml2rfc-ext-xml2rfc-backend"/>
     
@@ -525,9 +525,9 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
   </section>
 
-  <section title="xref-with-text-generate - Default Handling of &lt;xref> with Text Content">
+  <section title="xref-with-text-generate - Default Handling of &lt;xref> with Text Content" anchor="xml2rfc-ext-xref-with-text-generate">
     <iref item="xref-with-text-generate PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xref-with-text-generate"/>
-    <iref item="xml2rfc-ext-xref-with-text-generate"/> <iref item="Parameters" subitem="xml2rfc-ext-xref-with-text-generate"/>
+    <iref item="xml2rfc-ext-xref-with-text-generate parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-xref-with-text-generate"/>
 
     <dl newline="true">
       <dt>PI target</dt>
