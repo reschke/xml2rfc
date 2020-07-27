@@ -352,13 +352,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>Can be used to specify an errata file; output will link to individual errata when possible. See <xref target="rfc-editor.errata"/></c>
 
   <c>rfc-ext</c>
-  <c>html-pretty-print<iref item="html-pretty-print PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="html-pretty-print"/></c>
-  <c>xml2rfc-ext-html-pretty-print<iref item="xml2rfc-ext-html-pretty-print"/> <iref item="Parameters" subitem="xml2rfc-ext-html-pretty-print"/></c>
-  <c></c>
-  <c>Used to specify a JS-based code pretty-printer; the value is the CSS class name to insert, followed by a blank space, followed by the URI of the JS library. For instance:
-  "prettyprint https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"</c>
-
-  <c>rfc-ext</c>
   <c>include-index<iref item="include-index PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-index"/></c>
   <c>xml2rfc-ext-include-index<iref item="xml2rfc-ext-include-index parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-include-index"/></c>
   <c>"yes"</c>
@@ -457,6 +450,26 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dd></dd>
     </dl>
      -->
+
+  <section title="html-pretty-print - Switch for Enabling Pretty Printing of Code">
+    <iref item="html-pretty-print PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="html-pretty-print"/>
+    <iref item="xml2rfc-ext-html-pretty-print"/> <iref item="Parameters" subitem="xml2rfc-ext-html-pretty-print"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>html-pretty-print</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-html-pretty-print</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      Used to specify a JS-based code pretty-printer; the value is the CSS class name to insert, followed by a blank space, followed by the URI of the JS library. For instance:
+      "prettyprint https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"
+    </t>
+  </section>
 
   <section title="include-generator - Switch for Disabling Generator Information in Output">
     <iref item="include-generator PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-generator"/>
