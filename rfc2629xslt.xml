@@ -520,9 +520,10 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dd>xml2rfc-backend</dd>
       <dt>XSLT parameter name</dt>
       <dd>xml2rfc-ext-xml2rfc-backend</dd>
-      <dt>based on document date</dt>
-      <dd>Used in <tt>clean-for-DTD.xslt</tt> (see <xref target="clean-for-dtd"/>).</dd>
+      <dt>default</dt>
+      <dd>based on document date</dd>
     </dl>
+    <t>Used in <tt>clean-for-DTD.xslt</tt> (see <xref target="clean-for-dtd"/>).</t>
   </section>
 
   <section title="xref-with-text-generate - Default Handling of &lt;xref> with Text Content" anchor="xml2rfc-ext-xref-with-text-generate">
