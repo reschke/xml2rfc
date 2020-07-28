@@ -8246,6 +8246,10 @@ table.v3 tr {
 table.v3 th {
   background-color: #e9e9e9;
   vertical-align: top;
+  padding: 0.25em 0.5em;
+}
+table.v3 td {
+  padding: 0.25em 0.5em;
 }
 table.v3 tr:nth-child(2n) > td {
   background-color: #f5f5f5;
@@ -11801,11 +11805,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1300 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1300 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1301 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1301 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/07/24 17:37:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/07/24 17:37:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/07/28 13:09:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/07/28 13:09:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
