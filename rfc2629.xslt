@@ -8574,7 +8574,15 @@ dd, li, p {
   color: var(--col-fg);
   font-size: 115%;
   text-align: center;
-}</xsl:if>
+}</xsl:if><xsl:if test="$prettyprint-class='prettyprint' and contains($prettyprint-script,'prettify') and not(contains($prettyprint-script,'skin='))">
+  pre.prettyprint .pln { color: #000; }
+  pre.prettyprint .str, pre.prettyprint .atv { color: #080; }
+  pre.prettyprint .kwd, pre.prettyprint .tag { color: #008; }
+  pre.prettyprint .com { color: #800; }
+  pre.prettyprint .typ, pre.prettyprint .atn, pre.prettyprint .dec, pre.prettyprint .var { color: #606; }
+  pre.prettyprint .lit { color: #066; }
+  pre.prettyprint .pun, pre.prettyprint .opn, pre.prettyprint .clo { color: #660; }
+</xsl:if>
 
 @media screen {
   pre.text, pre.text2, pre.drawing {
@@ -11826,11 +11834,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1303 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1303 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1304 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1304 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/07/29 18:59:31 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/07/29 18:59:31 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/08/01 06:28:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/08/01 06:28:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
