@@ -391,6 +391,14 @@
   </xsl:if>
 </xsl:param>
 
+<xsl:param name="xml2rfc-ext-dark-mode">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'dark-mode'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <xsl:template name="ff-list">
   <xsl:param name="s"/>
   <xsl:choose>
@@ -8714,6 +8722,37 @@ dd, li, p {
       content: normal;
     }
 }
+<xsl:if test="$xml2rfc-ext-dark-mode!='no'">
+@media (prefers-color-scheme: dark) {
+  :root {
+    --col-bg: black;
+    --col-bg-error: red;
+    --col-bg-highlight: #9e9e20;
+    --col-bg-highligh2: lime;
+    --col-bg-light: gray;
+    --col-bg-pre: #202000;
+    --col-bg-pre1: #080808;
+    --col-bg-pre2: #101010;
+    --col-bg-th: #303030;
+    --col-bg-tr: #202020;
+    --col-fg: white;
+    --col-fg-del: red;
+    --col-fg-error: red;
+    --col-fg-ins: green;
+    --col-fg-light: gray;
+    --col-fg-link: lightblue;
+    --col-fg-title: green;
+  }
+  
+  pre.prettyprint .pln { color: #fff; }
+  pre.prettyprint .str, pre.prettyprint .atv { color: #8f8; }
+  pre.prettyprint .kwd, pre.prettyprint .tag { color: #88f; }
+  pre.prettyprint .com { color: #f88; }
+  pre.prettyprint .typ, pre.prettyprint .atn, pre.prettyprint .dec, pre.prettyprint .var { color: #f8f; }
+  pre.prettyprint .lit { color: #8ff; }
+  pre.prettyprint .pun, pre.prettyprint .opn, pre.prettyprint .clo { color: #ff8; }
+}
+</xsl:if>
 </style>
 </xsl:template>
 
@@ -11864,11 +11903,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1305 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1305 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1306 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1306 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/08/04 18:27:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/08/04 18:27:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/08/14 17:35:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/08/14 17:35:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
