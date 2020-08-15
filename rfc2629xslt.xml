@@ -451,6 +451,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
      -->
 
+  <section title="dark-mode - Switch for Enabling 'Dark Mode' Support" anchor="xml2rfc-ext-html-dark-mode">
+    <iref item="dark-mode PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="dark-mode"/>
+    <iref item="xml2rfc-ext-dark-mode parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-dark-mode"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>dark-mode</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-dark-mode</dd>
+      <dt>default</dt>
+      <dd>'no'</dd>
+    </dl>
+    <t>
+      Set to 'auto' to enable "dark mode" CSS support.
+    </t>
+  </section>
+
   <section title="html-pretty-print - Switch for Enabling Pretty Printing of Code" anchor="xml2rfc-ext-html-pretty-print">
     <iref item="html-pretty-print PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="html-pretty-print"/>
     <iref item="xml2rfc-ext-html-pretty-print parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-html-pretty-print"/>
