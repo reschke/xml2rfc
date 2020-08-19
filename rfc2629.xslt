@@ -6128,13 +6128,18 @@
   </xsl:variable>
   <xsl:variable name="s">
     <xsl:choose>
-      <xsl:when test="$pparent/self::ol and $pparent/@start">
-        <xsl:value-of select="$pparent/@start"/>
-      </xsl:when>
       <xsl:when test="$pparent/self::ol and $pparent/@group">
         <xsl:call-template name="ol-start">
           <xsl:with-param name="node" select="$pparent"/>
         </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="$pparent/self::list and $pparent/@counter">
+        <xsl:for-each select="$pparent">
+          <xsl:value-of select="1 + count(preceding::list[@counter=$pparent/@counter or (not(@counter) and @style=concat('format ',$pparent/@counter))]/*)"/>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:when test="$pparent/self::ol and $pparent/@start">
+        <xsl:value-of select="$pparent/@start"/>
       </xsl:when>
       <xsl:otherwise>1</xsl:otherwise>
     </xsl:choose>
@@ -11903,11 +11908,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1307 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1307 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1308 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1308 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/08/19 13:33:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/08/19 13:33:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/08/19 14:21:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/08/19 14:21:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
