@@ -1227,7 +1227,7 @@
 </xsl:template>
 
 <!-- defaults for <eref> brackets -->
-<xsl:template match="eref[not(node())]" mode="cleanup">
+<xsl:template match="eref[not(node()) and not(ancestor::cref)]" mode="cleanup">
   <eref>
     <xsl:copy-of select="@target"/>
     <xsl:choose>
@@ -1255,16 +1255,39 @@
 
 <!-- markup inside cref -->
 <xsl:template match="cref//eref" mode="cleanup">
-  <xsl:text>&lt;</xsl:text>
-  <xsl:value-of select="@target"/>
-  <xsl:text>&gt;</xsl:text>
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <xsl:copy-of select="."/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>&lt;</xsl:text>
+      <xsl:value-of select="@target"/>
+      <xsl:text>&gt;</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
-<xsl:template match="cref//xref|cref//x:dfn|cref//x:ref" mode="cleanup" priority="9">
+<xsl:template match="cref//x:dfn|cref//x:ref" mode="cleanup" priority="9">
   <xsl:variable name="text">
     <xsl:apply-templates select="."/>
   </xsl:variable>
   <xsl:value-of select="$text"/>
+</xsl:template>
+
+<xsl:template match="cref//xref" mode="cleanup" priority="9">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <xsl:copy>
+        <xsl:apply-templates select="@*|*" mode="cleanup"/>
+      </xsl:copy>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="text">
+        <xsl:apply-templates select="."/>
+      </xsl:variable>
+      <xsl:value-of select="$text"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- annotations -->
