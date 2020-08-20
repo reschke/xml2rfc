@@ -3621,11 +3621,9 @@
   <xsl:variable name="pos">
     <xsl:choose>
       <xsl:when test="$list/@counter">
-        <xsl:number level="any" count="list[@counter=$list/@counter or (not(@counter) and @style=concat('format ',$list/@counter))]/t" />
+        <xsl:number level="any" count="list[@counter=$list/@counter]/*" />
       </xsl:when>
-      <xsl:otherwise>
-        <xsl:number level="any" count="list[concat('format ',@counter)=$list/@style or (not(@counter) and @style=$list/@style)]/t" />
-      </xsl:otherwise>
+      <xsl:otherwise><xsl:value-of select="position()"/></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <dt>
@@ -3678,11 +3676,9 @@
   <xsl:variable name="pos">
     <xsl:choose>
       <xsl:when test="$list/@counter">
-        <xsl:number level="any" count="list[@counter=$list/@counter or (not(@counter) and @style=concat('format ',$list/@counter))]/t" />
+        <xsl:number level="any" count="list[@counter=$list/@counter]/*" />
       </xsl:when>
-      <xsl:otherwise>
-        <xsl:number level="any" count="list[concat('format ',@counter)=$list/@style or (not(@counter) and @style=$list/@style)]/t" />
-      </xsl:otherwise>
+      <xsl:otherwise><xsl:value-of select="position()"/></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <dt>
@@ -6135,7 +6131,7 @@
       </xsl:when>
       <xsl:when test="$pparent/self::list and $pparent/@counter">
         <xsl:for-each select="$pparent">
-          <xsl:value-of select="1 + count(preceding::list[@counter=$pparent/@counter or (not(@counter) and @style=concat('format ',$pparent/@counter))]/*)"/>
+          <xsl:value-of select="1 + count(preceding::list[@counter=$pparent/@counter]/*)"/>
         </xsl:for-each>
       </xsl:when>
       <xsl:when test="$pparent/self::ol and $pparent/@start">
@@ -11908,11 +11904,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1308 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1308 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1309 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1309 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/08/19 14:21:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/08/19 14:21:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/08/20 09:37:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/08/20 09:37:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
