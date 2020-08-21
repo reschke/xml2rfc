@@ -412,12 +412,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>"https://www.rfc-editor.org/errata/rfc{rfc}"</c>
   <c>URI template for all RFC Errata for a given RFC ("rfc" is the RFC number).</c>
 
-  <c>rfc-ext</c>
-  <c>rfc-erratum-uri<iref item="rfc-erratum-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-erratum-uri"/></c>
-  <c>xml2rfc-ext-rfc-erratum-uri<iref item="xml2rfc-ext-rfc-erratum-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-erratum-uri"/></c>
-  <c>"https://www.rfc-editor.org/errata/eid{eid}"</c>
-  <c>URI template for a specific RFC erratum ("eid" is the "errata id").</c>
-
 
 </texttable>
 
@@ -492,6 +486,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </t>
   </section>
 
+  <section title="rfc-erratum-uri - URI Template for RFC Errata" anchor="xml2rfc-ext-rfc-erratum-uri">
+    <iref item="rfc-erratum-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-erratum-uri"/>
+    <iref item="xml2rfc-ext-rfc-erratum-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-erratum-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>rfc-erratum-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>rfc-erratum-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.rfc-editor.org/errata/eid{eid}"</dd>
+    </dl>
+    <t>
+      URI template for a specific RFC erratum ("eid" is the "errata id").
+    </t>
+  </section>
+
   <section title="rfc-uri - URI Template for HTML Version of RFCs" anchor="xml2rfc-ext-rfc-uri">
     <iref item="rfc-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-uri"/>
     <iref item="xml2rfc-ext-rfc-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-uri"/>
@@ -504,7 +517,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>XSLT parameter name</dt>
       <dd>xml2rfc-ext-rfc-uri</dd>
       <dt>default</dt>
-      <dd>https://www.rfc-editor.org/rfc/rfc{rfc}.html" (previously "https://tools.ietf.org/html/rfc{rfc}")</dd>
+      <dd>"https://www.rfc-editor.org/rfc/rfc{rfc}.html" (previously "https://tools.ietf.org/html/rfc{rfc}")</dd>
     </dl>
     <t>
       URI Template for HTML Version of RFCs.
