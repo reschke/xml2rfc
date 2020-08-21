@@ -430,12 +430,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c></c>
   <c>When set to "no", do not add trailing dots to section numbers (this was the preference in the distant past).</c>
 
-  <c>rfc-ext</c>
-  <c>support-rfc2731<iref item="support-rfc2731 PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="support-rfc2731"/></c>
-  <c>xml2rfc-ext-support-rfc2731<iref item="xml2rfc-ext-support-rfc2731 parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-support-rfc2731"/></c>
-  <c>"yes"</c>
-  <c>Decides whether the HTML transformation should generate META tags according <xref target="rfc2731.properties"/>.</c>
-
 </texttable>
 
 <!--
@@ -506,6 +500,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
     <t>
       Set to 'no' in order to disable inclusion of generator version information.
+    </t>
+  </section>
+
+  <section title="support-rfc2731 - Support RFC 2731 Metadata" anchor="xml2rfc-ext-support-rfc2731">
+    <iref item="support-rfc2731 PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="support-rfc2731"/>
+    <iref item="xml2rfc-ext-support-rfc2731 parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-support-rfc2731"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>support-rfc2731</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-support-rfc2731</dd>
+      <dt>default</dt>
+      <dd>"yes"</dd>
+    </dl>
+    <t>
+      Decides whether the HTML transformation should generate META tags according <xref target="rfc2731.properties"/>.
     </t>
   </section>
 
