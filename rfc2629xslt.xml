@@ -406,11 +406,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>"no"</c>
   <c>May be used to enable parsing of XML content in figures (MSXML only).</c>
 
-  <c>rfc-ext</c>
-  <c>rfc-errata-uri<iref item="rfc-errata-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-errata-uri"/></c>
-  <c>xml2rfc-ext-rfc-errata-uri<iref item="xml2rfc-ext-rfc-errata-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-errata-uri"/></c>
-  <c>"https://www.rfc-editor.org/errata/rfc{rfc}"</c>
-  <c>URI template for all RFC Errata for a given RFC ("rfc" is the RFC number).</c>
 
 
 </texttable>
@@ -486,7 +481,26 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </t>
   </section>
 
-  <section title="rfc-erratum-uri - URI Template for RFC Errata" anchor="xml2rfc-ext-rfc-erratum-uri">
+  <section title="rfc-errata-uri - URI Template for RFC Errata" anchor="xml2rfc-ext-rfc-errata-uri">
+    <iref item="rfc-errata-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-errata-uri"/>
+    <iref item="xml2rfc-ext-rfc-errata-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-erratam-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>rfc-errata-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>rfc-errata-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.rfc-editor.org/errata/rfc{rfc}"</dd>
+    </dl>
+    <t>
+      URI template for all RFC Errata for a given RFC ("rfc" is the RFC number).
+    </t>
+  </section>
+
+  <section title="rfc-erratum-uri - URI Template for a specific RFC Erratum" anchor="xml2rfc-ext-rfc-erratum-uri">
     <iref item="rfc-erratum-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-erratum-uri"/>
     <iref item="xml2rfc-ext-rfc-erratum-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-erratum-uri"/>
 
