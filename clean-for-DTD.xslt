@@ -585,9 +585,7 @@
             <xsl:when test="self::*">
               <xsl:apply-templates select="node()" mode="cleanup"/>
             </xsl:when>
-            <xsl:when test="self::processing-instruction()">
-              <xsl:apply-templates select="node()" mode="cleanup"/>
-            </xsl:when>
+            <xsl:when test="self::processing-instruction()"/>
             <xsl:otherwise>
               <xsl:value-of select="normalize-space(.)"/>
             </xsl:otherwise>
