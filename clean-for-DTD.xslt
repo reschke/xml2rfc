@@ -1228,7 +1228,7 @@
 </xsl:template>
 
 <!-- defaults for <eref> brackets -->
-<xsl:template match="eref[not(node()) and not(ancestor::cref)]" mode="cleanup">
+<xsl:template match="eref[not(*|text()) and not(ancestor::cref)]" mode="cleanup">
   <eref>
     <xsl:copy-of select="@target"/>
     <xsl:choose>
