@@ -127,10 +127,10 @@
       <xsl:copy/>
     </xsl:when>
     <xsl:when test="substring($include, string-length($include) - 3) != '.xml'">
-      <xsl:copy-of select="document(concat($include,'.xml'))"/>
+      <xsl:apply-templates select="document(concat($include,'.xml'))" mode="cleanup"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:copy-of select="document($include)"/>
+      <xsl:apply-templates select="document($include)" mode="cleanup"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -1126,11 +1126,7 @@
       <xsl:copy-of select="@anchor"/>
     </xsl:if>
     <!-- move irefs up -->
-    <xsl:for-each select="iref">
-      <iref>
-        <xsl:copy-of select="@*"/>
-      </iref>
-    </xsl:for-each>
+    <xsl:apply-templates select="iref" mode="cleanup"/>
     <xsl:call-template name="insert-markup"/>
   </figure>
 </xsl:template>
@@ -2207,7 +2203,7 @@
     <xsl:for-each select="tbody/tr/*">
       <c>
         <xsl:if test="position()=1">
-          <xsl:copy-of select="../../../iref"/>
+          <xsl:apply-templates select="../../../iref" mode="cleanup"/>
         </xsl:if>
         <xsl:choose>
           <xsl:when test="t|sourcecode|ol|dl|uo">
