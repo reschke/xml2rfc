@@ -275,12 +275,12 @@
     </xsl:for-each>
     <xsl:choose>
       <xsl:when test="svg:svg">
-        <xsl:if test="*[not(self::svg:svg)]">
+        <xsl:if test="*[not(self::svg:svg or self::pi:*)]">
           <xsl:message terminate="yes">FATAL: can't have non-svg child elements in artwork when one svg child is present.</xsl:message>
         </xsl:if>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:if test="*">
+        <xsl:if test="*[not(self::pi:*)]">
           <xsl:message terminate="yes">FATAL: can't have child elements in artwork when @type='svg' and @src is present.</xsl:message>
         </xsl:if>
       </xsl:otherwise>
@@ -1446,11 +1446,11 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-sanitizesvg"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="*[ancestor::svg:svg]" mode="prep-sanitizesvg">
+<xsl:template match="*[ancestor::svg:svg][not(self::pi:*)]" mode="prep-sanitizesvg">
   <xsl:message>ERROR: <xsl:value-of select="node-name(.)"/> not allowed in SVG content (dropped)</xsl:message>
 </xsl:template>
 
-<xsl:template match="*[ancestor::svg:svg]/@*" mode="prep-sanitizesvg">
+<xsl:template match="*[ancestor::svg:svg][not(self::pi:*)]/@*" mode="prep-sanitizesvg">
   <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/> not allowed in SVG content (dropped)</xsl:message>
 </xsl:template>
 
