@@ -81,6 +81,8 @@
   </xsl:copy>
 </xsl:template>
 
+<!-- remove our own PIs which may have been inserted due to line numbering -->
+<xsl:template match="processing-instruction('rfc-ext')"/>
 
 <!-- rewrite document element -->
 <xsl:template match="/">
