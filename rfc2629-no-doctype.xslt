@@ -2765,14 +2765,14 @@
   </xsl:if>
 </xsl:template>
 
-<xsl:template match="eref[node()]">
+<xsl:template match="eref[*|text()]">
   <xsl:call-template name="check-absolute-uri"/>
   <a href="{@target}">
     <xsl:apply-templates/>
   </a>
 </xsl:template>
 
-<xsl:template match="eref[not(node())]">
+<xsl:template match="eref[not(*|text())]">
   <xsl:call-template name="check-absolute-uri"/>
   <xsl:variable name="in-angles" select="(not(/rfc/@version >= 3) and not(@brackets='none')) or @brackets='angle'"/>
   <xsl:if test="$in-angles"><xsl:text>&lt;</xsl:text></xsl:if>
@@ -11903,11 +11903,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1309 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1309 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1310 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1310 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/08/20 09:37:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/08/20 09:37:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/08/26 13:04:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/08/26 13:04:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
