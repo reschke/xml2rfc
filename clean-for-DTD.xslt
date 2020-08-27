@@ -1261,7 +1261,9 @@
 <xsl:template match="cref//eref" mode="cleanup">
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
-      <xsl:copy-of select="."/>
+      <xsl:copy>
+        <xsl:apply-templates select="node()|@*" mode="cleanup"/>
+      </xsl:copy>
     </xsl:when>
     <xsl:otherwise>
       <xsl:text>&lt;</xsl:text>
