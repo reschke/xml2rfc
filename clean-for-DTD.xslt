@@ -174,7 +174,9 @@
 <xsl:template match="br" mode="cleanup">
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
-      <xsl:copy-of select="."/>
+      <br>
+        <xsl:apply-templates select="node()|@*" mode="cleanup" />
+      </br>
     </xsl:when>
     <xsl:otherwise>
       <xsl:text> </xsl:text>
