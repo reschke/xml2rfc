@@ -637,7 +637,7 @@
 
 <!-- https://www.w3.org/TR/xslt-30/#grouping-examples -->
 <xsl:template match="t[list][not(ancestor::list)]" mode="prep-listextract">
-  <xsl:for-each-group select="node()[not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::list)">
+  <xsl:for-each-group select="node()[not(self::pi:rfc-ext or self::processing-instruction())][not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::list)">
     <t>
       <xsl:copy-of select="current-group()"/>  
     </t>
@@ -646,7 +646,7 @@
 
 <xsl:template match="*[self::dd or self::li][list][not(ancestor::list)]" mode="prep-listextract">
   <xsl:copy>
-    <xsl:for-each-group select="node()[not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::list)">
+    <xsl:for-each-group select="node()[not(self::pi:rfc-ext or self::processing-instruction())][not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::list)">
       <t>
         <xsl:copy-of select="current-group()"/>  
       </t>
