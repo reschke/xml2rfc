@@ -51,7 +51,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi xinclude rfc2629ext figextract artset artwork references cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck preprocesssvg sanitizesvg preptime</xsl:text>
+  <xsl:text>pi xinclude rfc2629ext figextract artset artwork references cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck preprocesssvg sanitizesvg pi removelineno preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -130,6 +130,10 @@
         <xsl:when test="$s='pi'">
           <xsl:message>Step: pi</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-pi"/>
+        </xsl:when>
+        <xsl:when test="$s='removelineno'">
+          <xsl:message>Step: removelineno</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-removelineno"/>
         </xsl:when>
         <xsl:when test="$s='pn'">
           <xsl:message>Step: pn</xsl:message>
@@ -1284,6 +1288,15 @@
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
+
+<!-- removelineno step -->
+
+<xsl:template match="node()|@*" mode="prep-removelineno">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-removelineno"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="pi:rfc-ext[@name='line-no']" mode="prep-removelineno"/>
+<xsl:template match="pi:rfc-ext[@name='system-id']" mode="prep-removelineno"/>
 
 <!-- rfc2629ext step -->
 
