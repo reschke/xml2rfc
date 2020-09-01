@@ -554,12 +554,15 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="xref[not(*|text())]/@derivedContent" mode="prep-derivedcontent"/>
+<xsl:template match="xref/@derivedContent" mode="prep-derivedcontent"/>
 
-<xsl:template match="xref[not(*|text())]" mode="prep-derivedcontent">
+<xsl:template match="xref" mode="prep-derivedcontent">
   <xsl:variable name="d">
+    <xsl:variable name="t1">
+      <xsl:apply-templates select="." mode="prep-derivedcontent-strip-pi"/>
+    </xsl:variable>
     <xsl:variable name="t">
-      <xsl:apply-templates select="."/>
+      <xsl:apply-templates select="$t1/node()"/>
     </xsl:variable>
     <xsl:value-of select="normalize-space($t)"/>
   </xsl:variable>
@@ -574,6 +577,11 @@
     <xsl:apply-templates select="node()" mode="prep-derivedcontent"/>
   </xsl:copy>
 </xsl:template>
+
+<xsl:template match="node()|@*" mode="prep-derivedcontent-strip-pi">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-derivedcontent-strip-pi"/></xsl:copy>
+</xsl:template>
+<xsl:template match="pi:*" mode="prep-derivedcontent-strip-pi"/>
 
 <!-- figextract step -->
 
