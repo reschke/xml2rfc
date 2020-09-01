@@ -227,7 +227,7 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="strip-and-annotate-refs"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="xref[not(node())]" mode="strip-and-annotate-refs">
+<xsl:template match="xref[not(*|text())]" mode="strip-and-annotate-refs">
   <xsl:variable name="fx" select="following-sibling::*[1]"/>
   <xsl:variable name="f" select="$fx[self::xref and @INSERT='preceding']"/>
   <xsl:variable name="px" select="preceding-sibling::*[1]"/>
