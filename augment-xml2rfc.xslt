@@ -60,7 +60,7 @@
   </xsl:variable>
   <xsl:variable name="t3">
     <xsl:for-each select="$t2">
-      <xsl:apply-templates mode="remove-kramdownleftovers"/>
+      <xsl:apply-templates mode="remove-leftovers"/>
     </xsl:for-each>
   </xsl:variable>
   <xsl:variable name="t4">
@@ -252,41 +252,44 @@
 
 <xsl:template match="xref/@INSERT" mode="strip-and-annotate-refs"/>
 
-<xsl:template match="*|@*|comment()|processing-instruction()" mode="remove-kramdownleftovers">
-  <xsl:copy><xsl:apply-templates select="node()|@*" mode="remove-kramdownleftovers"/></xsl:copy>
+<xsl:template match="*|@*|comment()|processing-instruction()" mode="remove-leftovers">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="remove-leftovers"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="artwork/@align[.='left']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@alt[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@height[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@name[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@type[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@width[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@xml:space[.='preserve']" mode="remove-kramdownleftovers"/>
-<xsl:template match="comment()[contains(.,'markdown-source')]" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@align[.='left']" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@alt[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@height[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@suppress-title[.='false']" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@title[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@width[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="organization[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="rfc/@obsoletes[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="rfc/@updates[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="rfc/@xml:lang[.='en']" mode="remove-kramdownleftovers"/>
-<xsl:template match="reference/front/abstract" mode="remove-kramdownleftovers"/>
-<xsl:template match="reference/format" mode="remove-kramdownleftovers"/>
-<xsl:template match="section/@toc[.='default']" mode="remove-kramdownleftovers"/>
-<xsl:template match="spanx/@style[.='emph']" mode="remove-kramdownleftovers"/>
-<xsl:template match="spanx/@xml:space[.='preserve']" mode="remove-kramdownleftovers"/>
-<xsl:template match="texttable/@align[.='center']" mode="remove-kramdownleftovers"/>
-<xsl:template match="texttable/@style[.='full']" mode="remove-kramdownleftovers"/>
-<xsl:template match="texttable/@suppress-title[.='false']" mode="remove-kramdownleftovers"/>
-<xsl:template match="texttable/@title[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="xref/@format[.='default']" mode="remove-kramdownleftovers"/>
-<xsl:template match="xref/@pageno[.='false']" mode="remove-kramdownleftovers"/>
+<xsl:template match="artwork/@align[.='left']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@alt[.='']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@height[.='']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@name[.='']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@type[.='']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@width[.='']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@xml:space[.='preserve']" mode="remove-leftovers"/>
+<xsl:template match="comment()[contains(.,'markdown-source')]" mode="remove-leftovers"/>
+<xsl:template match="figure/@align[.='left']" mode="remove-leftovers"/>
+<xsl:template match="figure/@alt[.='']" mode="remove-leftovers"/>
+<xsl:template match="figure/@height[.='']" mode="remove-leftovers"/>
+<xsl:template match="figure/@suppress-title[.='false']" mode="remove-leftovers"/>
+<xsl:template match="figure/@title[.='']" mode="remove-leftovers"/>
+<xsl:template match="figure/@width[.='']" mode="remove-leftovers"/>
+<xsl:template match="organization[.='']" mode="remove-leftovers"/>
+<xsl:template match="rfc/@obsoletes[.='']" mode="remove-leftovers"/>
+<xsl:template match="rfc/@updates[.='']" mode="remove-leftovers"/>
+<xsl:template match="rfc/@xml:lang[.='en']" mode="remove-leftovers"/>
+<xsl:template match="reference/front/abstract" mode="remove-leftovers"/>
+<xsl:template match="reference/format" mode="remove-leftovers"/>
+<xsl:template match="section/@toc[.='default']" mode="remove-leftovers"/>
+<xsl:template match="spanx/@style[.='emph']" mode="remove-leftovers"/>
+<xsl:template match="spanx/@xml:space[.='preserve']" mode="remove-leftovers"/>
+<xsl:template match="texttable/@align[.='center']" mode="remove-leftovers"/>
+<xsl:template match="texttable/@style[.='full']" mode="remove-leftovers"/>
+<xsl:template match="texttable/@suppress-title[.='false']" mode="remove-leftovers"/>
+<xsl:template match="texttable/@title[.='']" mode="remove-leftovers"/>
+<xsl:template match="xref/@format[.='default']" mode="remove-leftovers"/>
+<xsl:template match="xref/@pageno[.='false']" mode="remove-leftovers"/>
 
-<xsl:template match="reference[seriesInfo/@name='RFC']/@target[starts-with(.,'http://www.rfc-editor.org/info/') or starts-with(.,'https://www.rfc-editor.org/info/')]" mode="remove-kramdownleftovers">
+<!-- leftovers from location insertion -->
+<xsl:template match="processing-instruction('rfc-ext')[contains(.,'line-no=')]" mode="remove-leftovers"/>
+
+<xsl:template match="reference[seriesInfo/@name='RFC']/@target[starts-with(.,'http://www.rfc-editor.org/info/') or starts-with(.,'https://www.rfc-editor.org/info/')]" mode="remove-leftovers">
   <xsl:variable name="rsi" select="../seriesInfo[@name='RFC']"/>
   <xsl:variable name="no" select="$rsi/@value"/>
   <xsl:if test=". != concat('http://www.rfc-editor.org/info/rfc',$no) and . != concat('https://www.rfc-editor.org/info/rfc',$no)">
