@@ -513,10 +513,10 @@
     </xsl:call-template>
   </fo:basic-link>
   <fo:footnote>
-    <fo:inline font-size="6pt" vertical-align="super"><xsl:number level="any" count="eref[node()]" /></fo:inline>
+    <fo:inline font-size="6pt" vertical-align="super"><xsl:number level="any" count="eref[text()|*]" /></fo:inline>
     <fo:footnote-body>
       <fo:block font-size="8pt" start-indent="2em" text-align="left">
-        <fo:inline font-size="6pt" vertical-align="super"><xsl:number level="any" count="eref[node()]" /></fo:inline>
+        <fo:inline font-size="6pt" vertical-align="super"><xsl:number level="any" count="eref[text()|*]" /></fo:inline>
         <xsl:text> </xsl:text>
         <xsl:value-of select="@target" />
       </fo:block>
