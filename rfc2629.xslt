@@ -5217,16 +5217,9 @@
   <xsl:param name="anchor"/>
 
   <xsl:variable name="p">
-    <xsl:choose>
-      <xsl:when test="self::text() or self::processing-instruction()">
-        <xsl:for-each select="..">
-          <xsl:call-template name="get-paragraph-number" />
-        </xsl:for-each>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="get-paragraph-number" />
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:for-each select="..">
+      <xsl:call-template name="get-paragraph-number" />
+    </xsl:for-each>
   </xsl:variable>
 
   <xsl:if test="not(self::text() and normalize-space(.)='' and not(following-sibling::node()))">
@@ -11906,11 +11899,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1311 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1311 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1312 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1312 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/08/28 15:43:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/08/28 15:43:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/03 14:23:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/03 14:23:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
