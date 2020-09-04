@@ -267,7 +267,7 @@
             </xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
-          <xsl:copy-of select="svg:svg"/>
+          <xsl:apply-templates select="svg:svg" mode="embed-svg"/>
         </fo:instream-foreign-object>
       </xsl:when>
       <xsl:otherwise>
@@ -275,6 +275,16 @@
       </xsl:otherwise>
     </xsl:choose>
   </fo:block>
+</xsl:template>
+
+<xsl:template match="node()|@*" mode="embed-svg">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="embed-svg"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="processing-instruction('rfc-ext')[contains(.,'line-no=')]" mode="embed-svg"/>
+
+<xsl:template match="/" mode="embed-svg">
+	<xsl:copy><xsl:apply-templates select="node()"  mode="embed-svg"/></xsl:copy>
 </xsl:template>
 
 <xsl:template match="contact[ancestor::t]">
