@@ -277,12 +277,6 @@
   </fo:block>
 </xsl:template>
 
-<xsl:template match="node()|@*" mode="embed-svg">
-  <xsl:copy><xsl:apply-templates select="node()|@*" mode="embed-svg"/></xsl:copy>
-</xsl:template>
-
-<xsl:template match="processing-instruction('rfc-ext')[contains(.,'line-no=')]" mode="embed-svg"/>
-
 <xsl:template match="/" mode="embed-svg">
 	<xsl:copy><xsl:apply-templates select="node()"  mode="embed-svg"/></xsl:copy>
 </xsl:template>

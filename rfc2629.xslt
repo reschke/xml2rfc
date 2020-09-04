@@ -1796,21 +1796,21 @@
         <xsl:choose>
           <xsl:when test="parent::artset and ../@anchor">
             <div id="{../@anchor}">
-              <xsl:copy-of select="svg:svg"/>
+              <xsl:apply-templates select="svg:svg" mode="embed-svg"/>
             </div>
           </xsl:when>
           <xsl:when test="parent::artset and ../artwork/@anchor">
             <div id="{../artwork[@anchor][1]/@anchor}">
-              <xsl:copy-of select="svg:svg"/>
+              <xsl:apply-templates select="svg:svg" mode="embed-svg"/>
             </div>
           </xsl:when>
           <xsl:when test="@anchor">
             <div id="{@anchor}">
-              <xsl:copy-of select="svg:svg"/>
+              <xsl:apply-templates select="svg:svg" mode="embed-svg"/>
             </div>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:copy-of select="svg:svg"/>
+            <xsl:apply-templates select="svg:svg" mode="embed-svg"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -1839,6 +1839,16 @@
       </xsl:otherwise>
     </xsl:choose>
   </div>
+</xsl:template>
+
+<!-- copy SVG content without inserted line no information -->
+<xsl:template match="node()|@*" mode="embed-svg">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="embed-svg"/></xsl:copy>
+</xsl:template>
+<xsl:template match="processing-instruction('rfc-ext')[contains(.,'line-no=')]" mode="embed-svg"/>
+
+<xsl:template match="/" mode="embed-svg">
+	<xsl:copy><xsl:apply-templates select="node()"  mode="embed-svg"/></xsl:copy>
 </xsl:template>
 
 <xsl:template match="contact[ancestor::t]">
@@ -11899,11 +11909,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1312 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1312 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1313 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1313 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/03 14:23:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/03 14:23:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/04 08:40:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/04 08:40:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
