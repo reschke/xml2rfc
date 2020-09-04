@@ -5211,21 +5211,14 @@
 </xsl:template>
 
 <!-- ... otherwise group into p elements -->
-<xsl:template mode="t-content" match="*|node()">
+<xsl:template mode="t-content" match="node()">
   <xsl:param name="inherited-self-link"/>
   <xsl:param name="anchor"/>
 
   <xsl:variable name="p">
-    <xsl:choose>
-      <xsl:when test="self::text()">
-        <xsl:for-each select="..">
-          <xsl:call-template name="get-paragraph-number" />
-        </xsl:for-each>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="get-paragraph-number" />
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:for-each select="..">
+      <xsl:call-template name="get-paragraph-number" />
+    </xsl:for-each>
   </xsl:variable>
 
   <xsl:if test="not(self::text() and normalize-space(.)='' and not(following-sibling::node()))">
@@ -10392,14 +10385,16 @@ dd, li, p {
     </xsl:when>
 
     <xsl:when test="ancestor::note">
-      <!-- or get section number of ancestor note element, then add t number -->
+      <!-- get section number of ancestor note element, then add t number -->
       <xsl:for-each select="ancestor::note[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
       <xsl:variable name="b"><xsl:number count="artset|artwork|aside|blockquote|dl|ol|sourcecode|t|ul|x:blockquote|x:note"/></xsl:variable>
       <xsl:choose>
         <xsl:when test="parent::note and ../@removeInRFC='true' and ../t[1]!=$note-removeInRFC">
           <xsl:value-of select="1 + $b"/>
         </xsl:when>
-        <xsl:otherwise><xsl:value-of select="$b"/></xsl:otherwise>
+        <xsl:otherwise>
+          <xsl:value-of select="$b"/>
+        </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
 
@@ -11903,11 +11898,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1310 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1310 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1312 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1312 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/08/26 13:04:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/08/26 13:04:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/03 14:23:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/03 14:23:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
