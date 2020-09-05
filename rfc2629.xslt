@@ -3627,13 +3627,13 @@
 
 <xsl:template name="list-item-format">
   <xsl:variable name="list" select=".." />
-  <xsl:variable name="format" select="substring-after(../@style,'format ')" />
+  <xsl:variable name="format" select="substring-after(../@style,'format ')"/>
   <xsl:variable name="pos">
     <xsl:choose>
       <xsl:when test="$list/@counter">
-        <xsl:number level="any" count="list[@counter=$list/@counter]/*" />
+        <xsl:number level="any" count="list[@counter=$list/@counter]/t"/>
       </xsl:when>
-      <xsl:otherwise><xsl:value-of select="position()"/></xsl:otherwise>
+      <xsl:otherwise><xsl:value-of select="1 + count(preceding-sibling::t)"/></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <dt>
@@ -11909,11 +11909,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1314 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1314 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1315 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1315 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/04 11:58:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/04 11:58:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/05 04:22:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/05 04:22:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
