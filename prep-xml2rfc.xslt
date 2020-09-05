@@ -790,8 +790,8 @@
     <xsl:apply-templates select="@*" mode="prep-slug">
       <xsl:with-param name="root" select="$root"/>
     </xsl:apply-templates>
-    <xsl:variable name="fr">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.'"()+-_ :%,/@=&lt;&gt;*</xsl:variable>
-    <xsl:variable name="to">abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789.__----_----------</xsl:variable>
+    <xsl:variable name="fr">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.'"()+-_ :%,/@=&lt;&gt;*&#8212;</xsl:variable>
+    <xsl:variable name="to">abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789.__----_-----------</xsl:variable>
     <xsl:variable name="canslug" select="translate(normalize-space(.),$fr,'')=''"/>
     <xsl:choose>
       <xsl:when test="$canslug">
