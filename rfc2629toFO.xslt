@@ -126,8 +126,8 @@
   <xsl:apply-templates />
 </xsl:template>
 
-<!-- optimize empty lines starting artwork -->
-<xsl:template match="artwork/text()[0=count(preceding-sibling::node())]">
+<!-- special case for first text node in artwork or sourcecode -->
+<xsl:template match="artwork/text()[1]|sourcecode/text()[1]" priority="9">
   <xsl:choose>
     <xsl:when test="substring(.,1,1)='&#10;'">
       <xsl:value-of select="substring(.,2)" />
