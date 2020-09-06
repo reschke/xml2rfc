@@ -587,7 +587,7 @@
 
 <!-- https://www.w3.org/TR/xslt-30/#grouping-examples -->
 <xsl:template match="t[figure and not(parent::list)]" mode="prep-figextract">
-  <xsl:for-each-group select="node()[not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::figure)">
+  <xsl:for-each-group select="node()[not(self::pi:* or self::processing-instruction())][not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::figure)">
     <xsl:choose>
       <xsl:when test="current-grouping-key()">
         <xsl:copy-of select="current-group()"/>  
