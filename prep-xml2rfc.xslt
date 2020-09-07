@@ -764,7 +764,7 @@
 
 <!-- convert hanging lists -->
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='hanging']/t" mode="prep-lists" priority="5">
+<xsl:template match="t[not(parent::list)][normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='hanging']/t" mode="prep-lists" priority="5">
   <dt>
     <xsl:copy-of select="@anchor"/>
     <xsl:value-of select="@hangText"/>
@@ -774,7 +774,7 @@
   </dd>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='hanging']" mode="prep-lists" priority="9">
+<xsl:template match="t[not(parent::list)][normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='hanging']" mode="prep-lists" priority="9">
   <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
   <dl>
     <xsl:call-template name="lists-insert-list-anchor"/>
