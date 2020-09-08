@@ -3646,13 +3646,15 @@ attlist.xref &amp;=
       | eref
       | iref
       | xref
-      | <x:ref>x_ref</x:ref> 
       | <x:ref>v3_bcp14</x:ref> 
       | <x:ref>v3_br</x:ref> 
       | <x:ref>v3_em</x:ref>
+      | <x:ref>v3_sub</x:ref>
+      | <x:ref>v3_sup</x:ref>
       | <x:ref>v3_tt</x:ref>
       | <x:ref>v3_strong</x:ref>
-      | <x:ref>v3_u</x:ref>)*
+      | <x:ref>v3_u</x:ref>
+      | <x:ref>x_ref</x:ref>)* 
     )
   }
 

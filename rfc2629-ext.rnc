@@ -634,13 +634,15 @@ v3_dd =
       | eref
       | iref
       | xref
-      | x_ref 
       | v3_bcp14 
       | v3_br 
       | v3_em
+      | v3_sub
+      | v3_sup
       | v3_tt
       | v3_strong
-      | v3_u)*
+      | v3_u
+      | x_ref)* 
     )
   }
 
