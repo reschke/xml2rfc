@@ -805,7 +805,10 @@ v3_sourcecode =
     attribute name { text }?,
     attribute type { text }?,
     attribute x:lang { "" }?,
-    TEXT
+    (TEXT
+      | iref
+      | xref
+      | x_ref)*
   }
 
 # Emphasized Text (see Section 12.28)

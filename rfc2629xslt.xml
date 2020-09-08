@@ -3832,7 +3832,10 @@ attlist.xref &amp;=
     attribute name { text }?,
     attribute type { text }?,
     attribute x:lang { "" }?,
-    TEXT
+    (TEXT
+      | iref
+      | xref
+      | <x:ref>x_ref</x:ref>)*
   }
 
 <em anchor="v3_strong"><iref item="strong V3 Extension Element"/><iref item="V3 Extension Elements" subitem="strong"
