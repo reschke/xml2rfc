@@ -3856,14 +3856,16 @@ attlist.xref &amp;=
 /># Subscript (see <xref target="v3.sub"/>)</em>
 <x:ref>v3_sub</x:ref> =
   element sub {
-    (TEXT)*
+    (TEXT
+      | <x:ref>v3_sup</x:ref>)*
   }
 
 <em anchor="v3_sup"><iref item="sup V3 Extension Element"/><iref item="V3 Extension Elements" subitem="sup"
 /># Superscript (see <xref target="v3.sup"/>)</em>
 <x:ref>v3_sup</x:ref> =
   element sup {
-    (TEXT)*
+    (TEXT
+      | <x:ref>v3_sub</x:ref>)*
   }
 
 <em anchor="v3_table"><iref item="table V3 Extension Element"/><iref item="V3 Extension Elements" subitem="table"

@@ -827,13 +827,15 @@ v3_strong =
 # Subscript (see Section 12.29)
 v3_sub =
   element sub {
-    (TEXT)*
+    (TEXT
+      | v3_sup)*
   }
 
 # Superscript (see Section 12.30)
 v3_sup =
   element sup {
-    (TEXT)*
+    (TEXT
+      | v3_sub)*
   }
 
 # Table (see Section 12.32)
