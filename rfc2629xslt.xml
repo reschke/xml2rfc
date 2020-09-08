@@ -1821,6 +1821,10 @@ Content-Length: &lt;x:length-of target="req"/>
   Can be used to embed contact information in a layout <em>similar</em>
   to the one used for authors; mainly for use in a "Contributors" section.
 </t>
+<t>
+  When used in phrase content, only the name or the organization (absent a name)
+  will be displayed.
+</t>
 </section>
 
 <section title="displayreference Element" anchor="v3.displayreference">
@@ -3354,6 +3358,7 @@ include "rfc2629.rnc" {
        | vspace
        <strong>| <x:ref>v3_bcp14</x:ref></strong>
        <strong>| <x:ref>v3_br</x:ref></strong>
+       <strong>| <x:ref>v3_contact</x:ref></strong>
        <strong>| <x:ref>v3_em</x:ref></strong>
        <strong>| <x:ref>v3_relref</x:ref></strong>
        <strong>| <x:ref>v3_strong</x:ref></strong>

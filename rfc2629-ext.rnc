@@ -356,6 +356,7 @@ include "rfc2629.rnc" {
        | vspace
        | v3_bcp14
        | v3_br
+       | v3_contact
        | v3_em
        | v3_relref
        | v3_strong
