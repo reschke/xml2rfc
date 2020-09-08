@@ -715,6 +715,7 @@ v3_li =
       | v3_sup
       | v3_tt
       | v3_u
+      | x_dfn
       | x_ref)*
     )
   }
@@ -1103,6 +1104,12 @@ x_h =
     TEXT
   }
 
+# declaration of anchor in external reference
+x_has =
+  element x:has {
+    attribute anchor { xsd:ID }?
+  }
+
 # Heading (see Section 11.13)
 x_highlight =
   element x:highlight {
@@ -1173,7 +1180,8 @@ x_source =
   element x:source {
     attribute basename { ATEXT }?,
     attribute href { URI },
-    x_defines*
+    x_defines*,
+    x_has*
   }
 
 # superscript (see Section 11.23)

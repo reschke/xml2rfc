@@ -4160,6 +4160,13 @@ attlist.xref &amp;=
     TEXT
   }
 
+<em anchor="x_has"><iref item="has Extension Element"/><iref item="Extension Elements" subitem="has"
+/># declaration of anchor in external reference<!-- (see <xref target="ext.element.sup"/>)--></em>
+<x:ref>x_has</x:ref> =
+  element x:has {
+    attribute anchor { xsd:ID }?
+  }
+
 <em anchor="x_highlight"><iref item="highlight Extension Element"/><iref item="Extension Elements" subitem="highlight"
 /># Heading (see <xref target="ext.element.highlight"/>)</em>
 <x:ref>x_highlight</x:ref> =
@@ -4240,7 +4247,8 @@ attlist.xref &amp;=
   element x:source {
     attribute basename { ATEXT }?,
     attribute href { URI },
-    <x:ref>x_defines</x:ref>*
+    <x:ref>x_defines</x:ref>*,
+    <x:ref>x_has</x:ref>*
   }
 
 <em anchor="x_sup"><iref item="sup Extension Element"/><iref item="Extension Elements" subitem="sup"
