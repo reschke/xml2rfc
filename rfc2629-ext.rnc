@@ -634,6 +634,7 @@ v3_dd =
       | eref
       | iref
       | xref
+      | x_ref 
       | v3_bcp14 
       | v3_br 
       | v3_em

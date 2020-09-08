@@ -3646,6 +3646,7 @@ attlist.xref &amp;=
       | eref
       | iref
       | xref
+      | <x:ref>x_ref</x:ref> 
       | <x:ref>v3_bcp14</x:ref> 
       | <x:ref>v3_br</x:ref> 
       | <x:ref>v3_em</x:ref>
