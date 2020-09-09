@@ -624,6 +624,7 @@ v3_dd =
       | artwork
       | figure
       | t
+      | v3_aside 
       | v3_dl 
       | v3_ol 
       | v3_table 

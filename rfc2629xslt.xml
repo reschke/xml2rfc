@@ -3636,6 +3636,7 @@ attlist.xref &amp;=
       | artwork
       | figure
       | t
+      | <x:ref>v3_aside</x:ref> 
       | <x:ref>v3_dl</x:ref> 
       | <x:ref>v3_ol</x:ref> 
       | <x:ref>v3_table</x:ref> 
