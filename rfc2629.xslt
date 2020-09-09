@@ -5207,6 +5207,9 @@
     <xsl:if test="normalize-space($class)!=''">
       <xsl:attribute name="class"><xsl:value-of select="normalize-space($class)"/></xsl:attribute>
     </xsl:if>
+    <xsl:if test="@indent and number(@indent)&gt;0">
+      <xsl:attribute name="style">padding-left: <xsl:value-of select="@indent div 2"/>em</xsl:attribute>
+    </xsl:if>
     <xsl:apply-templates mode="t-content" select="node()[1]">
       <xsl:with-param name="inherited-self-link" select="$inherited-self-link"/>
       <xsl:with-param name="anchor" select="@anchor"/>
@@ -11909,11 +11912,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1318 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1318 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1319 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1319 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/08 17:55:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/08 17:55:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/09 12:05:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/09 12:05:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">

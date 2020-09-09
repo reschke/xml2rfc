@@ -1764,11 +1764,19 @@
 <xsl:template match="t">
   <fo:block space-before=".5em" space-after=".5em">
     <xsl:call-template name="insert-justification"/>
+    <xsl:variable name="indent">
+      <xsl:choose>
+        <xsl:when test="@indent and number(@indent)&gt;0">
+          <xsl:value-of select="@indent div 2"/>
+        </xsl:when>
+        <xsl:otherwise>0</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:attribute name="start-indent">
       <xsl:choose>
-        <xsl:when test="parent::x:blockquote|parent::blockquote">4em</xsl:when>
-        <xsl:when test="parent::x:note|parent::aside">4em</xsl:when>
-        <xsl:otherwise>2em</xsl:otherwise>
+        <xsl:when test="parent::x:blockquote|parent::blockquote"><xsl:value-of select="4 + $indent"/>em</xsl:when>
+        <xsl:when test="parent::x:note|parent::aside"><xsl:value-of select="4 + $indent"/>em</xsl:when>
+        <xsl:otherwise><xsl:value-of select="2 + $indent"/>em</xsl:otherwise>
       </xsl:choose>
     </xsl:attribute>
     <xsl:call-template name="copy-anchor"/>
