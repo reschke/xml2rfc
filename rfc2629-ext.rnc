@@ -748,6 +748,7 @@ v3_name =
 v3_ol =
   element ol {
     attribute anchor { xsd:ID }?,
+    attribute indent { text }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     attribute start { TEXT }?,
     attribute group { TEXT }?,
@@ -966,6 +967,7 @@ v3_u =
 v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,
+    attribute indent { text }?,
     attribute empty { TEXT }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     v3_li+

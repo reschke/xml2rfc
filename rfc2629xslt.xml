@@ -3768,6 +3768,7 @@ attlist.xref &amp;=
 <x:ref>v3_ol</x:ref> =
   element ol {
     attribute anchor { xsd:ID }?,
+    attribute indent { text }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     attribute start { TEXT }?,
     attribute group { TEXT }?,
@@ -4006,6 +4007,7 @@ attlist.xref &amp;=
 <x:ref>v3_ul</x:ref> =
   element ul {
     attribute anchor { xsd:ID }?,
+    attribute indent { text }?,
     attribute empty { TEXT }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     <x:ref>v3_li</x:ref>+
