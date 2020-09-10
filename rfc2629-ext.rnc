@@ -490,6 +490,7 @@ attlist.street &=
 
 # Extend attribute set for <c> (see Section 11.28)
 attlist.t &=
+  attribute indent { text }?,
   attribute keepWithNext { text }?,
   attribute keepWithPrevious { text }?,
   attribute pn { text }? # (see [RFC7991bis], Appendix B.2)
