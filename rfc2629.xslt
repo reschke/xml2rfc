@@ -3849,7 +3849,7 @@
 </xsl:template>
 
 <xsl:template name="computed-auto-target">
-  <xsl:param name="bib"/>
+  <xsl:param name="bib" select="."/>
   <xsl:param name="ref"/>
 
   <xsl:variable name="sec">
@@ -3961,7 +3961,27 @@
         </xsl:choose>
       </xsl:if>
     </xsl:when>
-    <xsl:otherwise />
+    <xsl:when test="$bib//x:source/@href and document($bib//x:source/@href)/rfc/@docName">
+      <xsl:variable name="draftName" select="document($bib//x:source/@href)/rfc/@docName"/>
+      <xsl:variable name="endsWithLatest" select="substring($draftName, string-length($draftName) - string-length('-latest') + 1) = '-latest'"/>
+      <xsl:if test="not($endsWithLatest)">
+        <xsl:call-template name="compute-internet-draft-uri">
+          <xsl:with-param name="internet-draft" select="$draftName"/>
+          <xsl:with-param name="ref" select="$bib"/>
+        </xsl:call-template>
+        <xsl:if test="$ref and $sec!='' and $internetDraftUrlFragSection and $internetDraftUrlFragAppendix">
+          <xsl:choose>
+            <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
+              <xsl:value-of select="concat('#',$internetDraftUrlFragAppendix,$sec)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="concat('#',$internetDraftUrlFragSection,$sec)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:if>
+      </xsl:if>
+    </xsl:when>
+    <xsl:otherwise/>
   </xsl:choose>
 </xsl:template>
 
@@ -4201,9 +4221,7 @@
       <xsl:call-template name="info">
         <xsl:with-param name="msg">Ignoring @target <xsl:value-of select="@target"/> in link calculation</xsl:with-param>
       </xsl:call-template>
-      <xsl:call-template name="computed-auto-target">
-        <xsl:with-param name="bib" select="."/>
-      </xsl:call-template>
+      <xsl:call-template name="computed-auto-target"/>
     </xsl:when>
     <xsl:when test=".//seriesInfo/@name='RFC' and (@target='http://www.rfc-editor.org' or @target='https://www.rfc-editor.org') and starts-with(front/title,'Errata ID ') and front/author/organization='RFC Errata'">
       <!-- check for erratum link -->
@@ -4221,9 +4239,7 @@
       <xsl:value-of select="normalize-space(@target)" />
     </xsl:when>
     <xsl:otherwise>
-      <xsl:call-template name="computed-auto-target">
-        <xsl:with-param name="bib" select="."/>
-      </xsl:call-template>
+      <xsl:call-template name="computed-auto-target"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -10512,7 +10528,6 @@ dd, li, p {
               </xsl:call-template>
               <xsl:variable name="t">
                 <xsl:call-template name="computed-auto-target">
-                  <xsl:with-param name="bib" select="."/>
                   <xsl:with-param name="ref" select="$nodes[1]"/>
                 </xsl:call-template>
               </xsl:variable>
@@ -11915,11 +11930,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1320 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1320 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1321 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1321 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/10 19:37:06 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/10 19:37:06 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/11 11:45:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/11 11:45:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
