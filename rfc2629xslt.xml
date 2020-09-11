@@ -371,12 +371,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   inserts it into the front page (standards track, obsoletion, updates, errata).</c>
 
   <c>rfc-ext</c>
-  <c>internet-draft-uri<iref item="internet-draft-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="internet-draft-uri"/></c>
-  <c>xml2rfc-ext-internet-draft-uri<iref item="xml2rfc-ext-internet-draft-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-internet-draft-uri"/></c>
-  <c>"https://tools.ietf.org/html/{internet-draft}"</c>
-  <c>URI template for Internet-Draft links (can be set locally inside the &lt;reference> element as well to override the default).</c>
-
-  <c>rfc-ext</c>
   <c>isbn-uri<iref item="isbn-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="isbn-uri"/></c>
   <c>xml2rfc-ext-isbn-uri<iref item="xml2rfc-ext-isbn-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-isbn-uri"/></c>
   <c>"https://www.worldcat.org/search?q=isbn:{isbn}"</c>
@@ -481,6 +475,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </t>
   </section>
 
+  <section title="internet-draft-uri - URI Template for Interned Drafts" anchor="xml2rfc-ext-internet-draft-uri">
+    <iref item="internet-draft-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="internet-draft-uri"/>
+    <iref item="xml2rfc-ext-internet-draft-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-internet-draft-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>internet-draft-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-internet-draft-uri</dd>
+      <dt>default</dt>
+      <dd>"https://tools.ietf.org/html/{internet-draft}""</dd>
+    </dl>
+    <t>
+      URI template for Internet-Draft links (can be set locally inside the &lt;reference> element as well to override the default).
+    </t>
+  </section>
+
   <section title="rfc-errata-uri - URI Template for RFC Errata" anchor="xml2rfc-ext-rfc-errata-uri">
     <iref item="rfc-errata-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-errata-uri"/>
     <iref item="xml2rfc-ext-rfc-errata-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-erratam-uri"/>
@@ -491,7 +504,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>PI pseudo-attribute</dt>
       <dd>rfc-errata-uri</dd>
       <dt>XSLT parameter name</dt>
-      <dd>rfc-errata-uri</dd>
+      <dd>xml2rfc-ext-rfc-errata-uri</dd>
       <dt>default</dt>
       <dd>"https://www.rfc-editor.org/errata/rfc{rfc}"</dd>
     </dl>
@@ -510,7 +523,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>PI pseudo-attribute</dt>
       <dd>rfc-erratum-uri</dd>
       <dt>XSLT parameter name</dt>
-      <dd>rfc-erratum-uri</dd>
+      <dd>xml2rfc-ext-rfc-erratum-uri</dd>
       <dt>default</dt>
       <dd>"https://www.rfc-editor.org/errata/eid{eid}"</dd>
     </dl>
