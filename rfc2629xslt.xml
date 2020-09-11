@@ -2977,7 +2977,7 @@ done
 </reference>
 
 <reference anchor='V3IMPNOTES'>
-  <!--<?rfc-ext internet-draft-uri="https://www.ietf.org/id/{internet-draft}.html" ?> gone because expired-->
+  <?rfc-ext internet-draft-uri="https://www.ietf.org/archive/id/{internet-draft}.html" ?>
   <front>
     <title>Implementation notes for RFC7991, "The 'xml2rfc' Version 3 Vocabulary"</title>
     <author initials='H' surname='Levkowetz' fullname='Henrik Levkowetz'/>
