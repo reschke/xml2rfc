@@ -394,11 +394,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>1000</c>
   <c>For HTML output: maximal text width in CSS pixels.</c>
 
-  <c>rfc-ext</c>
-  <c>parse-xml-in-artwork<iref item="parse-xml-in-artwork PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="parse-xml-in-artwork"/></c>
-  <c>xml2rfc-parse-xml-in-artwork<iref item="xml2rfc-ext-parse-xml-in-artwork parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-parse-xml-in-artwork"/></c>
-  <c>"no"</c>
-  <c>May be used to enable parsing of XML content in figures (MSXML only).</c>
 
 
 
@@ -487,10 +482,29 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>XSLT parameter name</dt>
       <dd>xml2rfc-ext-internet-draft-uri</dd>
       <dt>default</dt>
-      <dd>"https://tools.ietf.org/html/{internet-draft}""</dd>
+      <dd>"https://tools.ietf.org/html/{internet-draft}"</dd>
     </dl>
     <t>
       URI template for Internet-Draft links (can be set locally inside the &lt;reference> element as well to override the default).
+    </t>
+  </section>
+
+  <section title="parse-xml-in-artwork - URI Template for Interned Drafts" anchor="xml2rfc-ext-parse-xml-in-artwork">
+    <iref item="parse-xml-in-artwork PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="parse-xml-in-artwork"/>
+    <iref item="xml2rfc-ext-parse-xml-in-artwork parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-parse-xml-in-artwork"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>parse-xml-in-artwork</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-parse-xml-in-artwork</dd>
+      <dt>default</dt>
+      <dd>"no"</dd>
+    </dl>
+    <t>
+      May be used to enable parsing of XML content in figures (MSXML only).
     </t>
   </section>
 
