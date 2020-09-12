@@ -9352,11 +9352,12 @@ dd, li, p {
       </t>
       <xsl:choose>
         <xsl:when test="$id-boilerplate='2010'">
+          <xsl:variable name="current-uri">http<xsl:if test="$rfc-boilerplate-use-https">s</xsl:if>://datatracker.ietf.org/drafts/current/</xsl:variable>
           <t>
             Internet-Drafts are working documents of the Internet Engineering
             Task Force (IETF). Note that other groups may also distribute
             working documents as Internet-Drafts. The list of current
-            Internet-Drafts is at <eref target='http://datatracker.ietf.org/drafts/current/'>http://datatracker.ietf.org/drafts/current/</eref>.
+            Internet-Drafts is at <eref target="{$current-uri}"><xsl:value-of select="$current-uri"/></eref>.
           </t>
         </xsl:when>
         <xsl:otherwise>
@@ -11930,11 +11931,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1321 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1321 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1322 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1322 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/11 11:45:35 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/11 11:45:35 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/12 12:01:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/12 12:01:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
