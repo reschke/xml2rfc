@@ -376,11 +376,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>"https://www.worldcat.org/search?q=isbn:{isbn}"</c>
   <c>URI template for ISBN lookup.</c>
 
-  <c>rfc-ext</c>
-  <c>log-level<iref item="log-level PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="log-level"/></c>
-  <c>xml2rfc-ext-log-level<iref item="xml2rfc-ext-log-level parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-log-level"/></c>
-  <c>"WARNING"</c>
-  <c>default logging level, one of "OFF", "FATAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE"</c>
 
 </texttable>
 
@@ -490,6 +485,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
     <t>
       "never": never emit justified text, "always": always emit justified text, "print": only emit justified text for print media.
+    </t>
+  </section>
+
+  <section title="log-level - Log Level" anchor="xml2rfc-ext-log-level">
+    <iref item="log-level PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="log-level"/>
+    <iref item="xml2rfc-ext-log-level parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-log-level"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>log-level</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-log-level</dd>
+      <dt>default</dt>
+      <dd>"WARNING"</dd>
+    </dl>
+    <t>
+      Logging level, one of "OFF", "FATAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE".
     </t>
   </section>
 
