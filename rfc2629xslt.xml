@@ -388,15 +388,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>"never"</c>
   <c>"never": never emit justified text, "always": always emit justified text, "print": only emit justified text for print media.</c>
 
-  <c>rfc-ext</c>
-  <c>maxwidth<iref item="maxwidth PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="maxwidth"/></c>
-  <c>xml2rfc-ext-maxwidth<iref item="xml2rfc-ext-maxwidth"/> <iref item="Parameters" subitem="xml2rfc-ext-maxwidth"/></c>
-  <c>1000</c>
-  <c>For HTML output: maximal text width in CSS pixels.</c>
-
-
-
-
 </texttable>
 
 <!--
@@ -486,6 +477,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
     <t>
       URI template for Internet-Draft links (can be set locally inside the &lt;reference> element as well to override the default).
+    </t>
+  </section>
+
+  <section title="maxwidth - Maximal Text Width in HTML" anchor="xml2rfc-ext-maxwidth">
+    <iref item="maxwidth PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="maxwidth"/>
+    <iref item="xml2rfc-ext-maxwidth parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-maxwidth"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>maxwidth</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-maxwidth</dd>
+      <dt>default</dt>
+      <dd>1000</dd>
+    </dl>
+    <t>
+      For HTML output: maximal text width in CSS pixels.
     </t>
   </section>
 
