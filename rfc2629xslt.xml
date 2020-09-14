@@ -370,11 +370,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>When set to "yes", include JS code that fetches current RFC metadata and
   inserts it into the front page (standards track, obsoletion, updates, errata).</c>
 
-  <c>rfc-ext</c>
-  <c>isbn-uri<iref item="isbn-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="isbn-uri"/></c>
-  <c>xml2rfc-ext-isbn-uri<iref item="xml2rfc-ext-isbn-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-isbn-uri"/></c>
-  <c>"https://www.worldcat.org/search?q=isbn:{isbn}"</c>
-  <c>URI template for ISBN lookup.</c>
 
 
 </texttable>
@@ -485,6 +480,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
     <t>
       "never": never emit justified text, "always": always emit justified text, "print": only emit justified text for print media.
+    </t>
+  </section>
+
+  <section title="isbn-uri - URI Template for ISBNs" anchor="xml2rfc-ext-isbn-uri">
+    <iref item="isbn-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="isbn-uri"/>
+    <iref item="xml2rfc-ext-isbn-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-isbn-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>isbn-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-isbn-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.worldcat.org/search?q=isbn:{isbn}"</dd>
+    </dl>
+    <t>
+      URI template for ISBN lookup.
     </t>
   </section>
 
