@@ -382,12 +382,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>"WARNING"</c>
   <c>default logging level, one of "OFF", "FATAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE"</c>
 
-  <c>rfc-ext</c>
-  <c>justification<iref item="justification PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="justification"/></c>
-  <c>xml2rfc-ext-justification<iref item="xml2rfc-ext-justification parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-justification"/></c>
-  <c>"never"</c>
-  <c>"never": never emit justified text, "always": always emit justified text, "print": only emit justified text for print media.</c>
-
 </texttable>
 
 <!--
@@ -477,6 +471,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
     <t>
       URI template for Internet-Draft links (can be set locally inside the &lt;reference> element as well to override the default).
+    </t>
+  </section>
+
+  <section title="justification - Text Justification" anchor="xml2rfc-ext-justification">
+    <iref item="justification PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="justification"/>
+    <iref item="xml2rfc-ext-justification parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-justification"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>justification</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-justification</dd>
+      <dt>default</dt>
+      <dd>"never"</dd>
+    </dl>
+    <t>
+      "never": never emit justified text, "always": always emit justified text, "print": only emit justified text for print media.
     </t>
   </section>
 
