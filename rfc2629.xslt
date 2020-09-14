@@ -1205,6 +1205,22 @@
     not(/rfc/@ipr)
   )" />
 
+<xsl:variable name="draft-fullname" select="/rfc/@docName"/>
+
+<xsl:variable name="draft-seq">
+  <xsl:call-template name="draft-sequence-number">
+    <xsl:with-param name="name" select="$draft-fullname"/>
+  </xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="draft-basename">
+  <xsl:call-template name="draft-base-name">
+    <xsl:with-param name="name" select="$draft-fullname"/>
+  </xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="is-submitted-draft" select="number($draft-seq)=$draft-seq"/>
+
 <xsl:variable name="is-rfc" select="$src/rfc/@number"/>
 
 <xsl:variable name="rfcno">
@@ -5167,6 +5183,9 @@
     <!-- insert onload scripts, when required -->
     <xsl:variable name="onload">
       <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $is-rfc">getMeta("<xsl:value-of select="$rfcno"/>","rfc.meta");</xsl:if>
+      <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@docName">
+        <xsl:if test="$is-submitted-draft">getMeta("<xsl:value-of select="$draft-basename"/>","<xsl:value-of select="$draft-seq"/>","rfc.meta");</xsl:if>
+      </xsl:if>
       <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
       <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
     </xsl:variable>
@@ -5415,7 +5434,7 @@
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!='' and @anchor='rfc.status'">
+  <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and ($is-rfc or $is-submitted-draft) and @anchor='rfc.status'">
     <aside id="{$anchor-pref}meta" class="{$css-docstatus}"></aside>
   </xsl:if>
 
@@ -7861,10 +7880,9 @@ function toggleButton(node) {
       }
     }
   }
-}</script>
-</xsl:if>
-<xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!=''">
-<script>
+}</script></xsl:if>
+<xsl:if test="$xml2rfc-ext-insert-metadata='yes' and ($is-rfc or $is-submitted-draft)"><script>
+<xsl:if test="$rfcno!=''">
 function getMeta(rfcno, container) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "https://www.rfc-editor.org/rfc/rfc" + rfcno + ".json", true);
@@ -7923,19 +7941,6 @@ function getMeta(rfcno, container) {
   };
   xhr.send(null);
 }
-
-// DOM helpers
-function newElement(name) {
-  return document.createElement(name);
-}
-function newElementWithText(name, txt) {
-  var e = document.createElement(name);
-  e.appendChild(newText(txt));
-  return e;
-}
-function newText(text) {
-  return document.createTextNode(text);
-}
 function appendRfcLinks(parent, updates) {
   var template = "<xsl:call-template name="replace-substring">
   <xsl:with-param name="string" select="$xml2rfc-ext-rfc-uri"/>
@@ -7958,6 +7963,63 @@ function appendRfcLinks(parent, updates) {
       parent.appendChild(newText(", "));
     }
   }
+}</xsl:if><xsl:if test="$is-submitted-draft">
+function getMeta(docname, revision, container) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "https://datatracker.ietf.org/doc/" + docname + "/doc.json", true);
+  xhr.onload = function (e) {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.response);
+        
+        var cont = document.getElementById(container);
+        // empty the container
+        while (cont.firstChild) {
+          cont.removeChild(myNode.firstChild);
+        }
+
+        if (data.rev) {
+          cont.style.display = "block";
+          var bld = newElementWithText("b", "Internet Draft Status");
+          cont.appendChild(bld);
+          cont.appendChild(newElement("br"));
+          if (data.rev == revision) {
+            var rev = newElementWithText("i", "This is the latest submitted version.");
+            cont.appendChild(rev);
+          } else {
+            var rev = newElementWithText("i", "This is not the current version:");
+            cont.appendChild(rev);
+            cont.appendChild(newElement("br"));
+            var dat = "";
+            if (data.time) {
+              dat = ", submitted on " + data.time.substring(0,10);
+            }
+            rev = newElementWithText("i", "please see version " + data.rev + dat + ".");
+            cont.appendChild(rev);
+          }
+        }
+      } else {
+        console.error(xhr.statusText);
+      }
+    }
+  };
+  xhr.onerror = function (e) {
+    console.error(xhr.status + " " + xhr.statusText);
+  };
+  xhr.send(null);
+}</xsl:if>
+
+// DOM helpers
+function newElement(name) {
+  return document.createElement(name);
+}
+function newElementWithText(name, txt) {
+  var e = document.createElement(name);
+  e.appendChild(newText(txt));
+  return e;
+}
+function newText(text) {
+  return document.createTextNode(text);
 }
 </script>
 </xsl:if>
@@ -8608,7 +8670,7 @@ thead th {
 }</xsl:if><xsl:if test="$xml2rfc-ext-justification='always'">
 dd, li, p {
   text-align: justify;
-}</xsl:if><xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!=''">
+}</xsl:if><xsl:if test="$xml2rfc-ext-insert-metadata='yes' and ($is-rfc or $is-submitted-draft)">
 .<xsl:value-of select="$css-docstatus"/> {
   border: 1px solid var(--col-fg);
   display: none;
@@ -11931,11 +11993,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1322 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1322 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1323 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1323 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/12 12:01:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/12 12:01:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/14 12:40:36 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/14 12:40:36 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
