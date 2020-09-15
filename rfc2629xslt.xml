@@ -333,11 +333,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c></c>
   <c>Name of CSS resource (URI or relate reference) to use instead of the built-in (experimental).</c>
 
-  <c>rfc-ext</c>
-  <c>doi-uri<iref item="doi-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="doi-uri"/></c>
-  <c>xml2rfc-ext-doi-uri<iref item="xml2rfc-ext-doi-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-doi-uri"/></c>
-  <c>"http://dx.doi.org/{doi}"</c>
-  <c>URI template for DOIs.</c>
 
 </texttable>
 
@@ -370,6 +365,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
     <t>
       Set to 'auto' to enable "dark mode" CSS support.
+    </t>
+  </section>
+
+  <section title="doi-uri - URI Template for DOI Links" anchor="xml2rfc-ext-doi-uri">
+    <iref item="doi-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="doi-uri"/>
+    <iref item="xml2rfc-ext-doi-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-doi-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>doi-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-doi-uri</dd>
+      <dt>default</dt>
+      <dd>"http://dx.doi.org/{doi}"</dd>
+    </dl>
+    <t>
+      URI template for DOIs links.
     </t>
   </section>
 
