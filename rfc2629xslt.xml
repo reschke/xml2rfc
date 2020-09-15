@@ -357,11 +357,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>"yes"</c>
   <c>When set to "no", no index will be generated.</c>
 
-  <c>rfc-ext</c>
-  <c>include-references-in-index<iref item="include-references-in-index PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-references-in-index"/></c>
-  <c>xml2rfc-ext-include-references-in-index<iref item="xml2rfc-ext-include-references-in-index parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-include-references-in-index"/></c>
-  <c>"no"</c>
-  <c>When set to "yes", index entries are generated for all references.</c>
 
 
 
@@ -436,6 +431,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
     <t>
       Set to 'no' in order to disable inclusion of generator version information.
+    </t>
+  </section>
+
+  <section title="include-references-in-index - Generate Index Entries for References" anchor="xml2rfc-ext-include-references-in-index">
+    <iref item="include-references-in-index PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-references-in-index"/>
+    <iref item="xml2rfc-ext-include-references-in-index parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-include-references-in-index"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>include-references-in-index</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-include-references-in-index</dd>
+      <dt>default</dt>
+      <dd>"no"</dd>
+    </dl>
+    <t>
+      When set to "yes", index entries are generated for all references.
     </t>
   </section>
 
