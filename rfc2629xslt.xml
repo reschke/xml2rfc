@@ -351,16 +351,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c></c>
   <c>Can be used to specify an errata file; output will link to individual errata when possible. See <xref target="rfc-editor.errata"/></c>
 
-  <c>rfc-ext</c>
-  <c>include-index<iref item="include-index PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-index"/></c>
-  <c>xml2rfc-ext-include-index<iref item="xml2rfc-ext-include-index parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-include-index"/></c>
-  <c>"yes"</c>
-  <c>When set to "no", no index will be generated.</c>
-
-
-
-
-
 </texttable>
 
 <!--
@@ -431,6 +421,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
     <t>
       Set to 'no' in order to disable inclusion of generator version information.
+    </t>
+  </section>
+
+  <section title="include-index - Switch for Disabling Index Generation" anchor="xml2rfc-ext-include-index">
+    <iref item="include-index PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-index"/>
+    <iref item="xml2rfc-ext-include-index parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-include-index"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>include-index</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-include-index</dd>
+      <dt>default</dt>
+      <dd>"yes"</dd>
+    </dl>
+    <t>
+      When set to "no", no index will be generated.
     </t>
   </section>
 
