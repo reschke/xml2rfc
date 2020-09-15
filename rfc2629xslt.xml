@@ -345,11 +345,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>"no"</c>
   <c>When set to "yes", format the PDF output for doublesided printing.</c>
 
-  <c>rfc-ext</c>
-  <c>errata<iref item="errata PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="errata"/></c>
-  <c>xml2rfc-ext-errata<iref item="xml2rfc-ext-errata"/> <iref item="Parameters" subitem="xml2rfc-ext-errata"/></c>
-  <c></c>
-  <c>Can be used to specify an errata file; output will link to individual errata when possible. See <xref target="rfc-editor.errata"/></c>
 
 </texttable>
 
@@ -382,6 +377,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
     <t>
       Set to 'auto' to enable "dark mode" CSS support.
+    </t>
+  </section>
+
+  <section title="errata - Embed Errata Information" anchor="xml2rfc-ext-errata">
+    <iref item="errata PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="errata"/>
+    <iref item="xml2rfc-ext-errata parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-errata"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>errata</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-errata</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      Can be used to specify an errata file; output will link to individual errata when possible. See <xref target="rfc-editor.errata"/>.
     </t>
   </section>
 
