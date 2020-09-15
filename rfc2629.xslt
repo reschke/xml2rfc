@@ -1019,7 +1019,7 @@
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
     <xsl:with-param name="attr" select="'doi-uri'"/>
-    <xsl:with-param name="default">http://dx.doi.org/{doi}</xsl:with-param>
+    <xsl:with-param name="default">https://dx.doi.org/{doi}</xsl:with-param>
   </xsl:call-template>
 </xsl:param>
 
@@ -11993,11 +11993,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1323 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1323 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1324 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1324 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/14 12:40:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/14 12:40:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/15 18:02:01 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/15 18:02:01 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">

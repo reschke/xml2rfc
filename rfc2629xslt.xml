@@ -380,7 +380,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>XSLT parameter name</dt>
       <dd>xml2rfc-ext-doi-uri</dd>
       <dt>default</dt>
-      <dd>"http://dx.doi.org/{doi}"</dd>
+      <dd>"https://dx.doi.org/{doi}"</dd>
     </dl>
     <t>
       URI template for DOIs links.
