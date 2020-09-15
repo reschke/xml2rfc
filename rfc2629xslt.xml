@@ -339,13 +339,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>"http://dx.doi.org/{doi}"</c>
   <c>URI template for DOIs.</c>
 
-  <c>rfc-ext</c>
-  <c>duplex<iref item="duplex PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="duplex"/></c>
-  <c>xml2rfc-ext-duplex<iref item="xml2rfc-ext-duplex"/> <iref item="Parameters" subitem="xml2rfc-ext-duplex"/></c>
-  <c>"no"</c>
-  <c>When set to "yes", format the PDF output for doublesided printing.</c>
-
-
 </texttable>
 
 <!--
@@ -377,6 +370,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
     <t>
       Set to 'auto' to enable "dark mode" CSS support.
+    </t>
+  </section>
+
+  <section title="duplex - Support Duplex Printing" anchor="xml2rfc-ext-duplex">
+    <iref item="duplex PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="duplex"/>
+    <iref item="xml2rfc-ext-duplex parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-duplex"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>duplex</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-duplex</dd>
+      <dt>default</dt>
+      <dd>"no"</dd>
+    </dl>
+    <t>
+      When set to "yes", format printed output for doublesided printing.
     </t>
   </section>
 
