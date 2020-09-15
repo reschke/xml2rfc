@@ -363,12 +363,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>"no"</c>
   <c>When set to "yes", index entries are generated for all references.</c>
 
-  <c>rfc-ext</c>
-  <c>insert-metadata<iref item="insert-metadata PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="insert-metadata"/></c>
-  <c>xml2rfc-ext-insert-metadata<iref item="xml2rfc-ext-insert-metadata parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-insert-metadata"/></c>
-  <c>"yes"</c>
-  <c>When set to "yes", include JS code that fetches current RFC metadata and
-  inserts it into the front page (standards track, obsoletion, updates, errata).</c>
 
 
 
@@ -399,7 +393,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>XSLT parameter name</dt>
       <dd>xml2rfc-ext-dark-mode</dd>
       <dt>default</dt>
-      <dd>'no'</dd>
+      <dd>"no"</dd>
     </dl>
     <t>
       Set to 'auto' to enable "dark mode" CSS support.
@@ -438,10 +432,30 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>XSLT parameter name</dt>
       <dd>xml2rfc-ext-include-generator</dd>
       <dt>default</dt>
-      <dd>'yes'</dd>
+      <dd>"yes"</dd>
     </dl>
     <t>
       Set to 'no' in order to disable inclusion of generator version information.
+    </t>
+  </section>
+
+  <section title="insert-metadata - Dynamic Metadata Insertion in HTML" anchor="xml2rfc-ext-insert-metadata">
+    <iref item="insert-metadata PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="insert-metadata"/>
+    <iref item="xml2rfc-ext-insert-metadata parameter"/><iref item="Parameters" subitem="xml2rfc-ext-insert-metadata"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>insert-metadata</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-insert-metadata</dd>
+      <dt>default</dt>
+      <dd>"yes"</dd>
+    </dl>
+    <t>
+      When set to "yes", include JS code that fetches current RFC/Internet-Draft metadata and
+      inserts it into the front page (standards track, obsoletion, updates, errata, freshness of draft...).
     </t>
   </section>
 
@@ -702,7 +716,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>XSLT parameter name</dt>
       <dd>xml2rfc-ext-xref-with-text-generate</dd>
       <dt>default</dt>
-      <dd>'text'</dd>
+      <dd>"text"</dd>
     </dl>
     <t>
       Determines whether &lt;xref> with text content generates additional text as in traditional text output ("text"), or just generates a link around the text ("nothing"). Note that the default might change in the future in order to achieve compatibility with other formatters.
