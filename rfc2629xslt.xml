@@ -299,36 +299,26 @@ xsltproc --param xml2rfc-toc '"yes"' \
 </section>
 
 <section title="Extension PIs" anchor="extension.pis">
-<texttable>
-  <ttcol>PI target</ttcol>
-  <ttcol>PI pseudo-attribute</ttcol>
-  <ttcol>XSLT parameter name</ttcol>
-  <ttcol>default</ttcol>
-  <ttcol>description</ttcol>
+  <section title="allow-markup-in-artwork - Allow certain XML elements inside &lt;artwork> and &lt;sourcecode>" anchor="xml2rfc-ext-allow-markup-in-artwork">
+    <iref item="allow-markup-in-artwork PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="allow-markup-in-artwork"/>
+    <iref item="xml2rfc-ext-allow-markup-in-artwork parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-allow-markup-in-artwork"/>
 
-  <c>rfc-ext</c>
-  <c>allow-markup-in-artwork<iref item="allow-markup-in-artwork PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="allow-markup-in-artwork"/></c>
-  <c>xml2rfc-ext-allow-markup-in-artwork<iref item="xml2rfc-ext-allow-markup-in-artwork parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-allow-markup-in-artwork"/></c>
-  <c>"no"</c>
-  <c>Enables support for specific elements inside abstract elements (using this extension
-  makes the document incompatible to the RFC7749 grammar; see description of
-  conversion XSLT in <xref target="clean-for-dtd"/>).</c>
-
-
-</texttable>
-
-<!--
     <dl newline="true">
       <dt>PI target</dt>
       <dd>rfc-ext</dd>
       <dt>PI pseudo-attribute</dt>
-      <dd></dd>
+      <dd>allow-markup-in-artwork</dd>
       <dt>XSLT parameter name</dt>
-      <dd></dd>
+      <dd>xml2rfc-ext-allow-markup-in-artwork</dd>
       <dt>default</dt>
-      <dd></dd>
+      <dd>"no"</dd>
     </dl>
-     -->
+    <t>
+      Enables support for specific elements inside &lt;artwork> and &lt;sourcecode> elements (using this extension
+      makes the document incompatible to the RFC7749 grammar; see description of
+      conversion XSLT in <xref target="clean-for-dtd"/>).
+    </t>
+  </section>
 
   <section title="authors-section - Placement of 'Authors' Section" anchor="xml2rfc-ext-authors-section">
     <iref item="authors-section PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="authors-section"/>
