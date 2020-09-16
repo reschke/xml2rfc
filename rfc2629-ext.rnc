@@ -974,7 +974,7 @@ v3_u =
 v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,
-    attribute bare { "false" | "true" }?,
+    attribute bare { "false" | "true" }?, # but see <https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/547>
     attribute indent { text }?,
     attribute empty { "false" | "true" }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
