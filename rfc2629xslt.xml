@@ -3876,6 +3876,7 @@ attlist.xref &amp;=
 /># Emphasized Text (see <xref target="v3.em"/>)</em>
 <x:ref>v3_em</x:ref> =
   element em {
+    attribute anchor { xsd:ID }?,
     (TEXT
       | eref
       | iref

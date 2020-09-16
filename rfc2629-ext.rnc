@@ -677,6 +677,7 @@ v3_dt =
 # Emphasized Text (see Section 12.13)
 v3_em =
   element em {
+    attribute anchor { xsd:ID }?,
     (TEXT
       | eref
       | iref
