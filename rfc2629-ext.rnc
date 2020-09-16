@@ -514,7 +514,11 @@ attlist.xref &=
   attribute x:fmt  { "()" | "," | "of" | "number" | "sec" |
                      "none" }?,
   attribute x:rel  { ATEXT }?,
-  attribute x:sec  { ATEXT }?
+  attribute x:sec  { ATEXT }?,
+  attribute relative  { ATEXT }?,
+  attribute section  { ATEXT }?,
+  attribute sectionFormat  { "bare" | "comma" | "of" | "parens" }?
+  
 
 # Set of artwork (see Section 12.1)
 v3_artset =

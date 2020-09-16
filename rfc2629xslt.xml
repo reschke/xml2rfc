@@ -3700,7 +3700,11 @@ attlist.xref &amp;=
   attribute x:fmt  { "()" | "," | "of" | "number" | "sec" |
                      "none" }?,
   attribute x:rel  { ATEXT }?,
-  attribute x:sec  { ATEXT }?
+  attribute x:sec  { ATEXT }?,
+  attribute relative  { ATEXT }?,
+  attribute section  { ATEXT }?,
+  attribute sectionFormat  { "bare" | "comma" | "of" | "parens" }?
+  
 
 <em anchor="v3_artset"><iref item="artset V3 Extension Element"/><iref item="V3 Extension Elements" subitem="artset"
 /># Set of artwork (see <xref target="v3.artset"/>)</em>
