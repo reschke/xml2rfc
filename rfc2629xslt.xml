@@ -3877,6 +3877,7 @@ attlist.xref &amp;=
 <x:ref>v3_em</x:ref> =
   element em {
     (TEXT
+      | eref
       | xref
       | <x:ref>v3_strong</x:ref>
       | <x:ref>x_ref</x:ref>)*
