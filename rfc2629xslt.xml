@@ -321,11 +321,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>When "before-appendices", place the authors section between references
   and appendices (this ordering was used a long time ago).</c>
 
-  <c>rfc-ext</c>
-  <c>css-contents<iref item="css-contents PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="css-contents"/></c>
-  <c>xml2rfc-ext-css-contents<iref item="xml2rfc-ext-css-contents"/> <iref item="Parameters" subitem="xml2rfc-ext-css-contents"/></c>
-  <c></c>
-  <c>CSS content to use instead of the built-in (experimental).</c>
 
 
 
@@ -343,6 +338,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dd></dd>
     </dl>
      -->
+
+  <section title="css-contents - CSS Contents" anchor="xml2rfc-ext-css-contents">
+    <iref item="css-contents PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="css-contents"/>
+    <iref item="xml2rfc-ext-css-contents parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-css-contents"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>css-contents</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-css-contents</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      CSS content to use instead of the built-in (experimental).
+    </t>
+  </section>
 
   <section title="css-resource - Custom CSS Resource" anchor="xml2rfc-ext-css-resource">
     <iref item="css-resource PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="css-resource"/>
