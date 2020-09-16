@@ -327,11 +327,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c></c>
   <c>CSS content to use instead of the built-in (experimental).</c>
 
-  <c>rfc-ext</c>
-  <c>css-resource<iref item="css-resource PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="css-resource"/></c>
-  <c>xml2rfc-ext-css-resource<iref item="xml2rfc-ext-css-resource"/> <iref item="Parameters" subitem="xml2rfc-ext-css-resource"/></c>
-  <c></c>
-  <c>Name of CSS resource (URI or relate reference) to use instead of the built-in (experimental).</c>
 
 
 </texttable>
@@ -348,6 +343,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dd></dd>
     </dl>
      -->
+
+  <section title="css-resource - Custom CSS Resource" anchor="xml2rfc-ext-css-resource">
+    <iref item="css-resource PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="css-resource"/>
+    <iref item="xml2rfc-ext-css-resource parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-css-resource"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>css-resource</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-css-resource</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      Name of CSS resource (URI or relate reference) to use instead of the built-in (experimental).
+    </t>
+  </section>
 
   <section title="dark-mode - Switch for Enabling 'Dark Mode' Support" anchor="xml2rfc-ext-dark-mode">
     <iref item="dark-mode PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="dark-mode"/>
