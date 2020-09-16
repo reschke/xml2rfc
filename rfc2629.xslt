@@ -3536,6 +3536,9 @@
               <xsl:text>empty</xsl:text>
               <xsl:if test="@bare='true'">
                 <xsl:text> bare</xsl:text>
+                <xsl:call-template name="warning">
+                  <xsl:with-param name="msg">support for "bare" is experimental, see https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/547 for more information</xsl:with-param>
+                </xsl:call-template>
               </xsl:if>
               <xsl:if test="@bare and @bare!='true'">
                 <xsl:call-template name="error">
@@ -12011,11 +12014,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1325 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1325 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1326 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1326 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/16 13:30:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/16 13:30:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/16 14:20:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/16 14:20:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">

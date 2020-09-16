@@ -4198,7 +4198,7 @@ attlist.xref &amp;=
 <x:ref>v3_ul</x:ref> =
   element ul {
     attribute anchor { xsd:ID }?,
-    attribute bare { "false" | "true" }?,
+    attribute bare { "false" | "true" }?, # but see <eref target="https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/547"/>
     attribute indent { text }?,
     attribute empty { "false" | "true" }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
