@@ -3532,7 +3532,22 @@
         <ul>
           <xsl:call-template name="copy-anchor"/>
           <xsl:if test="@empty='true'">
-            <xsl:attribute name="class">empty</xsl:attribute>
+            <xsl:attribute name="class">
+              <xsl:text>empty</xsl:text>
+              <xsl:if test="@bare='true'">
+                <xsl:text> bare</xsl:text>
+              </xsl:if>
+              <xsl:if test="@bare and @bare!='true'">
+                <xsl:call-template name="error">
+                  <xsl:with-param name="msg">the only valid value for "bare" is "true"</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+            </xsl:attribute>
+          </xsl:if>
+          <xsl:if test="@bare and not(@empty='true')">
+            <xsl:call-template name="error">
+              <xsl:with-param name="msg">"bare" attribute is ignored when "empty" is not "true"</xsl:with-param>
+            </xsl:call-template>
           </xsl:if>
           <xsl:apply-templates />
         </ul>
@@ -8204,7 +8219,10 @@ dl > dd > dl {
 ul.empty {<!-- spacing between two entries in definition lists -->
   list-style-type: none;
 }
-ul.empty li {
+<xsl:if test="//ul[@bare='true']">ul.bare {
+  margin-left: -2em;
+}
+</xsl:if>ul.empty li {
   margin-top: .5em;
 }
 dl p {
@@ -11993,11 +12011,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1324 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1324 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1325 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1325 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/15 18:02:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/15 18:02:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/16 13:30:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/16 13:30:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">

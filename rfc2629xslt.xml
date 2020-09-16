@@ -4198,8 +4198,9 @@ attlist.xref &amp;=
 <x:ref>v3_ul</x:ref> =
   element ul {
     attribute anchor { xsd:ID }?,
+    attribute bare { "false" | "true" }?,
     attribute indent { text }?,
-    attribute empty { TEXT }?,
+    attribute empty { "false" | "true" }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     <x:ref>v3_li</x:ref>+
   }

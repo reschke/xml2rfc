@@ -974,8 +974,9 @@ v3_u =
 v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,
+    attribute bare { "false" | "true" }?,
     attribute indent { text }?,
-    attribute empty { TEXT }?,
+    attribute empty { "false" | "true" }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     v3_li+
   }
