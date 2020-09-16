@@ -3878,6 +3878,7 @@ attlist.xref &amp;=
   element em {
     (TEXT
       | eref
+      | iref
       | xref
       | <x:ref>v3_strong</x:ref>
       | <x:ref>x_ref</x:ref>)*

@@ -679,6 +679,7 @@ v3_em =
   element em {
     (TEXT
       | eref
+      | iref
       | xref
       | v3_strong
       | x_ref)*
