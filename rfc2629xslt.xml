@@ -314,15 +314,6 @@ xsltproc --param xml2rfc-toc '"yes"' \
   makes the document incompatible to the RFC7749 grammar; see description of
   conversion XSLT in <xref target="clean-for-dtd"/>).</c>
 
-  <c>rfc-ext</c>
-  <c>authors-section<iref item="authors-section PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="authors-section"/></c>
-  <c>xml2rfc-ext-authors-section<iref item="xml2rfc-ext-authors-section parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-authors-section"/></c>
-  <c>"end"</c>
-  <c>When "before-appendices", place the authors section between references
-  and appendices (this ordering was used a long time ago).</c>
-
-
-
 
 </texttable>
 
@@ -338,6 +329,26 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dd></dd>
     </dl>
      -->
+
+  <section title="authors-section - Placement of 'Authors' Section" anchor="xml2rfc-ext-authors-section">
+    <iref item="authors-section PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="authors-section"/>
+    <iref item="xml2rfc-ext-authors-section parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-authors-section"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>authors-section</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-authors-section</dd>
+      <dt>default</dt>
+      <dd>"end"</dd>
+    </dl>
+    <t>
+      When "before-appendices", place the authors section between references
+      and appendices (this ordering was used a long time ago).
+    </t>
+  </section>
 
   <section title="css-contents - CSS Contents" anchor="xml2rfc-ext-css-contents">
     <iref item="css-contents PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="css-contents"/>
