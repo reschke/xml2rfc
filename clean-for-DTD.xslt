@@ -1372,6 +1372,7 @@
 
 <!-- handled below -->
 <xsl:template match="rfc/@category" mode="cleanup"/>
+<xsl:template match="rfc/@ipr" mode="cleanup"/>
 
 <xsl:template match="rfc" mode="cleanup">
   <xsl:if test="@sortRefs='true'">
@@ -1415,6 +1416,15 @@
         <xsl:attribute name="category">info</xsl:attribute>
       </xsl:when>
       <xsl:otherwise><xsl:copy-of select="@category"/></xsl:otherwise>
+    </xsl:choose>
+    <xsl:choose>
+      <xsl:when test="@submissionType='IETF' and not(@ipr) and $xml2rfc-ext-xml2rfc-voc >= 3">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">defaulting /rfc/@ipr to "trust200902" for xml2rfc v3</xsl:with-param>
+        </xsl:call-template>
+        <xsl:attribute name="ipr">trust200902</xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise><xsl:copy-of select="@ipr"/></xsl:otherwise>
     </xsl:choose>
     <xsl:apply-templates select="@*|node()" mode="cleanup"/>
   </rfc>
