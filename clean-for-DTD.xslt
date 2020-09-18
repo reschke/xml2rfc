@@ -1370,6 +1370,9 @@
 <xsl:template match="rfc/@tocDepth" mode="cleanup"/>
 <xsl:template match="rfc/@consensus" mode="cleanup"/>
 
+<!-- handled below -->
+<xsl:template match="rfc/@category" mode="cleanup"/>
+
 <xsl:template match="rfc" mode="cleanup">
   <xsl:if test="@sortRefs='true'">
     <xsl:processing-instruction name="rfc">sortrefs="yes"</xsl:processing-instruction>
@@ -1403,6 +1406,15 @@
       <xsl:when test="@consensus='true' and $xml2rfc-ext-xml2rfc-voc &lt; 3"><xsl:attribute name="consensus">yes</xsl:attribute></xsl:when>
       <xsl:when test="@consensus='false' and $xml2rfc-ext-xml2rfc-voc &lt; 3"><xsl:attribute name="consensus">no</xsl:attribute></xsl:when>
       <xsl:otherwise><xsl:copy-of select="@consensus"/></xsl:otherwise>
+    </xsl:choose>
+    <xsl:choose>
+      <xsl:when test="@submissionType='IETF' and not(@category) and $xml2rfc-ext-xml2rfc-voc >= 3">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">defaulting /rfc/@category to "info" for xml2rfc v3</xsl:with-param>
+        </xsl:call-template>
+        <xsl:attribute name="category">info</xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise><xsl:copy-of select="@category"/></xsl:otherwise>
     </xsl:choose>
     <xsl:apply-templates select="@*|node()" mode="cleanup"/>
   </rfc>
