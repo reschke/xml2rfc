@@ -1018,7 +1018,7 @@
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
     <xsl:with-param name="attr" select="'doi-uri'"/>
-    <xsl:with-param name="default">http://dx.doi.org/{doi}</xsl:with-param>
+    <xsl:with-param name="default">https://dx.doi.org/{doi}</xsl:with-param>
   </xsl:call-template>
 </xsl:param>
 
@@ -1203,6 +1203,22 @@
     (/rfc/@ipr = '') or
     not(/rfc/@ipr)
   )" />
+
+<xsl:variable name="draft-fullname" select="/rfc/@docName"/>
+
+<xsl:variable name="draft-seq">
+  <xsl:call-template name="draft-sequence-number">
+    <xsl:with-param name="name" select="$draft-fullname"/>
+  </xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="draft-basename">
+  <xsl:call-template name="draft-base-name">
+    <xsl:with-param name="name" select="$draft-fullname"/>
+  </xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="is-submitted-draft" select="number($draft-seq)=$draft-seq"/>
 
 <xsl:variable name="is-rfc" select="$src/rfc/@number"/>
 
@@ -3515,7 +3531,25 @@
         <ul>
           <xsl:call-template name="copy-anchor"/>
           <xsl:if test="@empty='true'">
-            <xsl:attribute name="class">empty</xsl:attribute>
+            <xsl:attribute name="class">
+              <xsl:text>empty</xsl:text>
+              <xsl:if test="@bare='true'">
+                <xsl:text> bare</xsl:text>
+                <xsl:call-template name="warning">
+                  <xsl:with-param name="msg">support for "bare" is experimental, see https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/547 for more information</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+              <xsl:if test="@bare and @bare!='true'">
+                <xsl:call-template name="error">
+                  <xsl:with-param name="msg">the only valid value for "bare" is "true"</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+            </xsl:attribute>
+          </xsl:if>
+          <xsl:if test="@bare and not(@empty='true')">
+            <xsl:call-template name="error">
+              <xsl:with-param name="msg">"bare" attribute is ignored when "empty" is not "true"</xsl:with-param>
+            </xsl:call-template>
           </xsl:if>
           <xsl:apply-templates />
         </ul>
@@ -3848,7 +3882,7 @@
 </xsl:template>
 
 <xsl:template name="computed-auto-target">
-  <xsl:param name="bib"/>
+  <xsl:param name="bib" select="."/>
   <xsl:param name="ref"/>
 
   <xsl:variable name="sec">
@@ -3960,7 +3994,27 @@
         </xsl:choose>
       </xsl:if>
     </xsl:when>
-    <xsl:otherwise />
+    <xsl:when test="$bib//x:source/@href and document($bib//x:source/@href)/rfc/@docName">
+      <xsl:variable name="draftName" select="document($bib//x:source/@href)/rfc/@docName"/>
+      <xsl:variable name="endsWithLatest" select="substring($draftName, string-length($draftName) - string-length('-latest') + 1) = '-latest'"/>
+      <xsl:if test="not($endsWithLatest)">
+        <xsl:call-template name="compute-internet-draft-uri">
+          <xsl:with-param name="internet-draft" select="$draftName"/>
+          <xsl:with-param name="ref" select="$bib"/>
+        </xsl:call-template>
+        <xsl:if test="$ref and $sec!='' and $internetDraftUrlFragSection and $internetDraftUrlFragAppendix">
+          <xsl:choose>
+            <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
+              <xsl:value-of select="concat('#',$internetDraftUrlFragAppendix,$sec)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="concat('#',$internetDraftUrlFragSection,$sec)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:if>
+      </xsl:if>
+    </xsl:when>
+    <xsl:otherwise/>
   </xsl:choose>
 </xsl:template>
 
@@ -4200,9 +4254,7 @@
       <xsl:call-template name="info">
         <xsl:with-param name="msg">Ignoring @target <xsl:value-of select="@target"/> in link calculation</xsl:with-param>
       </xsl:call-template>
-      <xsl:call-template name="computed-auto-target">
-        <xsl:with-param name="bib" select="."/>
-      </xsl:call-template>
+      <xsl:call-template name="computed-auto-target"/>
     </xsl:when>
     <xsl:when test=".//seriesInfo/@name='RFC' and (@target='http://www.rfc-editor.org' or @target='https://www.rfc-editor.org') and starts-with(front/title,'Errata ID ') and front/author/organization='RFC Errata'">
       <!-- check for erratum link -->
@@ -4220,9 +4272,7 @@
       <xsl:value-of select="normalize-space(@target)" />
     </xsl:when>
     <xsl:otherwise>
-      <xsl:call-template name="computed-auto-target">
-        <xsl:with-param name="bib" select="."/>
-      </xsl:call-template>
+      <xsl:call-template name="computed-auto-target"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -5150,6 +5200,9 @@
     <!-- insert onload scripts, when required -->
     <xsl:variable name="onload">
       <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $is-rfc">getMeta("<xsl:value-of select="$rfcno"/>","rfc.meta");</xsl:if>
+      <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@docName">
+        <xsl:if test="$is-submitted-draft">getMeta("<xsl:value-of select="$draft-basename"/>","<xsl:value-of select="$draft-seq"/>","rfc.meta");</xsl:if>
+      </xsl:if>
       <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
       <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
     </xsl:variable>
@@ -5398,7 +5451,7 @@
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!='' and @anchor='rfc.status'">
+  <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and ($is-rfc or $is-submitted-draft) and @anchor='rfc.status'">
     <aside id="{$anchor-pref}meta" class="{$css-docstatus}"></aside>
   </xsl:if>
 
@@ -7844,10 +7897,9 @@ function toggleButton(node) {
       }
     }
   }
-}</script>
-</xsl:if>
-<xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!=''">
-<script>
+}</script></xsl:if>
+<xsl:if test="$xml2rfc-ext-insert-metadata='yes' and ($is-rfc or $is-submitted-draft)"><script>
+<xsl:if test="$rfcno!=''">
 function getMeta(rfcno, container) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "https://www.rfc-editor.org/rfc/rfc" + rfcno + ".json", true);
@@ -7906,19 +7958,6 @@ function getMeta(rfcno, container) {
   };
   xhr.send(null);
 }
-
-// DOM helpers
-function newElement(name) {
-  return document.createElement(name);
-}
-function newElementWithText(name, txt) {
-  var e = document.createElement(name);
-  e.appendChild(newText(txt));
-  return e;
-}
-function newText(text) {
-  return document.createTextNode(text);
-}
 function appendRfcLinks(parent, updates) {
   var template = "<xsl:call-template name="replace-substring">
   <xsl:with-param name="string" select="$xml2rfc-ext-rfc-uri"/>
@@ -7941,6 +7980,63 @@ function appendRfcLinks(parent, updates) {
       parent.appendChild(newText(", "));
     }
   }
+}</xsl:if><xsl:if test="$is-submitted-draft">
+function getMeta(docname, revision, container) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "https://datatracker.ietf.org/doc/" + docname + "/doc.json", true);
+  xhr.onload = function (e) {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.response);
+        
+        var cont = document.getElementById(container);
+        // empty the container
+        while (cont.firstChild) {
+          cont.removeChild(myNode.firstChild);
+        }
+
+        if (data.rev) {
+          cont.style.display = "block";
+          var bld = newElementWithText("b", "Internet Draft Status");
+          cont.appendChild(bld);
+          cont.appendChild(newElement("br"));
+          if (data.rev == revision) {
+            var rev = newElementWithText("i", "This is the latest submitted version.");
+            cont.appendChild(rev);
+          } else {
+            var rev = newElementWithText("i", "This is not the current version:");
+            cont.appendChild(rev);
+            cont.appendChild(newElement("br"));
+            var dat = "";
+            if (data.time) {
+              dat = ", submitted on " + data.time.substring(0,10);
+            }
+            rev = newElementWithText("i", "please see version " + data.rev + dat + ".");
+            cont.appendChild(rev);
+          }
+        }
+      } else {
+        console.error(xhr.statusText);
+      }
+    }
+  };
+  xhr.onerror = function (e) {
+    console.error(xhr.status + " " + xhr.statusText);
+  };
+  xhr.send(null);
+}</xsl:if>
+
+// DOM helpers
+function newElement(name) {
+  return document.createElement(name);
+}
+function newElementWithText(name, txt) {
+  var e = document.createElement(name);
+  e.appendChild(newText(txt));
+  return e;
+}
+function newText(text) {
+  return document.createTextNode(text);
 }
 </script>
 </xsl:if>
@@ -8125,7 +8221,10 @@ dl > dd > dl {
 ul.empty {<!-- spacing between two entries in definition lists -->
   list-style-type: none;
 }
-ul.empty li {
+<xsl:if test="//ul[@bare='true']">ul.bare {
+  margin-left: -2em;
+}
+</xsl:if>ul.empty li {
   margin-top: .5em;
 }
 dl p {
@@ -8591,7 +8690,7 @@ thead th {
 }</xsl:if><xsl:if test="$xml2rfc-ext-justification='always'">
 dd, li, p {
   text-align: justify;
-}</xsl:if><xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $rfcno!=''">
+}</xsl:if><xsl:if test="$xml2rfc-ext-insert-metadata='yes' and ($is-rfc or $is-submitted-draft)">
 .<xsl:value-of select="$css-docstatus"/> {
   border: 1px solid var(--col-fg);
   display: none;
@@ -9335,11 +9434,12 @@ dd, li, p {
       </t>
       <xsl:choose>
         <xsl:when test="$id-boilerplate='2010'">
+          <xsl:variable name="current-uri">http<xsl:if test="$rfc-boilerplate-use-https">s</xsl:if>://datatracker.ietf.org/drafts/current/</xsl:variable>
           <t>
             Internet-Drafts are working documents of the Internet Engineering
             Task Force (IETF). Note that other groups may also distribute
             working documents as Internet-Drafts. The list of current
-            Internet-Drafts is at <eref target='http://datatracker.ietf.org/drafts/current/'>http://datatracker.ietf.org/drafts/current/</eref>.
+            Internet-Drafts is at <eref target="{$current-uri}"><xsl:value-of select="$current-uri"/></eref>.
           </t>
         </xsl:when>
         <xsl:otherwise>
@@ -10511,7 +10611,6 @@ dd, li, p {
               </xsl:call-template>
               <xsl:variable name="t">
                 <xsl:call-template name="computed-auto-target">
-                  <xsl:with-param name="bib" select="."/>
                   <xsl:with-param name="ref" select="$nodes[1]"/>
                 </xsl:call-template>
               </xsl:variable>
@@ -11914,11 +12013,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1320 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1320 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1326 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1326 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/10 19:37:06 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/10 19:37:06 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/16 14:20:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/16 14:20:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
