@@ -578,20 +578,41 @@
 </xsl:param>
 
 <xsl:variable name="log-level">
+  <xsl:call-template name="parse-log-level">
+    <xsl:with-param name="level" select="$xml2rfc-ext-log-level"/>
+  </xsl:call-template>
+</xsl:variable>
+
+<xsl:param name="xml2rfc-ext-abort-on">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'abort-on'"/>
+    <xsl:with-param name="default" select="'OFF'"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:variable name="abort-log-level">
+  <xsl:call-template name="parse-log-level">
+    <xsl:with-param name="level" select="$xml2rfc-ext-abort-on"/>
+  </xsl:call-template>
+</xsl:variable>
+
+<xsl:template name="parse-log-level">
+  <xsl:param name="level"/>
   <xsl:choose>
-    <xsl:when test="$xml2rfc-ext-log-level='OFF'">6</xsl:when>
-    <xsl:when test="$xml2rfc-ext-log-level='FATAL'">5</xsl:when>
-    <xsl:when test="$xml2rfc-ext-log-level='ERROR'">4</xsl:when>
-    <xsl:when test="$xml2rfc-ext-log-level='WARNING'">3</xsl:when>
-    <xsl:when test="$xml2rfc-ext-log-level='INFO'">2</xsl:when>
-    <xsl:when test="$xml2rfc-ext-log-level='DEBUG'">1</xsl:when>
-    <xsl:when test="$xml2rfc-ext-log-level='TRACE'">0</xsl:when>
+    <xsl:when test="$level='OFF'">6</xsl:when>
+    <xsl:when test="$level='FATAL'">5</xsl:when>
+    <xsl:when test="$level='ERROR'">4</xsl:when>
+    <xsl:when test="$level='WARNING'">3</xsl:when>
+    <xsl:when test="$level='INFO'">2</xsl:when>
+    <xsl:when test="$level='DEBUG'">1</xsl:when>
+    <xsl:when test="$level='TRACE'">0</xsl:when>
     <xsl:otherwise>
-      <xsl:message>Unsupported LOG level '<xsl:value-of select="$xml2rfc-ext-log-level"/>', defaulting to 'WARNING'</xsl:message>
+      <xsl:message>Unsupported LOG level '<xsl:value-of select="$level"/>', defaulting to 'WARNING'</xsl:message>
       <xsl:value-of select="'3'"/>
     </xsl:otherwise>
   </xsl:choose>
-</xsl:variable>
+</xsl:template>
 
 <!-- prettyprinting -->
 
@@ -11569,7 +11590,14 @@ dd, li, p {
         <!-- <xsl:comment><xsl:value-of select="$message"/></xsl:comment> -->
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:message><xsl:value-of select="$message"/></xsl:message>
+    <xsl:choose>
+      <xsl:when test="$dlevel >= $abort-log-level">
+        <xsl:message terminate="yes"><xsl:value-of select="$message"/></xsl:message>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:message><xsl:value-of select="$message"/></xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:if>
 </xsl:template>
 
@@ -12014,11 +12042,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1326 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1326 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1327 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1327 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/16 14:20:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/16 14:20:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/09/24 11:13:36 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/24 11:13:36 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
