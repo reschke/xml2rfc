@@ -156,7 +156,7 @@
       <xsl:attribute name="border-width">thin</xsl:attribute>
     </xsl:when>
 
-    <xsl:when test="self::sourcecode or starts-with(@type,'text/plain') or @type='example' or @type='code'">
+    <xsl:when test="self::sourcecode or starts-with(@type,'text/plain') or @type='example' or @type='code' or @type='http-sf-list'">
       <xsl:attribute name="background-color">#f8f8f8</xsl:attribute>
       <xsl:attribute name="border-style">dotted</xsl:attribute>
       <xsl:attribute name="border-width">thin</xsl:attribute>

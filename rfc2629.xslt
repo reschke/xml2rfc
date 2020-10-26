@@ -1547,7 +1547,7 @@
       <xsl:when test="starts-with(@type,'message/http') and contains(@type,'msgtype=&quot;request&quot;')">text2</xsl:when>
       <xsl:when test="starts-with(@type,'message/http')">text</xsl:when>
       <xsl:when test="@type='drawing' or @type='pdu'">drawing</xsl:when>
-      <xsl:when test="self::sourcecode or @type='text/plain' or @type='example' or @type='code' or @type='xml' or @type='application/xml-dtd' or @type='application/json'">text</xsl:when>
+      <xsl:when test="self::sourcecode or @type='text/plain' or @type='example' or @type='http-sf-list' or @type='code' or @type='xml' or @type='application/xml-dtd' or @type='application/json'">text</xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
     <xsl:if test="@x:lang and $prettyprint-class!=''">
@@ -12042,11 +12042,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1327 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1327 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1329 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1329 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/09/24 11:13:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/09/24 11:13:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/10/26 06:04:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/10/26 06:04:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -12669,6 +12669,7 @@ prev: <xsl:value-of select="$prev"/>
                   <!-- check pseudo-attribute names -->
                   <xsl:if test="name()='rfc-ext' and $attr='SANITYCHECK'">
                     <xsl:choose>
+                      <xsl:when test="$attrname='abort-on'"/>
                       <xsl:when test="$attrname='allow-markup-in-artwork'"/>
                       <xsl:when test="$attrname='authors-section'"/>
                       <xsl:when test="$attrname='check-artwork-width'"/>
@@ -12680,6 +12681,7 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='include-references-in-index'"/>
                       <xsl:when test="$attrname='internet-draft-uri'"/>
                       <xsl:when test="$attrname='justification'"/>
+                      <xsl:when test="$attrname='log-level'"/>
                       <xsl:when test="$attrname='paragraph-links'"/>
                       <xsl:when test="$attrname='parse-xml-in-artwork'"/>
                       <xsl:when test="$attrname='refresh-from'"/>
