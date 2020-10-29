@@ -5221,7 +5221,7 @@
     <!-- insert onload scripts, when required -->
     <xsl:variable name="onload">
       <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $is-rfc">getMeta("<xsl:value-of select="$rfcno"/>","rfc.meta");</xsl:if>
-      <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and /rfc/@docName">
+      <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and not($is-rfc) and /rfc/@docName">
         <xsl:if test="$is-submitted-draft">getMeta("<xsl:value-of select="$draft-basename"/>","<xsl:value-of select="$draft-seq"/>","rfc.meta");</xsl:if>
       </xsl:if>
       <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
@@ -12041,11 +12041,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1330 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1330 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1331 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1331 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/10/27 10:51:11 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/10/27 10:51:11 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/10/28 12:40:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/10/28 12:40:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
