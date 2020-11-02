@@ -3203,7 +3203,7 @@
     <xsl:when test="parent::figure">
       <div id="{$anchor}"/>
     </xsl:when>
-    <xsl:when test="ancestor::t or ancestor::artwork or ancestor::sourcecode or ancestor::preamble or ancestor::postamble">
+    <xsl:when test="ancestor::t or ancestor::li or ancestor::artwork or ancestor::sourcecode or ancestor::preamble or ancestor::postamble">
       <span id="{$anchor}"/>
     </xsl:when>
     <xsl:otherwise>
@@ -12042,11 +12042,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1331 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1331 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1332 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1332 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/10/28 12:40:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/10/28 12:40:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/11/02 15:07:03 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/11/02 15:07:03 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
