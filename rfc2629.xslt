@@ -3792,6 +3792,7 @@
 <xsl:template name="expand-format-percent">
   <xsl:param name="format"/>
   <xsl:param name="pos"/>
+  <xsl:param name="item" select="."/>
   
   <xsl:choose>
     <xsl:when test="$format=''"><!-- done--></xsl:when>
@@ -3800,6 +3801,7 @@
       <xsl:call-template name="expand-format-percent">
         <xsl:with-param name="format" select="substring($format,2)"/>
         <xsl:with-param name="pos" select="$pos"/>
+        <xsl:with-param name="item" select="$item"/>
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
@@ -3811,6 +3813,29 @@
         <xsl:when test="$f='d'"><xsl:number value="$pos"/></xsl:when>
         <xsl:when test="$f='i'"><xsl:number value="$pos" format="i"/></xsl:when>
         <xsl:when test="$f='I'"><xsl:number value="$pos" format="I"/></xsl:when>
+        <xsl:when test="$f='p'">
+          <xsl:variable name="list" select="$item/.."/>
+          <xsl:for-each select="$list/..">
+            <xsl:call-template name="expand-format-percent">
+              <xsl:with-param name="format">
+                <xsl:choose>
+                  <xsl:when test="../@type">
+                    <xsl:value-of select="../@type"/>
+                  </xsl:when>
+                  <xsl:otherwise>%d.</xsl:otherwise>
+                </xsl:choose>
+              </xsl:with-param>
+              <xsl:with-param name="pos">
+                <xsl:variable name="ps">
+                  <xsl:call-template name="ol-start">
+                    <xsl:with-param name="node" select=".."/>
+                  </xsl:call-template>
+                </xsl:variable>
+                <xsl:value-of select="$ps + position()"/>
+              </xsl:with-param>
+            </xsl:call-template>
+          </xsl:for-each>
+        </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="error">
             <xsl:with-param name="msg" select="concat('Unsupported % format: ', $f)"/>
@@ -3821,6 +3846,7 @@
       <xsl:call-template name="expand-format-percent">
         <xsl:with-param name="format" select="substring($format,3)"/>
         <xsl:with-param name="pos" select="$pos"/>
+        <xsl:with-param name="item" select="$item"/>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -6225,6 +6251,7 @@
         <xsl:call-template name="expand-format-percent">
           <xsl:with-param name="format" select="substring-after($listtype,'format ')"/>
           <xsl:with-param name="pos" select="$n + $s - 1"/>
+          <xsl:with-param name="item" select="$to"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
@@ -12024,11 +12051,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1333 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1333 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1334 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1334 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/11/18 14:12:21 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/11/18 14:12:21 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/11/18 19:03:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/11/18 19:03:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
