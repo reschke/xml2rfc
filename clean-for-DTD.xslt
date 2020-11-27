@@ -498,7 +498,17 @@
   <xsl:if test="not(preceding-sibling::x:dfn) and count(following-sibling::list)=1 and normalize-space(../text()='')">
     <xsl:processing-instruction name="rfc">needLines="4"</xsl:processing-instruction>
   </xsl:if>-->
-  <xsl:apply-templates mode="cleanup"/>
+    <xsl:choose>
+      <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+        <em><xsl:apply-templates mode="cleanup"/></em>
+      </xsl:when>
+      <xsl:when test="@ascii!=''">
+        <xsl:value-of select="@ascii"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates mode="cleanup"/>
+      </xsl:otherwise>
+    </xsl:choose>
 </xsl:template>
 
 <xsl:template match="x:sup|sup" mode="cleanup">
