@@ -512,13 +512,33 @@
 </xsl:template>
 
 <xsl:template match="x:sup|sup" mode="cleanup">
-  <xsl:text>^</xsl:text>
-  <xsl:apply-templates mode="cleanup" />
+    <xsl:choose>
+      <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+        <sup><xsl:apply-templates select="@*|node()" mode="cleanup"/></sup>
+      </xsl:when>
+      <xsl:when test="@ascii!=''">
+        <xsl:value-of select="@ascii"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>^</xsl:text>
+        <xsl:apply-templates mode="cleanup" />
+      </xsl:otherwise>
+    </xsl:choose>
 </xsl:template>
 
 <xsl:template match="sub" mode="cleanup">
-  <xsl:text>_</xsl:text>
-  <xsl:apply-templates mode="cleanup" />
+    <xsl:choose>
+      <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+        <sub><xsl:apply-templates select="@*|node()" mode="cleanup"/></sub>
+      </xsl:when>
+      <xsl:when test="@ascii!=''">
+        <xsl:value-of select="@ascii"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>_</xsl:text>
+        <xsl:apply-templates mode="cleanup" />
+      </xsl:otherwise>
+    </xsl:choose>
 </xsl:template>
 
 <xsl:template match="x:span" mode="cleanup">
