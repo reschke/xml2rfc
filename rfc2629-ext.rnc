@@ -1227,7 +1227,7 @@ x_x =
     empty
   }
 
-# XInclude (see Section 12.42)
+# XInclude (see Section 12.43)
 xi_include =
   element xi:include {
     attribute href { text },

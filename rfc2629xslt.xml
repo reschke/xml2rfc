@@ -2330,6 +2330,31 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="Extensions to xref Element" anchor="v3.xref">
+  <iref item="V3 Extension Elements" subitem="xref" primary="true"/>
+  <iref item="xref V3 Extension Element" primary="true"/>
+
+<section title="relative attribute" anchor="v3.xref.relative">
+<t>
+  See <xref target="ext-rfc2629.xref"/>, "x:rel" attribute.
+</t>
+</section>
+
+<section title="section attribute" anchor="v3.xref.section">
+<t>
+  See <xref target="ext-rfc2629.xref"/>, "x:sec" attribute.
+</t>
+</section>
+
+<section title="sectionFormat attribute" anchor="v3.xref.sectionFormat">
+<t>
+  See <xref target="ext-rfc2629.xref"/>, "x:fmt" attribute, where
+  "bare" maps to "none", "comma" maps to ",", "of" maps to "of", and "parens"
+  maps to "()".
+</t>
+</section>
+</section>
+
 <section title="xi:include Element" anchor="v3.xi-include">
   <iref item="V3 Extension Elements" subitem="xi:include" primary="true"/>
   <iref item="xi:include V3 Extension Element" primary="true"/>
