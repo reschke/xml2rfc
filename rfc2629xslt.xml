@@ -3732,7 +3732,7 @@ attlist.texttable &amp;=
 <em># Extend attribute set for &lt;title></em>
 attlist.title &amp;=
   attribute ascii { ATEXT }?,
-  attribute x:quotes { "true" | "false" }? # (deprecated, see <xref target="v3.reference.quoteTitle"/>))
+  attribute x:quotes { "true" | "false" }? # (deprecated, see <xref target="v3.reference.quoteTitle"/>)
 
 <em># Allow annotation attribute on &lt;uri></em>
 attlist.uri &amp;=

@@ -502,7 +502,7 @@ attlist.texttable &=
 # Extend attribute set for <title>
 attlist.title &=
   attribute ascii { ATEXT }?,
-  attribute x:quotes { "true" | "false" }? # (deprecated, see Section 12.22.1))
+  attribute x:quotes { "true" | "false" }? # (deprecated, see Section 12.22.1)
 
 # Allow annotation attribute on <uri>
 attlist.uri &=
