@@ -299,6 +299,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
 </section>
 
 <section title="Extension PIs" anchor="extension.pis">
+  <section title="abort-on - Log Level" anchor="xml2rfc-ext-abort-on">
+    <iref item="abort-on PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="abort-on"/>
+    <iref item="xml2rfc-ext-abort-on parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-abort-on"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>abort-on</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-abort-on</dd>
+      <dt>default</dt>
+      <dd>"OFF"</dd>
+    </dl>
+    <t>
+      Controls at which log level a message causes the XSLT to be aborted (one of "OFF", "FATAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE").
+    </t>
+  </section>
+
   <section title="allow-markup-in-artwork - Allow certain XML elements inside &lt;artwork> and &lt;sourcecode>" anchor="xml2rfc-ext-allow-markup-in-artwork">
     <iref item="allow-markup-in-artwork PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="allow-markup-in-artwork"/>
     <iref item="xml2rfc-ext-allow-markup-in-artwork parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-allow-markup-in-artwork"/>
@@ -2116,6 +2135,20 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="Extensions to reference Element" anchor="v3.reference">
+  <iref item="V3 Extension Elements" subitem="reference" primary="true"/>
+  <iref item="reference V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.reference"/>.
+</t>
+
+<section title="quoteTitle attribute" anchor="v3.reference.quoteTitle">
+<t>
+  See <xref target="RFC7991bis-01" x:fmt="of" x:rel="#element.reference.attribute.quoteTitle"/>.
+</t>
+</section>
+</section>
+
 <section title="referencegroup Element" anchor="v3.referencegroup">
   <iref item="V3 Extension Elements" subitem="referencegroup" primary="true"/>
   <iref item="referencegroup V3 Extension Element" primary="true"/>
@@ -2133,36 +2166,6 @@ Content-Length: &lt;x:length-of target="req"/>
 <t>
   <em>EXPERIMENTAL, might be removed again - see <eref target="https://github.com/rfc-format/draft-iab-xml2rfc-v3-bis/issues/26"/>.</em>
 </t>
-</section>
-
-<section title="sortingcode Element" anchor="v3.sortingcode">
-  <iref item="V3 Extension Elements" subitem="sortingcode" primary="true"/>
-  <iref item="sortingcode V3 Extension Element" primary="true"/>
-<t>
-  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="4.2.7"/>.
-</t>
-</section>
-
-<section title="sourcecode Element" anchor="v3.sourcecode">
-  <iref item="V3 Extension Elements" subitem="sourcecode" primary="true"/>
-  <iref item="sourcecode V3 Extension Element" primary="true"/>
-<t>
-  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.sourcecode"/>.
-</t>
-</section>
-
-<section title="Extensions to reference Element" anchor="v3.reference">
-  <iref item="V3 Extension Elements" subitem="reference" primary="true"/>
-  <iref item="reference V3 Extension Element" primary="true"/>
-<t>
-  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.reference"/>.
-</t>
-
-<section title="quoteTitle attribute" anchor="v3.reference.quoteTitle">
-<t>
-  See <xref target="RFC7991bis-01" x:fmt="of" x:rel="#element.reference.attribute.quoteTitle"/>.
-</t>
-</section>
 </section>
 
 <section title="Extensions to section Element" anchor="v3.section">
@@ -2183,6 +2186,22 @@ Content-Length: &lt;x:length-of target="req"/>
   See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.section.attribute.removeInRFC"/>.
 </t>
 </section>
+</section>
+
+<section title="sortingcode Element" anchor="v3.sortingcode">
+  <iref item="V3 Extension Elements" subitem="sortingcode" primary="true"/>
+  <iref item="sortingcode V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="4.2.7"/>.
+</t>
+</section>
+
+<section title="sourcecode Element" anchor="v3.sourcecode">
+  <iref item="V3 Extension Elements" subitem="sourcecode" primary="true"/>
+  <iref item="sourcecode V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.sourcecode"/>.
+</t>
 </section>
 
 <section title="strong Element" anchor="v3.strong">

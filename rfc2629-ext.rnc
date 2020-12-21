@@ -446,7 +446,7 @@ attlist.x_note &=
   attribute anchor { xsd:ID }?,
   attribute title { ATEXT }?,
   attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
-  attribute removeInRFC { "false" | "true" }? # see Section 12.27.2
+  attribute removeInRFC { "false" | "true" }? # see Section 12.25.2
 
 # Extend attribute set for <preamble>
 attlist.preamble &=
@@ -459,7 +459,7 @@ attlist.organization &=
 
 # Extend attribute set for <reference>
 attlist.reference &=
-  attribute quoteTitle { "false" | "true" }?, # (see Section 12.26.1)
+  attribute quoteTitle { "false" | "true" }?, # (see Section 12.22.1)
   attribute xml:base { text }? # (see [RFC7991bis], Section 2)
 
 # Extend attribute set for <references>
@@ -475,8 +475,8 @@ attlist.x_section &=
   attribute anchor { xsd:ID }?,
   attribute title { ATEXT }?,
   attribute toc { "include" | "exclude" | "default" }?,
-  attribute numbered { "false" | "true" }?, # see Section 12.27.1
-  attribute removeInRFC { "false" | "true" }?, # see Section 12.27.2
+  attribute numbered { "false" | "true" }?, # see Section 12.25.1
+  attribute removeInRFC { "false" | "true" }?, # see Section 12.25.2
   attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
   attribute x:fixed-section-number { ATEXT }?
 
@@ -502,7 +502,7 @@ attlist.texttable &=
 # Extend attribute set for <title>
 attlist.title &=
   attribute ascii { ATEXT }?,
-  attribute x:quotes { "true" | "false" }? # (deprecated, see Section 12.26.1))
+  attribute x:quotes { "true" | "false" }? # (deprecated, see Section 12.22.1))
 
 # Allow annotation attribute on <uri>
 attlist.uri &=
@@ -777,7 +777,7 @@ v3_postalLine =
     TEXT
   }
 
-# EXPERIMENTAL DO NOT USE YET (see Section 12.23)
+# EXPERIMENTAL DO NOT USE YET (see Section 12.24)
 v3_relref =
   element relref {
     attribute derivedLink { text }?, # (see [RFC7991bis], Appendix B.3)
@@ -795,7 +795,7 @@ v3_refcontent =
       | v3_em)*
   }
 
-# reference group (see Section 12.22)
+# reference group (see Section 12.23)
 v3_referencegroup =
   element referencegroup {
     attribute anchor { xsd:ID },
@@ -804,14 +804,14 @@ v3_referencegroup =
       | xi_include)+
   }
 
-# (see Section 12.24)
+# (see Section 12.26)
 v3_sortingcode =
   element sortingcode {
     attribute ascii { ATEXT }?,
     TEXT
   }
 
-# Source Code (see Section 12.25)
+# Source Code (see Section 12.27)
 v3_sourcecode =
   element sourcecode {
     attribute anchor { xsd:ID }?,
