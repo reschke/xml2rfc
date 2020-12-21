@@ -2349,7 +2349,7 @@ Content-Length: &lt;x:length-of target="req"/>
 <section title="sectionFormat attribute" anchor="v3.xref.sectionFormat">
 <t>
   See <xref target="ext-rfc2629.xref"/>, "x:fmt" attribute, where
-  "bare" maps to "none", "comma" maps to ",", "of" maps to "of", and "parens"
+  "bare" maps to "sec", "comma" maps to ",", "of" maps to "of", and "parens"
   maps to "()".
 </t>
 </section>
