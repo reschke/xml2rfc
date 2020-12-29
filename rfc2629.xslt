@@ -5912,6 +5912,12 @@
     </xsl:call-template>
   </xsl:if>
 
+  <xsl:if test="self::relref and not(@section)">
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg">&lt;relref&gt; requires @section attribute</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+
   <xsl:variable name="sfmt">
     <xsl:call-template name="get-section-xref-format"/>
   </xsl:variable>
@@ -6706,6 +6712,12 @@
   <xsl:if test="@target!=$target">
     <xsl:call-template name="info">
       <xsl:with-param name="msg">Target '<xsl:value-of select="@target"/>' rewritten to '<xsl:value-of select="$target"/>'.</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+
+  <xsl:if test="self::relref and not(@section)">
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg">&lt;relref&gt; requires @section attribute</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
 
@@ -12071,11 +12083,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1336 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1336 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1337 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1337 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/12/21 14:46:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/12/21 14:46:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2020/12/29 14:33:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/12/29 14:33:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
