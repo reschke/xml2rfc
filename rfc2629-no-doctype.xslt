@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to HTML
 
-    Copyright (c) 2006-2020, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2021, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -5844,6 +5844,9 @@
           </xsl:call-template>
         </xsl:otherwise>
       </xsl:choose>
+    </xsl:when>
+    <xsl:when test="self::xref and @section and not(@sectionFormat)">
+      <xsl:text>of</xsl:text>
     </xsl:when>
     <xsl:when test="self::xref and @sectionFormat">
       <xsl:if test="@x:fmt">
@@ -12082,11 +12085,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1337 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1337 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1338 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1338 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2020/12/29 14:33:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2020/12/29 14:33:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/01/06 16:34:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/01/06 16:34:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
