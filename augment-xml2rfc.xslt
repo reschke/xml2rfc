@@ -2,7 +2,7 @@
     Augment section links to RFCs and Internet Drafts, also cleanup 
     unneeded markup from kramdown2629
 
-    Copyright (c) 2017-2020, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2017-2021, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -227,7 +227,21 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="strip-and-annotate-refs"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="xref[not(*|text())]" mode="strip-and-annotate-refs">
+<xsl:template match="xref[not(*|text())][@section]" mode="strip-and-annotate-refs">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="strip-and-annotate-refs"/>
+    <xsl:variable name="reftarget" select="//reference[@anchor=current()/@target]"/>
+    <xsl:if test="@section">
+      <xsl:call-template name="insert-target-metadata">
+        <xsl:with-param name="file" select="$reftarget/seriesInfo[@name='RFC' or @name='Internet-Draft']/@value"/>
+        <xsl:with-param name="sec" select="@section"/>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="strip-and-annotate-refs"/>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="xref[not(*|text())][not(@section)]" mode="strip-and-annotate-refs">
   <xsl:variable name="fx" select="following-sibling::*[1]"/>
   <xsl:variable name="f" select="$fx[self::xref and @INSERT='preceding']"/>
   <xsl:variable name="px" select="preceding-sibling::*[1]"/>
