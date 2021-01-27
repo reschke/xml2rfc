@@ -2126,6 +2126,21 @@
         <xsl:value-of select="@x:when-empty"/>
       </t>
     </xsl:when>
+    <xsl:when test="parent::dd">
+      <!-- ul nested in dd -->
+      <xsl:choose>
+        <xsl:when test="@empty='true'">
+          <list style="empty">
+            <xsl:apply-templates mode="cleanup"/>
+          </list>
+        </xsl:when>
+        <xsl:otherwise>
+          <list style="symbols">
+            <xsl:apply-templates mode="cleanup"/>
+          </list>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
     <xsl:otherwise>
       <t>
         <xsl:choose>
