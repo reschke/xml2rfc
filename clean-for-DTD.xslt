@@ -1783,6 +1783,10 @@
         </references>
       </xsl:if>
     </xsl:when>
+    <xsl:when test="references and $xml2rfc-ext-xml2rfc-voc &lt; 3">
+      <!-- V2 does not allow nested references -->
+      <xsl:apply-templates select="references" mode="cleanup"/>
+    </xsl:when>
     <xsl:otherwise>
       <references>
         <xsl:variable name="title">
