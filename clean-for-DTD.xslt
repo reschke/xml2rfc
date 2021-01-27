@@ -1,7 +1,7 @@
 <!--
     Strip rfc2629.xslt extensions, generating XML input for "official" xml2rfc
 
-    Copyright (c) 2006-2020, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2021, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1965,7 +1965,7 @@
       <xsl:attribute name="target"><xsl:value-of select="$p/@anchor"/></xsl:attribute>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:attribute name="target"><xsl:value-of select="@target"/></xsl:attribute>
+      <xsl:attribute name="target"><xsl:value-of select="."/></xsl:attribute>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
