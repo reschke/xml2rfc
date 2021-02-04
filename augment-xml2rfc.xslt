@@ -121,7 +121,7 @@
           <xsl:if test="@anchor">
             <xsl:processing-instruction name="aug-anchor"><xsl:value-of select="@anchor"/></xsl:processing-instruction>
           </xsl:if>
-          <xsl:processing-instruction name="aug-title"><xsl:value-of select="@title"/></xsl:processing-instruction>
+          <xsl:processing-instruction name="aug-title"><xsl:value-of select="normalize-space(concat(@title,name))"/></xsl:processing-instruction>
         </xsl:if>
       </xsl:for-each>
     </xsl:if>
