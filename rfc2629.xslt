@@ -4431,7 +4431,7 @@
   <!-- check that BCP FYI STD RFC are in the right order -->
   <xsl:if test="(@name='BCP' or @name='FYI' or @name='STD') and preceding-sibling::seriesInfo[@name='RFC']">
     <xsl:call-template name="warning">
-      <xsl:with-param name="msg">RFC number preceding <xsl:value-of select="@name"/> number in reference '<xsl:value-of select="../@anchor"/>'</xsl:with-param>
+      <xsl:with-param name="msg">RFC number preceding <xsl:value-of select="@name"/> number in reference '<xsl:value-of select="ancestor::reference/@anchor"/>'</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
 </xsl:template>
@@ -12104,11 +12104,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1340 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1340 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1341 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1341 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/01/15 17:06:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/01/15 17:06:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/02/05 11:25:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/02/05 11:25:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
