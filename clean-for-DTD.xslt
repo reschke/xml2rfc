@@ -126,7 +126,8 @@
       <xsl:text>&#10;</xsl:text>
       <xsl:copy/>
     </xsl:when>
-    <xsl:when test="substring($include, string-length($include) - 3) != '.xml'">
+    <!-- try to append ".xml" when not present and no query parameter present -->
+    <xsl:when test="not(contains($include,'?')) and substring($include, string-length($include) - 3) != '.xml'">
       <xsl:apply-templates select="document(concat($include,'.xml'))" mode="cleanup"/>
     </xsl:when>
     <xsl:otherwise>
