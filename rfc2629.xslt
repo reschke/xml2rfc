@@ -3551,7 +3551,7 @@
               </xsl:if>
             </xsl:attribute>
           </xsl:if>
-          <xsl:if test="@bare and not(@empty='true')">
+          <xsl:if test="@bare='true' and not(@empty='true')">
             <xsl:call-template name="error">
               <xsl:with-param name="msg">"bare" attribute is ignored when "empty" is not "true"</xsl:with-param>
             </xsl:call-template>
@@ -5453,7 +5453,11 @@
 <xsl:variable name="section-level-irefs" select="//section/iref[count(preceding-sibling::*[not(self::iref) and not(self::x:anchor-alias) and not(self::name)])=0]"/>
 
 <!-- suppress xml2rfc preptool artefacts -->
-<xsl:template match="section[author]"/>
+<xsl:template match="back/section[author]">
+  <xsl:call-template name="warning">
+    <xsl:with-param name="msg">Ignoring appendix containing &lt;author&gt; elements (likely added by preptool step).</xsl:with-param>
+  </xsl:call-template>
+</xsl:template>
 
 <xsl:template match="section|appendix">
   <xsl:call-template name="check-no-text-content"/>
@@ -12104,11 +12108,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1341 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1341 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1342 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1342 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/02/05 11:25:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/02/05 11:25:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/02/09 10:58:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/02/09 10:58:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
