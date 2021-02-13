@@ -434,8 +434,8 @@
       <xsl:variable name="ends-with-xml" select="substring($base, string-length($base)-3)='.xml'"/>
       <xsl:variable name="for-draft" select="contains($base,'reference.I-D')"/>
       <xsl:variable name="uri2" select="concat($base,'.xml',$query)"/>
-      <xsl:variable name="uri3r" select="concat($toolsBaseUriForRFCReferences,$base,$query)"/>
-      <xsl:variable name="uri4r" select="concat($toolsBaseUriForRFCReferences,$base,'.xml',$query)"/>
+      <xsl:variable name="uri3r" select="concat($xml2rfc-ext-rfc-reference-base-uri,$base,$query)"/>
+      <xsl:variable name="uri4r" select="concat($xml2rfc-ext-rfc-reference-base-uri,$base,'.xml',$query)"/>
       <xsl:variable name="uri3i" select="concat($toolsBaseUriForIDReferences,$base,$query)"/>
       <xsl:variable name="uri4i" select="concat($toolsBaseUriForIDReferences,$base,'.xml',$query)"/>
       <xsl:choose>
@@ -926,7 +926,14 @@
 <xsl:param name="internetDraftUrlFragAppendix" select="'appendix-'" />
 
 <!-- base URI for include directive when relative reference does not resolve for RFCs -->
-<xsl:param name="toolsBaseUriForRFCReferences">https://xml2rfc.tools.ietf.org/public/rfc/bibxml/</xsl:param>
+<xsl:param name="xml2rfc-ext-rfc-reference-base-uri">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'rfc-uri'"/>
+    <!-- previously 'https://xml2rfc.tools.ietf.org/public/rfc/bibxml/' -->
+    <xsl:with-param name="default">https://www.rfc-editor.org/refs/bibxml/</xsl:with-param>
+  </xsl:call-template>
+</xsl:param>
 
 <!-- base URI for include directive when relative reference does not resolve for Intetnet Drafts -->
 <xsl:param name="toolsBaseUriForIDReferences">https://xml2rfc.tools.ietf.org/public/rfc/bibxml-ids/</xsl:param>
@@ -12108,11 +12115,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1342 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1342 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1343 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1343 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/02/09 10:58:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/02/09 10:58:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/02/13 15:20:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/02/13 15:20:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -12754,6 +12761,7 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='refresh-interval'"/>
                       <xsl:when test="$attrname='refresh-xslt'"/>
                       <xsl:when test="$attrname='rfc-uri'"/>
+                      <xsl:when test="$attrname='rfc-reference-base-uri'"/>
                       <xsl:when test="$attrname='sec-no-trailing-dots'"/>
                       <xsl:when test="$attrname='trace-parse-xml'"/>
                       <xsl:when test="$attrname='ucd-file'"/>
