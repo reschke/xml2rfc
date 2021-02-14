@@ -1680,29 +1680,18 @@
 
 <!-- while we're doing xinclude we can do this as well, right? -->
 <xsl:template match="pi:rfc[@name='include']" mode="prep-xinclude">
-  <xsl:variable name="content" select="document(@value)"/>
-  <xsl:choose>
-    <xsl:when test="$content">
-      <xsl:for-each select="$content/*">
-        <xsl:copy>
-          <xsl:attribute name="xml:base" select="@value"/>
-          <xsl:copy-of select="@*[not(name()='xml:base')]"/>
-          <xsl:copy-of select="node()"/>
-        </xsl:copy>
-      </xsl:for-each>
-    </xsl:when>
-    <xsl:otherwise>
-      <!-- retry with .xml -->
-      <xsl:variable name="content2" select="document(concat(@value,'.xml'))"/>
-      <xsl:for-each select="$content2/*">
-        <xsl:copy>
-          <xsl:attribute name="xml:base" select="concat(@value,'.xml')"/>
-          <xsl:copy-of select="@*[not(name()='xml:base')]"/>
-          <xsl:copy-of select="node()"/>
-        </xsl:copy>
-      </xsl:for-each>
-    </xsl:otherwise>
-  </xsl:choose>
+  <xsl:variable name="content">
+    <xsl:call-template name="obtain-reference-for-include-PI">
+      <xsl:with-param name="uri" select="@value"/>
+    </xsl:call-template>
+  </xsl:variable>  
+  <xsl:for-each select="$content/*/reference">
+    <xsl:copy>
+      <xsl:attribute name="xml:base" select="@value"/>
+      <xsl:copy-of select="@*[not(name()='xml:base')]"/>
+      <xsl:copy-of select="node()"/>
+    </xsl:copy>
+  </xsl:for-each>
 </xsl:template>
 
 <!-- final serialization step -->

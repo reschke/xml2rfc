@@ -417,6 +417,134 @@
 
 <!-- include PI -->
 
+<xsl:template name="obtain-reference-for-include-PI">
+  <xsl:param name="uri"/>
+  
+  <xsl:variable name="tbase" select="substring-before($uri, '?')"/>
+  <xsl:variable name="base"><xsl:choose><xsl:when test="$tbase!=''"><xsl:value-of select="$tbase"/></xsl:when><xsl:otherwise><xsl:value-of select="$uri"/></xsl:otherwise></xsl:choose></xsl:variable>
+  <xsl:variable name="tquery" select="substring-after($uri, '?')"/>
+  <xsl:variable name="query"><xsl:if test="$tquery!=''">?</xsl:if><xsl:value-of select="$tquery"/></xsl:variable>
+  <xsl:variable name="ends-with-xml" select="substring($base, string-length($base)-3)='.xml'"/>
+  <xsl:variable name="for-draft" select="contains($base,'reference.I-D')"/>
+  <xsl:variable name="uri2" select="concat($base,'.xml',$query)"/>
+  <xsl:variable name="uri3r" select="concat($xml2rfc-ext-rfc-reference-base-uri,$base,$query)"/>
+  <xsl:variable name="uri4r" select="concat($xml2rfc-ext-rfc-reference-base-uri,$base,'.xml',$query)"/>
+  <xsl:variable name="uri3i" select="concat($xml2rfc-ext-internet-draft-reference-base-uri,$base,$query)"/>
+  <xsl:variable name="uri4i" select="concat($xml2rfc-ext-internet-draft-reference-base-uri,$base,'.xml',$query)"/>
+  <xsl:choose>
+    <xsl:when test="function-available('doc-available')">
+      <xsl:choose>
+        <xsl:when test="not($ends-with-xml) and doc-available($uri2) and document($uri2)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri"/>
+            <xsl:with-param name="success" select="$uri2"/>
+          </xsl:call-template>
+          <myns:include from="{$uri2}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri2)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="doc-available($uri) and document($uri)/reference">
+          <myns:include from="{$uri}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="not($ends-with-xml) and $for-draft and not(contains($uri,':')) and doc-available($uri4i) and document($uri4i)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri"/>
+            <xsl:with-param name="success" select="$uri4i"/>
+          </xsl:call-template>
+          <myns:include from="{$uri4i}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri4i)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="not(contains($uri,':')) and $for-draft and doc-available($uri3i) and document($uri3i)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri"/>
+            <xsl:with-param name="success" select="$uri3i"/>
+          </xsl:call-template>
+          <myns:include from="{$uri3i}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri3i)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="not($ends-with-xml) and not(contains($uri,':')) and doc-available($uri4r) and document($uri4r)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri"/>
+            <xsl:with-param name="success" select="$uri4r"/>
+          </xsl:call-template>
+          <myns:include from="{$uri4r}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri4r)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="not(contains($uri,':')) and doc-available($uri3r) and document($uri3r)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri"/>
+            <xsl:with-param name="success" select="$uri3r"/>
+          </xsl:call-template>
+          <myns:include from="{$uri3r}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri3r)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:otherwise/>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:choose>
+        <xsl:when test="not($ends-with-xml) and document($uri2)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri"/>
+            <xsl:with-param name="success" select="$uri2"/>
+          </xsl:call-template>
+          <myns:include from="{$uri2}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri2)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="document($uri)/reference">
+          <myns:include from="{$uri}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="not($ends-with-xml) and $for-draft and not(contains($uri,':')) and document($uri4i)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri"/>
+            <xsl:with-param name="success" select="$uri4i"/>
+          </xsl:call-template>
+          <myns:include from="{$uri4i}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri4i)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="not(contains($uri,':')) and $for-draft and document($uri3i)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri"/>
+            <xsl:with-param name="success" select="$uri3i"/>
+          </xsl:call-template>
+          <myns:include from="{$uri3i}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri3i)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="not($ends-with-xml) and not(contains($uri,':')) and document($uri4r)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri"/>
+            <xsl:with-param name="success" select="$uri4r"/>
+          </xsl:call-template>
+          <myns:include from="{$uri4r}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri4r)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:when test="not(contains($uri,':')) and document($uri3r)/reference">
+          <xsl:call-template name="include-uri-warning">
+            <xsl:with-param name="specified" select="$uri"/>
+            <xsl:with-param name="success" select="$uri3r"/>
+          </xsl:call-template>
+          <myns:include from="{$uri3r}" in="{generate-id(..)}">
+            <xsl:copy-of select="document($uri3r)"/>
+          </myns:include>
+        </xsl:when>
+        <xsl:otherwise/>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>      
+</xsl:template>
+
 <xsl:template name="getIncludes">
   <xsl:param name="nodes"/>
   <xsl:for-each select="$nodes">
@@ -427,70 +555,9 @@
       </xsl:call-template>
     </xsl:variable>
     <xsl:if test="$uri1!=''">
-      <xsl:variable name="tbase" select="substring-before($uri1, '?')"/>
-      <xsl:variable name="base"><xsl:choose><xsl:when test="$tbase!=''"><xsl:value-of select="$tbase"/></xsl:when><xsl:otherwise><xsl:value-of select="$uri1"/></xsl:otherwise></xsl:choose></xsl:variable>
-      <xsl:variable name="tquery" select="substring-after($uri1, '?')"/>
-      <xsl:variable name="query"><xsl:if test="$tquery!=''">?</xsl:if><xsl:value-of select="$tquery"/></xsl:variable>
-      <xsl:variable name="ends-with-xml" select="substring($base, string-length($base)-3)='.xml'"/>
-      <xsl:variable name="for-draft" select="contains($base,'reference.I-D')"/>
-      <xsl:variable name="uri2" select="concat($base,'.xml',$query)"/>
-      <xsl:variable name="uri3r" select="concat($xml2rfc-ext-rfc-reference-base-uri,$base,$query)"/>
-      <xsl:variable name="uri4r" select="concat($xml2rfc-ext-rfc-reference-base-uri,$base,'.xml',$query)"/>
-      <xsl:variable name="uri3i" select="concat($xml2rfc-ext-internet-draft-reference-base-uri,$base,$query)"/>
-      <xsl:variable name="uri4i" select="concat($xml2rfc-ext-internet-draft-reference-base-uri,$base,'.xml',$query)"/>
-      <xsl:choose>
-        <xsl:when test="not($ends-with-xml) and document($uri2)/reference">
-          <xsl:call-template name="include-uri-warning">
-            <xsl:with-param name="specified" select="$uri1"/>
-            <xsl:with-param name="success" select="$uri2"/>
-          </xsl:call-template>
-          <myns:include from="{$uri2}" in="{generate-id(..)}">
-            <xsl:copy-of select="document($uri2)"/>
-          </myns:include>
-        </xsl:when>
-        <xsl:when test="document($uri1)/reference">
-          <myns:include from="{$uri1}" in="{generate-id(..)}">
-            <xsl:copy-of select="document($uri1)"/>
-          </myns:include>
-        </xsl:when>
-        <xsl:when test="not($ends-with-xml) and $for-draft and not(contains($uri1,':')) and document($uri4i)/reference">
-          <xsl:call-template name="include-uri-warning">
-            <xsl:with-param name="specified" select="$uri1"/>
-            <xsl:with-param name="success" select="$uri4i"/>
-          </xsl:call-template>
-          <myns:include from="{$uri4i}" in="{generate-id(..)}">
-            <xsl:copy-of select="document($uri4i)"/>
-          </myns:include>
-        </xsl:when>
-        <xsl:when test="not(contains($uri1,':')) and $for-draft and document($uri3i)/reference">
-          <xsl:call-template name="include-uri-warning">
-            <xsl:with-param name="specified" select="$uri1"/>
-            <xsl:with-param name="success" select="$uri3i"/>
-          </xsl:call-template>
-          <myns:include from="{$uri3i}" in="{generate-id(..)}">
-            <xsl:copy-of select="document($uri3i)"/>
-          </myns:include>
-        </xsl:when>
-        <xsl:when test="not($ends-with-xml) and not(contains($uri1,':')) and document($uri4r)/reference">
-          <xsl:call-template name="include-uri-warning">
-            <xsl:with-param name="specified" select="$uri1"/>
-            <xsl:with-param name="success" select="$uri4r"/>
-          </xsl:call-template>
-          <myns:include from="{$uri4r}" in="{generate-id(..)}">
-            <xsl:copy-of select="document($uri4r)"/>
-          </myns:include>
-        </xsl:when>
-        <xsl:when test="not(contains($uri1,':')) and document($uri3r)/reference">
-          <xsl:call-template name="include-uri-warning">
-            <xsl:with-param name="specified" select="$uri1"/>
-            <xsl:with-param name="success" select="$uri3r"/>
-          </xsl:call-template>
-          <myns:include from="{$uri3r}" in="{generate-id(..)}">
-            <xsl:copy-of select="document($uri3r)"/>
-          </myns:include>
-        </xsl:when>
-        <xsl:otherwise/>
-      </xsl:choose>
+      <xsl:call-template name="obtain-reference-for-include-PI">
+        <xsl:with-param name="uri" select="$uri1"/>
+      </xsl:call-template>
     </xsl:if>
   </xsl:for-each>
 </xsl:template>
@@ -12121,11 +12188,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1344 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1344 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1345 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1345 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/02/14 08:14:20 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/02/14 08:14:20 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/02/14 16:24:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/02/14 16:24:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
