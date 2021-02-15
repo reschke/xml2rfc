@@ -1,7 +1,7 @@
 <!--
     Experimental implementation of xml2rfc v3 preptool
 
-    Copyright (c) 2016-2020, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2016-2021, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
