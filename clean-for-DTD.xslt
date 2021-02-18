@@ -126,12 +126,13 @@
       <xsl:text>&#10;</xsl:text>
       <xsl:copy/>
     </xsl:when>
-    <!-- try to append ".xml" when not present and no query parameter present -->
-    <xsl:when test="not(contains($include,'?')) and substring($include, string-length($include) - 3) != '.xml'">
-      <xsl:apply-templates select="document(concat($include,'.xml'))" mode="cleanup"/>
-    </xsl:when>
     <xsl:otherwise>
-      <xsl:apply-templates select="document($include)" mode="cleanup"/>
+      <xsl:variable name="content">
+        <xsl:call-template name="obtain-reference-for-include-PI">
+          <xsl:with-param name="uri" select="$include"/>
+        </xsl:call-template>
+      </xsl:variable>  
+      <xsl:apply-templates select="exslt:node-set($content)//reference" mode="cleanup"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
