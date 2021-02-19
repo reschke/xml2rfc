@@ -570,6 +570,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </t>
   </section>
 
+  <section title="internet-draft-base-uri - base URI for RFC reference files" anchor="xml2rfc-ext-internet-draft-reference-base-uri">
+    <iref item="internet-draft-reference-base-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="internet-draft-reference-base-uri"/>
+    <iref item="xml2rfc-ext-rfc-reference-base-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-reference-base-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>internet-draft-reference-base-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-internet-draft-reference-base-uri</dd>
+      <dt>default</dt>
+      <dd>"https://xml2rfc.tools.ietf.org/public/rfc/bibxml-ids/"</dd>
+    </dl>
+    <t>
+      Base URI for Internet-Draft referennces included using the "include" processing instruction.
+    </t>
+  </section>
+
   <section title="internet-draft-uri - URI Template for Interned Drafts" anchor="xml2rfc-ext-internet-draft-uri">
     <iref item="internet-draft-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="internet-draft-uri"/>
     <iref item="xml2rfc-ext-internet-draft-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-internet-draft-uri"/>
@@ -719,6 +738,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </dl>
     <t>
       URI template for a specific RFC erratum ("eid" is the "errata id").
+    </t>
+  </section>
+
+  <section title="rfc-reference--base-uri - base URI for RFC reference files" anchor="xml2rfc-ext-rfc-reference-base-uri">
+    <iref item="rfc-reference-base-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-reference-base-uri"/>
+    <iref item="xml2rfc-ext-rfc-reference-base-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-reference-base-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>rfc-reference-base-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-rfc-reference-base-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.rfc-editor.org/refs/bibxml/"</dd>
+    </dl>
+    <t>
+      Base URI for RFC referennces included using the "include" processing instruction.
     </t>
   </section>
 
