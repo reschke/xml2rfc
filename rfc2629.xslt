@@ -1623,10 +1623,10 @@
 <xsl:template name="add-artwork-class">
   <xsl:variable name="v">
     <xsl:choose>
-      <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='abnf7230' or @type='application/xml-dtd' or @type='inline' or @type='application/relax-ng-compact-syntax'">inline</xsl:when>
+      <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='abnf7230' or @type='application/xml-dtd' or @type='inline' or @type='application/relax-ng-compact-syntax' or @type='hex-dump'">inline</xsl:when>
       <xsl:when test="starts-with(@type,'message/http') and contains(@type,'msgtype=&quot;request&quot;')">text2</xsl:when>
       <xsl:when test="starts-with(@type,'message/http')">text</xsl:when>
-      <xsl:when test="@type='drawing' or @type='pdu'">drawing</xsl:when>
+      <xsl:when test="@type='drawing' or @type='pdu' or type='ascii-art' or type='call-flow'">drawing</xsl:when>
       <xsl:when test="self::sourcecode or @type='text/plain' or @type='example' or @type='http-message' or @type='code' or @type='xml' or @type='application/xml-dtd' or @type='application/json'">text</xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
@@ -12188,11 +12188,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1345 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1345 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1346 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1346 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/02/14 16:24:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/02/14 16:24:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/02/19 09:26:15 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/02/19 09:26:15 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
