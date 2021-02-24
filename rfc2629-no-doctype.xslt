@@ -1622,10 +1622,10 @@
 <xsl:template name="add-artwork-class">
   <xsl:variable name="v">
     <xsl:choose>
-      <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='abnf7230' or @type='application/xml-dtd' or @type='inline' or @type='application/relax-ng-compact-syntax'">inline</xsl:when>
+      <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='abnf7230' or @type='application/xml-dtd' or @type='inline' or @type='application/relax-ng-compact-syntax' or @type='hex-dump'">inline</xsl:when>
       <xsl:when test="starts-with(@type,'message/http') and contains(@type,'msgtype=&quot;request&quot;')">text2</xsl:when>
       <xsl:when test="starts-with(@type,'message/http')">text</xsl:when>
-      <xsl:when test="@type='drawing' or @type='pdu'">drawing</xsl:when>
+      <xsl:when test="@type='drawing' or @type='pdu' or type='ascii-art' or type='call-flow'">drawing</xsl:when>
       <xsl:when test="self::sourcecode or @type='text/plain' or @type='example' or @type='http-message' or @type='code' or @type='xml' or @type='application/xml-dtd' or @type='application/json'">text</xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
@@ -7011,6 +7011,11 @@
               <xsl:with-param name="msg">No need to include 'Working Group' or 'Research Group' postfix in /rfc/front/workgroup value '<xsl:value-of select="$v"/>'</xsl:with-param>
             </xsl:call-template>
           </xsl:if>
+          <xsl:variable name="real-ietf-wg">
+            <xsl:if test="starts-with(/rfc/@docName,'draft-ietf-') and $submissionType='IETF'">
+              <xsl:value-of select="substring-before(substring-after(/rfc/@docName,'draft-ietf-'),'-')"/>
+            </xsl:if>
+          </xsl:variable>
           <xsl:variable name="h">
             <!-- when a single name, append WG/RG postfix automatically -->
             <xsl:choose>
@@ -7026,7 +7031,23 @@
             </xsl:choose>
           </xsl:variable>
           <myns:item>
-            <xsl:value-of select="$h"/>
+            <xsl:choose>
+              <xsl:when test="normalize-space($real-ietf-wg)!=''">
+                <xsl:variable name="specified" select="translate(substring-before($h, ' '), $ucase, $lcase)"/>
+                <xsl:if test="$specified!='$real-ietf-wg'">
+                  <!-- special case HTTP -->
+                  <xsl:if test="specified!='http' and $real-ietf-wg!='httpbis'">
+                    <xsl:call-template name="warning">
+                      <xsl:with-param name="msg">WG name '<xsl:value-of select="$v"/>' does not match the value included in the draft name (<xsl:value-of select="$real-ietf-wg"/>)</xsl:with-param>
+                    </xsl:call-template>
+                  </xsl:if>
+                </xsl:if>
+                <a href="https://datatracker.ietf.org/wg/{$real-ietf-wg}"><xsl:value-of select="$h"/></a>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$h"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </myns:item>
         </xsl:for-each>
       </xsl:when>
@@ -12187,11 +12208,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1345 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1345 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1347 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1347 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/02/14 16:24:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/02/14 16:24:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/02/22 20:34:22 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/02/22 20:34:22 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
