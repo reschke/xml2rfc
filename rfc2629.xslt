@@ -8158,7 +8158,8 @@ function appendRfcLinks(parent, updates) {
 }</xsl:if><xsl:if test="$is-submitted-draft">
 function getMeta(docname, revision, container) {
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", "https://datatracker.ietf.org/doc/" + docname + "/doc.json", true);
+  var datatracker = "https://datatracker.ietf.org/doc/" + docname;
+  xhr.open("GET", datatracker + "/doc.json", true);
   xhr.onload = function (e) {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
@@ -8175,7 +8176,16 @@ function getMeta(docname, revision, container) {
           var bld = newElementWithText("b", "Internet Draft Status");
           cont.appendChild(bld);
           cont.appendChild(newElement("br"));
-          if (data.rev == revision) {
+          if (data.state == "RFC") {
+            var txt = newElementWithText("i", "This document has been published as RFC - please see ");
+            cont.appendChild(txt);
+            var link = newElement("a");
+            link.setAttribute("href", datatracker);
+            link.appendChild(newText("IETF Datatracker"));
+            cont.appendChild(link);
+            txt = newElementWithText("i", " for details.");
+            cont.appendChild(txt);
+          } else if (data.rev == revision) {
             var rev = newElementWithText("i", "This is the latest submitted version.");
             cont.appendChild(rev);
           } else {
@@ -12209,11 +12219,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1348 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1348 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1349 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1349 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/03/02 14:26:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/02 14:26:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/03/02 15:02:16 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/02 15:02:16 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
