@@ -6078,7 +6078,7 @@
     <!-- Other $sfmt values than "none": unsupported -->
     <xsl:when test="$sfmt!='' and $sfmt!='none'">
       <xsl:call-template name="warning">
-        <xsl:with-param name="msg" select="concat('ignoring unknown xref section format extension: ',$sfmt)"/>
+        <xsl:with-param name="msg">ignoring unsupported section format extension '<xsl:value-of select="$sfmt"/>' on '<xsl:value-of select="local-name($xref)"/>' element with text content.</xsl:with-param>
       </xsl:call-template>
     </xsl:when>
 
@@ -12219,11 +12219,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1349 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1349 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1350 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1350 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/03/02 15:02:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/02 15:02:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/03/12 09:42:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/12 09:42:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
