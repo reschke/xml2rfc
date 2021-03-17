@@ -6001,7 +6001,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref[*|text()]|relref[*|text()]">
+<xsl:template match="xref[not(@target=//cref/@anchor)][*|text()]|relref[*|text()]">
 
   <xsl:variable name="xref" select="."/>
  
@@ -6109,20 +6109,6 @@
           <xsl:text>)</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
-    </xsl:when>
-
-    <xsl:when test="$node/self::cref and $node/@display='false'">
-      <xsl:for-each select="$xref">
-        <xsl:call-template name="error">
-          <xsl:with-param name="msg" select="concat('Comment ',$node/@anchor,' is hidden and thus can not be referenced')"/>
-        </xsl:call-template>
-      </xsl:for-each>
-    </xsl:when>
-
-    <xsl:when test="$node/self::cref and $xml2rfc-comments='no'">
-      <xsl:call-template name="error">
-        <xsl:with-param name="msg">xref to cref, but comments aren't included in the output</xsl:with-param>
-      </xsl:call-template>
     </xsl:when>
 
     <xsl:otherwise>
@@ -6445,6 +6431,7 @@
 <xsl:template name="xref-to-comment">
   <xsl:param name="from"/>
   <xsl:param name="to"/>
+  <xsl:param name="child-nodes"/>
 
   <xsl:call-template name="emit-link">
     <xsl:with-param name="target" select="concat('#',$from/@target)"/>
@@ -6455,6 +6442,9 @@
         </xsl:for-each>
       </xsl:variable>
       <xsl:choose>
+        <xsl:when test="$child-nodes">
+          <!-- no auto text -->
+        </xsl:when>
         <xsl:when test="$from/@format='counter'">
           <xsl:call-template name="error">
             <xsl:with-param name="inline">no</xsl:with-param>
@@ -6473,6 +6463,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:with-param>
+    <xsl:with-param name="child-nodes" select="$child-nodes"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -6806,9 +6797,15 @@
   </xsl:for-each>
 </xsl:template>
 
-<xsl:template match="xref[not(*|text())]|relref[not(*|text())]">
+<xsl:template match="xref|relref">
 
   <xsl:variable name="xref" select="."/>
+
+  <xsl:variable name="textContent">
+    <xsl:apply-templates select="node()"/>
+  </xsl:variable>
+  <xsl:variable name="useTextContent" select="normalize-space($textContent)!=''"/>
+  <xsl:variable name="childNodes" select="node()[$useTextContent]"/>
 
   <xsl:variable name="target">
     <xsl:call-template name="get-target-anchor"/>
@@ -6909,6 +6906,7 @@
             <xsl:call-template name="xref-to-comment">
               <xsl:with-param name="from" select="$xref"/>
               <xsl:with-param name="to" select="$node"/>
+              <xsl:with-param name="child-nodes" select="$childNodes"/>
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
@@ -12219,11 +12217,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1351 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1351 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1352 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1352 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/03/15 10:42:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/15 10:42:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/03/17 17:41:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/17 17:41:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
