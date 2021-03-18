@@ -6001,7 +6001,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref[not(@target=//cref/@anchor or @target=//figure/@anchor)][*|text()]|relref[*|text()]">
+<xsl:template match="xref[not(@target=//cref/@anchor or @target=//figure/@anchor or @target=//table/@anchor or @target=//texttable/@anchor)][*|text()]|relref[*|text()]">
 
   <xsl:variable name="xref" select="."/>
  
@@ -6243,6 +6243,7 @@
 <xsl:template name="xref-to-table-text">
   <xsl:param name="from"/>
   <xsl:param name="to"/>
+  <xsl:param name="child-nodes"/>
 
   <xsl:variable name="tabcnt">
     <xsl:for-each select="$to">
@@ -6250,6 +6251,9 @@
     </xsl:for-each>
   </xsl:variable>
   <xsl:choose>
+    <xsl:when test="$child-nodes">
+      <xsl:apply-templates select="$child-nodes"/>
+    </xsl:when>
     <xsl:when test="$from/@format='counter'">
       <xsl:value-of select="$tabcnt" />
     </xsl:when>
@@ -6277,6 +6281,7 @@
 <xsl:template name="xref-to-table">
   <xsl:param name="from"/>
   <xsl:param name="to"/>
+  <xsl:param name="child-nodes"/>
 
   <xsl:variable name="title">
     <xsl:call-template name="get-title-as-string">
@@ -6292,6 +6297,7 @@
     <xsl:call-template name="xref-to-table-text">
       <xsl:with-param name="from" select="$from"/>
       <xsl:with-param name="to" select="$to"/>
+      <xsl:with-param name="child-nodes" select="$child-nodes"/>
     </xsl:call-template>
   </a>
 </xsl:template>
@@ -6887,6 +6893,7 @@
         <xsl:call-template name="xref-to-table">
           <xsl:with-param name="from" select="$xref"/>
           <xsl:with-param name="to" select="$node"/>
+          <xsl:with-param name="child-nodes" select="$childNodes"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -12224,11 +12231,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1353 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1353 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1354 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1354 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/03/18 14:35:06 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/18 14:35:06 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/03/18 15:06:57 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/18 15:06:57 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
