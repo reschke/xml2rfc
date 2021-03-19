@@ -6005,7 +6005,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref[not(@target=//abstract/@anchor or @target=//appendix/@anchor or @target=//cref/@anchor or @target=//figure/@anchor or @target=//note/@anchor or @target=//references/@anchor or @target=//section/@anchor or @target=//table/@anchor or @target=//texttable/@anchor)][*|text()]|relref[*|text()]">
+<xsl:template match="xref[not(@target=//abstract/@anchor or @target=//appendix/@anchor or @target=//aside/@anchor or @target=//cref/@anchor or @target=//figure/@anchor or @target=//note/@anchor or @target=//references/@anchor or @target=//section/@anchor or @target=//table/@anchor or @target=//texttable/@anchor)][*|text()]|relref[*|text()]">
 
   <xsl:variable name="xref" select="."/>
  
@@ -6307,6 +6307,7 @@
 <xsl:template name="xref-to-paragraph-text">
   <xsl:param name="from"/>
   <xsl:param name="to"/>
+  <xsl:param name="child-nodes"/>
 
   <xsl:variable name="tcnt">
     <xsl:for-each select="$to">
@@ -6376,6 +6377,9 @@
     </xsl:choose>
   </xsl:variable>
   <xsl:choose>
+    <xsl:when test="$child-nodes">
+      <xsl:apply-templates select="$child-nodes"/>
+    </xsl:when>
     <xsl:when test="$from/@format='counter'">
       <xsl:choose>
         <xsl:when test="$listtype!='' and $listindex!=''">
@@ -6431,11 +6435,13 @@
   <xsl:param name="from"/>
   <xsl:param name="to"/>
   <xsl:param name="anchor"/>
+  <xsl:param name="child-nodes"/>
 
   <a href="#{$anchor}">
     <xsl:call-template name="xref-to-paragraph-text">
       <xsl:with-param name="from" select="$from"/>
       <xsl:with-param name="to" select="$to"/>
+      <xsl:with-param name="child-nodes" select="$child-nodes"/>
     </xsl:call-template>
   </a>
 </xsl:template>
@@ -6905,6 +6911,7 @@
           <xsl:with-param name="from" select="$xref"/>
           <xsl:with-param name="to" select="$node"/>
           <xsl:with-param name="anchor" select="$target"/>
+          <xsl:with-param name="child-nodes" select="$childNodes"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -12233,11 +12240,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1359 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1359 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1360 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1360 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/03/19 12:52:01 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/19 12:52:01 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/03/19 17:49:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/19 17:49:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">

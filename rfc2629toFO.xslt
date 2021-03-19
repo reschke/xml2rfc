@@ -1869,11 +1869,13 @@
   <xsl:param name="from"/>
   <xsl:param name="to"/>
   <xsl:param name="anchor"/>
+  <xsl:param name="child-nodes"/>
 
   <fo:basic-link internal-destination="{$anchor}" xsl:use-attribute-sets="internal-link">
     <xsl:call-template name="xref-to-paragraph-text">
       <xsl:with-param name="from" select="$from"/>
       <xsl:with-param name="to" select="$to"/>
+      <xsl:with-param name="child-nodes" select="$child-nodes"/>
     </xsl:call-template>
   </fo:basic-link>
 </xsl:template>
