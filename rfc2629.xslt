@@ -6005,7 +6005,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref[not(@target=//abstract/@anchor or @target=//appendix/@anchor or @target=//cref/@anchor or @target=//figure/@anchor or @target=//note/@anchor  or @target=//section/@anchor or @target=//table/@anchor or @target=//texttable/@anchor)][*|text()]|relref[*|text()]">
+<xsl:template match="xref[not(@target=//abstract/@anchor or @target=//appendix/@anchor or @target=//cref/@anchor or @target=//figure/@anchor or @target=//note/@anchor or @target=//references/@anchor or @target=//section/@anchor or @target=//table/@anchor or @target=//texttable/@anchor)][*|text()]|relref[*|text()]">
 
   <xsl:variable name="xref" select="."/>
  
@@ -12233,11 +12233,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1358 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1358 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1359 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1359 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/03/19 12:21:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/19 12:21:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/03/19 12:52:01 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/19 12:52:01 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
