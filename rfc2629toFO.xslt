@@ -1794,6 +1794,7 @@
   <xsl:param name="to"/>
   <xsl:param name="id"/>
   <xsl:param name="irefs"/>
+  <xsl:param name="child-nodes"/>
   
   <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
     <xsl:if test="$irefs">
@@ -1806,6 +1807,7 @@
     <xsl:call-template name="render-section-ref">
       <xsl:with-param name="from" select="$from"/>
       <xsl:with-param name="to" select="$to"/>
+      <xsl:with-param name="child-nodes" select="$child-nodes"/>
     </xsl:call-template>
   </fo:basic-link>
 </xsl:template>
