@@ -6005,7 +6005,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref[not(@target=//abstract/@anchor or @target=//appendix/@anchor or @target=//cref/@anchor or @target=//figure/@anchor or @target=//note/@anchor or @target=//table/@anchor or @target=//texttable/@anchor)][*|text()]|relref[*|text()]">
+<xsl:template match="xref[not(@target=//abstract/@anchor or @target=//appendix/@anchor or @target=//cref/@anchor or @target=//figure/@anchor or @target=//note/@anchor  or @target=//section/@anchor or @target=//table/@anchor or @target=//texttable/@anchor)][*|text()]|relref[*|text()]">
 
   <xsl:variable name="xref" select="."/>
  
@@ -6086,35 +6086,6 @@
       </xsl:call-template>
     </xsl:when>
 
-    <!-- Section links -->
-    <xsl:when test="$node/self::section or $node/self::appendix">
-      <xsl:choose>
-        <xsl:when test="@format='none' or $xml2rfc-ext-xref-with-text-generate='nothing'">
-          <xsl:call-template name="emit-link">
-            <xsl:with-param name="target" select="concat('#',$target)"/>
-            <xsl:with-param name="id">
-              <xsl:if test="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"><xsl:value-of select="$anchor"/></xsl:if>
-            </xsl:with-param>
-            <xsl:with-param name="child-nodes" select="*|text()"/>
-          </xsl:call-template>
-        </xsl:when>
-        <xsl:otherwise>
-          <!-- index links to this xref -->
-          <xsl:variable name="ireftargets" select="key('iref-xanch',$target) | key('iref-xanch','')[../@anchor=$target]"/>
-
-          <xsl:apply-templates/>
-          <xsl:text> (</xsl:text>
-          <xsl:call-template name="xref-to-section">
-            <xsl:with-param name="from" select="$xref"/>
-            <xsl:with-param name="to" select="$node"/>
-            <xsl:with-param name="id" select="$anchor"/>
-            <xsl:with-param name="irefs" select="$ireftargets"/>
-          </xsl:call-template>
-          <xsl:text>)</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:when>
-
     <xsl:otherwise>
       <!-- check normative/informative -->
       <xsl:variable name="t-is-normative" select="ancestor-or-self::*[@x:nrm][1]"/>
@@ -6164,22 +6135,46 @@
   <xsl:param name="irefs"/>
   <xsl:param name="child-nodes"/>
   
-  <a href="#{$from/@target}">
-    <xsl:if test="$irefs">
-      <!-- insert id when a backlink to this xref is needed in the index -->
-      <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-    </xsl:if>
-    <xsl:attribute name="title">
-      <xsl:call-template name="get-title-as-string">
-        <xsl:with-param name="node" select="$to"/>
-      </xsl:call-template>
-    </xsl:attribute>
-    <xsl:call-template name="render-section-ref">
-      <xsl:with-param name="from" select="$from"/>
-      <xsl:with-param name="to" select="$to"/>
-      <xsl:with-param name="child-nodes" select="$child-nodes"/>
-    </xsl:call-template>
-  </a>
+  <xsl:choose>
+    <xsl:when test="$child-nodes and not($from/@format='none') and $xml2rfc-ext-xref-with-text-generate!='nothing'">
+      <xsl:apply-templates select="$child-nodes"/>
+      <xsl:text> (</xsl:text>
+      <a href="#{$from/@target}">
+        <xsl:if test="$irefs">
+          <!-- insert id when a backlink to this xref is needed in the index -->
+          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+        </xsl:if>
+        <xsl:attribute name="title">
+          <xsl:call-template name="get-title-as-string">
+            <xsl:with-param name="node" select="$to"/>
+          </xsl:call-template>
+        </xsl:attribute>
+        <xsl:call-template name="render-section-ref">
+          <xsl:with-param name="from" select="$from"/>
+          <xsl:with-param name="to" select="$to"/>
+        </xsl:call-template>
+      </a>
+      <xsl:text>)</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <a href="#{$from/@target}">
+        <xsl:if test="$irefs">
+          <!-- insert id when a backlink to this xref is needed in the index -->
+          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+        </xsl:if>
+        <xsl:attribute name="title">
+          <xsl:call-template name="get-title-as-string">
+            <xsl:with-param name="node" select="$to"/>
+          </xsl:call-template>
+        </xsl:attribute>
+        <xsl:call-template name="render-section-ref">
+          <xsl:with-param name="from" select="$from"/>
+          <xsl:with-param name="to" select="$to"/>
+          <xsl:with-param name="child-nodes" select="$child-nodes"/>
+        </xsl:call-template>
+      </a>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- xref to figure -->
@@ -12238,11 +12233,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1357 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1357 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1358 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1358 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/03/19 10:06:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/19 10:06:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/03/19 12:21:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/19 12:21:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">

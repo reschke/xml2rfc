@@ -1796,21 +1796,43 @@
   <xsl:param name="irefs"/>
   <xsl:param name="child-nodes"/>
   
-  <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
-    <xsl:if test="$irefs">
-      <!-- insert id when a backlink to this xref is needed in the index -->
-      <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-    </xsl:if>
-    <xsl:for-each select="$irefs">
-      <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
-    </xsl:for-each>
-    <xsl:call-template name="render-section-ref">
-      <xsl:with-param name="from" select="$from"/>
-      <xsl:with-param name="to" select="$to"/>
-      <xsl:with-param name="child-nodes" select="$child-nodes"/>
-    </xsl:call-template>
-  </fo:basic-link>
-</xsl:template>
+  <xsl:choose>
+    <xsl:when test="$child-nodes and not($from/@format='none') and $xml2rfc-ext-xref-with-text-generate!='nothing'">
+      <xsl:apply-templates select="$child-nodes"/>
+      <xsl:text> (</xsl:text>
+      <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
+        <xsl:if test="$irefs">
+          <!-- insert id when a backlink to this xref is needed in the index -->
+          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+        </xsl:if>
+        <xsl:for-each select="$irefs">
+          <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
+        </xsl:for-each>
+        <xsl:call-template name="render-section-ref">
+          <xsl:with-param name="from" select="$from"/>
+          <xsl:with-param name="to" select="$to"/>
+        </xsl:call-template>
+      </fo:basic-link>
+      <xsl:text>)</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <fo:basic-link internal-destination="{$from/@target}" xsl:use-attribute-sets="internal-link">
+        <xsl:if test="$irefs">
+          <!-- insert id when a backlink to this xref is needed in the index -->
+          <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+        </xsl:if>
+        <xsl:for-each select="$irefs">
+          <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
+        </xsl:for-each>
+        <xsl:call-template name="render-section-ref">
+          <xsl:with-param name="from" select="$from"/>
+          <xsl:with-param name="to" select="$to"/>
+          <xsl:with-param name="child-nodes" select="$child-nodes"/>
+        </xsl:call-template>
+      </fo:basic-link>
+    </xsl:otherwise>
+  </xsl:choose>
+    </xsl:template>
 
 <!-- xref to figure -->
 <xsl:template name="xref-to-figure">
