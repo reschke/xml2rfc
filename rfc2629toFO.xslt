@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629 XML format to XSL-FO
       
-    Copyright (c) 2006-2020, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2021, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
