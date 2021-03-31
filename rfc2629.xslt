@@ -6005,7 +6005,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref[not(@target=//abstract/@anchor or @target=//appendix/@anchor or @target=//artset/@anchor or @target=//artwork/@anchor or @target=//aside/@anchor or @target=//blockquote/@anchor or @target=//cref/@anchor or @target=//dd/@anchor or @target=//dl/@anchor or @target=//dt/@anchor or @target=//figure/@anchor or @target=//li/@anchor or @target=//note/@anchor or @target=//ol/@anchor or @target=//referencegroup/@anchor or @target=//references/@anchor or @target=//section/@anchor or @target=//sourcecode/@anchor or @target=//t/@anchor or @target=//table/@anchor or @target=//texttable/@anchor or @target=//ul/@anchor or @target=//x:blockquote/@anchor or @target=//x:note/@anchor)][*|text()]|relref[*|text()]">
+<xsl:template match="xref[not(@target=//abstract/@anchor or @target=//appendix/@anchor or @target=//artset/@anchor or @target=//artwork/@anchor or @target=//aside/@anchor or @target=//blockquote/@anchor or @target=//cref/@anchor or @target=//dd/@anchor or @target=//dl/@anchor or @target=//dt/@anchor or @target=//figure/@anchor or @target=//li/@anchor or @target=//note/@anchor or @target=//ol/@anchor or @target=//reference/@anchor or @target=//referencegroup/@anchor or @target=//references/@anchor or @target=//section/@anchor or @target=//sourcecode/@anchor or @target=//t/@anchor or @target=//table/@anchor or @target=//texttable/@anchor or @target=//ul/@anchor or @target=//x:blockquote/@anchor or @target=//x:note/@anchor)][*|text()]|relref[*|text()]">
 
   <xsl:variable name="xref" select="."/>
  
@@ -6680,7 +6680,7 @@
     number  SS
   -->
 
-  <xsl:if test="$sfmt!='' and not($sfmt='of' or $sfmt='section' or $sfmt='bare' or $sfmt='parens' or $sfmt='comma')">
+  <xsl:if test="$sfmt!='' and not($sfmt='of' or $sfmt='section' or $sfmt='bare' or $sfmt='parens' or $sfmt='comma' or $sfmt='none')">
     <xsl:call-template name="error">
       <xsl:with-param name="msg" select="concat('unknown xref section format extension: ',$sfmt)"/>
     </xsl:call-template>
@@ -6726,7 +6726,11 @@
 
   <xsl:if test="$sec='' or ($sfmt!='section' and $sfmt!='bare')">
     <xsl:call-template name="emit-link">
-      <xsl:with-param name="target" select="concat('#',$from/@target)"/>
+      <xsl:with-param name="target">
+        <xsl:if test="$sfmt!='none'">
+          <xsl:value-of select="concat('#',$from/@target)"/>
+        </xsl:if>
+      </xsl:with-param>
       <xsl:with-param name="text">
         <xsl:variable name="val">
           <xsl:call-template name="reference-name">
@@ -6734,7 +6738,9 @@
           </xsl:call-template>
         </xsl:variable>
         <xsl:choose>
-          <xsl:when test="$child-nodes"/>
+          <xsl:when test="$child-nodes">
+            <!-- nothing to do here -->
+          </xsl:when>
           <xsl:when test="$is-xref and $from/@format='none'">
             <!-- nothing to do here -->
           </xsl:when>
@@ -6839,7 +6845,7 @@
   <xsl:variable name="textContent">
     <xsl:apply-templates select="node()"/>
   </xsl:variable>
-  <xsl:variable name="useTextContent" select="normalize-space($textContent)!=''"/>
+  <xsl:variable name="useTextContent" select="normalize-space($textContent)!='' and not(@x:rel or @x:sec or @section) and not(self::relref)"/>
   <xsl:variable name="childNodes" select="node()[$useTextContent]"/>
 
   <xsl:variable name="target">
@@ -6959,16 +6965,7 @@
       </xsl:when>
 
       <!-- Reference links -->
-      <xsl:when test="$node/self::reference">
-        <xsl:call-template name="xref-to-reference">
-          <xsl:with-param name="from" select="$xref"/>
-          <xsl:with-param name="to" select="$node"/>
-          <xsl:with-param name="id" select="$anchor"/>
-        </xsl:call-template>
-      </xsl:when>
-
-      <!-- Referencegroup links -->
-      <xsl:when test="$node/self::referencegroup">
+      <xsl:when test="$node/self::reference or $node/self::referencegroup">
         <xsl:call-template name="xref-to-reference">
           <xsl:with-param name="from" select="$xref"/>
           <xsl:with-param name="to" select="$node"/>
@@ -12266,11 +12263,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1375 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1375 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1376 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1376 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/03/30 10:42:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/30 10:42:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/03/31 12:53:32 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/03/31 12:53:32 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
