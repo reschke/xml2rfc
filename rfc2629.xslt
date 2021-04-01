@@ -6788,12 +6788,6 @@
     </xsl:call-template>
   </xsl:if>
 
-  <xsl:if test="self::relref and not(@section)">
-    <xsl:call-template name="error">
-      <xsl:with-param name="msg">&lt;relref&gt; requires @section attribute</xsl:with-param>
-    </xsl:call-template>
-  </xsl:if>
-
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="$target"/>.<xsl:number level="any" count="xref[@target=$target]|relref[@target=$target]"/></xsl:variable>
   
   <!-- ensure we have the right context, this <xref> may be processed from within the boilerplate -->
@@ -6824,6 +6818,22 @@
     </xsl:if>
 
     <xsl:choose>
+
+      <!-- handle misuse of relref -->
+      <xsl:when test="$xref/self::relref and not($xref/@section)">
+        <xsl:for-each select="$xref">
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg">&lt;relref&gt; requires @section attribute</xsl:with-param>
+          </xsl:call-template>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:when test="$xref/self::relref and not($node/self::reference)">
+        <xsl:for-each select="$xref">
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg">&lt;relref&gt; @target must be a reference</xsl:with-param>
+          </xsl:call-template>
+        </xsl:for-each>
+      </xsl:when>
 
       <!-- Section links -->
       <xsl:when test="$node/self::section or $node/self::appendix or $node/self::references or $node/self::abstract or $node/self::note">
@@ -12193,11 +12203,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1380 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1380 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1381 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1381 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/04/01 12:50:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/04/01 12:50:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/04/01 13:12:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/04/01 13:12:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
