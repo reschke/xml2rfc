@@ -748,7 +748,7 @@
 
 <!-- convert empty lists -->
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='empty']/*[self::t or (local-name()='lt') and namespace-uri()='http://purl.org/net/xml2rfc/ext']" mode="prep-lists" priority="5">
+<xsl:template match="t[count(*)=1 and normalize-space(.)=normalize-space(list[1])]/list[@style='empty']/*[self::t or (local-name()='lt') and namespace-uri()='http://purl.org/net/xml2rfc/ext']" mode="prep-lists" priority="5">
   <li>
     <xsl:copy-of select="@anchor"/>
     <xsl:apply-templates select="node()" mode="prep-lists"/>
