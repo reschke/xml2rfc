@@ -3490,14 +3490,17 @@
 
 <xsl:template name="emit-message-inline">
   <xsl:param name="message"/>
-  <xsl:choose>
-    <xsl:when test="ancestor::t">
-      <fo:inline color="red"><xsl:value-of select="$message"/></fo:inline>
-    </xsl:when>
-    <xsl:otherwise>
-      <fo:block color="red"><xsl:value-of select="$message"/></fo:block>
-    </xsl:otherwise>
-  </xsl:choose>
+  <xsl:param name="node" select="."/>
+  <xsl:for-each select="$node">
+    <xsl:choose>
+      <xsl:when test="ancestor::t">
+        <fo:inline color="red"><xsl:value-of select="$message"/></fo:inline>
+      </xsl:when>
+      <xsl:otherwise>
+        <fo:block color="red"><xsl:value-of select="$message"/></fo:block>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:for-each>
 </xsl:template>
 
 <!-- clean up links from HTML -->
