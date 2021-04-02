@@ -5998,57 +5998,6 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref[not(@target=//abstract/@anchor or @target=//appendix/@anchor or @target=//artset/@anchor or @target=//artwork/@anchor or @target=//aside/@anchor or @target=//blockquote/@anchor or @target=//cref/@anchor or @target=//dd/@anchor or @target=//dl/@anchor or @target=//dt/@anchor or @target=//figure/@anchor or @target=//li/@anchor or @target=//note/@anchor or @target=//ol/@anchor or @target=//reference/@anchor or @target=//referencegroup/@anchor or @target=//references/@anchor or @target=//section/@anchor or @target=//sourcecode/@anchor or @target=//t/@anchor or @target=//table/@anchor or @target=//texttable/@anchor or @target=//ul/@anchor or @target=//x:blockquote/@anchor or @target=//x:note/@anchor)][*|text()]">
-
-  <xsl:variable name="xref" select="."/>
- 
-  <xsl:variable name="target">
-    <xsl:call-template name="get-target-anchor"/>
-  </xsl:variable>
-  <xsl:variable name="node" select="key('anchor-item',$target)" />
-  <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="$target"/>.<xsl:number level="any" count="xref[@target=$target]|relref[@target=$target]"/></xsl:variable>
-
-  <xsl:if test="@target!=$target">
-    <xsl:call-template name="info">
-      <xsl:with-param name="msg">Target '<xsl:value-of select="@target"/>' rewritten to '<xsl:value-of select="$target"/>'.</xsl:with-param>
-    </xsl:call-template>
-  </xsl:if>
-
-  <!-- check normative/informative -->
-  <xsl:variable name="t-is-normative" select="ancestor-or-self::*[@x:nrm][1]"/>
-  <xsl:variable name="is-normative" select="$t-is-normative/@x:nrm='true'"/>
-  <xsl:if test="count($node)=1 and $is-normative">
-    <xsl:variable name="t-r-is-normative" select="$node/ancestor-or-self::*[@x:nrm][1]"/>
-    <xsl:variable name="r-is-normative" select="$t-r-is-normative/@x:nrm='true'"/>
-    <xsl:if test="not($r-is-normative)">
-      <xsl:call-template name="warning">
-        <xsl:with-param name="msg" select="concat('Potentially normative reference to ',$target,' not referenced normatively')"/>
-      </xsl:call-template>
-    </xsl:if>
-  </xsl:if>
-
-  <xsl:call-template name="emit-link">
-    <xsl:with-param name="target" select="concat('#',$target)"/>
-    <xsl:with-param name="id">
-      <xsl:if test="@format='none'"><xsl:value-of select="$anchor"/></xsl:if>
-    </xsl:with-param>
-    <xsl:with-param name="child-nodes" select="*|text()"/>
-  </xsl:call-template>
-
-  <xsl:if test="not(@format='none' or $xml2rfc-ext-xref-with-text-generate='nothing')">
-    <xsl:for-each select="$src/rfc/back/references//reference[@anchor=$target]">
-      <xsl:text> </xsl:text>
-      <xsl:call-template name="emit-link">
-        <xsl:with-param name="citation-title" select="normalize-space(front/title)"/>
-        <xsl:with-param name="id" select="$anchor"/>
-        <xsl:with-param name="text">
-          <xsl:call-template name="reference-name"/>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:for-each>
-  </xsl:if>
-</xsl:template>
-
 <xsl:key name="iref-xanch" match="iref[@x:for-anchor]" use="@x:for-anchor"/>
 
 <!-- xref to section or appendix -->
@@ -6907,6 +6856,15 @@
         </xsl:call-template>
       </xsl:when>
 
+      <!-- Other elements we can link to if we have text content -->
+      <xsl:when test="$childNodes and ($node/self::spanx or $node/self::strong)">
+        <xsl:call-template name="emit-link">
+          <xsl:with-param name="target" select="concat('#',$target)"/>
+          <xsl:with-param name="id" select="$anchor"/>
+          <xsl:with-param name="child-nodes" select="$childNodes"/>
+        </xsl:call-template>
+      </xsl:when>
+      
       <xsl:otherwise>
         <xsl:if test="$node">
           <!-- make it the correct context -->
@@ -12196,11 +12154,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1382 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1382 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1383 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1383 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/04/01 13:33:55 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/04/01 13:33:55 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/04/02 12:46:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/04/02 12:46:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
