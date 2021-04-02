@@ -692,7 +692,7 @@
 
 <!-- convert numbers/letters lists -->
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='letters' or list/@style='numbers')]" mode="prep-lists">
+<xsl:template match="t[count(*)=1 and normalize-space(.)=normalize-space(list[1]) and (list[1]/@style='letters' or list[1]/@style='numbers')]" mode="prep-lists">
   <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
   <ol>
     <xsl:if test="list/@style='letters'">
@@ -712,7 +712,7 @@
   </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and starts-with(list/@style,'format ')]" mode="prep-lists" priority="9">
+<xsl:template match="t[count(*)=1 and normalize-space(.)=normalize-space(list[1]) and starts-with(list[1]/@style,'format ')]" mode="prep-lists" priority="9">
   <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
   <xsl:variable name="type">
     <xsl:choose>
@@ -738,7 +738,7 @@
 
 <!-- convert symbol lists -->
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='symbols']" mode="prep-lists" priority="9">
+<xsl:template match="t[count(*)=1 and normalize-space(.)=normalize-space(list[1]) and list[1]/@style='symbols']" mode="prep-lists" priority="9">
   <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
   <ul>
     <xsl:call-template name="lists-insert-list-anchor"/>
@@ -755,7 +755,7 @@
   </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='empty')]" mode="prep-lists" priority="9">
+<xsl:template match="t[count(*)=1 and normalize-space(.)=normalize-space(list[1]) and list[1]/@style='empty']" mode="prep-lists" priority="9">
   <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
   <ul empty="true">
     <xsl:apply-templates select="list/node()" mode="prep-lists"/>
