@@ -12160,11 +12160,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1384 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1384 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1385 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1385 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/04/02 14:21:31 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/04/02 14:21:31 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/04/03 08:52:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/04/03 08:52:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -12958,44 +12958,47 @@ prev: <xsl:value-of select="$prev"/>
 </xsl:template>
 
 <!-- diag support -->
+<xsl:template name="get-line-number">
+  <xsl:if test="function-available('saxon-old:line-number')" use-when="function-available('saxon-old:line-number')">
+    <xsl:value-of select="saxon-old:line-number()"/>
+  </xsl:if>
+  <xsl:if test="function-available('saxon:line-number')" use-when="function-available('saxon:line-number')">
+    <xsl:value-of select="saxon:line-number()"/>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="get-system-id">
+  <xsl:if test="function-available('saxon-old:systemId')" use-when="function-available('saxon-old:systemId')">
+    <xsl:value-of select="saxon-old:systemId()"/>
+  </xsl:if>
+  <xsl:if test="function-available('saxon:systemId')" use-when="function-available('saxon:systemId')">
+    <xsl:value-of select="saxon:systemId()"/>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template name="lineno">
   <xsl:param name="node" select="."/>
   <xsl:for-each select="$node">
-    <xsl:if test="function-available('saxon-old:line-number')" use-when="function-available('saxon-old:line-number')">
-      <xsl:if test="saxon-old:line-number() > 0">
-        <xsl:text> (at line </xsl:text>
-        <xsl:value-of select="saxon-old:line-number()"/>
-        <xsl:if test="function-available('saxon-old:systemId')">
-          <xsl:variable name="rootsys">
-            <xsl:for-each select="/*">
-              <xsl:value-of select="saxon-old:systemId()"/>
-            </xsl:for-each>
-          </xsl:variable>
-          <xsl:if test="$rootsys != saxon-old:systemId()">
-            <xsl:text> of </xsl:text>
-            <xsl:value-of select="saxon-old:systemId()"/>
-          </xsl:if>
-        </xsl:if>
-        <xsl:text>)</xsl:text>
+    <xsl:variable name="l">
+      <xsl:call-template name="get-line-number"/>
+    </xsl:variable>
+    <xsl:variable name="s">
+      <xsl:call-template name="get-system-id"/>
+    </xsl:variable>
+    
+    <xsl:if test="$l!='' and number($l) > 0">
+      <xsl:text> (at line </xsl:text>
+      <xsl:value-of select="$l"/>
+      <xsl:variable name="rootsys">
+        <xsl:for-each select="/*">
+          <xsl:call-template name="get-system-id"/>
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:if test="$rootsys != $s">
+        <xsl:text> of </xsl:text>
+        <xsl:value-of select="$s"/>
       </xsl:if>
-    </xsl:if>
-    <xsl:if test="function-available('saxon:line-number')" use-when="function-available('saxon:line-number')">
-      <xsl:if test="saxon:line-number() > 0">
-        <xsl:text> (at line </xsl:text>
-        <xsl:value-of select="saxon:line-number()"/>
-        <xsl:if test="function-available('saxon:systemId')">
-          <xsl:variable name="rootsys">
-            <xsl:for-each select="/*">
-              <xsl:value-of select="saxon:systemId()"/>
-            </xsl:for-each>
-          </xsl:variable>
-          <xsl:if test="$rootsys != saxon:systemId()">
-            <xsl:text> of </xsl:text>
-            <xsl:value-of select="saxon:systemId()"/>
-          </xsl:if>
-        </xsl:if>
-        <xsl:text>)</xsl:text>
-      </xsl:if>
+      <xsl:text>)</xsl:text>
     </xsl:if>
   </xsl:for-each>
 </xsl:template>
