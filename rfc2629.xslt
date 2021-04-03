@@ -10434,8 +10434,8 @@ dd, li, p {
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="$name"/>
-      <xsl:call-template name="warning">
-        <xsl:with-param name="msg" select="concat('In metadata obsoletes/updates, RFC number of draft name is expected - found: ',$name)"/>
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg">In metadata obsoletes/updates, RFC number of draft name is expected - found: '<xsl:value-of select="$name"/>'</xsl:with-param>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -12160,11 +12160,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1385 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1385 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1386 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1386 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/04/03 08:52:42 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/04/03 08:52:42 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/04/03 13:39:49 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/04/03 13:39:49 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
