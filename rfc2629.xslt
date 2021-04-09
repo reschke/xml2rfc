@@ -6729,6 +6729,12 @@
     </xsl:call-template>
   </xsl:if>
 
+  <xsl:if test="self::relref">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">&lt;relref> is deprecated; use &lt;xref> extensions instead.</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+
   <xsl:variable name="anchor"><xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="$target"/>.<xsl:number level="any" count="xref[@target=$target]|relref[@target=$target]"/></xsl:variable>
   
   <!-- ensure we have the right context, this <xref> may be processed from within the boilerplate -->
@@ -12160,11 +12166,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1386 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1386 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1387 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1387 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/04/03 13:39:49 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/04/03 13:39:49 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/04/09 08:52:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/04/09 08:52:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
