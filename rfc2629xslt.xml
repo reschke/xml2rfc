@@ -157,7 +157,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>rfc</c>
   <c>comments<iref item="comments PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="comments"/></c>
   <c>xml2rfc-comments<iref item="xml2rfc-comments parameter"/> <iref item="Parameters" subitem="xml2rfc-comments"/></c>
-  <c>(not set)</c>
+  <c>"no" ("yes" for v3 documents)</c>
   <c/>
 
   <c>rfc</c>
@@ -193,7 +193,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>rfc</c>
   <c>inline<iref item="inline PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="inline"/></c>
   <c>xml2rfc-inline<iref item="xml2rfc-inline parameter"/> <iref item="Parameters" subitem="xml2rfc-inline"/></c>
-  <c>(not set)</c>
+  <c>"no" ("yes" for v3 documents)</c>
   <c/>
 
   <c>rfc</c>
