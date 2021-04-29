@@ -1,7 +1,7 @@
 <!--
     Parse RFC Editor Errata pages into XML
 
-    Copyright (c) 2017-2018, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2017-2021, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -153,7 +153,7 @@
   <xsl:param name="s"/>
   <xsl:variable name="l" select="translate($s,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
   <xsl:choose>
-    <xsl:when test="$l='nonspecific'">
+    <xsl:when test="$l='nonspecific' or $l='section'">
       <!-- not a section number -->
     </xsl:when>
     <xsl:when test="$l='toc' or $l='boilerplate' or $l='abstract'">
