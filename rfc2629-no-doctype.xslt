@@ -1767,7 +1767,13 @@
       <xsl:otherwise/>
     </xsl:choose>
   </xsl:variable>
-  <div>
+  <xsl:variable name="anch-container">
+    <xsl:choose>
+      <xsl:when test="ancestor::t">span</xsl:when>
+      <xsl:otherwise>div</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:element name="{$anch-container}">
     <xsl:choose>
       <xsl:when test="parent::artset">
         <xsl:for-each select="..">
@@ -1792,7 +1798,7 @@
       <xsl:copy-of select="$display"/>
     </pre>
     <xsl:call-template name="insert-end-code"/>
-  </div>
+  </xsl:element>
   <xsl:call-template name="check-artwork-width">
     <xsl:with-param name="content"><xsl:apply-templates/></xsl:with-param>
     <xsl:with-param name="indent"><xsl:value-of select="string-length(@x:indent-with)"/></xsl:with-param>
@@ -12186,11 +12192,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1392 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1392 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1393 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1393 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/04/24 08:56:56 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/04/24 08:56:56 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/05/04 14:14:00 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/05/04 14:14:00 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
