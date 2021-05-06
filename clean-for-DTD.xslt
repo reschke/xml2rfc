@@ -870,7 +870,18 @@
   <xsl:call-template name="insert-iref-for-xref"/>
   <xref>
     <xsl:apply-templates select="@target|@format" mode="cleanup"/>
-    <xsl:apply-templates mode="cleanup"/>
+    <xsl:choose>
+      <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+        <xsl:apply-templates mode="cleanup"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- remove markup -->
+        <xsl:variable name="t">
+          <xsl:apply-templates mode="cleanup"/>
+        </xsl:variable>
+        <xsl:value-of select="$t"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xref>
 </xsl:template>
 
