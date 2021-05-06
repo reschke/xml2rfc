@@ -382,6 +382,18 @@ include "rfc2629.rnc" {
       (TEXT
         | v3_br)*
     }
+
+  # Redefine <xref> to allow some markup
+  xref =
+    element xref {
+      attlist.xref,
+      (TEXT
+        | v3_em
+        | v3_strong
+        | v3_sub
+        | v3_sup
+        | v3_tt)*
+    }
 }
 
 # Extend attribute set for <abstract>
