@@ -3299,6 +3299,9 @@
 <xsl:template match="iref">
   <xsl:variable name="anchor"><xsl:call-template name="compute-iref-anchor"/></xsl:variable>
   <xsl:choose>
+    <xsl:when test="parent::figure and ancestor::t">
+      <span id="{$anchor}"/>
+    </xsl:when>
     <xsl:when test="parent::figure">
       <div id="{$anchor}"/>
     </xsl:when>
@@ -12192,11 +12195,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1394 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1394 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1395 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1395 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/05/18 11:55:55 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/05/18 11:55:55 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/05/18 12:41:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/05/18 12:41:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
