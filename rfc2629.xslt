@@ -5222,9 +5222,8 @@
         </link>
       </xsl:for-each>
       <xsl:if test="$is-rfc">
-        <link rel="Alternate" title="Authoritative ASCII Version" href="http://www.ietf.org/rfc/rfc{$rfcno}.txt" />
+        <link rel="Alternate" title="Plain Text Version" href="http://www.ietf.org/rfc/rfc{$rfcno}.txt" />
         <link rel="Help" title="RFC-Editor's Status Page" href="{$rfc-info-link}" />
-        <link rel="Help" title="Additional Information on tools.ietf.org" href="https://tools.ietf.org/html/rfc{$rfcno}"/>
       </xsl:if>
 
       <!-- viewport -->
@@ -12193,11 +12192,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1393 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1393 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1394 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1394 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/05/04 14:14:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/05/04 14:14:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/05/18 11:55:55 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/05/18 11:55:55 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
