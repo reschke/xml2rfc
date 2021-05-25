@@ -101,7 +101,7 @@
 </xsl:template>
 
 <xsl:template match="*" mode="cleanup">
-  <xsl:element name="{local-name()}">
+  <xsl:element name="{local-name()}" namespace="{namespace-uri()}">
   	<xsl:apply-templates select="node()|@*" mode="cleanup" />
   </xsl:element>
 </xsl:template>
