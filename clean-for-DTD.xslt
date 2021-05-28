@@ -277,16 +277,25 @@
 <xsl:template match="t/@keepWithNext|t/@keepWithPrevious" mode="cleanup"/>
 
 <xsl:template match="refcontent" mode="cleanup">
-  <xsl:variable name="text">
-    <xsl:apply-templates mode="cleanup"/>
-  </xsl:variable>
-  <xsl:comment>Converted from rfc2629.xslt refcontent extension</xsl:comment>
   <xsl:choose>
-    <xsl:when test="contains($text,' ')">
-      <seriesInfo name="{substring-before($text,' ')}" value="{substring-after($text,' ')}"/>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <refcontent>
+        <xsl:apply-templates mode="cleanup"/>
+      </refcontent>
     </xsl:when>
     <xsl:otherwise>
-      <seriesInfo name="" value="{$text}"/>
+      <xsl:variable name="text">
+        <xsl:apply-templates mode="cleanup"/>
+      </xsl:variable>
+      <xsl:comment>Converted from rfc2629.xslt refcontent extension</xsl:comment>
+      <xsl:choose>
+        <xsl:when test="contains($text,' ')">
+          <seriesInfo name="{substring-before($text,' ')}" value="{substring-after($text,' ')}"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <seriesInfo name="" value="{$text}"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -1674,10 +1683,6 @@
 
 <xsl:template match="seriesInfo" mode="cleanup">
   <xsl:choose>
-    <xsl:when test="@name='Internet-Draft' and $rfcno > 7375">
-      <!-- special case in RFC formatting since 2015 -->
-      <seriesInfo name="Work in Progress," value="{@value}"/>
-    </xsl:when>
     <xsl:when test="@name='DOI' and starts-with(@value,'10.17487/RFC') and $xml2rfc-ext-insert-doi='no'">
       <xsl:call-template name="info">
         <xsl:with-param name="msg">Removing DOI <xsl:value-of select="@value"/> from &lt;reference> element</xsl:with-param>
