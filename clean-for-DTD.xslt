@@ -695,6 +695,7 @@
   <xsl:call-template name="insert-iref-for-xref"/>
   <xsl:variable name="is-xref" select="self::xref"/>
   <xsl:variable name="node" select="$src//*[@anchor=current()/@target]" />
+  <xsl:variable name="rel" select="@x:rel|@relative"/>
 
   <xsl:variable name="ssec">
     <xsl:call-template name="get-section-xref-section"/>
@@ -760,22 +761,22 @@
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='of'">
       <xref target="{@target}" section="{$tsec}">
-        <xsl:if test="@x:rel">
-          <xsl:attribute name="relative"><xsl:value-of select="@x:rel"/></xsl:attribute>
+        <xsl:if test="$rel!=''">
+          <xsl:attribute name="relative"><xsl:value-of select="$rel"/></xsl:attribute>
         </xsl:if>
       </xref>
     </xsl:when>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='comma'">
       <xref target="{@target}" sectionFormat="comma" section="{$tsec}">
-        <xsl:if test="@x:rel">
-          <xsl:attribute name="relative"><xsl:value-of select="@x:rel"/></xsl:attribute>
+        <xsl:if test="$rel!=''">
+          <xsl:attribute name="relative"><xsl:value-of select="$rel"/></xsl:attribute>
         </xsl:if>
       </xref>
     </xsl:when>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='bare'">
       <xref target="{@target}" sectionFormat="bare" section="{$tsec}">
-        <xsl:if test="@x:rel">
-          <xsl:attribute name="relative"><xsl:value-of select="@x:rel"/></xsl:attribute>
+        <xsl:if test="$rel!=''">
+          <xsl:attribute name="relative"><xsl:value-of select="$rel"/></xsl:attribute>
         </xsl:if>
       </xref>
     </xsl:when>
