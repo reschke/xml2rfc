@@ -1160,22 +1160,14 @@
 <xsl:template name="insert-end-code"/>
 <xsl:template match="@x:is-code-component" mode="cleanup"/>
 
-<xsl:template match="artwork[svg:svg]" mode="cleanup">
-<xsl:call-template name="warning">
-  <xsl:with-param name="msg">SVG image removed.</xsl:with-param>
-</xsl:call-template>
-<artwork>(see SVG image in HTML version)</artwork>
-</xsl:template>
-
 <xsl:template match="artwork" mode="cleanup">
-  <xsl:call-template name="insert-markup"/>
+  <xsl:call-template name="handle-artwork"/>
 </xsl:template>
 
 <xsl:template match="artwork[not(ancestor::figure)]" mode="cleanup">
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
-      <xsl:apply-templates select=".//iref" mode="cleanup"/>
-      <xsl:call-template name="insert-markup"/>
+      <xsl:call-template name="handle-artwork"/>
     </xsl:when>
     <xsl:when test="parent::blockquote">
       <t>
@@ -1196,13 +1188,38 @@
     </xsl:if>
     <!-- move irefs up -->
     <xsl:apply-templates select="iref" mode="cleanup"/>
-    <xsl:call-template name="insert-markup"/>
+    <xsl:call-template name="handle-artwork"/>
   </figure>
 </xsl:template>
 
 <xsl:template match="artwork/@anchor" mode="cleanup"/>
 
-<xsl:template name="insert-markup">
+<xsl:template name="handle-artwork">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and svg:svg">
+      <artwork>
+        <xsl:apply-templates select="@*" mode="cleanup"/>
+        <xsl:apply-templates select="*" mode="cleanup"/>
+      </artwork>
+    </xsl:when>
+    <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
+      <xsl:apply-templates select=".//iref" mode="cleanup"/>
+      <xsl:call-template name="handle-markup-in-artwork"/>
+    </xsl:when>
+    <xsl:when test="svg:svg">
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">SVG image removed.</xsl:with-param>
+      </xsl:call-template>
+      <artwork>(see SVG image in HTML version)</artwork>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates select=".//iref" mode="cleanup"/>
+      <xsl:call-template name="handle-markup-in-artwork"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="handle-markup-in-artwork">
   <xsl:variable name="content2"><xsl:apply-templates select="node()"/></xsl:variable>
   <xsl:variable name="content" select="translate($content2,'&#160;&#x2500;&#x2502;&#x2508;&#x250c;&#x2510;&#x2514;&#x2518;&#x251c;&#x2524;',' -|+++++++')"/>
   <artwork>
