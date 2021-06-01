@@ -2470,4 +2470,8 @@
   </xsl:choose>
 </xsl:template>
 
+<!-- removal of xml2rfc preptool artefacts -->
+<xsl:template match="/rfc/@prepTime" mode="cleanup"/>
+<xsl:template match="/rfc/front/toc" mode="cleanup"/>
+
 </xsl:transform>
