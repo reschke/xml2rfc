@@ -1366,18 +1366,18 @@ saxon tmp.fo xsl11toFop.xslt > rfc2629.fo
   will behave properly with respect to table breaks etc.
 </t>
 <t>
-  An alternative is PrinceXML (see <eref target="http://www.princexml.com/"/>),
-  which can produce PDF directly from (X)HTML input, based on the CSS printing
-  information.
+  Alternatives are tools which can produce PDF directly from (X)HTML input,
+  based on the CSS printing information.
+  For instance: "PrinceXML" (<eref target="http://www.princexml.com/"/>) and 
+  "WeasyPrint" (<eref target="https://weasyprint.org/"/>).
 </t>
 <figure>
   <preamble>
-    For instance, PDF output with text justification turned on can be
-    produced with:
+    For instance, PDF output can be produced with:
   </preamble>
   <artwork type="example">
 saxon input.xml rfc2629.xslt > output.html
-prince output.html output.pdf</artwork>
+weasyprint output.html output.pdf</artwork>
 </figure>
 </section>
 
