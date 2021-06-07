@@ -3645,9 +3645,9 @@
                   <xsl:with-param name="msg">support for "bare" is experimental, see https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/547 for more information</xsl:with-param>
                 </xsl:call-template>
               </xsl:if>
-              <xsl:if test="@bare and @bare!='true'">
+              <xsl:if test="@bare and @bare!='true' and @bare!='false'">
                 <xsl:call-template name="error">
-                  <xsl:with-param name="msg">the only valid value for "bare" is "true"</xsl:with-param>
+                  <xsl:with-param name="msg">invalid value for "bare" attribute: '<xsl:value-of select="@bare"/>'</xsl:with-param>
                 </xsl:call-template>
               </xsl:if>
             </xsl:attribute>
@@ -5387,7 +5387,7 @@
   </xsl:variable>
 
   <div>
-    <xsl:if test="not(ancestor::list)">
+    <xsl:if test="not(ancestor::list) and not(ancestor::table)">
       <xsl:call-template name="attach-paragraph-number-as-id"/>
     </xsl:if>
     <xsl:if test="normalize-space($class)!=''">
@@ -5442,7 +5442,7 @@
             </xsl:choose>
           </xsl:variable>
           <xsl:variable name="anch">
-            <xsl:if test="$p!='' and not(ancestor::li) and not(ancestor::x:lt) and not(preceding-sibling::node())">
+            <xsl:if test="$p!='' and not(ancestor::td) and not(ancestor::th) and not(ancestor::li) and not(ancestor::x:lt) and not(preceding-sibling::node())">
               <xsl:value-of select="concat($anchor-pref,$stype,'.',$p)"/>
             </xsl:if>
           </xsl:variable>
@@ -8908,8 +8908,6 @@ dd, li, p {
 
   .print2col {
     column-count: 2;
-    -moz-column-count: 2;<!-- for Firefox -->
-    column-fill: auto;<!-- for PrinceXML -->
   }
 <xsl:if test="$xml2rfc-ext-justification='print'">
   dd, li, p {
@@ -12194,11 +12192,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1395 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1395 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1398 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1398 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/05/18 12:41:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/05/18 12:41:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/06/06 09:33:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/06/06 09:33:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
