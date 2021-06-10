@@ -710,7 +710,7 @@
           <xsl:when test="count($targets)!=1">
             <xsl:call-template name="error">
               <xsl:with-param name="inline">no</xsl:with-param>
-              <xsl:with-param name="msg">Can not resolve section number for relative value <xsl:value-of select="$rel"/> on reference <xsl:value-of select="@target"/></xsl:with-param>
+              <xsl:with-param name="msg">Can not resolve section number for relative value <xsl:value-of select="$rel"/> on reference <xsl:value-of select="@target"/> (found <xsl:value-of select="count($targets)"/> targets)</xsl:with-param>
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
