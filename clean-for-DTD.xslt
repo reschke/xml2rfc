@@ -703,34 +703,45 @@
 
   <xsl:variable name="tsec">
     <xsl:choose>
-      <xsl:when test="starts-with(@x:rel,'#') and $ssec='' and $node/x:source/@href">
+      <xsl:when test="starts-with($rel,'#') and $ssec='' and $node/x:source/@href">
         <xsl:variable name="extdoc" select="document($node/x:source/@href)"/>
-        <xsl:for-each select="$extdoc//*[@anchor=substring-after(current()/@x:rel,'#')]">
-          <xsl:variable name="t">
-            <xsl:call-template name="get-section-number"/>
-          </xsl:variable>
-          <xsl:choose>
-            <xsl:when test="starts-with($t,$unnumbered)">
+        <xsl:variable name="targets" select="$extdoc//*[@anchor=substring-after($rel,'#')]"/>
+        <xsl:choose>
+          <xsl:when test="count($targets)!=1">
+            <xsl:call-template name="error">
+              <xsl:with-param name="inline">no</xsl:with-param>
+              <xsl:with-param name="msg">Can not resolve section number for relative value <xsl:value-of select="$rel"/> on reference <xsl:value-of select="@target"/></xsl:with-param>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:for-each select="$targets">
+              <xsl:variable name="t">
+                <xsl:call-template name="get-section-number"/>
+              </xsl:variable>
               <xsl:choose>
-                <xsl:when test="ancestor::back">A@</xsl:when>
-                <xsl:otherwise>S@</xsl:otherwise>
+                <xsl:when test="starts-with($t,$unnumbered)">
+                  <xsl:choose>
+                    <xsl:when test="ancestor::back">A@</xsl:when>
+                    <xsl:otherwise>S@</xsl:otherwise>
+                  </xsl:choose>
+                  <xsl:call-template name="get-title-as-string">
+                    <xsl:with-param name="node" select="."/>
+                  </xsl:call-template>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$t"/>
+                </xsl:otherwise>
               </xsl:choose>
-              <xsl:call-template name="get-title-as-string">
-                <xsl:with-param name="node" select="."/>
-              </xsl:call-template>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="$t"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:for-each>
+            </xsl:for-each>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$ssec"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-
+  
   <xsl:variable name="sec">
     <xsl:choose>
       <xsl:when test="contains($tsec,'@')">"<xsl:value-of select="substring-after($tsec,'@')"/>"</xsl:when>
