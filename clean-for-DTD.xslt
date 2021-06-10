@@ -691,6 +691,26 @@
 <!-- not supported -->
 <xsl:template match="relref/@format" mode="cleanup"/>
 
+<xsl:template name="obtain-sec-n">
+  <xsl:variable name="t">
+    <xsl:call-template name="get-section-number"/>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="starts-with($t,$unnumbered)">
+      <xsl:choose>
+        <xsl:when test="ancestor::back">A@</xsl:when>
+        <xsl:otherwise>S@</xsl:otherwise>
+      </xsl:choose>
+      <xsl:call-template name="get-title-as-string">
+        <xsl:with-param name="node" select="."/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$t"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="xref[(@x:fmt or @x:sec or @x:rel or @section or @relative) and not(*|text())]|relref[not(*|text())]" mode="cleanup">
   <xsl:call-template name="insert-iref-for-xref"/>
   <xsl:variable name="is-xref" select="self::xref"/>
@@ -707,6 +727,22 @@
         <xsl:variable name="extdoc" select="document($node/x:source/@href)"/>
         <xsl:variable name="targets" select="$extdoc//*[@anchor=substring-after($rel,'#')]"/>
         <xsl:choose>
+          <xsl:when test="count($targets)=0">
+            <xsl:variable name="targets2" select="$extdoc//*[x:anchor-alias/@value=substring-after($rel,'#')]"/>
+            <xsl:choose>
+              <xsl:when test="count($targets2)!=1">
+                <xsl:call-template name="error">
+                  <xsl:with-param name="inline">no</xsl:with-param>
+                  <xsl:with-param name="msg">Can not resolve section number for relative value <xsl:value-of select="$rel"/> on reference <xsl:value-of select="@target"/> (found <xsl:value-of select="count($targets2)"/> targets)</xsl:with-param>
+                </xsl:call-template>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:for-each select="$targets2">
+                  <xsl:call-template name="obtain-sec-n"/>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
           <xsl:when test="count($targets)!=1">
             <xsl:call-template name="error">
               <xsl:with-param name="inline">no</xsl:with-param>
@@ -715,23 +751,7 @@
           </xsl:when>
           <xsl:otherwise>
             <xsl:for-each select="$targets">
-              <xsl:variable name="t">
-                <xsl:call-template name="get-section-number"/>
-              </xsl:variable>
-              <xsl:choose>
-                <xsl:when test="starts-with($t,$unnumbered)">
-                  <xsl:choose>
-                    <xsl:when test="ancestor::back">A@</xsl:when>
-                    <xsl:otherwise>S@</xsl:otherwise>
-                  </xsl:choose>
-                  <xsl:call-template name="get-title-as-string">
-                    <xsl:with-param name="node" select="."/>
-                  </xsl:call-template>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:value-of select="$t"/>
-                </xsl:otherwise>
-              </xsl:choose>
+              <xsl:call-template name="obtain-sec-n"/>
             </xsl:for-each>
           </xsl:otherwise>
         </xsl:choose>
@@ -772,21 +792,21 @@
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='of'">
       <xref target="{@target}" section="{$tsec}">
-        <xsl:if test="$rel!=''">
+        <xsl:if test="$rel!='' and (@x:sec or @section)">
           <xsl:attribute name="relative"><xsl:value-of select="$rel"/></xsl:attribute>
         </xsl:if>
       </xref>
     </xsl:when>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='comma'">
       <xref target="{@target}" sectionFormat="comma" section="{$tsec}">
-        <xsl:if test="$rel!=''">
+        <xsl:if test="$rel!='' and (@x:sec or @section)">
           <xsl:attribute name="relative"><xsl:value-of select="$rel"/></xsl:attribute>
         </xsl:if>
       </xref>
     </xsl:when>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and $tsec!='' and not(contains($tsec,'@')) and $sfmt='bare'">
       <xref target="{@target}" sectionFormat="bare" section="{$tsec}">
-        <xsl:if test="$rel!=''">
+        <xsl:if test="$rel!='' and (@x:sec or @section)">
           <xsl:attribute name="relative"><xsl:value-of select="$rel"/></xsl:attribute>
         </xsl:if>
       </xref>
