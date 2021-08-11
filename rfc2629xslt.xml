@@ -3461,7 +3461,9 @@ include "rfc2629.rnc" {
           | <x:ref>v3_sortingcode</x:ref>
           | region
           | street)*
-        <strong>| <x:ref>v3_postalLine</x:ref></strong>+)
+          | (<x:ref>v3_postalLine</x:ref>+,
+          country?
+          ))
     }
 
   <em># Redefine &lt;postamble> to allow our extension elements</em>
