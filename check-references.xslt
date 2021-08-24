@@ -3,7 +3,7 @@
     available from <ftp://ftp.isi.edu/in-notes/rfc-index.xml> and
     "tr.rdf", available from <http://www.w3.org/2002/01/tr-automation/tr.rdf>)
 
-    Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2021, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@
         <xsl:when test="(seriesInfo/@name='ID' or seriesInfo/@name='Internet-Draft') and starts-with(seriesInfo/@value,'draft-')">
           <xsl:apply-templates select="." mode="check-internet-draft"/>
         </xsl:when>
-        <xsl:when test="(seriesInfo/@name='W3C' or starts-with(seriesInfo/@name, 'W3C ') or starts-with(seriesInfo/@name, 'World Wide Web Consortium'))">
+        <xsl:when test="seriesInfo/@name='W3C' or seriesInfo/@name[starts-with(.,'W3C')] or seriesInfo/@name[starts-with(.,'World Wide Web Consortium')]">
           <xsl:apply-templates select="." mode="check-w3c"/>
         </xsl:when>
         <xsl:otherwise>
