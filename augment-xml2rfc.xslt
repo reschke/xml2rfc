@@ -109,8 +109,14 @@
 <xsl:template name="insert-target-metadata">
   <xsl:param name="file"/>
   <xsl:param name="sec"/>
-  <xsl:if test="contains(concat(' ',$sibling-specs,' '),concat(' ',$file,' '))">
-    <xsl:variable name="src" select="document(concat($file,'.xml'))"/>
+  <xsl:variable name="fname">
+    <xsl:choose>
+      <xsl:when test="translate($file,'0123456789','')!=''"><xsl:value-of select="$file"/></xsl:when>
+      <xsl:otherwise>rfc<xsl:value-of select="$file"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:if test="contains(concat(' ',$sibling-specs,' '),concat(' ',$fname,' '))">
+    <xsl:variable name="src" select="document(concat($fname,'.xml'))"/>
     <xsl:if test="$src/rfc">
       <!-- find target section -->
       <xsl:for-each select="$src/rfc//section">
@@ -319,8 +325,12 @@
   <xsl:copy>
     <xsl:apply-templates select="node()|@*" mode="link-sibling-specs"/>
     <xsl:variable name="draftName" select="normalize-space(seriesInfo[@name='Internet-Draft']/@value)"/>
+    <xsl:variable name="rfcName" select="concat('rfc',normalize-space(seriesInfo[@name='RFC']/@value))"/>
     <xsl:if test="not(x:source) and $draftName!='' and contains(concat(' ',normalize-space($sibling-specs),' '), $draftName)">
       <x:source href="{$draftName}.xml" basename="{$draftName}"/>
+    </xsl:if>
+    <xsl:if test="not(x:source) and $rfcName!='rfc' and contains(concat(' ',normalize-space($sibling-specs),' '), $rfcName)">
+      <x:source href="{$rfcName}.xml" basename="{$rfcName}"/>
     </xsl:if>
   </xsl:copy>
 </xsl:template>
