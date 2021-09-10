@@ -44,6 +44,10 @@
 <!-- URI template for feedback, as described in https://www.greenbytes.de/tech/webdav/rfc2629xslt/rfc2629xslt.html#ext.element.feedback -->
 <xsl:param name="feedback"/>
 
+<!-- character translation tables -->
+<xsl:variable name="lcase" select="'abcdefghijklmnopqrstuvwxyz'" />
+<xsl:variable name="ucase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
+
 <xsl:template match="/">
   <xsl:variable name="t0">
     <xsl:apply-templates mode="refs-in-artwork"/>
@@ -123,7 +127,7 @@
         <xsl:variable name="n">
           <xsl:call-template name="get-section-number"/>
         </xsl:variable>
-        <xsl:if test="$n=$sec">
+        <xsl:if test="translate($n,$lcase,$ucase)=translate($sec,$lcase,$ucase)">
           <xsl:if test="@anchor">
             <xsl:processing-instruction name="aug-anchor"><xsl:value-of select="@anchor"/></xsl:processing-instruction>
           </xsl:if>
