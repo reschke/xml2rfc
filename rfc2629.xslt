@@ -7072,33 +7072,33 @@
       <xsl:variable name="area" select="normalize-space(.)"/>
       <xsl:variable name="rallowed">
         <xsl:if test="$pub-yearmonth &lt; 201509">
-          <ed:v>Applications</ed:v>
+          <ed:v>applications</ed:v>
           <ed:v>app</ed:v>
         </xsl:if>
         <xsl:if test="$pub-yearmonth &gt; 201505">
-          <ed:v>Applications and Real-Time</ed:v>
+          <ed:v>applications and real-time</ed:v>
           <ed:v>art</ed:v>
         </xsl:if>
-        <ed:v>General</ed:v>
+        <ed:v>general</ed:v>
         <ed:v>gen</ed:v>
-        <ed:v>Internet</ed:v>
+        <ed:v>internet</ed:v>
         <ed:v>int</ed:v>
-        <ed:v>Operations and Management</ed:v>
+        <ed:v>operations and management</ed:v>
         <ed:v>ops</ed:v>
         <xsl:if test="$pub-yearmonth &lt; 201509">
-          <ed:v>Real-time Applications and Infrastructure</ed:v>
+          <ed:v>real-time applications and infrastructure</ed:v>
           <ed:v>rai</ed:v>
         </xsl:if>
-        <ed:v>Routing</ed:v>
+        <ed:v>routing</ed:v>
         <ed:v>rtg</ed:v>
-        <ed:v>Security</ed:v>
+        <ed:v>security</ed:v>
         <ed:v>sec</ed:v>
-        <ed:v>Transport</ed:v>
+        <ed:v>transport</ed:v>
         <ed:v>tsv</ed:v>
       </xsl:variable>
       <xsl:variable name="allowed" select="exslt:node-set($rallowed)"/>
       <xsl:choose>
-        <xsl:when test="$allowed/ed:v=$area">
+        <xsl:when test="$allowed/ed:v=translate($area,$ucase,$lcase)">
           <!-- ok -->
         </xsl:when>
         <xsl:otherwise>
@@ -12249,11 +12249,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1406 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1406 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1407 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1407 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/09/08 11:58:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/08 11:58:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/09/10 18:38:27 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/10 18:38:27 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
