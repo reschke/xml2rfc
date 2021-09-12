@@ -7627,7 +7627,7 @@
           </t>
         </xsl:when>
         <xsl:otherwise>
-          <!-- <http://tools.ietf.org/html/rfc2026#section-10.4> -->
+          <!-- <https://www.rfc-editor.org/rfc/rfc2026.html#section-10.4> -->
           <t>
             Copyright &#169; The Internet Society (<xsl:value-of select="$xml2rfc-ext-pub-year" />). All Rights Reserved.
           </t>
@@ -12249,11 +12249,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1407 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1407 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1408 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1408 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/09/10 18:38:27 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/10 18:38:27 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/09/12 09:30:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/12 09:30:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
