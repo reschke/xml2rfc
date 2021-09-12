@@ -1421,8 +1421,8 @@
 <xsl:variable name="hab-reference" myns:namespaceless-elements="xml2rfc">
   <eref>
     <xsl:choose>
-      <xsl:when test="$pub-yearmonth >= 201606 or ($rfcno=7846 or $rfcno=7865 or $rfcno=7866 or $rfcno=7873 or $rfcno=7879 or $rfcno=7892)"><xsl:attribute name="target">https://tools.ietf.org/html/rfc7841#section-2</xsl:attribute>Section 2 of RFC 7841</xsl:when>
-      <xsl:otherwise><xsl:attribute name="target">https://tools.ietf.org/html/rfc5741#section-2</xsl:attribute>Section 2 of RFC 5741</xsl:otherwise>
+      <xsl:when test="$pub-yearmonth >= 201606 or ($rfcno=7846 or $rfcno=7865 or $rfcno=7866 or $rfcno=7873 or $rfcno=7879 or $rfcno=7892)"><xsl:attribute name="target">https://www.rfc-editor.org/rfc/rfc7841.html#section-2</xsl:attribute>Section 2 of RFC 7841</xsl:when>
+      <xsl:otherwise><xsl:attribute name="target">https://www.rfc-editor.org/rfc/rfc5741.html#section-2</xsl:attribute>Section 2 of RFC 5741</xsl:otherwise>
     </xsl:choose>
   </eref>
 </xsl:variable>
@@ -12249,11 +12249,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1410 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1410 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1411 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1411 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/09/12 12:55:04 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/12 12:55:04 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/09/12 14:28:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/12 14:28:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
