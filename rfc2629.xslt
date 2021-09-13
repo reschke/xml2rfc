@@ -1002,7 +1002,7 @@
   </xsl:call-template>
 </xsl:param>
 
-<!-- base URI for include directive when relative reference does not resolve for Intetnet Drafts -->
+<!-- base URI for include directive when relative reference does not resolve for Internet Drafts -->
 <xsl:param name="xml2rfc-ext-internet-draft-reference-base-uri">
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
@@ -12249,11 +12249,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1411 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1411 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1412 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1412 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/09/12 14:28:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/12 14:28:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/09/13 03:22:53 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/13 03:22:53 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
