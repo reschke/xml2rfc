@@ -591,21 +591,8 @@
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="uri">
-          <!--<xsl:choose>
-            <xsl:when test="starts-with(@href,'https://xml2rfc.ietf.org/public/rfc/')">
-              <xsl:call-template name="warning">
-                <xsl:with-param name="msg">rewriting URI to /xml2rfc.tools.ietf.org for <xsl:value-of select="@href"/> - see in order to avoid broken server's 403 response (see https://mailarchive.ietf.org/arch/msg/xml2rfc/56sDqFVKF0baqdgEjHQtxOUMf4o).</xsl:with-param>
-              </xsl:call-template>
-              <xsl:value-of select="concat('https://xml2rfc.tools.ietf.org/public/rfc/',substring-after(@href,'https://xml2rfc.ietf.org/public/rfc/'))"/>
-            </xsl:when>
-            <xsl:otherwise>-->
-              <xsl:value-of select="@href"/>
-            <!--</xsl:otherwise>
-          </xsl:choose>-->
-        </xsl:variable>
         <xsl:variable name="doc">
-          <xsl:copy-of select="document($uri)"/>
+          <xsl:copy-of select="document(@href)"/>
         </xsl:variable>
         <xsl:if test="count($doc) = 1">
           <myns:include from="{@href}" in="{generate-id(..)}">
@@ -4293,7 +4280,7 @@
   <xsl:variable name="bibtarget">
     <xsl:choose>
       <xsl:when test="starts-with($bib/@target,'http://www.rfc-editor.org/info/rfc') or starts-with($bib/@target,'https://www.rfc-editor.org/info/rfc') and $ref and ($ref/@x:sec or $ref/@x:rel or $ref/@section or $ref/@relative)">
-        <!--ignored, use tools.ietf.org link instead -->
+        <!--ignored, use ietf.org link instead -->
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$bib/@target"/>
@@ -12261,11 +12248,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1404 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1404 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1406 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1406 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/09/06 12:23:36 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/06 12:23:36 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/09/08 11:58:34 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/08 11:58:34 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
