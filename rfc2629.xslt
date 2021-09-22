@@ -5426,6 +5426,8 @@
     <xsl:if test="$keepwithprevious">avoidbreakbefore</xsl:if>
   </xsl:variable>
 
+  <xsl:call-template name="insert-errata"/>
+
   <div>
     <xsl:if test="not(ancestor::list) and not(ancestor::table)">
       <xsl:call-template name="attach-paragraph-number-as-id"/>
@@ -5803,9 +5805,8 @@
 </xsl:template>
 
 <!-- errata handling -->
-<xsl:template name="insert-errata">
-  <xsl:param name="section"/>
-  <xsl:variable name="es" select="$errata-parsed[section=$section or (not(section) and $section='1')]"/>
+<xsl:template name="insert-erratum">
+  <xsl:param name="es"/>
   <xsl:if test="$es">
     <aside class="{$css-erratum}">
       <xsl:for-each select="$es">
@@ -5832,6 +5833,33 @@
         </div>
       </xsl:for-each>
     </aside>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="insert-errata">
+  <xsl:param name="section">
+    <xsl:call-template name="get-section-number"/>
+  </xsl:param>
+  <xsl:variable name="match-para" select="self::t"/>
+  <xsl:variable name="es" select="$errata-parsed[section=$section or (not(section) and $section='1')]"/>
+  <xsl:if test="$es">
+    <xsl:choose>
+      <xsl:when test="$match-para">
+        <xsl:variable name="p">
+          <xsl:call-template name="get-paragraph-number"/>
+        </xsl:variable>
+        <xsl:if test="$p!='' and $es/section[.=$section and @para=substring-after($p,'.p.')]">
+          <xsl:call-template name="insert-erratum">
+            <xsl:with-param name="es" select="$es[section[.=$section and @para=substring-after($p,'.p.')]]"/>
+          </xsl:call-template>
+        </xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="insert-erratum">
+          <xsl:with-param name="es" select="$es[not(section/@para)]"/>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:if>
 </xsl:template>
 
@@ -12249,11 +12277,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1412 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1412 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1413 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1413 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/09/13 03:22:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/13 03:22:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/09/22 16:31:13 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/22 16:31:13 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">

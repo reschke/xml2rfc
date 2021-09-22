@@ -30,11 +30,15 @@
 -->
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                version="2.0"
+               xmlns:my="#fun"
+               exclude-result-prefixes="my"
 >
 
 <xsl:output encoding="UTF-8" indent="yes"/>
 
 <xsl:param name="doc"/>
+
+<xsl:variable name="src" select="/"/>
 
 <xsl:template match="/">
   <errata for="{substring-before($doc,'.rawerrata')}">
@@ -81,12 +85,14 @@
       </xsl:matching-substring>
     </xsl:analyze-string>
   </xsl:variable>
-  <erratum>
+  <xsl:variable name="eid">
     <xsl:analyze-string select="$s" regex="(.*)Errata ID: (&lt;a href=.*>)?([0-9]+)(&lt;/a>)?(.*)">
       <xsl:matching-substring>
-        <xsl:attribute name="eid" select="regex-group(3)"/>
+        <xsl:value-of select="regex-group(3)"/>
       </xsl:matching-substring>
     </xsl:analyze-string>
+  </xsl:variable>
+  <erratum eid="{$eid}">
     <xsl:analyze-string select="$s" regex="(.*)&lt;b>Status: ([A-Za-z ]*)(.*)">
       <xsl:matching-substring>
         <xsl:attribute name="status" select="regex-group(2)"/>
@@ -118,6 +124,7 @@
           <xsl:for-each select="tokenize($raw-reference,'&amp;amp;')">
             <xsl:call-template name="raw-sec-insert">
               <xsl:with-param name="s" select="."/>
+              <xsl:with-param name="eid" select="$eid"/>
             </xsl:call-template>
           </xsl:for-each>
         </xsl:when>
@@ -125,12 +132,14 @@
           <xsl:for-each select="tokenize($raw-reference,'and')">
             <xsl:call-template name="raw-sec-insert">
               <xsl:with-param name="s" select="."/>
+              <xsl:with-param name="eid" select="$eid"/>
             </xsl:call-template>
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="raw-sec-insert">
             <xsl:with-param name="s" select="$raw-reference"/>
+            <xsl:with-param name="eid" select="$eid"/>
           </xsl:call-template>
         </xsl:otherwise>
       </xsl:choose>
@@ -140,10 +149,12 @@
 
 <xsl:template name="raw-sec-insert">
   <xsl:param name="s"/>
+  <xsl:param name="eid"/>
   <xsl:analyze-string select="normalize-space($s)" regex="(A. )?([a-zA-Z0-9\.]+)(( )(.*))*">
     <xsl:matching-substring>
       <xsl:call-template name="sec-insert">
         <xsl:with-param name="s" select="regex-group(2)"/>
+        <xsl:with-param name="eid" select="$eid"/>
       </xsl:call-template>
     </xsl:matching-substring>
   </xsl:analyze-string>
@@ -151,21 +162,34 @@
 
 <xsl:template name="sec-insert">
   <xsl:param name="s"/>
+  <xsl:param name="eid"/>
   <xsl:variable name="l" select="translate($s,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
   <xsl:choose>
     <xsl:when test="$l='nonspecific' or $l='section'">
       <!-- not a section number -->
     </xsl:when>
     <xsl:when test="$l='toc' or $l='boilerplate' or $l='abstract'">
-      <section><xsl:value-of select="$l"/></section>
+      <xsl:copy-of select="my:section($l,$eid)"/>
     </xsl:when>
     <xsl:when test="ends-with($s,'.')">
-      <section><xsl:value-of select="substring($s,0,string-length($s))"/></section>
+      <xsl:copy-of select="my:section(substring($s,0,string-length($s)),$eid)"/>
     </xsl:when>
     <xsl:otherwise>
-      <section><xsl:value-of select="$s"/></section>
+      <xsl:copy-of select="my:section($s,$eid)"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
+
+<xsl:function name="my:section">
+  <xsl:param name="sec"/>
+  <xsl:param name="eid"/>
+  <xsl:variable name="mapped" select="$src/annotations/annotation/map-section[../@for-eid=$eid and @from=$sec]"/>
+  <section>
+    <xsl:if test="$mapped">
+      <xsl:attribute name="para"><xsl:value-of select="$mapped/@to-para"/></xsl:attribute>
+    </xsl:if>
+    <xsl:value-of select="$sec"/>
+  </section>
+</xsl:function>
 
 </xsl:transform>
