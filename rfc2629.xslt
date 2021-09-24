@@ -6716,10 +6716,11 @@
           <xsl:when test="$is-xref and $from/@format='none'">
             <!-- nothing to do here -->
           </xsl:when>
-          <xsl:when test="$is-xref and $from/@format='counter'">
+          <xsl:when test="$is-xref and $from/@format='counter' and $sec=''">
             <xsl:call-template name="error">
               <xsl:with-param name="inline">no</xsl:with-param>
               <xsl:with-param name="msg">xref to reference with format='counter' not allowed</xsl:with-param>
+              <xsl:with-param name="node" select="$from"/>
             </xsl:call-template>
             <!-- remove brackets -->
             <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
@@ -12277,11 +12278,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1413 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1413 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1414 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1414 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/09/22 16:31:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/22 16:31:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/09/24 09:07:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/24 09:07:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
