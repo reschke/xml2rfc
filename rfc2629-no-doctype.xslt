@@ -1001,7 +1001,7 @@
   </xsl:call-template>
 </xsl:param>
 
-<!-- base URI for include directive when relative reference does not resolve for Intetnet Drafts -->
+<!-- base URI for include directive when relative reference does not resolve for Internet Drafts -->
 <xsl:param name="xml2rfc-ext-internet-draft-reference-base-uri">
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
@@ -1420,8 +1420,8 @@
 <xsl:variable name="hab-reference" myns:namespaceless-elements="xml2rfc">
   <eref>
     <xsl:choose>
-      <xsl:when test="$pub-yearmonth >= 201606 or ($rfcno=7846 or $rfcno=7865 or $rfcno=7866 or $rfcno=7873 or $rfcno=7879 or $rfcno=7892)"><xsl:attribute name="target">https://tools.ietf.org/html/rfc7841#section-2</xsl:attribute>Section 2 of RFC 7841</xsl:when>
-      <xsl:otherwise><xsl:attribute name="target">https://tools.ietf.org/html/rfc5741#section-2</xsl:attribute>Section 2 of RFC 5741</xsl:otherwise>
+      <xsl:when test="$pub-yearmonth >= 201606 or ($rfcno=7846 or $rfcno=7865 or $rfcno=7866 or $rfcno=7873 or $rfcno=7879 or $rfcno=7892)"><xsl:attribute name="target">https://www.rfc-editor.org/rfc/rfc7841.html#section-2</xsl:attribute>Section 2 of RFC 7841</xsl:when>
+      <xsl:otherwise><xsl:attribute name="target">https://www.rfc-editor.org/rfc/rfc5741.html#section-2</xsl:attribute>Section 2 of RFC 5741</xsl:otherwise>
     </xsl:choose>
   </eref>
 </xsl:variable>
@@ -1675,7 +1675,7 @@
 
 <xsl:template match="artset">
   <xsl:call-template name="check-no-text-content"/>
-  <!-- see https://tools.ietf.org/html/draft-levkowetz-xml2rfc-v3-implementation-notes-08#section-3.1.1 -->
+  <!-- see https://datatracker.ietf.org/doc/html/draft-levkowetz-xml2rfc-v3-implementation-notes-12#section-3.1.1 -->
   <xsl:choose>
     <xsl:when test="artwork[svg:svg or normalize-space(.)='' or @src!='']">
       <xsl:apply-templates select="artwork[svg:svg or normalize-space(.)='' or @src!=''][1]"/>
@@ -4539,7 +4539,7 @@
           <xsl:value-of select="@value" />
         </xsl:when>
         <xsl:when test="/rfc/@version >= 3 and $pub-yearmonth >= 201910">
-          <!-- https://tools.ietf.org/html/draft-flanagan-7322bis-04#section-4.8.6.3 -->
+          <!-- https://datatracker.ietf.org/doc/html/draft-flanagan-7322bis-07#section-4.8.6.3 -->
           <xsl:call-template name="emit-link">
             <xsl:with-param name="target" select="$uri"/>
             <xsl:with-param name="text">Work in Progress</xsl:with-param>
@@ -5425,6 +5425,8 @@
     <xsl:if test="$keepwithprevious">avoidbreakbefore</xsl:if>
   </xsl:variable>
 
+  <xsl:call-template name="insert-errata"/>
+
   <div>
     <xsl:if test="not(ancestor::list) and not(ancestor::table)">
       <xsl:call-template name="attach-paragraph-number-as-id"/>
@@ -5802,9 +5804,8 @@
 </xsl:template>
 
 <!-- errata handling -->
-<xsl:template name="insert-errata">
-  <xsl:param name="section"/>
-  <xsl:variable name="es" select="$errata-parsed[section=$section or (not(section) and $section='1')]"/>
+<xsl:template name="insert-erratum">
+  <xsl:param name="es"/>
   <xsl:if test="$es">
     <aside class="{$css-erratum}">
       <xsl:for-each select="$es">
@@ -5831,6 +5832,33 @@
         </div>
       </xsl:for-each>
     </aside>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="insert-errata">
+  <xsl:param name="section">
+    <xsl:call-template name="get-section-number"/>
+  </xsl:param>
+  <xsl:variable name="match-para" select="self::t"/>
+  <xsl:variable name="es" select="$errata-parsed[section=$section or (not(section) and $section='1')]"/>
+  <xsl:if test="$es">
+    <xsl:choose>
+      <xsl:when test="$match-para">
+        <xsl:variable name="p">
+          <xsl:call-template name="get-paragraph-number"/>
+        </xsl:variable>
+        <xsl:if test="$p!='' and $es/section[.=$section and @para=substring-after($p,'.p.')]">
+          <xsl:call-template name="insert-erratum">
+            <xsl:with-param name="es" select="$es[section[.=$section and @para=substring-after($p,'.p.')]]"/>
+          </xsl:call-template>
+        </xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="insert-erratum">
+          <xsl:with-param name="es" select="$es[not(section/@para)]"/>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:if>
 </xsl:template>
 
@@ -6687,10 +6715,11 @@
           <xsl:when test="$is-xref and $from/@format='none'">
             <!-- nothing to do here -->
           </xsl:when>
-          <xsl:when test="$is-xref and $from/@format='counter'">
+          <xsl:when test="$is-xref and $from/@format='counter' and $sec=''">
             <xsl:call-template name="error">
               <xsl:with-param name="inline">no</xsl:with-param>
               <xsl:with-param name="msg">xref to reference with format='counter' not allowed</xsl:with-param>
+              <xsl:with-param name="node" select="$from"/>
             </xsl:call-template>
             <!-- remove brackets -->
             <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
@@ -7071,33 +7100,33 @@
       <xsl:variable name="area" select="normalize-space(.)"/>
       <xsl:variable name="rallowed">
         <xsl:if test="$pub-yearmonth &lt; 201509">
-          <ed:v>Applications</ed:v>
+          <ed:v>applications</ed:v>
           <ed:v>app</ed:v>
         </xsl:if>
         <xsl:if test="$pub-yearmonth &gt; 201505">
-          <ed:v>Applications and Real-Time</ed:v>
+          <ed:v>applications and real-time</ed:v>
           <ed:v>art</ed:v>
         </xsl:if>
-        <ed:v>General</ed:v>
+        <ed:v>general</ed:v>
         <ed:v>gen</ed:v>
-        <ed:v>Internet</ed:v>
+        <ed:v>internet</ed:v>
         <ed:v>int</ed:v>
-        <ed:v>Operations and Management</ed:v>
+        <ed:v>operations and management</ed:v>
         <ed:v>ops</ed:v>
         <xsl:if test="$pub-yearmonth &lt; 201509">
-          <ed:v>Real-time Applications and Infrastructure</ed:v>
+          <ed:v>real-time applications and infrastructure</ed:v>
           <ed:v>rai</ed:v>
         </xsl:if>
-        <ed:v>Routing</ed:v>
+        <ed:v>routing</ed:v>
         <ed:v>rtg</ed:v>
-        <ed:v>Security</ed:v>
+        <ed:v>security</ed:v>
         <ed:v>sec</ed:v>
-        <ed:v>Transport</ed:v>
+        <ed:v>transport</ed:v>
         <ed:v>tsv</ed:v>
       </xsl:variable>
       <xsl:variable name="allowed" select="exslt:node-set($rallowed)"/>
       <xsl:choose>
-        <xsl:when test="$allowed/ed:v=$area">
+        <xsl:when test="$allowed/ed:v=translate($area,$ucase,$lcase)">
           <!-- ok -->
         </xsl:when>
         <xsl:otherwise>
@@ -7626,7 +7655,7 @@
           </t>
         </xsl:when>
         <xsl:otherwise>
-          <!-- <http://tools.ietf.org/html/rfc2026#section-10.4> -->
+          <!-- <https://www.rfc-editor.org/rfc/rfc2026.html#section-10.4> -->
           <t>
             Copyright &#169; The Internet Society (<xsl:value-of select="$xml2rfc-ext-pub-year" />). All Rights Reserved.
           </t>
@@ -12248,11 +12277,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1406 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1406 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1414 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1414 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/09/08 11:58:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/08 11:58:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/09/24 09:07:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/24 09:07:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
