@@ -3623,6 +3623,7 @@
 </xsl:template>
 
 <xsl:template match="ul">
+  <xsl:call-template name="insert-errata"/>
   <div>
     <xsl:call-template name="insertInsDelClass"/>
     <xsl:if test="not(ancestor::list)">
@@ -5840,7 +5841,7 @@
   <xsl:param name="section">
     <xsl:call-template name="get-section-number"/>
   </xsl:param>
-  <xsl:variable name="match-para" select="self::t"/>
+  <xsl:variable name="match-para" select="self::t or self::ul"/>
   <xsl:variable name="es" select="$errata-parsed[section=$section or (not(section) and $section='1')]"/>
   <xsl:if test="$es">
     <xsl:choose>
@@ -12278,11 +12279,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1414 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1414 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1415 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1415 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/09/24 09:07:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/24 09:07:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/09/28 12:17:50 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/28 12:17:50 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
