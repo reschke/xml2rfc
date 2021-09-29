@@ -186,7 +186,7 @@
   <xsl:variable name="mapped" select="$src/annotations/annotation/map-section[../@for-eid=$eid and @from=$sec]"/>
   <section>
     <xsl:if test="$mapped">
-      <xsl:attribute name="para"><xsl:value-of select="$mapped/@to-para"/></xsl:attribute>
+      <xsl:attribute name="part"><xsl:value-of select="$mapped/@to-part"/></xsl:attribute>
     </xsl:if>
     <xsl:value-of select="$sec"/>
   </section>
