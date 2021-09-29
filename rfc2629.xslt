@@ -5808,11 +5808,19 @@
 <!-- errata handling -->
 <xsl:template name="insert-erratum">
   <xsl:param name="es"/>
+  <xsl:param name="sec"/>
   <xsl:if test="$es">
     <aside class="{$css-erratum}">
       <xsl:for-each select="$es">
         <xsl:sort select="@eid" data-type="number"/>
-        <div>
+        <xsl:variable name="pf">
+          <xsl:variable name="entry" select="section[.=$sec]"/>
+          <xsl:if test="count($entry/preceding-sibling::section)!=0">
+            <xsl:text>.</xsl:text>
+            <xsl:value-of select="1 + count($entry/preceding-sibling::section)"/>
+          </xsl:if>
+        </xsl:variable>
+        <div id="{$anchor-pref}erratum.{@eid}{$pf}">
           <xsl:variable name="tooltip">
             <xsl:value-of select="@reported-by"/>
             <xsl:text>, </xsl:text>
@@ -5851,6 +5859,7 @@
       <xsl:if test="$p!='' and $es">
         <xsl:call-template name="insert-erratum">
           <xsl:with-param name="es" select="$es"/>
+          <xsl:with-param name="sec" select="$section"/>
         </xsl:call-template>
       </xsl:if>
     </xsl:when>
@@ -5858,6 +5867,7 @@
       <xsl:variable name="es" select="$errata-parsed[section=$section or (not(section) and $section='1')]"/>
       <xsl:call-template name="insert-erratum">
         <xsl:with-param name="es" select="$es[not(section/@part)]"/>
+        <xsl:with-param name="sec" select="$section"/>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -12278,11 +12288,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1416 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1416 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1417 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1417 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/09/29 13:08:27 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/29 13:08:27 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/09/29 16:47:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/29 16:47:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
