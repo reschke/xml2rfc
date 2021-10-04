@@ -1699,6 +1699,7 @@
 </xsl:template>
 
 <xsl:template match="artwork|sourcecode">
+  <xsl:call-template name="insert-errata"/>
   <xsl:if test="not(ancestor::ed:del) and $xml2rfc-ext-parse-xml-in-artwork='yes' and function-available('myns:parseXml')" use-when="function-available('myns:parseXml')">
     <xsl:if test="contains(.,'&lt;?xml')">
       <xsl:variable name="body" select="substring-after(substring-after(.,'&lt;?xml'),'?>')" />
@@ -5849,13 +5850,15 @@
   <xsl:param name="section">
     <xsl:call-template name="get-section-number"/>
   </xsl:param>
-  <xsl:variable name="match-para" select="self::t or self::ul"/>
+  <xsl:variable name="match-para" select="self::artwork or self::sourcecode or self::t or self::ul"/>
   <xsl:choose>
     <xsl:when test="$match-para">
       <xsl:variable name="p">
-        <xsl:call-template name="get-paragraph-number"/>
+        <xsl:call-template name="get-paragraph-number">
+          <xsl:with-param name="delim">-</xsl:with-param>
+        </xsl:call-template>
       </xsl:variable>
-      <xsl:variable name="es" select="$errata-parsed[section[@part=$p]]"/>
+      <xsl:variable name="es" select="$errata-parsed[section[@part=concat('section-',$p) or @part=concat('appendix-',$p)]]"/>
       <xsl:if test="$p!='' and $es">
         <xsl:call-template name="insert-erratum">
           <xsl:with-param name="es" select="$es"/>
@@ -8299,17 +8302,17 @@ function anchorRewrite() {
         if (mapped) {
           window.location.hash = mapped;
         } else if (fragid.indexOf("section-") == 0) {
-          window.location.hash = prefix + "section." + fragid.substring(8);
+          window.location.hash = prefix + "section." + fragid.substring(8).replace("-",".p.");
         } else if (fragid.indexOf("appendix-") == 0) {
-          window.location.hash = prefix + "section." + fragid.substring(9);
+          window.location.hash = prefix + "section." + fragid.substring(9).replace("-",".p.");
         } else if (fragid.indexOf("s-") == 0) {
           var postfix = fragid.substring(2);
           if (postfix.startsWith("abstract")) {
             window.location.hash = prefix + postfix;
           } else if (postfix.startsWith("note-")) {
-            window.location.hash = prefix + "note." + postfix.substring(5);
+            window.location.hash = prefix + "note." + postfix.substring(5).replace("-",".p.");
           } else {
-            window.location.hash = prefix + "section." + postfix;
+            window.location.hash = prefix + "section." + postfix.replace("-",".p.");
           }
         } else if (fragid.indexOf("p-") == 0) {
           var r = fragid.substring(2);
@@ -10713,6 +10716,7 @@ dd, li, p {
 </xsl:template>
 
 <xsl:template name="get-paragraph-number">
+  <xsl:param name="delim">.p.</xsl:param>
   <xsl:choose>
     <!-- inside artset -->
     <xsl:when test="parent::artset">
@@ -10738,7 +10742,7 @@ dd, li, p {
 
     <xsl:when test="ancestor::section">
       <!-- get section number of ancestor section element, then add t number -->
-      <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
+      <xsl:for-each select="ancestor::section[1]"><xsl:call-template name="get-section-number" /><xsl:value-of select="$delim"/></xsl:for-each>
       <xsl:variable name="b"><xsl:number count="artset|artwork|aside|blockquote|dl|ol|sourcecode|t|ul|x:blockquote|x:note"/></xsl:variable>
       <xsl:choose>
         <xsl:when test="parent::section and ../@removeInRFC='true' and ../t[1]!=$section-removeInRFC">
@@ -10750,7 +10754,7 @@ dd, li, p {
 
     <xsl:when test="ancestor::note">
       <!-- get section number of ancestor note element, then add t number -->
-      <xsl:for-each select="ancestor::note[1]"><xsl:call-template name="get-section-number" />.p.</xsl:for-each>
+      <xsl:for-each select="ancestor::note[1]"><xsl:call-template name="get-section-number" /><xsl:value-of select="$delim"/></xsl:for-each>
       <xsl:variable name="b"><xsl:number count="artset|artwork|aside|blockquote|dl|ol|sourcecode|t|ul|x:blockquote|x:note"/></xsl:variable>
       <xsl:choose>
         <xsl:when test="parent::note and ../@removeInRFC='true' and ../t[1]!=$note-removeInRFC">
@@ -12288,11 +12292,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1417 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1417 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1421 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1421 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/09/29 16:47:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/09/29 16:47:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/10/04 11:14:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/10/04 11:14:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
