@@ -42,13 +42,19 @@
 
 <xsl:template match="/">
   <errata for="{substring-before($doc,'.rawerrata')}">
-    <xsl:variable name="src" select="unparsed-text($doc)"/>
-    <xsl:if test="contains($src,'Errata ID: ')">
-      <xsl:variable name="p" select="substring-before($src, 'Errata ID: ')"/>
-      <xsl:call-template name="dump">
-        <xsl:with-param name="s" select="substring($src, string-length($p))"/>
-      </xsl:call-template>
-    </xsl:if>
+    <xsl:variable name="tmp">
+      <xsl:variable name="src" select="unparsed-text($doc)"/>
+      <xsl:if test="contains($src,'Errata ID: ')">
+        <xsl:variable name="p" select="substring-before($src, 'Errata ID: ')"/>
+        <xsl:call-template name="dump">
+          <xsl:with-param name="s" select="substring($src, string-length($p))"/>
+        </xsl:call-template>
+      </xsl:if>
+    </xsl:variable>
+    <xsl:for-each select="$tmp/*">
+      <xsl:sort select="number(@eid)"/>
+      <xsl:copy-of select="."/>
+    </xsl:for-each>
   </errata>
 </xsl:template>
 
