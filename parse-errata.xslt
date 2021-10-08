@@ -31,16 +31,25 @@
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                version="2.0"
                xmlns:my="#fun"
-               exclude-result-prefixes="my"
+               xmlns:xp="http://www.w3.org/2005/xpath-functions"
+               exclude-result-prefixes="my xp"
 >
 
 <xsl:output encoding="UTF-8" indent="yes"/>
 
 <xsl:param name="doc"/>
 
+<!-- name of JSON input file -->
+<xsl:param name="json" select="replace($doc,'.rawerrata','.jerrata')"/>
+
+<!-- Read the data -->
+<xsl:variable name="jdata" select="json-to-xml(unparsed-text($json))"/>
+
+
 <xsl:variable name="src" select="/"/>
 
 <xsl:template match="/">
+  <!--<xsl:copy-of select="$jdata"/>-->
   <errata for="{substring-before($doc,'.rawerrata')}">
     <xsl:variable name="tmp">
       <xsl:variable name="src" select="unparsed-text($doc)"/>
@@ -53,7 +62,28 @@
     </xsl:variable>
     <xsl:for-each select="$tmp/*">
       <xsl:sort select="number(@eid)"/>
-      <xsl:copy-of select="."/>
+      <xsl:variable name="j" select="$jdata/xp:array/xp:map[xp:number[@key='errata_id']=current()/@eid]"/>
+      <xsl:copy>
+        <xsl:copy-of select="@*"/>
+        <xsl:copy-of select="*"/>
+        <xsl:if test="$j">
+          <xsl:if test="@status!=$j/xp:string[@key='errata_status_code']">
+            <xsl:comment>@status does not match JSON: <xsl:value-of select="$j/xp:string[@key='errata_status_code']"/></xsl:comment>
+          </xsl:if>
+          <xsl:if test="@type!=$j/xp:string[@key='errata_type_code']">
+            <xsl:comment>@type does not match JSON: <xsl:value-of select="$j/xp:string[@key='errata_type_code']"/></xsl:comment>
+          </xsl:if>
+          <xsl:if test="@reported-by!=$j/xp:string[@key='submitter_name']">
+            <xsl:comment>@reported-by does not match JSON: <xsl:value-of select="$j/xp:string[@key='submitter_name']"/></xsl:comment>
+          </xsl:if>
+          <xsl:if test="@reported!=$j/xp:string[@key='submit_date']">
+            <xsl:comment>@reported does not match JSON: <xsl:value-of select="$j/xp:string[@key='submit_date']"/></xsl:comment>
+          </xsl:if>
+          <xsl:if test="rawsection!=$j/xp:*[@key='section']">
+            <xsl:comment>rawsection does not match JSON: <xsl:value-of select="$j/xp:*[@key='section']"/></xsl:comment>
+          </xsl:if>
+        </xsl:if>
+      </xsl:copy>
     </xsl:for-each>
   </errata>
 </xsl:template>
