@@ -144,7 +144,7 @@
         <xsl:attribute name="reported-by" select="regex-group(2)"/>
       </xsl:matching-substring>
     </xsl:analyze-string>
-    <xsl:analyze-string select="$s" regex="(.*)Type: ([a-zA-Z]*)(.*)">
+    <xsl:analyze-string select="$s" regex="(.*)&#10;Type: ([a-zA-Z]*)(.*)">
       <xsl:matching-substring>
         <xsl:attribute name="type" select="regex-group(2)"/>
       </xsl:matching-substring>
