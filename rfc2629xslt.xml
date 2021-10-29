@@ -416,6 +416,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </t>
   </section>
 
+  <section title="diff-uri - URI Template for Internet Draft Diff Links" anchor="xml2rfc-ext-diff-uri">
+    <iref item="diff-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="diff-uri"/>
+    <iref item="xml2rfc-ext-diff-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-diff-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>diff-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-diff-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.ietf.org/rfcdiff?url2={internet-draft}"</dd>
+    </dl>
+    <t>
+      URI template for Internet Draft Diff links.
+    </t>
+  </section>
+
   <section title="doi-uri - URI Template for DOI Links" anchor="xml2rfc-ext-doi-uri">
     <iref item="doi-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="doi-uri"/>
     <iref item="xml2rfc-ext-doi-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-doi-uri"/>
@@ -1754,9 +1773,9 @@ Content-Length: &lt;x:length-of target="req"/>
   </t>
   <figure>
     <artwork type="example" x:lang="">
-&lt;xref target="test">test&lt;/xref>
-&lt;xref target="test">alias1&lt;/xref>
-&lt;xref target="test">alias 2&lt;/xref></artwork>
+&lt;xref target="test" format="none">test&lt;/xref>
+&lt;xref target="test" format="none">alias1&lt;/xref>
+&lt;xref target="test" format="none">alias 2&lt;/xref></artwork>
   </figure>
 </section>
 
