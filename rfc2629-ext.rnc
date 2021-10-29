@@ -832,6 +832,7 @@ v3_sourcecode =
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     attribute markers { text }?, #(see [V3IMPNOTES], Section 3.1.22)
     attribute name { text }?,
+    attribute src { text }?,
     attribute type { text }?,
     attribute x:lang { "" }?,
     (TEXT

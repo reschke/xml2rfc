@@ -4144,6 +4144,7 @@ attlist.xref &amp;=
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     attribute markers { text }?, #(see <xref target="V3IMPNOTES" x:sec="3.1.22"/>)
     attribute name { text }?,
+    attribute src { text }?,
     attribute type { text }?,
     attribute x:lang { "" }?,
     (TEXT

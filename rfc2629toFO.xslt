@@ -180,6 +180,9 @@
 </xsl:template>
 
 <xsl:template match="artwork|sourcecode">
+  <xsl:variable name="textcontent">
+    <xsl:call-template name="text-content-of-sourcecode-or-artwork"/>
+  </xsl:variable>
   <fo:block>
     <xsl:call-template name="copy-anchor"/>
     <xsl:if test="not(ancestor::figure)">
@@ -209,7 +212,26 @@
       white-space-treatment="preserve" linefeed-treatment="preserve"
       white-space-collapse="false" page-break-inside="avoid">
       <xsl:call-template name="add-artwork-attr"/>
-      <xsl:apply-templates/>
+      <xsl:choose>
+        <xsl:when test="$xml2rfc-ext-allow-markup-in-artwork='yes' and not(@src)">
+          <xsl:apply-templates/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:variable name="display">
+            <xsl:call-template name="text-in-artwork">
+              <xsl:with-param name="content" select="$textcontent"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="starts-with($display,'&#10;')">
+              <xsl:value-of select="substring($display,2)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$display"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:otherwise>
+      </xsl:choose>
     </fo:block>
     <xsl:if test="(self::artwork and @x:is-code-component='yes') or (self::sourcecode and @markers='true')">
       <fo:block font-family="monospace" color="gray">&lt;CODE ENDS></fo:block>

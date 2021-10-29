@@ -1698,11 +1698,41 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="text-content-of-sourcecode-or-artwork">
+  <xsl:choose>
+    <xsl:when test="self::sourcecode and @src and normalize-space(.)!=''">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg">sourcecode with both @src ('<xsl:value-of select="@src"/>') and text content</xsl:with-param>
+        <xsl:with-param name="inline">no</xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="self::sourcecode and @src">
+      <xsl:choose>
+        <xsl:when test="function-available('unparsed-text')">
+          <xsl:value-of select="unparsed-text(@src)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg">sourcecode with @src requires XSLT2 processor</xsl:with-param>
+            <xsl:with-param name="inline">no</xsl:with-param>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="."/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="artwork|sourcecode">
   <xsl:call-template name="insert-errata"/>
+  <xsl:variable name="textcontent">
+    <xsl:call-template name="text-content-of-sourcecode-or-artwork"/>
+  </xsl:variable>
   <xsl:if test="not(ancestor::ed:del) and $xml2rfc-ext-parse-xml-in-artwork='yes' and function-available('myns:parseXml')" use-when="function-available('myns:parseXml')">
-    <xsl:if test="contains(.,'&lt;?xml')">
-      <xsl:variable name="body" select="substring-after(substring-after(.,'&lt;?xml'),'?>')" />
+    <xsl:if test="contains($textcontent,'&lt;?xml')">
+      <xsl:variable name="body" select="substring-after(substring-after($textcontent,'&lt;?xml'),'?>')" />
       <xsl:if test="$body!='' and myns:parseXml($body)!=''">
         <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
         <tr><td>
@@ -1718,16 +1748,16 @@
       </xsl:if>
     </xsl:if>
     <xsl:if test="@ed:parse-xml-after">
-      <xsl:if test="myns:parseXml(string(.))!=''">
+      <xsl:if test="myns:parseXml(string($textcontent))!=''">
         <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
         <tr><td>
         XML PARSE ERROR:
-        <pre><xsl:value-of select="myns:parseXml(string(.))" /></pre>
+        <pre><xsl:value-of select="myns:parseXml(string($textcontent))" /></pre>
         </td></tr></table>
       </xsl:if>
     </xsl:if>
   </xsl:if>
-  <xsl:if test="contains(.,'&#9;')">
+  <xsl:if test="contains($textcontent,'&#9;')">
     <xsl:call-template name="error">
       <xsl:with-param name="msg" select="'artwork or sourcecode contains HTAB character'"/>
       <xsl:with-param name="inline" select="'no'"/>
@@ -1735,11 +1765,13 @@
   </xsl:if>
   <xsl:variable name="display">
     <xsl:choose>
-      <xsl:when test="$xml2rfc-ext-allow-markup-in-artwork='yes'">
+      <xsl:when test="$xml2rfc-ext-allow-markup-in-artwork='yes' and not(@src)">
         <xsl:apply-templates/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="text-in-artwork"/>
+        <xsl:call-template name="text-in-artwork">
+          <xsl:with-param name="content" select="$textcontent"/>
+        </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -12292,11 +12324,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1421 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1421 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1422 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1422 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/10/04 11:14:10 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/10/04 11:14:10 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/10/29 13:54:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/10/29 13:54:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
