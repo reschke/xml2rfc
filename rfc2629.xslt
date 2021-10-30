@@ -9963,6 +9963,12 @@ dd, li, p {
           Copyright (c) <xsl:value-of select="$xml2rfc-ext-pub-year" /> IETF Trust and the persons identified
           as the document authors.  All rights reserved.
         </t>
+        <xsl:variable name="license">
+          <xsl:choose>
+            <xsl:when test="$pub-yearmonth &gt; 202110">Revised BSD License</xsl:when>
+            <xsl:otherwise>Simplified BSD License</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
         <xsl:choose>
           <xsl:when test="$ipr-2010-01">
             <t>
@@ -9973,9 +9979,9 @@ dd, li, p {
               and restrictions with respect to this document.
               <xsl:if test="$submissionType='IETF'">
                 Code Components extracted from this document must include
-                Simplified BSD License text as described in Section 4.e of the
+                <xsl:value-of select="$license"/> text as described in Section 4.e of the
                 Trust Legal Provisions and are provided without warranty as
-                described in the Simplified BSD License.
+                described in the <xsl:value-of select="$license"/>.
               </xsl:if>
             </t>
           </xsl:when>
@@ -12324,11 +12330,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1422 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1422 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1423 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1423 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/10/29 13:54:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/10/29 13:54:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/10/30 11:52:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/10/30 11:52:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
