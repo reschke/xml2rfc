@@ -1052,7 +1052,7 @@
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
     <xsl:with-param name="attr" select="'internet-draft-uri'"/>
-    <xsl:with-param name="default">https://tools.ietf.org/html/{internet-draft}</xsl:with-param>
+    <xsl:with-param name="default">https://datatracker.ietf.org/doc/html/{internet-draft}</xsl:with-param>
   </xsl:call-template>
 </xsl:param>
 
@@ -12341,11 +12341,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1424 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1424 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1425 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1425 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/10/31 14:14:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/10/31 14:14:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/11/01 10:57:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/11/01 10:57:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
