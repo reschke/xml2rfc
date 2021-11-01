@@ -620,7 +620,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>XSLT parameter name</dt>
       <dd>xml2rfc-ext-internet-draft-uri</dd>
       <dt>default</dt>
-      <dd>"https://tools.ietf.org/html/{internet-draft}"</dd>
+      <dd>"https://datatracker.ietf.org/doc/html/{internet-draft}"</dd>
     </dl>
     <t>
       URI template for Internet-Draft links (can be set locally inside the &lt;reference> element as well to override the default).
