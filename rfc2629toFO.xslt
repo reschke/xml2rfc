@@ -1,5 +1,5 @@
 <!--
-    XSLT transformation from RFC2629 XML format to XSL-FO
+    XSLT transformation from RFC2629/7991 XML format to XSL-FO
       
     Copyright (c) 2006-2021, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
