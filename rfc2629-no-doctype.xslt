@@ -1622,7 +1622,7 @@
 <xsl:template name="add-artwork-class">
   <xsl:variable name="v">
     <xsl:choose>
-      <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='abnf7230' or @type='application/xml-dtd' or @type='inline' or @type='application/relax-ng-compact-syntax' or @type='hex-dump'">inline</xsl:when>
+      <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='abnf7230' or @type='abnf9110' or @type='application/xml-dtd' or @type='inline' or @type='application/relax-ng-compact-syntax' or @type='hex-dump'">inline</xsl:when>
       <xsl:when test="starts-with(@type,'message/http') and contains(@type,'msgtype=&quot;request&quot;')">text2</xsl:when>
       <xsl:when test="starts-with(@type,'message/http')">text</xsl:when>
       <xsl:when test="@type='drawing' or @type='pdu' or type='ascii-art' or type='call-flow'">drawing</xsl:when>
@@ -11525,11 +11525,11 @@ dd, li, p {
   </xsl:if>
 
   <!-- check ABNF syntax references -->
-  <xsl:if test="//artwork[@type='abnf2616' or @type='abnf7230']|//sourcecode[@type='abnf2616' or type='abnf7320']">
-    <xsl:if test="not($all-refs//seriesInfo[@name='RFC' and (@value='2068' or @value='2616' or @value='7230')]) and not($all-refs//seriesInfo[@name='Internet-Draft' and (starts-with(@value, 'draft-ietf-httpbis-p1-messaging-') or starts-with(@value, 'draft-ietf-httpbis-semantics-'))])">
+  <xsl:if test="//artwork[@type='abnf2616' or @type='abnf7230' or @type='abnf9110']|//sourcecode[@type='abnf2616' or type='abnf7320' or @type='abnf9110']">
+    <xsl:if test="not($all-refs//seriesInfo[@name='RFC' and (@value='2068' or @value='2616' or @value='7230' or @value='abnf9110')]) and not($all-refs//seriesInfo[@name='Internet-Draft' and (starts-with(@value, 'draft-ietf-httpbis-p1-messaging-') or starts-with(@value, 'draft-ietf-httpbis-semantics-'))])">
       <!-- check for draft-ietf-httpbis-p1-messaging- is for backwards compat -->
       <xsl:call-template name="warning">
-        <xsl:with-param name="msg">document uses HTTP-style ABNF syntax, but doesn't reference RFC 2068, RFC 2616, or RFC 7230.</xsl:with-param>
+        <xsl:with-param name="msg">document uses HTTP-style ABNF syntax, but doesn't reference RFC 2068, RFC 2616, RFC 7230, or RFC 9110.</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
   </xsl:if>
@@ -12340,11 +12340,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1426 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1426 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1427 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1427 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/11/17 17:35:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/11/17 17:35:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2021/12/29 10:53:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/12/29 10:53:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
