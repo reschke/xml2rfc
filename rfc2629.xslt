@@ -5026,9 +5026,24 @@
   </dt>
 
   <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/reference"/>
+  <xsl:variable name="references" select="reference|$included"/>
+
+  <xsl:call-template name="sanity-check-reference-group">
+    <xsl:with-param name="references" select="$references"/>
+    <xsl:with-param name="series" select="'BCP'"/>
+  </xsl:call-template>
+  <xsl:call-template name="sanity-check-reference-group">
+    <xsl:with-param name="references" select="$references"/>
+    <xsl:with-param name="series" select="'FYI'"/>
+  </xsl:call-template>
+  <xsl:call-template name="sanity-check-reference-group">
+    <xsl:with-param name="references" select="$references"/>
+    <xsl:with-param name="series" select="'STD'"/>
+  </xsl:call-template>
+
   <xsl:choose>
     <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
-      <xsl:for-each select="reference|$included">
+      <xsl:for-each select="$references">
         <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor,.//ed:ins//reference/@anchor)" />
         <xsl:call-template name="insert-reference-body">
           <xsl:with-param name="in-reference-group" select="true()"/>
@@ -5036,7 +5051,7 @@
       </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:for-each select="reference|$included">
+      <xsl:for-each select="$references">
         <xsl:call-template name="insert-reference-body">
           <xsl:with-param name="in-reference-group" select="true()"/>
         </xsl:call-template>
@@ -5046,6 +5061,32 @@
 
   <xsl:if test="@target">
     <dd>&lt;<a href="{@target}"><xsl:value-of select="@target"/></a>></dd>
+  </xsl:if>
+</xsl:template>
+
+<!-- sanity check for IETF series -->
+<xsl:template name="sanity-check-reference-group">
+  <xsl:param name="references"/>
+  <xsl:param name="series">STD</xsl:param>
+  
+  <xsl:if test="$references//seriesInfo[@name=$series]">
+    <xsl:variable name="stdno" select="($references//seriesInfo[@name=$series])[1]/@value"/>
+    <xsl:for-each select="$references">
+      <xsl:variable name="si" select=".//seriesInfo[@name=$series]"/>
+      <xsl:choose>
+        <xsl:when test="not($si)">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg"><xsl:value-of select="$series"/> '<xsl:value-of select="$stdno"/>' likely missing on reference [<xsl:value-of select="@anchor"/>]</xsl:with-param>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:when test="$si/@value!=$stdno">
+          <xsl:call-template name="warning">
+            <xsl:with-param name="msg">likely incorrect <xsl:value-of select="$series"/> number '<xsl:value-of select="$si/@value"/>' on reference [<xsl:value-of select="@anchor"/>] (expected '<xsl:value-of select="$stdno"/>')</xsl:with-param>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise/>
+      </xsl:choose>
+    </xsl:for-each>
   </xsl:if>
 </xsl:template>
 
@@ -12341,11 +12382,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1427 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1427 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1428 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1428 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2021/12/29 10:53:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2021/12/29 10:53:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/01/27 14:37:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/01/27 14:37:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
