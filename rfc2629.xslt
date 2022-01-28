@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629/7991 XML format to HTML
 
-    Copyright (c) 2006-2021, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2022, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -252,6 +252,17 @@
     <xsl:with-param name="default" select="'no'"/>
   </xsl:call-template>
 </xsl:param>
+
+<!-- how to handle x:dfn in down-conversion -->
+
+<xsl:param name="xml2rfc-ext-map-dfn">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="$global-std-pis"/>
+    <xsl:with-param name="attr" select="'xml2rfc-ext-map-dfn'"/>
+    <xsl:with-param name="default" select="'em'"/>
+  </xsl:call-template>
+</xsl:param>
+
 
 <!-- make it a private paper -->
 
@@ -12382,11 +12393,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1428 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1428 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1429 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1429 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/01/27 14:37:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/01/27 14:37:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/01/28 09:27:19 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/01/28 09:27:19 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -13023,6 +13034,7 @@ prev: <xsl:value-of select="$prev"/>
                       <xsl:when test="$attrname='internet-draft-reference-base-uri'"/>
                       <xsl:when test="$attrname='justification'"/>
                       <xsl:when test="$attrname='log-level'"/>
+                      <xsl:when test="$attrname='map-dfn'"/>
                       <xsl:when test="$attrname='paragraph-links'"/>
                       <xsl:when test="$attrname='parse-xml-in-artwork'"/>
                       <xsl:when test="$attrname='refresh-from'"/>
