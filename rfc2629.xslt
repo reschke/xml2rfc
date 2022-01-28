@@ -257,8 +257,8 @@
 
 <xsl:param name="xml2rfc-ext-map-dfn">
   <xsl:call-template name="parse-pis">
-    <xsl:with-param name="nodes" select="$global-std-pis"/>
-    <xsl:with-param name="attr" select="'xml2rfc-ext-map-dfn'"/>
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'map-dfn'"/>
     <xsl:with-param name="default" select="'em'"/>
   </xsl:call-template>
 </xsl:param>
@@ -12393,11 +12393,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1430 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1430 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1431 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1431 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/01/28 15:11:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/01/28 15:11:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/01/28 17:32:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/01/28 17:32:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
