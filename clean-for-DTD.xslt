@@ -1446,8 +1446,11 @@
       <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and not(@brackets)">
         <xsl:attribute name="brackets">angle</xsl:attribute>
       </xsl:when>
-      <xsl:otherwise>
+      <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3 and @brackets">
         <xsl:copy-of select="@brackets"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- drop -->
       </xsl:otherwise>
     </xsl:choose>
   </eref>
