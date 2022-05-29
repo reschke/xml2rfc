@@ -865,13 +865,23 @@
   </xsl:call-template>
 </xsl:param>
 
-<!-- extension for excluding DCMI properties in meta tag (RFC2731) -->
+<!-- extension for including DCMI properties in meta tag (RFC2731) -->
 
 <xsl:param name="xml2rfc-ext-support-rfc2731">
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
     <xsl:with-param name="attr" select="'support-rfc2731'"/>
     <xsl:with-param name="default" select="'yes'"/>
+  </xsl:call-template>
+</xsl:param>
+
+<!-- extension for including Highwire Press Tags (for Google Scholar) -->
+
+<xsl:param name="xml2rfc-ext-support-highwire-press-tags">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'support-highwire-press-tags'"/>
+    <xsl:with-param name="default" select="'no'"/>
   </xsl:call-template>
 </xsl:param>
 
@@ -5391,22 +5401,10 @@
 
         <!-- DC creator, see RFC2731 -->
         <xsl:for-each select="front/author">
-          <xsl:variable name="initials">
-            <xsl:call-template name="get-author-initials"/>
-          </xsl:variable>
-          <xsl:variable name="surname">
-            <xsl:call-template name="get-author-surname"/>
-          </xsl:variable>
           <xsl:variable name="disp">
-            <xsl:if test="$surname!=''">
-              <xsl:value-of select="$surname"/>
-              <xsl:if test="$initials!=''">
-                <xsl:text>, </xsl:text>
-                <xsl:value-of select="$initials"/>
-              </xsl:if>
-            </xsl:if>
+            <xsl:call-template name="surname-and-initials"/>
           </xsl:variable>
-          <xsl:if test="normalize-space($disp)!=''">
+          <xsl:if test="$disp!=''">
             <meta name="dcterms.creator" content="{normalize-space($disp)}" />
           </xsl:if>
         </xsl:for-each>
@@ -5454,6 +5452,25 @@
 
       </xsl:if>
 
+      <xsl:if test="$xml2rfc-ext-support-highwire-press-tags!='no'">
+        <!-- Highwire Press Tags (for Google Scholar) -->
+        <xsl:for-each select="front/author">
+          <xsl:variable name="disp">
+            <xsl:call-template name="surname-and-initials"/>
+          </xsl:variable>
+          <xsl:if test="$disp!=''">
+            <meta name="citation_author" content="{normalize-space($disp)}" />
+          </xsl:if>
+        </xsl:for-each>
+        <meta name="citation_publication_date" content="{concat($xml2rfc-ext-pub-month,', ',$xml2rfc-ext-pub-year)}"/>
+        <meta name="citation_publication_title" content="{/rfc/front/title}"/>
+        <xsl:if test="$is-rfc">
+          <meta name="citation_doi" content="10.17487/RFC{$rfcno}" />
+          <meta name="citation_issn" content="2070-1721" />
+          <meta name="citation_technical_report_number" content="rfc{$rfcno}" />
+        </xsl:if>
+      </xsl:if>
+
       <!-- this replicates dcterms.abstract, but is used by Google & friends -->
       <xsl:if test="front/abstract">
         <meta name="description" content="{normalize-space(front/abstract)}" />
@@ -5462,6 +5479,25 @@
 
     <xsl:call-template name="body" />
   </html>
+</xsl:template>
+
+<xsl:template name="surname-and-initials">
+    <xsl:variable name="initials">
+      <xsl:call-template name="get-author-initials"/>
+    </xsl:variable>
+    <xsl:variable name="surname">
+      <xsl:call-template name="get-author-surname"/>
+    </xsl:variable>
+    <xsl:variable name="disp">
+      <xsl:if test="$surname!=''">
+        <xsl:value-of select="$surname"/>
+        <xsl:if test="$initials!=''">
+          <xsl:text>, </xsl:text>
+          <xsl:value-of select="$initials"/>
+        </xsl:if>
+      </xsl:if>
+    </xsl:variable>
+    <xsl:value-of select="normalize-space($disp)"/>
 </xsl:template>
 
 <xsl:template name="body">
@@ -12394,11 +12430,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1431 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1431 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1432 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1432 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/05/02 13:23:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/05/02 13:23:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/05/29 20:28:50 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/05/29 20:28:50 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">

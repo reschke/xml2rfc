@@ -817,6 +817,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </t>
   </section>
 
+  <section title="support-highwire-press-tags - Support 'Highwire Press' Metadata" anchor="xml2rfc-ext-support-highwire-press-tags">
+    <iref item="support-highwire-press-tags PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="support-highwire-press-tags"/>
+    <iref item="xml2rfc-ext-support-highwire-press-tags parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-support-highwire-press-tags"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>support-highwire-press-tags</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-support-highwire-press-tags</dd>
+      <dt>default</dt>
+      <dd>"yes"</dd>
+    </dl>
+    <t>
+      Decides whether the HTML transformation should generate 'Highwire Press' META tags, as used by Google Scholar.
+    </t>
+  </section>
+
   <section title="support-rfc2731 - Support RFC 2731 Metadata" anchor="xml2rfc-ext-support-rfc2731">
     <iref item="support-rfc2731 PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="support-rfc2731"/>
     <iref item="xml2rfc-ext-support-rfc2731 parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-support-rfc2731"/>
