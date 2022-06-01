@@ -601,7 +601,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>XSLT parameter name</dt>
       <dd>xml2rfc-ext-internet-draft-reference-base-uri</dd>
       <dt>default</dt>
-      <dd>"https://bibxml.ietf.org/public/rfc/bibxml-ids/"</dd>
+      <dd>"https://bib.ietf.org/public/rfc/bibxml-ids/"</dd>
     </dl>
     <t>
       Base URI for Internet-Draft referennces included using the "include" processing instruction.
