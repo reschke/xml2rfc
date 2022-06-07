@@ -2409,8 +2409,9 @@
   </xsl:if>
 </xsl:template>
 
-<!-- suppress xml2rfc preptool artefacts -->
-<xsl:template match="section[author]" mode="toc"/>
+<!-- suppress xml2rfc preptool artefacts; see https://github.com/ietf-tools/xml2rfc/issues/791 -->
+<xsl:template match="back[ancestor::*/@prepTime]/section[author]" mode="toc" priority="9"/>
+<xsl:template match="back[ancestor::*/@prepTime]/section[@numbered='false' and name/@slugifiedName='name-index']" mode="toc" priority="9"/>
 
 <xsl:template match="section" mode="toc">
   <xsl:variable name="sectionNumber">
@@ -2728,8 +2729,9 @@
   </fo:bookmark>
 </xsl:template>
 
-<!-- suppress xml2rfc preptool artefacts -->
-<xsl:template match="section[author]" mode="bookmarks" priority="9"/>
+<!-- suppress xml2rfc preptool artefacts; see https://github.com/ietf-tools/xml2rfc/issues/791 -->
+<xsl:template match="back[ancestor::*/@prepTime]/section[author]" mode="bookmarks" priority="9"/>
+<xsl:template match="back[ancestor::*/@prepTime]/section[@numbered='false' and name/@slugifiedName='name-index']" mode="bookmarks" priority="9"/>
 
 <xsl:template match="section[not(ancestor::boilerplate)]" mode="bookmarks">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
