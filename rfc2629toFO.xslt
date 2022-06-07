@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629/7991 XML format to XSL-FO
       
-    Copyright (c) 2006-2021, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2022, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -140,7 +140,7 @@
 
 <xsl:template name="add-artwork-attr">
   <xsl:choose>
-    <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='abnf7230' or @type='application/xml-dtd' or @type='application/relax-ng-compact-syntax'">
+    <xsl:when test="@type='abnf' or @type='abnf2045' or @type='abnf2616' or @type='abnf7230' or @type='abnf9110' or @type='application/xml-dtd' or @type='application/relax-ng-compact-syntax'">
       <!-- just display inline -->
     </xsl:when>
 
@@ -1699,8 +1699,17 @@
 <!-- handled in section-maker -->
 <xsl:template match="section/name"/>
 
-<!-- suppress xml2rfc preptool artefacts -->
-<xsl:template match="section[author]" priority="9"/>
+<!-- suppress xml2rfc preptool artefacts; see https://github.com/ietf-tools/xml2rfc/issues/791 -->
+<xsl:template match="back[ancestor::*/@prepTime]/section[author]" priority="9">
+  <xsl:call-template name="warning">
+    <xsl:with-param name="msg">Ignoring appendix containing &lt;author&gt; elements (likely added by preptool step).</xsl:with-param>
+  </xsl:call-template>
+</xsl:template>
+<xsl:template match="back[ancestor::*/@prepTime]/section[@numbered='false' and name/@slugifiedName='name-index']" priority="9">
+  <xsl:call-template name="warning">
+    <xsl:with-param name="msg">Ignoring appendix containing index (likely added by preptool step).</xsl:with-param>
+  </xsl:call-template>
+</xsl:template>
 
 <xsl:template match="section[count(ancestor::section) = 0 and (ancestor::boilerplate)]">
 
