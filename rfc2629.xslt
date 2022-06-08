@@ -5002,9 +5002,12 @@
   <body>
     <!-- insert onload scripts, when required -->
     <xsl:variable name="onload">
-      <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and $is-rfc">getMeta("<xsl:value-of select="$rfcno"/>","rfc.meta");</xsl:if>
-      <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and not($is-rfc) and /rfc/@docName">
-        <xsl:if test="$is-submitted-draft">getMeta("<xsl:value-of select="$draft-basename"/>","<xsl:value-of select="$draft-seq"/>","rfc.meta");</xsl:if>
+      <xsl:if test="$xml2rfc-ext-insert-metadata='yes'">
+        <xsl:choose>
+          <xsl:when test="$is-rfc">getMeta("<xsl:value-of select="$rfcno"/>","rfc.meta");</xsl:when>
+          <xsl:when test="/rfc/@docName and $is-submitted-draft">getMeta("<xsl:value-of select="$draft-basename"/>","<xsl:value-of select="$draft-seq"/>","rfc.meta");</xsl:when>
+          <xsl:otherwise/>
+        </xsl:choose>
       </xsl:if>
       <xsl:if test="/rfc/x:feedback">initFeedback();</xsl:if>
       <xsl:if test="$xml2rfc-ext-refresh-from!=''">RfcRefresh.initRefresh()</xsl:if>
@@ -7757,7 +7760,7 @@ function toggleButton(node) {
   }
 }</script></xsl:if>
 <xsl:if test="$xml2rfc-ext-insert-metadata='yes' and ($is-rfc or $is-submitted-draft)"><script>
-<xsl:if test="$rfcno!=''">
+<xsl:if test="$is-rfc">
 function getMeta(rfcno, container) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "https://www.rfc-editor.org/rfc/rfc" + rfcno + ".json", true);
@@ -7838,7 +7841,7 @@ function appendRfcLinks(parent, updates) {
       parent.appendChild(newText(", "));
     }
   }
-}</xsl:if><xsl:if test="$is-submitted-draft">
+}</xsl:if><xsl:if test="$is-submitted-draft and not($is-rfc)">
 function getMeta(docname, revision, container) {
   var xhr = new XMLHttpRequest();
   var datatracker = "https://datatracker.ietf.org/doc/" + docname;
@@ -11934,11 +11937,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1459 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1459 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1460 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1460 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/06/07 13:53:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/07 13:53:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/06/08 06:10:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/08 06:10:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
