@@ -817,6 +817,25 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </t>
   </section>
 
+  <section title="std-uri - URI Template for IETF Standards" anchor="xml2rfc-ext-std-uri">
+    <iref item="std-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="std-uri"/>
+    <iref item="xml2rfc-ext-std-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-std-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>std-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-std-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.rfc-editor.org/info/std{std}"</dd>
+    </dl>
+    <t>
+      URI Template for IETF Standards.
+    </t>
+  </section>
+
   <section title="support-highwire-press-tags - Support 'Highwire Press' Metadata" anchor="xml2rfc-ext-support-highwire-press-tags">
     <iref item="support-highwire-press-tags PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="support-highwire-press-tags"/>
     <iref item="xml2rfc-ext-support-highwire-press-tags parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-support-highwire-press-tags"/>
