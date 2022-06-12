@@ -11424,6 +11424,22 @@ dd, li, p {
   </xsl:call-template>
 </xsl:template>
 
+<xsl:template name="debug">
+  <xsl:param name="msg"/>
+  <xsl:param name="msg2"/>
+  <xsl:param name="inline" select="'no'"/>
+  <xsl:param name="lineno" select="true()"/>
+  <xsl:param name="node" select="."/>
+  <xsl:call-template name="emit-message">
+    <xsl:with-param name="level">DEBUG</xsl:with-param>
+    <xsl:with-param name="msg" select="$msg"/>
+    <xsl:with-param name="msg2" select="$msg2"/>
+    <xsl:with-param name="inline" select="$inline"/>
+    <xsl:with-param name="lineno" select="$lineno"/>
+    <xsl:with-param name="node" select="$node"/>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template name="inline-warning">
   <xsl:param name="msg"/>
   <xsl:param name="msg2"/>
@@ -11976,11 +11992,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1469 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1469 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1470 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1470 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/06/12 12:24:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/12 12:24:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/06/12 13:18:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/12 13:18:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -12052,8 +12068,8 @@ dd, li, p {
       <xsl:number count="section[@x:fixed-section-number='' or ancestor-or-self::*/@numbered='false']" level="any"/>
       <!-- checks -->
       <xsl:if test="@numbered='false'">
-        <xsl:if test="ancestor::section or ancestor::section">
-          <xsl:call-template name="error">
+        <xsl:if test="ancestor::section">
+          <xsl:call-template name="debug">
             <xsl:with-param name="inline" select="'no'"/>
             <xsl:with-param name="msg">Only top-level sections can be unnumbered</xsl:with-param>
           </xsl:call-template>
@@ -12070,6 +12086,14 @@ dd, li, p {
             <xsl:with-param name="msg">Unnumbered section is followed by (numbered) references section</xsl:with-param>
           </xsl:call-template>
         </xsl:if>
+      </xsl:if>
+      <xsl:if test="@numbered='true'">
+        <xsl:for-each select="ancestor::section[@numbered='false']">
+          <xsl:call-template name="error">
+            <xsl:with-param name="inline" select="'no'"/>
+            <xsl:with-param name="msg">Numbered section as child of an unnumbered section</xsl:with-param>
+          </xsl:call-template>
+        </xsl:for-each>
       </xsl:if>
     </xsl:when>
     <xsl:when test="$has-edits or ancestor::*/@x:fixed-section-number">
