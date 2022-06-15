@@ -6953,7 +6953,12 @@
         <xsl:choose>
           <xsl:when test="$bcpno!=''">
             <xsl:text>BCP: </xsl:text>
-            <xsl:value-of select="$bcpno"/>
+            <xsl:variable name="uri">
+              <xsl:call-template name="compute-bcp-uri">
+                <xsl:with-param name="bcp" select="$bcpno"/>
+              </xsl:call-template>
+            </xsl:variable>
+            <a href="{$uri}"><xsl:value-of select="$bcpno"/></a>
           </xsl:when>
           <xsl:when test="$fyino!=''">
             <xsl:text>FYI: </xsl:text>
@@ -6961,7 +6966,12 @@
           </xsl:when>
           <xsl:when test="$stdno!=''">
             <xsl:text>STD: </xsl:text>
-            <xsl:value-of select="$stdno"/>
+            <xsl:variable name="uri">
+              <xsl:call-template name="compute-std-uri">
+                <xsl:with-param name="std" select="$stdno"/>
+              </xsl:call-template>
+            </xsl:variable>
+            <a href="{$uri}"><xsl:value-of select="$stdno"/></a>
           </xsl:when>
           <xsl:otherwise/>
         </xsl:choose>
@@ -12058,11 +12068,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1441 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1441 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1442 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1442 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/06/15 13:39:28 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/15 13:39:28 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/06/15 14:29:47 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/15 14:29:47 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
