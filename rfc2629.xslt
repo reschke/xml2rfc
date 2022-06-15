@@ -1379,6 +1379,60 @@
   </xsl:if>
 </xsl:variable>
 
+<xsl:template name="get-series-no">
+  <xsl:param name="category"/>
+  <xsl:param name="seriesname"/>
+
+  <xsl:if test="$src/rfc/@category=$category">
+    <xsl:variable name="root" select="$src/rfc/@seriesNo"/>
+    <xsl:variable name="sinfos" select="$src/rfc/front/seriesInfo[@name=$seriesname]"/>
+    <xsl:variable name="result">
+      <xsl:choose>
+        <xsl:when test="$root!=''">
+          <xsl:value-of select="number($root)"/>
+        </xsl:when>
+        <xsl:when test="$sinfos">
+          <xsl:value-of select="number($sinfos[1]/@value)"/>
+        </xsl:when>
+        <xsl:otherwise/>
+      </xsl:choose>
+    </xsl:variable>
+
+    <xsl:if test="$result!=''">
+      <xsl:for-each select="$sinfos">
+        <xsl:if test="number(@value) != $result">
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg"><xsl:value-of select="$seriesname"/> number given in /rfc/front/seriesInfo (<xsl:value-of select="@value"/>) inconsistent with first computed value (<xsl:value-of select="$result"/>)</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+        </xsl:for-each>
+    </xsl:if>
+
+    <xsl:value-of select="$result"/>
+  </xsl:if>
+</xsl:template>
+
+<xsl:variable name="stdno">
+  <xsl:call-template name="get-series-no">
+    <xsl:with-param name="category">std</xsl:with-param>
+    <xsl:with-param name="seriesname">STD</xsl:with-param>
+  </xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="bcpno">
+  <xsl:call-template name="get-series-no">
+    <xsl:with-param name="category">bcp</xsl:with-param>
+    <xsl:with-param name="seriesname">BCP</xsl:with-param>
+  </xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="fyino">
+  <xsl:call-template name="get-series-no">
+    <xsl:with-param name="category">info</xsl:with-param>
+    <xsl:with-param name="seriesname">FYI</xsl:with-param>
+  </xsl:call-template>
+</xsl:variable>
+
 <xsl:variable name="submissionType">
   <xsl:choose>
     <xsl:when test="/rfc/@submissionType='IETF' or not(/rfc/@submissionType) or /rfc/submissionType=''">IETF</xsl:when>
@@ -6856,48 +6910,22 @@
         <xsl:if test="not($is-rfc)"> (if approved)</xsl:if>
       </myns:item>
     </xsl:if>
-    <xsl:if test="/rfc/@seriesNo">
-       <myns:item>
+    <xsl:if test="$stdno!='' or $bcpno!='' or $fyino!=''">
+      <myns:item>
         <xsl:choose>
-          <xsl:when test="/rfc/@category='bcp'">
+          <xsl:when test="$bcpno!=''">
             <xsl:text>BCP: </xsl:text>
-            <xsl:value-of select="/rfc/@seriesNo"/>
-            <xsl:for-each select="/rfc/front/seriesInfo[@name='BCP']">
-              <xsl:if test="number(@value) != number(/rfc/@seriesNo)">
-                <xsl:call-template name="error">
-                  <xsl:with-param name="msg">BCP number given in /rfc/front/seriesInfo (<xsl:value-of select="@value"/>) inconsistent with rfc element (<xsl:value-of select="/rfc/@seriesNo"/>)</xsl:with-param>
-                </xsl:call-template>
-              </xsl:if>
-            </xsl:for-each>
+            <xsl:value-of select="$bcpno"/>
           </xsl:when>
-          <xsl:when test="/rfc/@category='info'">
+          <xsl:when test="$fyino!=''">
             <xsl:text>FYI: </xsl:text>
-            <xsl:value-of select="/rfc/@seriesNo"/>
-            <xsl:for-each select="/rfc/front/seriesInfo[@name='FYI']">
-              <xsl:if test="number(@value) != number(/rfc/@seriesNo)">
-                <xsl:call-template name="error">
-                  <xsl:with-param name="msg">FYI number given in /rfc/front/seriesInfo (<xsl:value-of select="@value"/>) inconsistent with rfc element (<xsl:value-of select="/rfc/@seriesNo"/>)</xsl:with-param>
-                </xsl:call-template>
-              </xsl:if>
-            </xsl:for-each>
+            <xsl:value-of select="$fyino"/>
           </xsl:when>
-          <xsl:when test="/rfc/@category='std'">
+          <xsl:when test="$stdno!=''">
             <xsl:text>STD: </xsl:text>
-            <xsl:value-of select="/rfc/@seriesNo"/>
-            <xsl:for-each select="/rfc/front/seriesInfo[@name='STD']">
-              <xsl:if test="number(@value) != number(/rfc/@seriesNo)">
-                <xsl:call-template name="error">
-                  <xsl:with-param name="msg">STD number given in /rfc/front/seriesInfo (<xsl:value-of select="@value"/>) inconsistent with rfc element (<xsl:value-of select="/rfc/@seriesNo"/>)</xsl:with-param>
-                </xsl:call-template>
-              </xsl:if>
-            </xsl:for-each>
+            <xsl:value-of select="$stdno"/>
           </xsl:when>
-          <xsl:otherwise>
-            <xsl:call-template name="warning">
-              <xsl:with-param name="msg">There is no IETF document series called '<xsl:value-of select="/rfc/@category"/>'</xsl:with-param>
-            </xsl:call-template>
-            <xsl:value-of select="concat(translate(/rfc/@category,$lcase,$ucase),': ',/rfc/@seriesNo)" />
-          </xsl:otherwise>
+          <xsl:otherwise/>
         </xsl:choose>
       </myns:item>
     </xsl:if>
@@ -11992,11 +12020,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1472 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1472 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1473 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1473 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/06/15 09:45:07 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/15 09:45:07 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/06/15 10:17:30 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/15 10:17:30 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
