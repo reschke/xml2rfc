@@ -638,6 +638,9 @@
       <xsl:if test="$f/rfc/@seriesNo and $f/rfc/@category='std'" myns:namespaceless-elements="xml2rfc">
         <seriesInfo name="STD" value="{$f/rfc/@seriesNo}"/>
       </xsl:if>
+      <xsl:if test="$f/rfc/@seriesNo and $f/rfc/@category='bcp'" myns:namespaceless-elements="xml2rfc">
+        <seriesInfo name="BCP" value="{$f/rfc/@seriesNo}"/>
+      </xsl:if>
       <xsl:if test="$f/rfc/@number" myns:namespaceless-elements="xml2rfc">
         <seriesInfo name="RFC" value="{$f/rfc/@number}"/>
       </xsl:if>
@@ -1076,7 +1079,7 @@
 <xsl:param name="xml2rfc-ext-std-uri">
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
-    <xsl:with-param name="attr" select="'rfc-uri'"/>
+    <xsl:with-param name="attr" select="'std-uri'"/>
     <xsl:with-param name="default">https://www.rfc-editor.org/info/std{std}</xsl:with-param>
   </xsl:call-template>
 </xsl:param>
@@ -1087,6 +1090,23 @@
     <xsl:with-param name="string" select="$xml2rfc-ext-std-uri"/>
     <xsl:with-param name="replace" select="'{std}'"/>
     <xsl:with-param name="by" select="$std"/>
+  </xsl:call-template>
+</xsl:template>
+
+<xsl:param name="xml2rfc-ext-bcp-uri">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'bcp-uri'"/>
+    <xsl:with-param name="default">https://www.rfc-editor.org/info/bcp{bcp}</xsl:with-param>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:template name="compute-bcp-uri">
+  <xsl:param name="bcp"/>
+  <xsl:call-template name="replace-substring">
+    <xsl:with-param name="string" select="$xml2rfc-ext-bcp-uri"/>
+    <xsl:with-param name="replace" select="'{bcp}'"/>
+    <xsl:with-param name="by" select="$bcp"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -4112,6 +4132,21 @@
         </xsl:with-param>
       </xsl:call-template>
     </xsl:when>
+    <xsl:when test="@name='BCP'">
+      <xsl:variable name="uri">
+        <xsl:call-template name="compute-bcp-uri">
+          <xsl:with-param name="bcp" select="@value"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:text>, </xsl:text>
+      <xsl:call-template name="emit-link">
+        <xsl:with-param name="target" select="$uri"/>
+        <xsl:with-param name="text">
+          <xsl:value-of select="@name" />
+          <xsl:if test="@value!=''"><xsl:text> </xsl:text><xsl:value-of select="@value" /></xsl:if>
+        </xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
     <xsl:when test="@name='STD'">
       <xsl:variable name="uri">
         <xsl:call-template name="compute-std-uri">
@@ -4437,7 +4472,10 @@
     <!-- fall back to x:source when needed -->
     <xsl:if test="not($si) and x:source/@href">
       <xsl:variable name="derivedsi" myns:namespaceless-elements="xml2rfc">
-        <xsl:variable name="r" select="document(x:source/@href)/rfc"/>
+        <xsl:variable name="r" select="document(x:source/@href)/bcp"/>
+        <xsl:if test="$r/@seriesNo and $r/@category='std'">
+          <seriesInfo name="BCP" value="{$r/@seriesNo}"/>
+        </xsl:if>
         <xsl:if test="$r/@seriesNo and $r/@category='std'">
           <seriesInfo name="STD" value="{$r/@seriesNo}"/>
         </xsl:if>
@@ -12020,11 +12058,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1440 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1440 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1441 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1441 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/06/15 10:17:30 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/15 10:17:30 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/06/15 13:39:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/15 13:39:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
