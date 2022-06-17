@@ -891,6 +891,16 @@
   </xsl:call-template>
 </xsl:param>
 
+<!-- extension for including Open Graph metadata (for Twitter etc) -->
+
+<xsl:param name="xml2rfc-ext-support-open-graph-tags">
+  <xsl:call-template name="parse-pis">
+    <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
+    <xsl:with-param name="attr" select="'support-open-graph-tags'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <!-- extension for excluding generator information -->
 
 <xsl:param name="xml2rfc-ext-include-generator">
@@ -4929,14 +4939,20 @@
   <xsl:variable name="lang">
     <xsl:call-template name="get-lang" />
   </xsl:variable>
+  
+  <xsl:variable name="title">
+    <xsl:if test="$rfcno!=''">
+      <xsl:value-of select="concat('RFC ',$rfcno,' - ')"/>
+    </xsl:if>
+    <xsl:apply-templates select="front/title" mode="get-text-content" />
+  </xsl:variable>
 
+  <xsl:variable name="abstract" select="normalize-space(front/abstract)"/>
+  
   <html lang="{$lang}">
     <head>
       <title>
-        <xsl:if test="$rfcno!=''">
-          <xsl:value-of select="concat('RFC ',$rfcno,' - ')"/>
-        </xsl:if>
-        <xsl:apply-templates select="front/title" mode="get-text-content" />
+        <xsl:value-of select="$title"/>
       </title>
       <xsl:call-template name="insertScripts" />
       <xsl:choose>
@@ -5071,8 +5087,8 @@
           </xsl:if>
         </xsl:if>
 
-        <xsl:if test="front/abstract">
-          <meta name="dcterms.abstract" content="{normalize-space(front/abstract)}" />
+        <xsl:if test="$abstract!=''">
+          <meta name="dcterms.abstract" content="{$abstract}" />
         </xsl:if>
 
         <xsl:if test="$is-rfc">
@@ -5092,7 +5108,7 @@
           </xsl:if>
         </xsl:for-each>
         <meta name="citation_publication_date" content="{concat($xml2rfc-ext-pub-month,', ',$xml2rfc-ext-pub-year)}"/>
-        <meta name="citation_publication_title" content="{/rfc/front/title}"/>
+        <meta name="citation_publication_title" content="{$title}"/>
         <xsl:if test="$is-rfc">
           <meta name="citation_doi" content="10.17487/RFC{$rfcno}" />
           <meta name="citation_issn" content="2070-1721" />
@@ -5100,9 +5116,18 @@
         </xsl:if>
       </xsl:if>
 
+      <xsl:if test="$xml2rfc-ext-support-open-graph-tags!='no'">
+        <!-- Open Graph Tags (for Twitter etc) -->
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="{$title}" />
+        <xsl:if test="$abstract!=''">
+          <meta name="og:description" content="{$abstract}" />
+        </xsl:if>
+      </xsl:if>
+
       <!-- this replicates dcterms.abstract, but is used by Google & friends -->
-      <xsl:if test="front/abstract">
-        <meta name="description" content="{normalize-space(front/abstract)}" />
+      <xsl:if test="$abstract!=''">
+        <meta name="description" content="{$abstract}" />
       </xsl:if>
     </head>
 
@@ -12068,11 +12093,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1476 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1476 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1477 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1477 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/06/17 09:30:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/17 09:30:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/06/17 10:13:01 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/17 10:13:01 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
