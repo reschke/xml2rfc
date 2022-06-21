@@ -2381,6 +2381,9 @@
 <xsl:template name="insert-sourcecode-as-artwork">
   <artwork>
     <xsl:copy-of select="@type"/>
+    <xsl:if test="@x:line-folding='\'">
+      <xsl:text>NOTE: '\' line wrapping per RFC 8792&#10;&#10;</xsl:text>
+    </xsl:if>
     <xsl:if test="@markers='true'">
       <xsl:text>&lt;CODE BEGINS></xsl:text>
       <xsl:if test="self::sourcecode and @name">
@@ -2422,12 +2425,17 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template match="sourcecode/@x:line-folding" mode="cleanup"/>
+
 <xsl:template match="sourcecode" mode="cleanup">
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-xml2rfc-voc >= 3">
       <xsl:apply-templates select=".//iref" mode="cleanup"/>
       <sourcecode>
         <xsl:apply-templates select="@*" mode="cleanup"/>
+        <xsl:if test="@x:line-folding='\'">
+          <xsl:text>NOTE: '\' line wrapping per RFC 8792&#10;&#10;</xsl:text>
+        </xsl:if>
         <xsl:call-template name="get-content-of-artwork"/>
       </sourcecode>
     </xsl:when>

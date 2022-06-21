@@ -208,6 +208,16 @@
         </xsl:if>
       </fo:block>
     </xsl:if>
+    <xsl:if test="@x:line-folding='\'">
+      <fo:block font-family="monospace" color="gray">
+        <xsl:text>NOTE: '\' line wrapping per RFC 8792&#10;</xsl:text>
+      </fo:block>
+    </xsl:if>
+    <xsl:if test="@x:line-folding='\\'">
+      <fo:block font-family="monospace" color="gray">
+        <xsl:text>NOTE: '\\' line wrapping per RFC 8792&#10;</xsl:text>
+      </fo:block>
+    </xsl:if>
     <fo:block font-family="monospace" padding=".5em"
       white-space-treatment="preserve" linefeed-treatment="preserve"
       white-space-collapse="false" page-break-inside="avoid">

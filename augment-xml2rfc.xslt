@@ -2,7 +2,7 @@
     Augment section links to RFCs and Internet Drafts, also cleanup 
     unneeded markup from kramdown2629
 
-    Copyright (c) 2017-2021, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2017-2022, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,12 @@
       <xsl:apply-templates mode="kramdown2629-fixup"/>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:for-each select="$t6">
+  <xsl:variable name="t7">
+    <xsl:for-each select="$t6">
+      <xsl:apply-templates mode="line-folding"/>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:for-each select="$t7">
     <xsl:apply-templates mode="insert-prettyprint"/>
   </xsl:for-each>
 </xsl:template>
@@ -360,6 +365,27 @@
 <!--fix broken lists with contact elements -->
 <xsl:template match="t[contact and count(*)=1 and parent::t]" mode="kramdown2629-fixup">
   <xsl:apply-templates select="node()|@*" mode="kramdown2629-fixup"/>
+</xsl:template>
+
+<xsl:template match="*|@*|comment()|processing-instruction()" mode="line-folding">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="line-folding"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="sourcecode" mode="line-folding">
+  <xsl:variable name="preamble">&#10;NOTE: '\' line wrapping per RFC 8792&#10;&#10;</xsl:variable>
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="line-folding"/>
+    <xsl:choose>
+      <xsl:when test="starts-with(.,$preamble)">
+        <xsl:attribute name="x:line-folding">\</xsl:attribute>
+        <xsl:text>&#10;</xsl:text>
+        <xsl:value-of select="substring-after(.,$preamble)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="node()" mode="line-folding"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:copy>
 </xsl:template>
 
 <xsl:template match="*|@*|comment()|processing-instruction()" mode="insert-prettyprint">

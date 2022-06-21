@@ -1794,6 +1794,15 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:template name="insert-line-folding-hint">
+  <xsl:if test="@x:line-folding='\'">
+    <pre class="ccmarker cct">NOTE: '\' line wrapping per RFC 8792&#10;</pre>
+  </xsl:if>
+  <xsl:if test="@x:line-folding='\\'">
+    <pre class="ccmarker cct">NOTE: '\\' line wrapping per RFC 8792&#10;</pre>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template name="insert-end-code">
   <xsl:if test="(self::artwork and @x:is-code-component='yes') or (self::sourcecode and @markers='true')">
     <pre class="ccmarker ccb">&lt;CODE ENDS></pre>
@@ -1946,6 +1955,7 @@
       <xsl:attribute name="style"><xsl:value-of select="$divstyle"/></xsl:attribute>
     </xsl:if>
     <xsl:call-template name="insert-begin-code"/>
+    <xsl:call-template name="insert-line-folding-hint"/>
     <pre>
       <xsl:call-template name="copy-anchor"/>
       <xsl:if test="$prestyle!=''">
@@ -1965,18 +1975,29 @@
 
 <xsl:template name="text-in-artwork">
   <xsl:param name="content" select="."/>
+  <xsl:variable name="c" select="translate($content,'&#13;','')"/>
   <xsl:choose>
-    <xsl:when test="contains($content,'&#9;')">
+    <xsl:when test="contains($c,'&#9;')">
       <xsl:call-template name="text-in-artwork">
-        <xsl:with-param name="content" select="substring-before($content,'&#9;')"/>
+        <xsl:with-param name="content" select="substring-before($c,'&#9;')"/>
       </xsl:call-template>
       <span class="error" title="HTAB character">&#x2409;</span>
       <xsl:call-template name="text-in-artwork">
-        <xsl:with-param name="content" select="substring-after($content,'&#9;')"/>
+        <xsl:with-param name="content" select="substring-after($c,'&#9;')"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="ancestor-or-self::*[@x:line-folding='\'] and contains($c,'\&#10;')">
+      <xsl:call-template name="text-in-artwork">
+        <xsl:with-param name="content" select="substring-before($c,'\&#10;')"/>
+      </xsl:call-template>
+      <small title="line folding">\</small>
+      <xsl:text>&#10;</xsl:text>
+      <xsl:call-template name="text-in-artwork">
+        <xsl:with-param name="content" select="substring-after($c,'\&#10;')"/>
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$content"/>
+      <xsl:value-of select="$c"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -8307,7 +8328,7 @@ pre {
   background-color: var(--col-bg-pre);
   padding: .25em;
   page-break-inside: avoid;
-}<xsl:if test="//artwork[@x:is-code-component='yes']|//sourcecode[@markers='true']"><!-- support "<CODE BEGINS>" and "<CODE ENDS>" markers-->
+}<xsl:if test="//artwork[@x:is-code-component='yes']|//sourcecode[@markers='true' or @x:line-folding]"><!-- support "<CODE BEGINS>" and "<CODE ENDS>" markers-->
 pre.ccmarker {
   background-color: var(--col-bg);
   color: var(--col-fg-light);
@@ -12093,11 +12114,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1443 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1443 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1444 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1444 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/06/17 10:13:03 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/17 10:13:03 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/06/21 06:59:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/06/21 06:59:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
