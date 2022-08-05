@@ -20,6 +20,17 @@ namespace xi = "http://www.w3.org/2001/XInclude"
 # Include rfc2629bis RNC grammar
 include "rfc2629.rnc" {
   
+  # Redefine <address> to allow multiple email addresses
+  address =
+    element address {
+      attlist.address,
+      postal?,
+      phone?,
+      facsimile?,
+      email*,
+      uri?
+  }
+
   # Redefine <annotation> to allow more markup
   annotation =
     element annotation {
@@ -182,7 +193,9 @@ include "rfc2629.rnc" {
           | v3_sortingcode
           | region
           | street)*
-        | v3_postalLine+)
+          | (v3_postalLine+,
+          country?
+          ))
     }
 
   # Redefine <postamble> to allow our extension elements
@@ -251,7 +264,7 @@ include "rfc2629.rnc" {
       attribute category { "std" | "bcp" | "info" | "exp" | "historic" }?,
       attribute consensus { "false" | "true" | "no" | "yes" }?,
       attribute docName { text }?,
-      attribute indexInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.4)
+      attribute indexInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.48.4)
       attribute ipr {
         "full2026"
         | "noDerivativeWorks2026"
@@ -273,15 +286,15 @@ include "rfc2629.rnc" {
       attribute iprExtract { xsd:IDREF }?,
       attribute number { text }?,
       attribute obsoletes { text }?,
-      attribute tocDepth { text }?, # (see [RFC7991bis], Section 2.44.14)
-      attribute tocInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.15)
+      attribute tocDepth { text }?, # (see [RFC7991bis], Section 2.48.14)
+      attribute tocInclude { "true" | "false" }?, # (see [RFC7991bis], Section 2.48.15)
       attribute scripts { text }?, # (see [RFC7991bis], Appendix B.3)
       attribute seriesNo { text }?,
-      attribute sortRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.11)
+      attribute sortRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.48.11)
       attribute submissionType { "IETF" | "IAB" | "IRTF" | "independent" }?,
-      attribute symRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.44.13)
+      attribute symRefs { "true" | "false" }?, # (see [RFC7991bis], Section 2.48.13)
       attribute updates { text }?,
-      attribute version { text }?, # (see [RFC7991bis], Section 2.44.13)
+      attribute version { text }?, # (see [RFC7991bis], Section 2.48.13)
       v3_link*,
       x_link*,
       x_feedback?,
@@ -304,6 +317,7 @@ include "rfc2629.rnc" {
        | v3_artset
        | v3_aside
        | v3_blockquote
+       | v3_contact
        | v3_dl
        | v3_name
        | v3_ol
@@ -343,6 +357,8 @@ include "rfc2629.rnc" {
        | spanx
        | vspace
        | v3_bcp14
+       | v3_br
+       | v3_contact
        | v3_em
        | v3_relref
        | v3_strong
@@ -360,10 +376,31 @@ include "rfc2629.rnc" {
        | x_span
        | x_sup)*
     }
+
+  # Redefine <title> to allow <br>
+  title =
+    element title {
+      attlist.title,
+      (TEXT
+        | v3_br)*
+    }
+
+  # Redefine <xref> to allow some markup
+  xref =
+    element xref {
+      attlist.xref,
+      (TEXT
+        | v3_em
+        | v3_strong
+        | v3_sub
+        | v3_sup
+        | v3_tt)*
+    }
 }
 
 # Extend attribute set for <abstract>
 attlist.abstract &=
+  attribute anchor { xsd:ID }?, # (see [RFC7991bis], Section 2.1.1)
   attribute pn { text }? # (see [RFC7991bis], Appendix B.2)
 
 # Allow extension attributes on <artwork> (Section 11.25)
@@ -397,6 +434,10 @@ attlist.code &=
 # Extend attribute set for <country>
 attlist.country &=
   attribute ascii { ATEXT }?
+
+# Extend attribute set for <cref> (see Section 2.17.2 of [RFC7991bis])
+attlist.cref &=
+  attribute display { "false" | "true" }?
 
 # Extend attribute set for <date> (see Section 11.26)
 attlist.date &=
@@ -432,7 +473,7 @@ attlist.organization &=
 
 # Extend attribute set for <reference>
 attlist.reference &=
-  attribute quoteTitle { "false" | "true" }?, # (see Section 12.24.1)
+  attribute quoteTitle { "false" | "true" }?, # (see Section 12.22.1)
   attribute xml:base { text }? # (see [RFC7991bis], Section 2)
 
 # Extend attribute set for <references>
@@ -463,6 +504,7 @@ attlist.street &=
 
 # Extend attribute set for <c> (see Section 11.28)
 attlist.t &=
+  attribute indent { text }?,
   attribute keepWithNext { text }?,
   attribute keepWithPrevious { text }?,
   attribute pn { text }? # (see [RFC7991bis], Appendix B.2)
@@ -474,7 +516,7 @@ attlist.texttable &=
 # Extend attribute set for <title>
 attlist.title &=
   attribute ascii { ATEXT }?,
-  attribute x:quotes { "true" | "false" }? # (deprecated, see Section 12.24.1))
+  attribute x:quotes { "true" | "false" }? # (deprecated, see Section 12.22.1)
 
 # Allow annotation attribute on <uri>
 attlist.uri &=
@@ -486,7 +528,11 @@ attlist.xref &=
   attribute x:fmt  { "()" | "," | "of" | "number" | "sec" |
                      "none" }?,
   attribute x:rel  { ATEXT }?,
-  attribute x:sec  { ATEXT }?
+  attribute x:sec  { ATEXT }?,
+  attribute relative  { ATEXT }?,
+  attribute section  { ATEXT }?,
+  attribute sectionFormat  { "bare" | "comma" | "of" | "parens" }?
+  
 
 # Set of artwork (see Section 12.1)
 v3_artset =
@@ -501,7 +547,14 @@ v3_aside =
   element aside {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
-    (t
+    (artwork
+      | figure
+      | iref
+      | t
+      | v3_blockquote
+      | v3_dl
+      | v3_ol
+      | v3_table
       | v3_ul)*
   }
 
@@ -548,28 +601,49 @@ v3_boilerplate =
     section+
   }
 
-# (see Section 12.6)
+# Forced Line Break (see Section 12.6)
+v3_br =
+  element br {
+    empty
+  }
+
+# (see Section 12.7)
 v3_cityarea =
   element cityarea {
     attribute ascii { ATEXT }?,
     TEXT
   }
 
-# Mapping of reference names to display names (see Section 12.7)
+# (see Section 12.8)
+v3_contact =
+  element contact {
+    attribute initials { text }?,
+    attribute asciiInitials { text }?,
+    attribute surname { text }?,
+    attribute asciiSurname { text }?,
+    attribute fullname { text }?,
+    attribute asciiFullname { text }?,
+    organization?,
+    address?
+  }
+
+# Mapping of reference names to display names (see Section 12.9)
 v3_displayreference =
   element displayreference {
     attribute target { xsd:IDREF },
     attribute to { ATEXT }
   }
 
-# Definition List Description Element (see Section 12.8)
+# Definition List Description Element (see Section 12.10)
 v3_dd =
   element dd {
+    attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     ((v3_artset
       | artwork
       | figure
       | t
+      | v3_aside 
       | v3_dl 
       | v3_ol 
       | v3_table 
@@ -580,16 +654,22 @@ v3_dd =
       | eref
       | iref
       | xref
+      | v3_bcp14 
+      | v3_br 
       | v3_em
+      | v3_sub
+      | v3_sup
       | v3_tt
       | v3_strong
-      | v3_u)*
+      | v3_u
+      | x_ref)* 
     )
   }
 
-# Definition List (see Section 12.9)
+# Definition List (see Section 12.11)
 v3_dl =
   element dl {
+    attribute anchor { xsd:ID }?, # (see [RFC7991bis], Section 2.21.1)
     attribute indent { text }?,
     attribute newline { "false" | "true" }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
@@ -597,7 +677,7 @@ v3_dl =
     (v3_dt, v3_dd)+
   }
 
-# Definition List Description Term (see Section 12.10)
+# Definition List Description Term (see Section 12.12)
 v3_dt =
   element dt {
     attribute anchor { xsd:ID }?,
@@ -612,23 +692,26 @@ v3_dt =
       | v3_strong)*
   }
 
-# Emphasized Text (see Section 12.11)
+# Emphasized Text (see Section 12.13)
 v3_em =
   element em {
+    attribute anchor { xsd:ID }?,
     (TEXT
+      | eref
+      | iref
       | xref
       | v3_strong
       | x_ref)*
   }
 
-# Extended Postal Address (see Section 12.12)
+# Extended Postal Address (see Section 12.14)
 v3_extaddr =
   element extaddr {
     attribute ascii { ATEXT }?,
     TEXT
   }
 
-# Definition List (see Section 12.13)
+# Definition List (see Section 12.15)
 v3_li =
   element li {
     attribute anchor { xsd:ID }?,
@@ -657,32 +740,36 @@ v3_li =
       | v3_sup
       | v3_tt
       | v3_u
+      | x_dfn
       | x_ref)*
     )
   }
 
-# Container for additional links (see Section 12.14)
+# Container for additional links (see Section 12.16)
 v3_link =
   element link {
     attribute href { text },
     attribute rel { text }?
   }
 
-# Section/Figure/Table Name (see Section 12.15)
+# Section/Figure/Table Name (see Section 12.17)
 v3_name =
   element name {
     attribute slugifiedName { text }?, # (see [RFC7991bis], Appendix B.2)
     (TEXT
       | cref
+      | v3_br
       | v3_em
+      | v3_sup
       | v3_tt
       | xref)*
   }
 
-# Ordered List (see Section 12.16)
+# Ordered List (see Section 12.18)
 v3_ol =
   element ol {
     attribute anchor { xsd:ID }?,
+    attribute indent { text }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     attribute start { TEXT }?,
     attribute group { TEXT }?,
@@ -690,21 +777,21 @@ v3_ol =
     v3_li+
   }
 
-# Extended Postal Address (see Section 12.17)
+# Extended Postal Address (see Section 12.19)
 v3_pobox =
   element pobox {
     attribute ascii { ATEXT }?,
     TEXT
   }
 
-# Line in postal address (see Section 12.18)
+# Line in postal address (see Section 12.20)
 v3_postalLine =
   element postalLine {
     attribute ascii { TEXT }?,
     TEXT
   }
 
-# EXPERIMENTAL DO NOT USE YET (see Section 12.21)
+# EXPERIMENTAL DO NOT USE YET (see Section 12.24)
 v3_relref =
   element relref {
     attribute derivedLink { text }?, # (see [RFC7991bis], Appendix B.3)
@@ -715,14 +802,14 @@ v3_relref =
     TEXT
   }
 
-# additional content for references (see Section 12.19)
+# additional content for references (see Section 12.21)
 v3_refcontent =
   element refcontent {
     (TEXT
       | v3_em)*
   }
 
-# reference group (see Section 12.20)
+# reference group (see Section 12.23)
 v3_referencegroup =
   element referencegroup {
     attribute anchor { xsd:ID },
@@ -731,26 +818,30 @@ v3_referencegroup =
       | xi_include)+
   }
 
-# (see Section 12.22)
+# (see Section 12.26)
 v3_sortingcode =
   element sortingcode {
     attribute ascii { ATEXT }?,
     TEXT
   }
 
-# Source Code (see Section 12.23)
+# Source Code (see Section 12.27)
 v3_sourcecode =
   element sourcecode {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     attribute markers { text }?, #(see [V3IMPNOTES], Section 3.1.22)
     attribute name { text }?,
+    attribute src { text }?,
     attribute type { text }?,
     attribute x:lang { "" }?,
-    TEXT
+    (TEXT
+      | iref
+      | xref
+      | x_ref)*
   }
 
-# Emphasized Text (see Section 12.26)
+# Emphasized Text (see Section 12.28)
 v3_strong =
   element strong {
     attribute anchor { xsd:ID }?,
@@ -760,19 +851,21 @@ v3_strong =
       | x_ref)*
   }
 
-# Subscript (see Section 12.27)
+# Subscript (see Section 12.29)
 v3_sub =
   element sub {
-    (TEXT)*
+    (TEXT
+      | v3_sup)*
   }
 
-# Superscript (see Section 12.28)
+# Superscript (see Section 12.30)
 v3_sup =
   element sup {
-    (TEXT)*
+    (TEXT
+      | v3_sub)*
   }
 
-# Table (see Section 12.30)
+# Table (see Section 12.32)
 v3_table =
   element table {
     attribute anchor { xsd:ID }?,
@@ -781,11 +874,11 @@ v3_table =
     v3_name?,
     iref*,
     v3_thead?,
-    v3_tbody,
+    v3_tbody+,
     v3_tfoot?
   }
 
-# Table Body (see Section 12.31)
+# Table Body (see Section 12.33)
 v3_tbody =
   element tbody {
     attribute anchor { xsd:ID }?,
@@ -793,7 +886,7 @@ v3_tbody =
     v3_tr+
   }
 
-# Table Contents Cell (see Section 12.32)
+# Table Contents Cell (see Section 12.34)
 v3_td =
   element td {
     attribute anchor { xsd:ID }?,
@@ -809,6 +902,7 @@ v3_td =
       )+
       | (TEXT
          | v3_bcp14
+         | v3_br
          | cref
          | v3_em
          | eref
@@ -820,7 +914,7 @@ v3_td =
     )
   }
 
-# Table Footer (see Section 12.33)
+# Table Footer (see Section 12.35)
 v3_tfoot =
   element tfoot {
     attribute anchor { xsd:ID }?,
@@ -828,7 +922,7 @@ v3_tfoot =
     v3_tr
   }
 
-# Table Header Cell (see Section 12.34)
+# Table Header Cell (see Section 12.36)
 v3_th =
   element th {
     attribute anchor { xsd:ID }?,
@@ -855,7 +949,7 @@ v3_th =
     )
   }
 
-# Table Head (see Section 12.35)
+# Table Head (see Section 12.37)
 v3_thead =
   element thead {
     attribute anchor { xsd:ID }?,
@@ -863,7 +957,7 @@ v3_thead =
     v3_tr+
   }
 
-# Table Row (see Section 12.36)
+# Table Row (see Section 12.38)
 v3_tr =
   element tr {
     attribute anchor { xsd:ID }?,
@@ -874,7 +968,7 @@ v3_tr =
     )+
   }
 
-# Monospaced Text (see Section 12.37)
+# Monospaced Text (see Section 12.39)
 v3_tt =
   element tt {
     (TEXT
@@ -883,7 +977,7 @@ v3_tt =
       | x_ref)*
   }
 
-# Non-ASCII characters (see Section 12.38)
+# Non-ASCII characters (see Section 12.40)
 v3_u =
   element u {
     attribute ascii { text }?,
@@ -891,16 +985,18 @@ v3_u =
     TEXT
   }
 
-# Unordered List (see Section 12.39)
+# Unordered List (see Section 12.41)
 v3_ul =
   element ul {
     attribute anchor { xsd:ID }?,
-    attribute empty { TEXT }?,
+    attribute bare { "false" | "true" }?, # but see <https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/547>
+    attribute indent { text }?,
+    attribute empty { "false" | "true" }?,
     attribute pn { text }?, # (see [RFC7991bis], Appendix B.2)
     v3_li+
   }
 
-# SVG (see Section 12.29)
+# SVG (see Section 12.31)
 v3_svg =
   element svg:svg {
     (attribute * { text }
@@ -1039,6 +1135,12 @@ x_h =
     TEXT
   }
 
+# declaration of anchor in external reference
+x_has =
+  element x:has {
+    attribute anchor { xsd:ID }?
+  }
+
 # Heading (see Section 11.13)
 x_highlight =
   element x:highlight {
@@ -1109,7 +1211,8 @@ x_source =
   element x:source {
     attribute basename { ATEXT }?,
     attribute href { URI },
-    x_defines*
+    x_defines*,
+    x_has*
   }
 
 # superscript (see Section 11.23)
@@ -1139,7 +1242,7 @@ x_x =
     empty
   }
 
-# XInclude (see Section 12.40)
+# XInclude (see Section 12.43)
 xi_include =
   element xi:include {
     attribute href { text },

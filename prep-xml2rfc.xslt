@@ -1,7 +1,7 @@
 <!--
     Experimental implementation of xml2rfc v3 preptool
 
-    Copyright (c) 2016-2019, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2016-2021, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@
 </xsl:param>
 <xsl:param name="steps">
   <!-- note that boilerplate currently needs to run first, so that the templates can access "/" -->
-  <xsl:text>pi xinclude rfc2629ext figextract artset artwork references cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck preprocesssvg sanitizesvg preptime</xsl:text>
+  <xsl:text>pi xinclude rfc2629ext figextract artset artwork references cleansvg listdefaultstyle listextract lists listextract lists listextract lists tables removeinrfc boilerplate deprecation defaults normalization slug derivedcontent pn scripts idcheck preprocesssvg sanitizesvg pi removelineno preptime</xsl:text>
   <xsl:if test="$mode='rfc'"> rfccleanup</xsl:if>
 </xsl:param>
 <xsl:variable name="rfcnumber" select="/rfc/@number"/>
@@ -130,6 +130,10 @@
         <xsl:when test="$s='pi'">
           <xsl:message>Step: pi</xsl:message>
           <xsl:apply-templates select="$nodes" mode="prep-pi"/>
+        </xsl:when>
+        <xsl:when test="$s='removelineno'">
+          <xsl:message>Step: removelineno</xsl:message>
+          <xsl:apply-templates select="$nodes" mode="prep-removelineno"/>
         </xsl:when>
         <xsl:when test="$s='pn'">
           <xsl:message>Step: pn</xsl:message>
@@ -275,12 +279,12 @@
     </xsl:for-each>
     <xsl:choose>
       <xsl:when test="svg:svg">
-        <xsl:if test="*[not(self::svg:svg)]">
+        <xsl:if test="*[not(self::svg:svg or self::pi:*)]">
           <xsl:message terminate="yes">FATAL: can't have non-svg child elements in artwork when one svg child is present.</xsl:message>
         </xsl:if>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:if test="*">
+        <xsl:if test="*[not(self::pi:*)]">
           <xsl:message terminate="yes">FATAL: can't have child elements in artwork when @type='svg' and @src is present.</xsl:message>
         </xsl:if>
       </xsl:otherwise>
@@ -550,12 +554,15 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="xref[not(*|text())]/@derivedContent" mode="prep-derivedcontent"/>
+<xsl:template match="xref/@derivedContent" mode="prep-derivedcontent"/>
 
-<xsl:template match="xref[not(*|text())]" mode="prep-derivedcontent">
+<xsl:template match="xref" mode="prep-derivedcontent">
   <xsl:variable name="d">
+    <xsl:variable name="t1">
+      <xsl:apply-templates select="." mode="prep-derivedcontent-strip-pi"/>
+    </xsl:variable>
     <xsl:variable name="t">
-      <xsl:apply-templates select="."/>
+      <xsl:apply-templates select="$t1/node()"/>
     </xsl:variable>
     <xsl:value-of select="normalize-space($t)"/>
   </xsl:variable>
@@ -571,11 +578,16 @@
   </xsl:copy>
 </xsl:template>
 
+<xsl:template match="node()|@*" mode="prep-derivedcontent-strip-pi">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-derivedcontent-strip-pi"/></xsl:copy>
+</xsl:template>
+<xsl:template match="pi:*" mode="prep-derivedcontent-strip-pi"/>
+
 <!-- figextract step -->
 
 <!-- https://www.w3.org/TR/xslt-30/#grouping-examples -->
 <xsl:template match="t[figure and not(parent::list)]" mode="prep-figextract">
-  <xsl:for-each-group select="node()[not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::figure)">
+  <xsl:for-each-group select="node()[not(self::pi:* or self::processing-instruction())][not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::figure)">
     <xsl:choose>
       <xsl:when test="current-grouping-key()">
         <xsl:copy-of select="current-group()"/>  
@@ -633,7 +645,7 @@
 
 <!-- https://www.w3.org/TR/xslt-30/#grouping-examples -->
 <xsl:template match="t[list][not(ancestor::list)]" mode="prep-listextract">
-  <xsl:for-each-group select="node()[not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::list)">
+  <xsl:for-each-group select="node()[not(self::pi:rfc-ext or self::processing-instruction())][not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::list)">
     <t>
       <xsl:copy-of select="current-group()"/>  
     </t>
@@ -642,7 +654,7 @@
 
 <xsl:template match="*[self::dd or self::li][list][not(ancestor::list)]" mode="prep-listextract">
   <xsl:copy>
-    <xsl:for-each-group select="node()[not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::list)">
+    <xsl:for-each-group select="node()[not(self::pi:rfc-ext or self::processing-instruction())][not(self::text()) or normalize-space(.)!='']" group-adjacent="boolean(self::list)">
       <t>
         <xsl:copy-of select="current-group()"/>  
       </t>
@@ -680,7 +692,7 @@
 
 <!-- convert numbers/letters lists -->
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='letters' or list/@style='numbers')]" mode="prep-lists">
+<xsl:template match="t[count(*)=1 and normalize-space(.)=normalize-space(list[1]) and (list[1]/@style='letters' or list[1]/@style='numbers')]" mode="prep-lists">
   <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
   <ol>
     <xsl:if test="list/@style='letters'">
@@ -700,7 +712,7 @@
   </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and starts-with(list/@style,'format ')]" mode="prep-lists" priority="9">
+<xsl:template match="t[count(*)=1 and normalize-space(.)=normalize-space(list[1]) and starts-with(list[1]/@style,'format ')]" mode="prep-lists" priority="9">
   <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
   <xsl:variable name="type">
     <xsl:choose>
@@ -726,7 +738,7 @@
 
 <!-- convert symbol lists -->
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='symbols']" mode="prep-lists" priority="9">
+<xsl:template match="t[count(*)=1 and normalize-space(.)=normalize-space(list[1]) and list[1]/@style='symbols']" mode="prep-lists" priority="9">
   <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
   <ul>
     <xsl:call-template name="lists-insert-list-anchor"/>
@@ -736,14 +748,14 @@
 
 <!-- convert empty lists -->
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='empty']/*[self::t or (local-name()='lt') and namespace-uri()='http://purl.org/net/xml2rfc/ext']" mode="prep-lists" priority="5">
+<xsl:template match="t[count(*)=1 and normalize-space(.)=normalize-space(list[1])]/list[@style='empty']/*[self::t or (local-name()='lt') and namespace-uri()='http://purl.org/net/xml2rfc/ext']" mode="prep-lists" priority="5">
   <li>
     <xsl:copy-of select="@anchor"/>
     <xsl:apply-templates select="node()" mode="prep-lists"/>
   </li>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and (list/@style='empty')]" mode="prep-lists" priority="9">
+<xsl:template match="t[count(*)=1 and normalize-space(.)=normalize-space(list[1]) and list[1]/@style='empty']" mode="prep-lists" priority="9">
   <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
   <ul empty="true">
     <xsl:apply-templates select="list/node()" mode="prep-lists"/>
@@ -752,7 +764,7 @@
 
 <!-- convert hanging lists -->
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='hanging']/t" mode="prep-lists" priority="5">
+<xsl:template match="t[not(parent::list)][normalize-space(.)=normalize-space(list) and count(*)=1]/list[@style='hanging']/t" mode="prep-lists" priority="5">
   <dt>
     <xsl:copy-of select="@anchor"/>
     <xsl:value-of select="@hangText"/>
@@ -762,7 +774,7 @@
   </dd>
 </xsl:template>
 
-<xsl:template match="t[normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='hanging']" mode="prep-lists" priority="9">
+<xsl:template match="t[not(parent::list)][normalize-space(.)=normalize-space(list) and count(*)=1 and list/@style='hanging']" mode="prep-lists" priority="9">
   <xsl:call-template name="lists-insert-t-holding-surplus-anchor"/>
   <dl>
     <xsl:call-template name="lists-insert-list-anchor"/>
@@ -778,8 +790,8 @@
     <xsl:apply-templates select="@*" mode="prep-slug">
       <xsl:with-param name="root" select="$root"/>
     </xsl:apply-templates>
-    <xsl:variable name="fr">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.'"()+-_ :%,/@=&lt;&gt;</xsl:variable>
-    <xsl:variable name="to">abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789.__----_---------</xsl:variable>
+    <xsl:variable name="fr">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.'"()+-_ :!%,/@=&lt;&gt;*&#8212;&#8232;</xsl:variable>
+    <xsl:variable name="to">abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789.__----_--.-------.--</xsl:variable>
     <xsl:variable name="canslug" select="translate(normalize-space(.),$fr,'')=''"/>
     <xsl:choose>
       <xsl:when test="$canslug">
@@ -1285,6 +1297,15 @@
   </xsl:choose>
 </xsl:template>
 
+<!-- removelineno step -->
+
+<xsl:template match="node()|@*" mode="prep-removelineno">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-removelineno"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="pi:rfc-ext[@name='line-no']" mode="prep-removelineno"/>
+<xsl:template match="pi:rfc-ext[@name='system-id']" mode="prep-removelineno"/>
+
 <!-- rfc2629ext step -->
 
 <xsl:template match="node()|@*" mode="prep-rfc2629ext">
@@ -1446,11 +1467,11 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-sanitizesvg"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="*[ancestor::svg:svg]" mode="prep-sanitizesvg">
+<xsl:template match="*[ancestor::svg:svg][not(self::pi:*)]" mode="prep-sanitizesvg">
   <xsl:message>ERROR: <xsl:value-of select="node-name(.)"/> not allowed in SVG content (dropped)</xsl:message>
 </xsl:template>
 
-<xsl:template match="*[ancestor::svg:svg]/@*" mode="prep-sanitizesvg">
+<xsl:template match="*[ancestor::svg:svg][not(self::pi:*)]/@*" mode="prep-sanitizesvg">
   <xsl:message>ERROR: <xsl:value-of select="node-name(..)"/>/@<xsl:value-of select="node-name(.)"/> not allowed in SVG content (dropped)</xsl:message>
 </xsl:template>
 
@@ -1659,29 +1680,18 @@
 
 <!-- while we're doing xinclude we can do this as well, right? -->
 <xsl:template match="pi:rfc[@name='include']" mode="prep-xinclude">
-  <xsl:variable name="content" select="document(@value)"/>
-  <xsl:choose>
-    <xsl:when test="$content">
-      <xsl:for-each select="$content/*">
-        <xsl:copy>
-          <xsl:attribute name="xml:base" select="@value"/>
-          <xsl:copy-of select="@*[not(name()='xml:base')]"/>
-          <xsl:copy-of select="node()"/>
-        </xsl:copy>
-      </xsl:for-each>
-    </xsl:when>
-    <xsl:otherwise>
-      <!-- retry with .xml -->
-      <xsl:variable name="content2" select="document(concat(@value,'.xml'))"/>
-      <xsl:for-each select="$content2/*">
-        <xsl:copy>
-          <xsl:attribute name="xml:base" select="concat(@value,'.xml')"/>
-          <xsl:copy-of select="@*[not(name()='xml:base')]"/>
-          <xsl:copy-of select="node()"/>
-        </xsl:copy>
-      </xsl:for-each>
-    </xsl:otherwise>
-  </xsl:choose>
+  <xsl:variable name="content">
+    <xsl:call-template name="obtain-reference-for-include-PI">
+      <xsl:with-param name="uri" select="@value"/>
+    </xsl:call-template>
+  </xsl:variable>  
+  <xsl:for-each select="$content/*/reference">
+    <xsl:copy>
+      <xsl:attribute name="xml:base" select="@value"/>
+      <xsl:copy-of select="@*[not(name()='xml:base')]"/>
+      <xsl:copy-of select="node()"/>
+    </xsl:copy>
+  </xsl:for-each>
 </xsl:template>
 
 <!-- final serialization step -->

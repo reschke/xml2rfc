@@ -2,7 +2,7 @@
     Augment section links to RFCs and Internet Drafts, also cleanup 
     unneeded markup from kramdown2629
 
-    Copyright (c) 2017-2019, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2017-2022, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +44,18 @@
 <!-- URI template for feedback, as described in https://www.greenbytes.de/tech/webdav/rfc2629xslt/rfc2629xslt.html#ext.element.feedback -->
 <xsl:param name="feedback"/>
 
+<!-- character translation tables -->
+<xsl:variable name="lcase" select="'abcdefghijklmnopqrstuvwxyz'" />
+<xsl:variable name="ucase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
+
 <xsl:template match="/">
+  <xsl:variable name="t0">
+    <xsl:apply-templates mode="refs-in-artwork"/>
+  </xsl:variable>
   <xsl:variable name="t1">
-    <xsl:apply-templates mode="insert-refs"/>
+    <xsl:for-each select="$t0">
+      <xsl:apply-templates mode="insert-refs"/>
+    </xsl:for-each>
   </xsl:variable>
   <xsl:variable name="t2">
     <xsl:for-each select="$t1">
@@ -55,7 +64,7 @@
   </xsl:variable>
   <xsl:variable name="t3">
     <xsl:for-each select="$t2">
-      <xsl:apply-templates mode="remove-kramdownleftovers"/>
+      <xsl:apply-templates mode="remove-leftovers"/>
     </xsl:for-each>
   </xsl:variable>
   <xsl:variable name="t4">
@@ -68,7 +77,17 @@
       <xsl:apply-templates mode="insert-feedback"/>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:for-each select="$t5">
+  <xsl:variable name="t6">
+    <xsl:for-each select="$t5">
+      <xsl:apply-templates mode="kramdown2629-fixup"/>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:variable name="t7">
+    <xsl:for-each select="$t6">
+      <xsl:apply-templates mode="line-folding"/>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:for-each select="$t7">
     <xsl:apply-templates mode="insert-prettyprint"/>
   </xsl:for-each>
 </xsl:template>
@@ -99,19 +118,25 @@
 <xsl:template name="insert-target-metadata">
   <xsl:param name="file"/>
   <xsl:param name="sec"/>
-  <xsl:if test="contains(concat(' ',$sibling-specs,' '),concat(' ',$file,' '))">
-    <xsl:variable name="src" select="document(concat($file,'.xml'))"/>
+  <xsl:variable name="fname">
+    <xsl:choose>
+      <xsl:when test="translate($file,'0123456789','')!=''"><xsl:value-of select="$file"/></xsl:when>
+      <xsl:otherwise>rfc<xsl:value-of select="$file"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:if test="contains(concat(' ',$sibling-specs,' '),concat(' ',$fname,' '))">
+    <xsl:variable name="src" select="document(concat($fname,'.xml'))"/>
     <xsl:if test="$src/rfc">
       <!-- find target section -->
       <xsl:for-each select="$src/rfc//section">
         <xsl:variable name="n">
           <xsl:call-template name="get-section-number"/>
         </xsl:variable>
-        <xsl:if test="$n=$sec">
+        <xsl:if test="translate($n,$lcase,$ucase)=translate($sec,$lcase,$ucase)">
           <xsl:if test="@anchor">
             <xsl:processing-instruction name="aug-anchor"><xsl:value-of select="@anchor"/></xsl:processing-instruction>
           </xsl:if>
-          <xsl:processing-instruction name="aug-title"><xsl:value-of select="@title"/></xsl:processing-instruction>
+          <xsl:processing-instruction name="aug-title"><xsl:value-of select="normalize-space(concat(@title,name))"/></xsl:processing-instruction>
         </xsl:if>
       </xsl:for-each>
     </xsl:if>
@@ -217,7 +242,21 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="strip-and-annotate-refs"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="xref[not(node())]" mode="strip-and-annotate-refs">
+<xsl:template match="xref[not(*|text())][@section]" mode="strip-and-annotate-refs">
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="strip-and-annotate-refs"/>
+    <xsl:variable name="reftarget" select="//reference[@anchor=current()/@target]"/>
+    <xsl:if test="@section">
+      <xsl:call-template name="insert-target-metadata">
+        <xsl:with-param name="file" select="$reftarget/seriesInfo[@name='RFC' or @name='Internet-Draft']/@value"/>
+        <xsl:with-param name="sec" select="@section"/>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="strip-and-annotate-refs"/>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="xref[not(*|text())][not(@section)]" mode="strip-and-annotate-refs">
   <xsl:variable name="fx" select="following-sibling::*[1]"/>
   <xsl:variable name="f" select="$fx[self::xref and @INSERT='preceding']"/>
   <xsl:variable name="px" select="preceding-sibling::*[1]"/>
@@ -242,41 +281,44 @@
 
 <xsl:template match="xref/@INSERT" mode="strip-and-annotate-refs"/>
 
-<xsl:template match="*|@*|comment()|processing-instruction()" mode="remove-kramdownleftovers">
-  <xsl:copy><xsl:apply-templates select="node()|@*" mode="remove-kramdownleftovers"/></xsl:copy>
+<xsl:template match="*|@*|comment()|processing-instruction()" mode="remove-leftovers">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="remove-leftovers"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="artwork/@align[.='left']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@alt[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@height[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@name[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@type[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@width[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="artwork/@xml:space[.='preserve']" mode="remove-kramdownleftovers"/>
-<xsl:template match="comment()[contains(.,'markdown-source')]" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@align[.='left']" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@alt[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@height[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@suppress-title[.='false']" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@title[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="figure/@width[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="organization[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="rfc/@obsoletes[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="rfc/@updates[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="rfc/@xml:lang[.='en']" mode="remove-kramdownleftovers"/>
-<xsl:template match="reference/front/abstract" mode="remove-kramdownleftovers"/>
-<xsl:template match="reference/format" mode="remove-kramdownleftovers"/>
-<xsl:template match="section/@toc[.='default']" mode="remove-kramdownleftovers"/>
-<xsl:template match="spanx/@style[.='emph']" mode="remove-kramdownleftovers"/>
-<xsl:template match="spanx/@xml:space[.='preserve']" mode="remove-kramdownleftovers"/>
-<xsl:template match="texttable/@align[.='center']" mode="remove-kramdownleftovers"/>
-<xsl:template match="texttable/@style[.='full']" mode="remove-kramdownleftovers"/>
-<xsl:template match="texttable/@suppress-title[.='false']" mode="remove-kramdownleftovers"/>
-<xsl:template match="texttable/@title[.='']" mode="remove-kramdownleftovers"/>
-<xsl:template match="xref/@format[.='default']" mode="remove-kramdownleftovers"/>
-<xsl:template match="xref/@pageno[.='false']" mode="remove-kramdownleftovers"/>
+<xsl:template match="artwork/@align[.='left']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@alt[.='']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@height[.='']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@name[.='']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@type[.='']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@width[.='']" mode="remove-leftovers"/>
+<xsl:template match="artwork/@xml:space[.='preserve']" mode="remove-leftovers"/>
+<xsl:template match="comment()[contains(.,'markdown-source')]" mode="remove-leftovers"/>
+<xsl:template match="figure/@align[.='left']" mode="remove-leftovers"/>
+<xsl:template match="figure/@alt[.='']" mode="remove-leftovers"/>
+<xsl:template match="figure/@height[.='']" mode="remove-leftovers"/>
+<xsl:template match="figure/@suppress-title[.='false']" mode="remove-leftovers"/>
+<xsl:template match="figure/@title[.='']" mode="remove-leftovers"/>
+<xsl:template match="figure/@width[.='']" mode="remove-leftovers"/>
+<xsl:template match="organization[.='']" mode="remove-leftovers"/>
+<xsl:template match="rfc/@obsoletes[.='']" mode="remove-leftovers"/>
+<xsl:template match="rfc/@updates[.='']" mode="remove-leftovers"/>
+<xsl:template match="rfc/@xml:lang[.='en']" mode="remove-leftovers"/>
+<xsl:template match="reference/front/abstract" mode="remove-leftovers"/>
+<xsl:template match="reference/format" mode="remove-leftovers"/>
+<xsl:template match="section/@toc[.='default']" mode="remove-leftovers"/>
+<xsl:template match="spanx/@style[.='emph']" mode="remove-leftovers"/>
+<xsl:template match="spanx/@xml:space[.='preserve']" mode="remove-leftovers"/>
+<xsl:template match="texttable/@align[.='center']" mode="remove-leftovers"/>
+<xsl:template match="texttable/@style[.='full']" mode="remove-leftovers"/>
+<xsl:template match="texttable/@suppress-title[.='false']" mode="remove-leftovers"/>
+<xsl:template match="texttable/@title[.='']" mode="remove-leftovers"/>
+<xsl:template match="xref/@format[.='default']" mode="remove-leftovers"/>
+<xsl:template match="xref/@pageno[.='false']" mode="remove-leftovers"/>
 
-<xsl:template match="reference[seriesInfo/@name='RFC']/@target[starts-with(.,'http://www.rfc-editor.org/info/') or starts-with(.,'https://www.rfc-editor.org/info/')]" mode="remove-kramdownleftovers">
+<!-- leftovers from location insertion -->
+<xsl:template match="processing-instruction('rfc-ext')[contains(.,'line-no=')]" mode="remove-leftovers"/>
+
+<xsl:template match="reference[seriesInfo/@name='RFC']/@target[starts-with(.,'http://www.rfc-editor.org/info/') or starts-with(.,'https://www.rfc-editor.org/info/')]" mode="remove-leftovers">
   <xsl:variable name="rsi" select="../seriesInfo[@name='RFC']"/>
   <xsl:variable name="no" select="$rsi/@value"/>
   <xsl:if test=". != concat('http://www.rfc-editor.org/info/rfc',$no) and . != concat('https://www.rfc-editor.org/info/rfc',$no)">
@@ -292,8 +334,12 @@
   <xsl:copy>
     <xsl:apply-templates select="node()|@*" mode="link-sibling-specs"/>
     <xsl:variable name="draftName" select="normalize-space(seriesInfo[@name='Internet-Draft']/@value)"/>
+    <xsl:variable name="rfcName" select="concat('rfc',normalize-space(seriesInfo[@name='RFC']/@value))"/>
     <xsl:if test="not(x:source) and $draftName!='' and contains(concat(' ',normalize-space($sibling-specs),' '), $draftName)">
       <x:source href="{$draftName}.xml" basename="{$draftName}"/>
+    </xsl:if>
+    <xsl:if test="not(x:source) and $rfcName!='rfc' and contains(concat(' ',normalize-space($sibling-specs),' '), $rfcName)">
+      <x:source href="{$rfcName}.xml" basename="{$rfcName}"/>
     </xsl:if>
   </xsl:copy>
 </xsl:template>
@@ -312,6 +358,36 @@
   </xsl:copy>
 </xsl:template>
 
+<xsl:template match="*|@*|comment()|processing-instruction()" mode="kramdown2629-fixup">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="kramdown2629-fixup"/></xsl:copy>
+</xsl:template>
+
+<!--fix broken lists with contact elements -->
+<xsl:template match="t[contact and count(*)=1 and parent::t]" mode="kramdown2629-fixup">
+  <xsl:apply-templates select="node()|@*" mode="kramdown2629-fixup"/>
+</xsl:template>
+
+<xsl:template match="*|@*|comment()|processing-instruction()" mode="line-folding">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="line-folding"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="sourcecode" mode="line-folding">
+  <xsl:variable name="preamble">&#10;NOTE: '\' line wrapping per RFC 8792&#10;&#10;</xsl:variable>
+  <xsl:copy>
+    <xsl:apply-templates select="@*" mode="line-folding"/>
+    <xsl:choose>
+      <xsl:when test="starts-with(.,$preamble)">
+        <xsl:attribute name="x:line-folding">\</xsl:attribute>
+        <xsl:text>&#10;</xsl:text>
+        <xsl:value-of select="substring-after(.,$preamble)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="node()" mode="line-folding"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:copy>
+</xsl:template>
+
 <xsl:template match="*|@*|comment()|processing-instruction()" mode="insert-prettyprint">
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="insert-prettyprint"/></xsl:copy>
 </xsl:template>
@@ -320,6 +396,137 @@
   <xsl:processing-instruction name="rfc-ext">html-pretty-print="prettyprint https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"</xsl:processing-instruction>
   <xsl:text>&#10;</xsl:text>
   <xsl:copy-of select="."/>
+</xsl:template>
+
+<xsl:template match="*|@*|comment()|processing-instruction()" mode="refs-in-artwork">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="refs-in-artwork"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="rfc" mode="refs-in-artwork">
+  <!-- check whether we need to -->
+  <xsl:variable name="refs">
+    <xsl:for-each select="//artwork[not(*)][@type='abnf']|//sourcecode[not(*)][@type='abnf']">
+      <xsl:variable name="text" select="."/>
+      <xsl:for-each select="//reference">
+        <xsl:variable name="checkfor" select="concat('[',@anchor,']')"/>
+        <xsl:if test="$text[contains(.,$checkfor)]">
+          <xsl:value-of select="$checkfor"/>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:if test="$refs!=''">
+    <xsl:processing-instruction name="rfc-ext">allow-markup-in-artwork="yes"</xsl:processing-instruction>
+  </xsl:if>
+  <xsl:text>&#10;</xsl:text>
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="refs-in-artwork"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="artwork[not(*)][@type='abnf']|sourcecode[not(*)][@type='abnf']" mode="refs-in-artwork">
+  <xsl:variable name="text" select="."/>
+  <xsl:variable name="refs">
+    <xsl:for-each select="//reference">
+      <xsl:variable name="checkfor" select="concat('[',@anchor,']')"/>
+      <xsl:if test="$text[contains(.,$checkfor)]">
+        <xsl:value-of select="$checkfor"/><xsl:text> </xsl:text>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="$refs!=''">
+      <xsl:copy>
+        <xsl:apply-templates select="@*" mode="refs-in-artwork"/>
+        <xsl:call-template name="refs-in-artwork">
+          <xsl:with-param name="refs" select="$refs"/>
+        </xsl:call-template>
+      </xsl:copy>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:copy><xsl:apply-templates select="node()|@*" mode="refs-in-artwork"/></xsl:copy>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="refs-in-artwork">
+  <xsl:param name="refs"/>
+  <xsl:param name="text" select="."/>
+  <xsl:choose>
+    <xsl:when test="contains($text,'&#10;')">
+      <xsl:call-template name="refs-in-artwork-line">
+        <xsl:with-param name="refs" select="$refs"/>
+        <xsl:with-param name="text" select="substring-before($text,'&#10;')"/>
+      </xsl:call-template>
+      <xsl:text>&#10;</xsl:text>
+      <xsl:call-template name="refs-in-artwork">
+        <xsl:with-param name="refs" select="$refs"/>
+        <xsl:with-param name="text" select="substring-after($text,'&#10;')"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="refs-in-artwork-line">
+        <xsl:with-param name="refs" select="$refs"/>
+        <xsl:with-param name="text" select="$text"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="refs-in-artwork-line">
+  <xsl:param name="refs"/>
+  <xsl:param name="text"/>
+  <xsl:choose>
+    <xsl:when test="contains($text,'; ')">
+      <xsl:value-of select="substring-before($text,'; ')"/>
+      <xsl:text>; </xsl:text>
+      <xsl:call-template name="refs-in-artwork-comment">
+        <xsl:with-param name="refs" select="$refs"/>
+        <xsl:with-param name="text" select="substring-after($text,'; ')"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="contains($text,' &lt;')">
+      <xsl:value-of select="substring-before($text,' &lt;')"/>
+      <xsl:text> &lt;</xsl:text>
+      <xsl:call-template name="refs-in-artwork-comment">
+        <xsl:with-param name="refs" select="$refs"/>
+        <xsl:with-param name="text" select="substring-after($text,' &lt;')"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$text"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="refs-in-artwork-comment">
+  <xsl:param name="refs"/>
+  <xsl:param name="text"/>
+  <xsl:variable name="after-open" select="substring-after($text,'[')"/>
+  <xsl:choose>
+    <xsl:when test="$after-open!=''">
+      <xsl:value-of select="substring-before($text,'[')"/>
+      <xsl:variable name="contents" select="substring-before($after-open,']')"/>
+      <xsl:variable name="check-for" select="concat('[',$contents,']')"/>
+      <xsl:choose>
+        <xsl:when test="contains($refs,$check-for)">
+          <xref target="{$contents}"/>
+          <xsl:call-template name="refs-in-artwork-comment">
+            <xsl:with-param name="refs" select="$refs"/>
+            <xsl:with-param name="text" select="substring-after($text,']')"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>[</xsl:text>
+          <xsl:call-template name="refs-in-artwork-comment">
+            <xsl:with-param name="refs" select="$refs"/>
+            <xsl:with-param name="text" select="substring-after($text,'[')"/>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$text"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 </xsl:transform>

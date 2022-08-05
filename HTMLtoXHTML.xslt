@@ -1,7 +1,7 @@
 <!--
     Transform rfc2629.xslt (HTML) to rfc2629toXHTML.xslt
 
-    Copyright (c) 2006-2018, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2020, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
                 xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt">
+                xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rfc2629.xslt">
 
 <xsl:output method="xml" encoding="UTF-8"/>
 
@@ -81,6 +81,8 @@
   </xsl:copy>
 </xsl:template>
 
+<!-- remove our own PIs which may have been inserted due to line numbering -->
+<xsl:template match="processing-instruction('rfc-ext')"/>
 
 <!-- rewrite document element -->
 <xsl:template match="/">

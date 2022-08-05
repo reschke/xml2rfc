@@ -51,7 +51,6 @@
 
 <xsl:strip-space elements="abstract address artset aside author back boilerplate dl figure front list middle note ol postal reference references rfc section table tbody thead tr texttable ul svg:svg"/>
 
-<xsl:output method="html" encoding="utf-8" doctype-system="about:legacy-compat" indent="no"/>
 
 <!-- PIs outside the root element, or inside the root element but before <front> -->
 <xsl:variable name="global-std-pis" select="/processing-instruction('rfc') | /*/processing-instruction('rfc')[following-sibling::front]"/>
@@ -12112,11 +12111,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1486 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1486 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1445 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1445 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/07/03 03:44:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/07/03 03:44:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/07/02 18:16:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/07/02 18:16:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">

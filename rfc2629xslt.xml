@@ -157,7 +157,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>rfc</c>
   <c>comments<iref item="comments PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="comments"/></c>
   <c>xml2rfc-comments<iref item="xml2rfc-comments parameter"/> <iref item="Parameters" subitem="xml2rfc-comments"/></c>
-  <c>(not set)</c>
+  <c>"no" ("yes" for v3 documents)</c>
   <c/>
 
   <c>rfc</c>
@@ -193,7 +193,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
   <c>rfc</c>
   <c>inline<iref item="inline PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="inline"/></c>
   <c>xml2rfc-inline<iref item="xml2rfc-inline parameter"/> <iref item="Parameters" subitem="xml2rfc-inline"/></c>
-  <c>(not set)</c>
+  <c>"no" ("yes" for v3 documents)</c>
   <c/>
 
   <c>rfc</c>
@@ -299,168 +299,655 @@ xsltproc --param xml2rfc-toc '"yes"' \
 </section>
 
 <section title="Extension PIs" anchor="extension.pis">
-<texttable>
-  <ttcol>PI target</ttcol>
-  <ttcol>PI pseudo-attribute</ttcol>
-  <ttcol>XSLT parameter name</ttcol>
-  <ttcol>default</ttcol>
-  <ttcol>description</ttcol>
+  <section title="abort-on - Log Level" anchor="xml2rfc-ext-abort-on">
+    <iref item="abort-on PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="abort-on"/>
+    <iref item="xml2rfc-ext-abort-on parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-abort-on"/>
 
-  <c>rfc-ext</c>
-  <c>allow-markup-in-artwork<iref item="allow-markup-in-artwork PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="allow-markup-in-artwork"/></c>
-  <c>xml2rfc-ext-allow-markup-in-artwork<iref item="xml2rfc-ext-allow-markup-in-artwork parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-allow-markup-in-artwork"/></c>
-  <c>"no"</c>
-  <c>Enables support for specific elements inside abstract elements (using this extension
-  makes the document incompatible to the RFC7749 grammar; see description of
-  conversion XSLT in <xref target="clean-for-dtd"/>).</c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>abort-on</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-abort-on</dd>
+      <dt>default</dt>
+      <dd>"OFF"</dd>
+    </dl>
+    <t>
+      Controls at which log level a message causes the XSLT to be aborted (one of "OFF", "FATAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE").
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>authors-section<iref item="authors-section PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="authors-section"/></c>
-  <c>xml2rfc-ext-authors-section<iref item="xml2rfc-ext-authors-section parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-authors-section"/></c>
-  <c>"end"</c>
-  <c>When "before-appendices", place the authors section between references
-  and appendices (this ordering was used a long time ago).</c>
+  <section title="allow-markup-in-artwork - Allow certain XML elements inside &lt;artwork> and &lt;sourcecode>" anchor="xml2rfc-ext-allow-markup-in-artwork">
+    <iref item="allow-markup-in-artwork PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="allow-markup-in-artwork"/>
+    <iref item="xml2rfc-ext-allow-markup-in-artwork parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-allow-markup-in-artwork"/>
 
-  <c>rfc-ext</c>
-  <c>css-contents<iref item="css-contents PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="css-contents"/></c>
-  <c>xml2rfc-ext-css-contents<iref item="xml2rfc-ext-css-contents"/> <iref item="Parameters" subitem="xml2rfc-ext-css-contents"/></c>
-  <c></c>
-  <c>CSS content to use instead of the built-in (experimental).</c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>allow-markup-in-artwork</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-allow-markup-in-artwork</dd>
+      <dt>default</dt>
+      <dd>"no"</dd>
+    </dl>
+    <t>
+      Enables support for specific elements inside &lt;artwork> and &lt;sourcecode> elements (using this extension
+      makes the document incompatible to the RFC7749 grammar; see description of
+      conversion XSLT in <xref target="clean-for-dtd"/>).
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>css-resource<iref item="css-resource PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="css-resource"/></c>
-  <c>xml2rfc-ext-css-resource<iref item="xml2rfc-ext-css-resource"/> <iref item="Parameters" subitem="xml2rfc-ext-css-resource"/></c>
-  <c></c>
-  <c>Name of CSS resource (URI or relate reference) to use instead of the built-in (experimental).</c>
+  <section title="authors-section - Placement of 'Authors' Section" anchor="xml2rfc-ext-authors-section">
+    <iref item="authors-section PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="authors-section"/>
+    <iref item="xml2rfc-ext-authors-section parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-authors-section"/>
 
-  <c>rfc-ext</c>
-  <c>doi-uri<iref item="doi-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="doi-uri"/></c>
-  <c>xml2rfc-ext-doi-uri<iref item="xml2rfc-ext-doi-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-doi-uri"/></c>
-  <c>"http://dx.doi.org/{doi}"</c>
-  <c>URI template for DOIs.</c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>authors-section</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-authors-section</dd>
+      <dt>default</dt>
+      <dd>"end"</dd>
+    </dl>
+    <t>
+      When "before-appendices", place the authors section between references
+      and appendices (this ordering was used a long time ago).
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>duplex<iref item="duplex PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="duplex"/></c>
-  <c>xml2rfc-ext-duplex<iref item="xml2rfc-ext-duplex"/> <iref item="Parameters" subitem="xml2rfc-ext-duplex"/></c>
-  <c>"no"</c>
-  <c>When set to "yes", format the PDF output for doublesided printing.</c>
+  <section title="css-contents - CSS Contents" anchor="xml2rfc-ext-css-contents">
+    <iref item="css-contents PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="css-contents"/>
+    <iref item="xml2rfc-ext-css-contents parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-css-contents"/>
 
-  <c>rfc-ext</c>
-  <c>errata<iref item="errata PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="errata"/></c>
-  <c>xml2rfc-ext-errata<iref item="xml2rfc-ext-errata"/> <iref item="Parameters" subitem="xml2rfc-ext-errata"/></c>
-  <c></c>
-  <c>Can be used to specify an errata file; output will link to individual errata when possible. See <xref target="rfc-editor.errata"/></c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>css-contents</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-css-contents</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      CSS content to use instead of the built-in (experimental).
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>html-pretty-print<iref item="html-pretty-print PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="html-pretty-print"/></c>
-  <c>xml2rfc-ext-html-pretty-print<iref item="xml2rfc-ext-html-pretty-print"/> <iref item="Parameters" subitem="xml2rfc-ext-html-pretty-print"/></c>
-  <c></c>
-  <c>Used to specify a JS-based code pretty-printer; the value is the CSS class name to insert, followed by a blank space, followed by the URI of the JS library. For instance:
-  "prettyprint https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"</c>
+  <section title="css-resource - Custom CSS Resource" anchor="xml2rfc-ext-css-resource">
+    <iref item="css-resource PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="css-resource"/>
+    <iref item="xml2rfc-ext-css-resource parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-css-resource"/>
 
-  <c>rfc-ext</c>
-  <c>include-index<iref item="include-index PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-index"/></c>
-  <c>xml2rfc-ext-include-index<iref item="xml2rfc-ext-include-index parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-include-index"/></c>
-  <c>"yes"</c>
-  <c>When set to "no", no index will be generated.</c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>css-resource</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-css-resource</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      Name of CSS resource (URI or relate reference) to use instead of the built-in (experimental).
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>include-references-in-index<iref item="include-references-in-index PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-references-in-index"/></c>
-  <c>xml2rfc-ext-include-references-in-index<iref item="xml2rfc-ext-include-references-in-index parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-include-references-in-index"/></c>
-  <c>"no"</c>
-  <c>When set to "yes", index entries are generated for all references.</c>
+  <section title="dark-mode - Switch for Enabling 'Dark Mode' Support" anchor="xml2rfc-ext-dark-mode">
+    <iref item="dark-mode PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="dark-mode"/>
+    <iref item="xml2rfc-ext-dark-mode parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-dark-mode"/>
 
-  <c>rfc-ext</c>
-  <c>insert-metadata<iref item="insert-metadata PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="insert-metadata"/></c>
-  <c>xml2rfc-ext-insert-metadata<iref item="xml2rfc-ext-insert-metadata parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-insert-metadata"/></c>
-  <c>"yes"</c>
-  <c>When set to "yes", include JS code that fetches current RFC metadata and
-  inserts it into the front page (standards track, obsoletion, updates, errata).</c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>dark-mode</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-dark-mode</dd>
+      <dt>default</dt>
+      <dd>"no"</dd>
+    </dl>
+    <t>
+      Set to 'auto' to enable "dark mode" CSS support.
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>internet-draft-uri<iref item="internet-draft-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="internet-draft-uri"/></c>
-  <c>xml2rfc-ext-internet-draft-uri<iref item="xml2rfc-ext-internet-draft-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-internet-draft-uri"/></c>
-  <c>"https://tools.ietf.org/html/{internet-draft}"</c>
-  <c>URI template for Internet-Draft links (can be set locally inside the &lt;reference> element as well to override the default).</c>
+  <section title="diff-uri - URI Template for Internet Draft Diff Links" anchor="xml2rfc-ext-diff-uri">
+    <iref item="diff-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="diff-uri"/>
+    <iref item="xml2rfc-ext-diff-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-diff-uri"/>
 
-  <c>rfc-ext</c>
-  <c>isbn-uri<iref item="isbn-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="isbn-uri"/></c>
-  <c>xml2rfc-ext-isbn-uri<iref item="xml2rfc-ext-isbn-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-isbn-uri"/></c>
-  <c>"https://www.worldcat.org/search?q=isbn:{isbn}"</c>
-  <c>URI template for ISBN lookup.</c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>diff-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-diff-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.ietf.org/rfcdiff?url2={internet-draft}"</dd>
+    </dl>
+    <t>
+      URI template for Internet Draft Diff links.
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>log-level<iref item="log-level PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="log-level"/></c>
-  <c>xml2rfc-ext-log-level<iref item="xml2rfc-ext-log-level parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-log-level"/></c>
-  <c>"WARNING"</c>
-  <c>default logging level, one of "OFF", "FATAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE"</c>
+  <section title="doi-uri - URI Template for DOI Links" anchor="xml2rfc-ext-doi-uri">
+    <iref item="doi-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="doi-uri"/>
+    <iref item="xml2rfc-ext-doi-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-doi-uri"/>
 
-  <c>rfc-ext</c>
-  <c>justification<iref item="justification PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="justification"/></c>
-  <c>xml2rfc-ext-justification<iref item="xml2rfc-ext-justification parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-justification"/></c>
-  <c>"never"</c>
-  <c>"never": never emit justified text, "always": always emit justified text, "print": only emit justified text for print media.</c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>doi-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-doi-uri</dd>
+      <dt>default</dt>
+      <dd>"https://dx.doi.org/{doi}"</dd>
+    </dl>
+    <t>
+      URI template for DOIs links.
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>maxwidth<iref item="maxwidth PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="maxwidth"/></c>
-  <c>xml2rfc-ext-maxwidth<iref item="xml2rfc-ext-maxwidth"/> <iref item="Parameters" subitem="xml2rfc-ext-maxwidth"/></c>
-  <c>1000</c>
-  <c>For HTML output: maximal text width in CSS pixels.</c>
+  <section title="duplex - Support Duplex Printing" anchor="xml2rfc-ext-duplex">
+    <iref item="duplex PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="duplex"/>
+    <iref item="xml2rfc-ext-duplex parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-duplex"/>
 
-  <c>rfc-ext</c>
-  <c>parse-xml-in-artwork<iref item="parse-xml-in-artwork PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="parse-xml-in-artwork"/></c>
-  <c>xml2rfc-parse-xml-in-artwork<iref item="xml2rfc-ext-parse-xml-in-artwork parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-parse-xml-in-artwork"/></c>
-  <c>"no"</c>
-  <c>May be used to enable parsing of XML content in figures (MSXML only).</c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>duplex</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-duplex</dd>
+      <dt>default</dt>
+      <dd>"no"</dd>
+    </dl>
+    <t>
+      When set to "yes", format printed output for doublesided printing.
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>rfc-errata-uri<iref item="rfc-errata-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-errata-uri"/></c>
-  <c>xml2rfc-ext-rfc-errata-uri<iref item="xml2rfc-ext-rfc-errata-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-errata-uri"/></c>
-  <c>"https://www.rfc-editor.org/errata/rfc{rfc}"</c>
-  <c>URI template for all RFC Errata for a given RFC ("rfc" is the RFC number).</c>
+  <section title="errata - Embed Errata Information" anchor="xml2rfc-ext-errata">
+    <iref item="errata PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="errata"/>
+    <iref item="xml2rfc-ext-errata parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-errata"/>
 
-  <c>rfc-ext</c>
-  <c>rfc-erratum-uri<iref item="rfc-erratum-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-erratum-uri"/></c>
-  <c>xml2rfc-ext-rfc-erratum-uri<iref item="xml2rfc-ext-rfc-erratum-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-erratum-uri"/></c>
-  <c>"https://www.rfc-editor.org/errata/eid{eid}"</c>
-  <c>URI template for a specific RFC erratum ("eid" is the "errata id").</c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>errata</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-errata</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      Can be used to specify an errata file; output will link to individual errata when possible. See <xref target="rfc-editor.errata"/>.
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>rfc-uri<iref item="rfc-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-uri"/></c>
-  <c>xml2rfc-ext-rfc-uri<iref item="xml2rfc-ext-rfc-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-uri"/></c>
-  <c>"https://tools.ietf.org/html/rfc{rfc}"</c>
-  <c>URI template for RFC links.</c>
+  <section title="html-pretty-print - Switch for Enabling Pretty Printing of Code" anchor="xml2rfc-ext-html-pretty-print">
+    <iref item="html-pretty-print PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="html-pretty-print"/>
+    <iref item="xml2rfc-ext-html-pretty-print parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-html-pretty-print"/>
 
-  <c>rfc-ext</c>
-  <c>sec-no-trailing-dots<iref item="sec-no-trailing-dots PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="sec-no-trailing-dots"/></c>
-  <c>xml2rfc-ext-sec-no-trailing-dots<iref item="xml2rfc-ext-sec-no-trailing-dots parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-sec-no-trailing-dots"/></c>
-  <c></c>
-  <c>When set to "no", do not add trailing dots to section numbers (this was the preference in the distant past).</c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>html-pretty-print</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-html-pretty-print</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      Used to specify a JS-based code pretty-printer; the value is the CSS class name to insert, followed by a blank space, followed by the URI of the JS library. For instance:
+      "prettyprint https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>support-rfc2731<iref item="support-rfc2731 PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="support-rfc2731"/></c>
-  <c>xml2rfc-ext-support-rfc2731<iref item="xml2rfc-ext-support-rfc2731 parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-support-rfc2731"/></c>
-  <c>"yes"</c>
-  <c>Decides whether the HTML transformation should generate META tags according <xref target="rfc2731.properties"/>.</c>
+  <section title="include-generator - Switch for Disabling Generator Information in Output" anchor="xml2rfc-ext-include-generator">
+    <iref item="include-generator PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-generator"/>
+    <iref item="xml2rfc-ext-include-generator parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-include-generator"/>
 
-  <c>rfc-ext</c>
-  <c>xml2rfc-backend<iref item="xml2rfc-backend PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xml2rfc-backend"/></c>
-  <c>xml2rfc-ext-xml2rfc-backend<iref item="xml2rfc-ext-xml2rfc-backend parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-xml2rfc-backend"/></c>
-  <c>based on document date</c>
-  <c>Used in <tt>clean-for-DTD.xslt</tt> (see <xref target="clean-for-dtd"/>).</c>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>include-generator</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-include-generator</dd>
+      <dt>default</dt>
+      <dd>"yes"</dd>
+    </dl>
+    <t>
+      Set to 'no' in order to disable inclusion of generator version information.
+    </t>
+  </section>
 
-  <c>rfc-ext</c>
-  <c>xref-with-text-generate<iref item="xref-with-text-generate PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xref-with-text-generate"/></c>
-  <c>xml2rfc-ext-xref-with-text-generate<iref item="xml2rfc-ext-xref-with-text-generate"/> <iref item="Parameters" subitem="xml2rfc-ext-xref-with-text-generate"/></c>
-  <c>'text'</c>
-  <c>Determines whether &lt;xref> with text content generates additional text as in traditional text output ("text"), or just generates a link around the text ("nothing"). Note that the default might change in the future in order to achieve compatibility with other formatters.</c>
+  <section title="include-index - Switch for Disabling Index Generation" anchor="xml2rfc-ext-include-index">
+    <iref item="include-index PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-index"/>
+    <iref item="xml2rfc-ext-include-index parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-include-index"/>
 
-  <c>rfc-ext</c>
-  <c>ucd-file<iref item="ucd-file PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="ucd-file"/></c>
-  <c>xml2rfc-ext-ucd-file<iref item="xml2rfc-ext-ucd-file"/> <iref item="Parameters" subitem="xml2rfc-ext-ucd-file"/></c>
-  <c></c>
-  <c>Specifies an external resource containing Unicode character database information, as described in <xref target="ext.element.u-map"/>.</c>
-</texttable>
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>include-index</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-include-index</dd>
+      <dt>default</dt>
+      <dd>"yes"</dd>
+    </dl>
+    <t>
+      When set to "no", no index will be generated.
+    </t>
+  </section>
+
+  <section title="include-references-in-index - Generate Index Entries for References" anchor="xml2rfc-ext-include-references-in-index">
+    <iref item="include-references-in-index PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="include-references-in-index"/>
+    <iref item="xml2rfc-ext-include-references-in-index parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-include-references-in-index"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>include-references-in-index</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-include-references-in-index</dd>
+      <dt>default</dt>
+      <dd>"no"</dd>
+    </dl>
+    <t>
+      When set to "yes", index entries are generated for all references.
+    </t>
+  </section>
+
+  <section title="insert-metadata - Dynamic Metadata Insertion in HTML" anchor="xml2rfc-ext-insert-metadata">
+    <iref item="insert-metadata PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="insert-metadata"/>
+    <iref item="xml2rfc-ext-insert-metadata parameter"/><iref item="Parameters" subitem="xml2rfc-ext-insert-metadata"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>insert-metadata</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-insert-metadata</dd>
+      <dt>default</dt>
+      <dd>"yes"</dd>
+    </dl>
+    <t>
+      When set to "yes", include JS code that fetches current RFC/Internet-Draft metadata and
+      inserts it into the front page (standards track, obsoletion, updates, errata, freshness of draft...).
+    </t>
+  </section>
+
+  <section title="internet-draft-base-uri - base URI for RFC reference files" anchor="xml2rfc-ext-internet-draft-reference-base-uri">
+    <iref item="internet-draft-reference-base-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="internet-draft-reference-base-uri"/>
+    <iref item="xml2rfc-ext-rfc-reference-base-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-reference-base-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>internet-draft-reference-base-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-internet-draft-reference-base-uri</dd>
+      <dt>default</dt>
+      <dd>"https://bib.ietf.org/public/rfc/bibxml-ids/"</dd>
+    </dl>
+    <t>
+      Base URI for Internet-Draft referennces included using the "include" processing instruction.
+    </t>
+  </section>
+
+  <section title="internet-draft-uri - URI Template for Interned Drafts" anchor="xml2rfc-ext-internet-draft-uri">
+    <iref item="internet-draft-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="internet-draft-uri"/>
+    <iref item="xml2rfc-ext-internet-draft-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-internet-draft-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>internet-draft-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-internet-draft-uri</dd>
+      <dt>default</dt>
+      <dd>"https://datatracker.ietf.org/doc/html/{internet-draft}"</dd>
+    </dl>
+    <t>
+      URI template for Internet-Draft links (can be set locally inside the &lt;reference> element as well to override the default).
+    </t>
+  </section>
+
+  <section title="justification - Text Justification" anchor="xml2rfc-ext-justification">
+    <iref item="justification PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="justification"/>
+    <iref item="xml2rfc-ext-justification parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-justification"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>justification</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-justification</dd>
+      <dt>default</dt>
+      <dd>"never"</dd>
+    </dl>
+    <t>
+      "never": never emit justified text, "always": always emit justified text, "print": only emit justified text for print media.
+    </t>
+  </section>
+
+  <section title="isbn-uri - URI Template for ISBNs" anchor="xml2rfc-ext-isbn-uri">
+    <iref item="isbn-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="isbn-uri"/>
+    <iref item="xml2rfc-ext-isbn-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-isbn-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>isbn-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-isbn-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.worldcat.org/search?q=isbn:{isbn}"</dd>
+    </dl>
+    <t>
+      URI template for ISBN lookup.
+    </t>
+  </section>
+
+  <section title="log-level - Log Level" anchor="xml2rfc-ext-log-level">
+    <iref item="log-level PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="log-level"/>
+    <iref item="xml2rfc-ext-log-level parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-log-level"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>log-level</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-log-level</dd>
+      <dt>default</dt>
+      <dd>"WARNING"</dd>
+    </dl>
+    <t>
+      Logging level, one of "OFF", "FATAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE".
+    </t>
+  </section>
+
+  <section title="maxwidth - Maximal Text Width in HTML" anchor="xml2rfc-ext-maxwidth">
+    <iref item="maxwidth PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="maxwidth"/>
+    <iref item="xml2rfc-ext-maxwidth parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-maxwidth"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>maxwidth</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-maxwidth</dd>
+      <dt>default</dt>
+      <dd>1000</dd>
+    </dl>
+    <t>
+      For HTML output: maximal text width in CSS pixels.
+    </t>
+  </section>
+
+  <section title="parse-xml-in-artwork - Parse and Check XML in artwork" anchor="xml2rfc-ext-parse-xml-in-artwork">
+    <iref item="parse-xml-in-artwork PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="parse-xml-in-artwork"/>
+    <iref item="xml2rfc-ext-parse-xml-in-artwork parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-parse-xml-in-artwork"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>parse-xml-in-artwork</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-parse-xml-in-artwork</dd>
+      <dt>default</dt>
+      <dd>"no"</dd>
+    </dl>
+    <t>
+      May be used to enable parsing of XML content in figures (MSXML only).
+    </t>
+  </section>
+
+  <section title="rfc-errata-uri - URI Template for RFC Errata" anchor="xml2rfc-ext-rfc-errata-uri">
+    <iref item="rfc-errata-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-errata-uri"/>
+    <iref item="xml2rfc-ext-rfc-errata-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-erratam-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>rfc-errata-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-rfc-errata-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.rfc-editor.org/errata/rfc{rfc}"</dd>
+    </dl>
+    <t>
+      URI template for all RFC Errata for a given RFC ("rfc" is the RFC number).
+    </t>
+  </section>
+
+  <section title="rfc-erratum-uri - URI Template for a specific RFC Erratum" anchor="xml2rfc-ext-rfc-erratum-uri">
+    <iref item="rfc-erratum-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-erratum-uri"/>
+    <iref item="xml2rfc-ext-rfc-erratum-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-erratum-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>rfc-erratum-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-rfc-erratum-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.rfc-editor.org/errata/eid{eid}"</dd>
+    </dl>
+    <t>
+      URI template for a specific RFC erratum ("eid" is the "errata id").
+    </t>
+  </section>
+
+  <section title="rfc-reference--base-uri - base URI for RFC reference files" anchor="xml2rfc-ext-rfc-reference-base-uri">
+    <iref item="rfc-reference-base-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-reference-base-uri"/>
+    <iref item="xml2rfc-ext-rfc-reference-base-uri"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-reference-base-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>rfc-reference-base-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-rfc-reference-base-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.rfc-editor.org/refs/bibxml/"</dd>
+    </dl>
+    <t>
+      Base URI for RFC referennces included using the "include" processing instruction.
+    </t>
+  </section>
+
+  <section title="rfc-uri - URI Template for HTML Version of RFCs" anchor="xml2rfc-ext-rfc-uri">
+    <iref item="rfc-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="rfc-uri"/>
+    <iref item="xml2rfc-ext-rfc-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-rfc-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>rfc-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-rfc-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.rfc-editor.org/rfc/rfc{rfc}.html" (previously "https://tools.ietf.org/html/rfc{rfc}")</dd>
+    </dl>
+    <t>
+      URI Template for HTML Version of RFCs.
+    </t>
+  </section>
+
+  <section title="sec-no-trailing-dots - Disable Trailing Dots in Section Numbers" anchor="xml2rfc-ext-sec-no-trailing-dots">
+    <iref item="sec-no-trailing-dots PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="sec-no-trailing-dots"/>
+    <iref item="xml2rfc-ext-sec-no-trailing-dots parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-sec-no-trailing-dots"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>sec-no-trailing-dots</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-sec-no-trailing-dots</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      When set to "no", do not add trailing dots to section numbers (this was the preference in the distant past).
+    </t>
+  </section>
+
+  <section title="std-uri - URI Template for IETF Standards" anchor="xml2rfc-ext-std-uri">
+    <iref item="std-uri PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="std-uri"/>
+    <iref item="xml2rfc-ext-std-uri parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-std-uri"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>std-uri</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-std-uri</dd>
+      <dt>default</dt>
+      <dd>"https://www.rfc-editor.org/info/std{std}"</dd>
+    </dl>
+    <t>
+      URI Template for IETF Standards.
+    </t>
+  </section>
+
+  <section title="support-highwire-press-tags - Support 'Highwire Press' Metadata" anchor="xml2rfc-ext-support-highwire-press-tags">
+    <iref item="support-highwire-press-tags PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="support-highwire-press-tags"/>
+    <iref item="xml2rfc-ext-support-highwire-press-tags parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-support-highwire-press-tags"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>support-highwire-press-tags</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-support-highwire-press-tags</dd>
+      <dt>default</dt>
+      <dd>"yes"</dd>
+    </dl>
+    <t>
+      Decides whether the HTML transformation should generate 'Highwire Press' META tags, as used by Google Scholar.
+    </t>
+  </section>
+
+  <section title="support-open-graph-tags - Support 'Highwire Press' Metadata" anchor="xml2rfc-ext-support-open-graph-tags">
+    <iref item="support-open-graph-tags PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="support-open-graph-tags"/>
+    <iref item="xml2rfc-ext-support-open-graph-tags parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-support-open-graph-tags"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>support-open-graph-tags</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-support-open-graph-tags</dd>
+      <dt>default</dt>
+      <dd>"yes"</dd>
+    </dl>
+    <t>
+      Decides whether the HTML transformation should generate 'Open Graph' META tags, as used by Twitter.
+    </t>
+  </section>
+
+  <section title="support-rfc2731 - Support RFC 2731 Metadata" anchor="xml2rfc-ext-support-rfc2731">
+    <iref item="support-rfc2731 PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="support-rfc2731"/>
+    <iref item="xml2rfc-ext-support-rfc2731 parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-support-rfc2731"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>support-rfc2731</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-support-rfc2731</dd>
+      <dt>default</dt>
+      <dd>"yes"</dd>
+    </dl>
+    <t>
+      Decides whether the HTML transformation should generate META tags according <xref target="rfc2731.properties"/>.
+    </t>
+  </section>
+
+  <section title="ucd-file - Filename of Unicode Database" anchor="xml2rfc-ext-ucd-file">
+    <iref item="ucd-file PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="ucd-file"/>
+    <iref item="xml2rfc-ext-ucd-file parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-ucd-file"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>ucd-file</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-ucd-file</dd>
+      <dt>default</dt>
+      <dd>none</dd>
+    </dl>
+    <t>
+      Specifies an external resource containing Unicode character database information, as described in <xref target="ext.element.u-map"/>.
+    </t>
+  </section>
+
+  <section title="xml2rfc-backend - Select xml2rfc Target Version" anchor="xml2rfc-ext-xml2rfc-backend">
+    <iref item="xml2rfc-backend PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xml2rfc-backend"/>
+    <iref item="xml2rfc-ext-xml2rfc-backend parameter"/><iref item="Parameters" subitem="xml2rfc-ext-xml2rfc-backend"/>
+    
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>xml2rfc-backend</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-xml2rfc-backend</dd>
+      <dt>default</dt>
+      <dd>based on document date</dd>
+    </dl>
+    <t>Used in <tt>clean-for-DTD.xslt</tt> (see <xref target="clean-for-dtd"/>).</t>
+  </section>
+
+  <section title="xref-with-text-generate - Default Handling of &lt;xref> with Text Content" anchor="xml2rfc-ext-xref-with-text-generate">
+    <iref item="xref-with-text-generate PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="xref-with-text-generate"/>
+    <iref item="xml2rfc-ext-xref-with-text-generate parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-xref-with-text-generate"/>
+
+    <dl newline="true">
+      <dt>PI target</dt>
+      <dd>rfc-ext</dd>
+      <dt>PI pseudo-attribute</dt>
+      <dd>xref-with-text-generate</dd>
+      <dt>XSLT parameter name</dt>
+      <dd>xml2rfc-ext-xref-with-text-generate</dd>
+      <dt>default</dt>
+      <dd>"text"</dd>
+    </dl>
+    <t>
+      Determines whether &lt;xref> with text content generates additional text as in traditional text output ("text"), or just generates a link around the text ("nothing"). Note that the default might change in the future in order to achieve compatibility with other formatters.
+    </t>
+  </section>
+
 </section>
 
 </section>
@@ -955,18 +1442,18 @@ saxon tmp.fo xsl11toFop.xslt > rfc2629.fo
   will behave properly with respect to table breaks etc.
 </t>
 <t>
-  An alternative is PrinceXML (see <eref target="http://www.princexml.com/"/>),
-  which can produce PDF directly from (X)HTML input, based on the CSS printing
-  information.
+  Alternatives are tools which can produce PDF directly from (X)HTML input,
+  based on the CSS printing information.
+  For instance: "PrinceXML" (<eref target="http://www.princexml.com/"/>) and 
+  "WeasyPrint" (<eref target="https://weasyprint.org/"/>).
 </t>
 <figure>
   <preamble>
-    For instance, PDF output with text justification turned on can be
-    produced with:
+    For instance, PDF output can be produced with:
   </preamble>
   <artwork type="example">
 saxon input.xml rfc2629.xslt > output.html
-prince output.html output.pdf</artwork>
+weasyprint output.html output.pdf</artwork>
 </figure>
 </section>
 
@@ -1137,6 +1624,9 @@ mkepub.sh rfc2616.xml
   <t>
     This element can be used to include a contributor's contact information in
     place where a paragraph (&lt;t>) would be allowed otherwise.
+  </t>
+  <t>
+    See <xref target="v3.contact"/> for a standard alternative.
   </t>
 </section>
 
@@ -1340,9 +1830,9 @@ Content-Length: &lt;x:length-of target="req"/>
   </t>
   <figure>
     <artwork type="example" x:lang="">
-&lt;xref target="test">test&lt;/xref>
-&lt;xref target="test">alias1&lt;/xref>
-&lt;xref target="test">alias 2&lt;/xref></artwork>
+&lt;xref target="test" format="none">test&lt;/xref>
+&lt;xref target="test" format="none">alias1&lt;/xref>
+&lt;xref target="test" format="none">alias 2&lt;/xref></artwork>
   </figure>
 </section>
 
@@ -1625,11 +2115,32 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
+<section title="br Element" anchor="v3.br">
+  <iref item="V3 Extension Elements" subitem="br" primary="true"/>
+  <iref item="br V3 Extension Element" primary="true"/>
+<t>
+  <cref>TBD.</cref>
+</t>
+</section>
+
 <section title="cityarea Element" anchor="v3.cityarea">
   <iref item="V3 Extension Elements" subitem="cityarea" primary="true"/>
   <iref item="cityarea V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="4.2.7"/>.
+</t>
+</section>
+
+<section title="contact Element" anchor="v3.contact">
+  <iref item="V3 Extension Elements" subitem="contact" primary="true"/>
+  <iref item="contact V3 Extension Element" primary="true"/>
+<t>
+  Can be used to embed contact information in a layout <em>similar</em>
+  to the one used for authors; mainly for use in a "Contributors" section.
+</t>
+<t>
+  When used in phrase content, only the name or the organization (absent a name)
+  will be displayed.
 </t>
 </section>
 
@@ -1677,7 +2188,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="extaddr" primary="true"/>
   <iref item="extaddr V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="4.2.7"/>.
 </t>
 </section>
 
@@ -1718,7 +2229,7 @@ Content-Length: &lt;x:length-of target="req"/>
   <iref item="V3 Extension Elements" subitem="pobox" primary="true"/>
   <iref item="pobox V3 Extension Element" primary="true"/>
 <t>
-  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="4.2.7"/>.
 </t>
 </section>
 
@@ -1736,6 +2247,20 @@ Content-Length: &lt;x:length-of target="req"/>
 <t>
   See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.refcontent"/>.
 </t>
+</section>
+
+<section title="Extensions to reference Element" anchor="v3.reference">
+  <iref item="V3 Extension Elements" subitem="reference" primary="true"/>
+  <iref item="reference V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.reference"/>.
+</t>
+
+<section title="quoteTitle attribute" anchor="v3.reference.quoteTitle">
+<t>
+  See <xref target="RFC7991bis-01" x:fmt="of" x:rel="#element.reference.attribute.quoteTitle"/>.
+</t>
+</section>
 </section>
 
 <section title="referencegroup Element" anchor="v3.referencegroup">
@@ -1757,36 +2282,6 @@ Content-Length: &lt;x:length-of target="req"/>
 </t>
 </section>
 
-<section title="sortingcode Element" anchor="v3.sortingcode">
-  <iref item="V3 Extension Elements" subitem="sortingcode" primary="true"/>
-  <iref item="sortingcode V3 Extension Element" primary="true"/>
-<t>
-  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="3.1.13"/>.
-</t>
-</section>
-
-<section title="sourcecode Element" anchor="v3.sourcecode">
-  <iref item="V3 Extension Elements" subitem="sourcecode" primary="true"/>
-  <iref item="sourcecode V3 Extension Element" primary="true"/>
-<t>
-  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.sourcecode"/>.
-</t>
-</section>
-
-<section title="Extensions to reference Element" anchor="v3.reference">
-  <iref item="V3 Extension Elements" subitem="reference" primary="true"/>
-  <iref item="reference V3 Extension Element" primary="true"/>
-<t>
-  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.reference"/>.
-</t>
-
-<section title="quoteTitle attribute" anchor="v3.reference.quoteTitle">
-<t>
-  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.reference.attribute.quoteTitle"/>.
-</t>
-</section>
-</section>
-
 <section title="Extensions to section Element" anchor="v3.section">
   <iref item="V3 Extension Elements" subitem="section" primary="true"/>
   <iref item="section V3 Extension Element" primary="true"/>
@@ -1805,6 +2300,22 @@ Content-Length: &lt;x:length-of target="req"/>
   See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.section.attribute.removeInRFC"/>.
 </t>
 </section>
+</section>
+
+<section title="sortingcode Element" anchor="v3.sortingcode">
+  <iref item="V3 Extension Elements" subitem="sortingcode" primary="true"/>
+  <iref item="sortingcode V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="V3IMPNOTES" x:fmt="of" x:sec="4.2.7"/>.
+</t>
+</section>
+
+<section title="sourcecode Element" anchor="v3.sourcecode">
+  <iref item="V3 Extension Elements" subitem="sourcecode" primary="true"/>
+  <iref item="sourcecode V3 Extension Element" primary="true"/>
+<t>
+  See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.sourcecode"/>.
+</t>
 </section>
 
 <section title="strong Element" anchor="v3.strong">
@@ -1931,6 +2442,31 @@ Content-Length: &lt;x:length-of target="req"/>
 <t>
   See <xref target="RFC7991bis" x:fmt="of" x:rel="#element.ul"/>.
 </t>
+</section>
+
+<section title="Extensions to xref Element" anchor="v3.xref">
+  <iref item="V3 Extension Elements" subitem="xref" primary="true"/>
+  <iref item="xref V3 Extension Element" primary="true"/>
+
+<section title="relative attribute" anchor="v3.xref.relative">
+<t>
+  See <xref target="ext-rfc2629.xref"/>, "x:rel" attribute.
+</t>
+</section>
+
+<section title="section attribute" anchor="v3.xref.section">
+<t>
+  See <xref target="ext-rfc2629.xref"/>, "x:sec" attribute.
+</t>
+</section>
+
+<section title="sectionFormat attribute" anchor="v3.xref.sectionFormat">
+<t>
+  See <xref target="ext-rfc2629.xref"/>, "x:fmt" attribute, where
+  "bare" maps to "sec", "comma" maps to ",", "of" maps to "of", and "parens"
+  maps to "()".
+</t>
+</section>
 </section>
 
 <section title="xi:include Element" anchor="v3.xi-include">
@@ -2774,18 +3310,22 @@ done
   <x:source href="rfc7749.xml" basename="rfc7749"/>
 </reference>
 
-<reference anchor="RFC7991bis">
+<reference anchor="RFC7991bis-01">
   <x:source href="draft-iab-rfc7991bis-01.xml" basename="draft-iab-rfc7991bis-01"/>
 </reference>
 
+<reference anchor="RFC7991bis">
+  <x:source href="draft-iab-rfc7991bis-03.xml" basename="draft-iab-rfc7991bis-03"/>
+</reference>
+
 <reference anchor='V3IMPNOTES'>
-  <?rfc-ext internet-draft-uri="https://www.ietf.org/id/{internet-draft}.html" ?>
+  <?rfc-ext internet-draft-uri="https://www.ietf.org/archive/id/{internet-draft}.html" ?>
   <front>
     <title>Implementation notes for RFC7991, "The 'xml2rfc' Version 3 Vocabulary"</title>
     <author initials='H' surname='Levkowetz' fullname='Henrik Levkowetz'/>
-    <date month='October' day='15' year='2019' />
+    <date month='December' day='15' year='2020' />
   </front>
-  <seriesInfo name='Internet-Draft' value='draft-levkowetz-xml2rfc-v3-implementation-notes-10' />
+  <seriesInfo name='Internet-Draft' value='draft-levkowetz-xml2rfc-v3-implementation-notes-12' />
 </reference>
 
 </references>
@@ -2824,6 +3364,17 @@ namespace xi = "http://www.w3.org/2001/XInclude"
 <em># Include rfc2629bis RNC grammar</em>
 include "rfc2629.rnc" {
   
+  <em># Redefine &lt;address> to allow multiple email addresses</em>
+  address =
+    element address {
+      attlist.address,
+      postal?,
+      phone?,
+      facsimile?,
+      email*,
+      uri?
+  }
+
   <em># Redefine &lt;annotation> to allow more markup</em>
   annotation =
     element annotation {
@@ -2986,7 +3537,9 @@ include "rfc2629.rnc" {
           | <x:ref>v3_sortingcode</x:ref>
           | region
           | street)*
-        <strong>| <x:ref>v3_postalLine</x:ref></strong>+)
+          | (<x:ref>v3_postalLine</x:ref>+,
+          country?
+          ))
     }
 
   <em># Redefine &lt;postamble> to allow our extension elements</em>
@@ -3108,6 +3661,7 @@ include "rfc2629.rnc" {
        <strong>| <x:ref>v3_artset</x:ref></strong>
        <strong>| <x:ref>v3_aside</x:ref></strong>
        <strong>| <x:ref>v3_blockquote</x:ref></strong>
+       <strong>| <x:ref>v3_contact</x:ref></strong>
        <strong>| <x:ref>v3_dl</x:ref></strong>
        <strong>| <x:ref>v3_name</x:ref></strong>
        <strong>| <x:ref>v3_ol</x:ref></strong>
@@ -3147,6 +3701,8 @@ include "rfc2629.rnc" {
        | spanx
        | vspace
        <strong>| <x:ref>v3_bcp14</x:ref></strong>
+       <strong>| <x:ref>v3_br</x:ref></strong>
+       <strong>| <x:ref>v3_contact</x:ref></strong>
        <strong>| <x:ref>v3_em</x:ref></strong>
        <strong>| <x:ref>v3_relref</x:ref></strong>
        <strong>| <x:ref>v3_strong</x:ref></strong>
@@ -3164,10 +3720,31 @@ include "rfc2629.rnc" {
        <strong>| <x:ref>x_span</x:ref></strong>
        <strong>| <x:ref>x_sup</x:ref></strong>)*
     }
+
+  <em># Redefine &lt;title> to allow &lt;br></em>
+  title =
+    element title {
+      attlist.title,
+      (TEXT
+        <strong>| <x:ref>v3_br</x:ref></strong>)*
+    }
+
+  <em># Redefine &lt;xref> to allow some markup</em>
+  xref =
+    element xref {
+      attlist.xref,
+      (TEXT
+        <strong>| <x:ref>v3_em</x:ref></strong>
+        <strong>| <x:ref>v3_strong</x:ref></strong>
+        <strong>| <x:ref>v3_sub</x:ref></strong>
+        <strong>| <x:ref>v3_sup</x:ref></strong>
+        <strong>| <x:ref>v3_tt</x:ref></strong>)*
+    }
 }
 
 <em># Extend attribute set for &lt;abstract></em>
 attlist.abstract &amp;=
+  attribute anchor { xsd:ID }?, # (see <xref target="RFC7991bis" x:rel="#element.abstract.attribute.anchor"/>)
   attribute pn { text }? # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
 
 <em># Allow extension attributes on &lt;artwork> (<xref target="ext-rfc2629.artwork"/>)</em>
@@ -3201,6 +3778,10 @@ attlist.code &amp;=
 <em># Extend attribute set for &lt;country></em>
 attlist.country &amp;=
   attribute ascii { ATEXT }?
+
+<em># Extend attribute set for &lt;cref> (see <xref target="RFC7991bis" x:fmt="of" x:rel="#element.cref.attribute.display"/>)</em>
+attlist.cref &amp;=
+  attribute display { "false" | "true" }?
 
 <em># Extend attribute set for &lt;date> (see <xref target="ext-rfc2629.date"/>)</em>
 attlist.date &amp;=
@@ -3267,6 +3848,7 @@ attlist.street &amp;=
 
 <em># Extend attribute set for &lt;c> (see <xref target="ext-rfc2629.iref"/>)</em>
 attlist.t &amp;=
+  attribute indent { text }?,
   attribute keepWithNext { text }?,
   attribute keepWithPrevious { text }?,
   attribute pn { text }? # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
@@ -3278,7 +3860,7 @@ attlist.texttable &amp;=
 <em># Extend attribute set for &lt;title></em>
 attlist.title &amp;=
   attribute ascii { ATEXT }?,
-  attribute x:quotes { "true" | "false" }? # (deprecated, see <xref target="v3.reference.quoteTitle"/>))
+  attribute x:quotes { "true" | "false" }? # (deprecated, see <xref target="v3.reference.quoteTitle"/>)
 
 <em># Allow annotation attribute on &lt;uri></em>
 attlist.uri &amp;=
@@ -3290,7 +3872,11 @@ attlist.xref &amp;=
   attribute x:fmt  { "()" | "," | "of" | "number" | "sec" |
                      "none" }?,
   attribute x:rel  { ATEXT }?,
-  attribute x:sec  { ATEXT }?
+  attribute x:sec  { ATEXT }?,
+  attribute relative  { ATEXT }?,
+  attribute section  { ATEXT }?,
+  attribute sectionFormat  { "bare" | "comma" | "of" | "parens" }?
+  
 
 <em anchor="v3_artset"><iref item="artset V3 Extension Element"/><iref item="V3 Extension Elements" subitem="artset"
 /># Set of artwork (see <xref target="v3.artset"/>)</em>
@@ -3307,7 +3893,14 @@ attlist.xref &amp;=
   element aside {
     attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
-    (t
+    (artwork
+      | figure
+      | iref
+      | t
+      | <x:ref>v3_blockquote</x:ref>
+      | <x:ref>v3_dl</x:ref>
+      | <x:ref>v3_ol</x:ref>
+      | <x:ref>v3_table</x:ref>
       | <x:ref>v3_ul</x:ref>)*
   }
 
@@ -3357,12 +3950,33 @@ attlist.xref &amp;=
     section+
   }
 
+<em anchor="v3_br"><iref item="em V3 Extension Element"/><iref item="V3 Extension Elements" subitem="br"
+/># Forced Line Break (see <xref target="v3.br"/>)</em>
+<x:ref>v3_br</x:ref> =
+  element br {
+    empty
+  }
+
 <em anchor="v3_cityarea"><iref item="cityarea V3 Extension Element"/><iref item="V3 Extension Elements" subitem="cityarea"
 /># (see <xref target="v3.cityarea"/>)</em>
 <x:ref>v3_cityarea</x:ref> =
   element cityarea {
     attribute ascii { ATEXT }?,
     TEXT
+  }
+
+<em anchor="v3_contact"><iref item="contact V3 Extension Element"/><iref item="V3 Extension Elements" subitem="contact"
+/># (see <xref target="v3.contact"/>)</em>
+<x:ref>v3_contact</x:ref> =
+  element contact {
+    attribute initials { text }?,
+    attribute asciiInitials { text }?,
+    attribute surname { text }?,
+    attribute asciiSurname { text }?,
+    attribute fullname { text }?,
+    attribute asciiFullname { text }?,
+    organization?,
+    address?
   }
 
 <em anchor="v3_displayreference"><iref item="displayreference V3 Extension Element"/><iref item="V3 Extension Elements" subitem="displayreference"
@@ -3377,11 +3991,13 @@ attlist.xref &amp;=
 /># Definition List Description Element (see <xref target="v3.dd"/>)</em>
 <x:ref>v3_dd</x:ref> =
   element dd {
+    attribute anchor { xsd:ID }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     ((<x:ref>v3_artset</x:ref>
       | artwork
       | figure
       | t
+      | <x:ref>v3_aside</x:ref> 
       | <x:ref>v3_dl</x:ref> 
       | <x:ref>v3_ol</x:ref> 
       | <x:ref>v3_table</x:ref> 
@@ -3392,10 +4008,15 @@ attlist.xref &amp;=
       | eref
       | iref
       | xref
+      | <x:ref>v3_bcp14</x:ref> 
+      | <x:ref>v3_br</x:ref> 
       | <x:ref>v3_em</x:ref>
+      | <x:ref>v3_sub</x:ref>
+      | <x:ref>v3_sup</x:ref>
       | <x:ref>v3_tt</x:ref>
       | <x:ref>v3_strong</x:ref>
-      | <x:ref>v3_u</x:ref>)*
+      | <x:ref>v3_u</x:ref>
+      | <x:ref>x_ref</x:ref>)* 
     )
   }
 
@@ -3403,6 +4024,7 @@ attlist.xref &amp;=
 /># Definition List (see <xref target="v3.dl"/>)</em>
 <x:ref>v3_dl</x:ref> =
   element dl {
+    attribute anchor { xsd:ID }?, # (see <xref target="RFC7991bis" x:rel="#element.dl.attribute.anchor"/>)
     attribute indent { text }?,
     attribute newline { "false" | "true" }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
@@ -3430,7 +4052,10 @@ attlist.xref &amp;=
 /># Emphasized Text (see <xref target="v3.em"/>)</em>
 <x:ref>v3_em</x:ref> =
   element em {
+    attribute anchor { xsd:ID }?,
     (TEXT
+      | eref
+      | iref
       | xref
       | <x:ref>v3_strong</x:ref>
       | <x:ref>x_ref</x:ref>)*
@@ -3474,6 +4099,7 @@ attlist.xref &amp;=
       | <x:ref>v3_sup</x:ref>
       | <x:ref>v3_tt</x:ref>
       | <x:ref>v3_u</x:ref>
+      | <x:ref>x_dfn</x:ref>
       | <x:ref>x_ref</x:ref>)*
     )
   }
@@ -3493,7 +4119,9 @@ attlist.xref &amp;=
     attribute slugifiedName { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     (TEXT
       | cref
+      | <x:ref>v3_br</x:ref>
       | <x:ref>v3_em</x:ref>
+      | <x:ref>v3_sup</x:ref>
       | <x:ref>v3_tt</x:ref>
       | xref)*
   }
@@ -3503,6 +4131,7 @@ attlist.xref &amp;=
 <x:ref>v3_ol</x:ref> =
   element ol {
     attribute anchor { xsd:ID }?,
+    attribute indent { text }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     attribute start { TEXT }?,
     attribute group { TEXT }?,
@@ -3572,9 +4201,13 @@ attlist.xref &amp;=
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     attribute markers { text }?, #(see <xref target="V3IMPNOTES" x:sec="3.1.22"/>)
     attribute name { text }?,
+    attribute src { text }?,
     attribute type { text }?,
     attribute x:lang { "" }?,
-    TEXT
+    (TEXT
+      | iref
+      | xref
+      | <x:ref>x_ref</x:ref>)*
   }
 
 <em anchor="v3_strong"><iref item="strong V3 Extension Element"/><iref item="V3 Extension Elements" subitem="strong"
@@ -3592,14 +4225,16 @@ attlist.xref &amp;=
 /># Subscript (see <xref target="v3.sub"/>)</em>
 <x:ref>v3_sub</x:ref> =
   element sub {
-    (TEXT)*
+    (TEXT
+      | <x:ref>v3_sup</x:ref>)*
   }
 
 <em anchor="v3_sup"><iref item="sup V3 Extension Element"/><iref item="V3 Extension Elements" subitem="sup"
 /># Superscript (see <xref target="v3.sup"/>)</em>
 <x:ref>v3_sup</x:ref> =
   element sup {
-    (TEXT)*
+    (TEXT
+      | <x:ref>v3_sub</x:ref>)*
   }
 
 <em anchor="v3_table"><iref item="table V3 Extension Element"/><iref item="V3 Extension Elements" subitem="table"
@@ -3612,7 +4247,7 @@ attlist.xref &amp;=
     <x:ref>v3_name</x:ref>?,
     iref*,
     <x:ref>v3_thead</x:ref>?,
-    <x:ref>v3_tbody</x:ref>,
+    <x:ref>v3_tbody</x:ref>+,
     <x:ref>v3_tfoot</x:ref>?
   }
 
@@ -3642,6 +4277,7 @@ attlist.xref &amp;=
       )+
       | (TEXT
          | <x:ref>v3_bcp14</x:ref>
+         | <x:ref>v3_br</x:ref>
          | cref
          | <x:ref>v3_em</x:ref>
          | eref
@@ -3735,7 +4371,9 @@ attlist.xref &amp;=
 <x:ref>v3_ul</x:ref> =
   element ul {
     attribute anchor { xsd:ID }?,
-    attribute empty { TEXT }?,
+    attribute bare { "false" | "true" }?, # but see <eref target="https://trac.tools.ietf.org/tools/xml2rfc/trac/ticket/547"/>
+    attribute indent { text }?,
+    attribute empty { "false" | "true" }?,
     attribute pn { text }?, # (see <xref target="RFC7991bis" x:rel="#anchorsandids"/>)
     <x:ref>v3_li</x:ref>+
   }
@@ -3895,6 +4533,13 @@ attlist.xref &amp;=
     TEXT
   }
 
+<em anchor="x_has"><iref item="has Extension Element"/><iref item="Extension Elements" subitem="has"
+/># declaration of anchor in external reference<!-- (see <xref target="ext.element.sup"/>)--></em>
+<x:ref>x_has</x:ref> =
+  element x:has {
+    attribute anchor { xsd:ID }?
+  }
+
 <em anchor="x_highlight"><iref item="highlight Extension Element"/><iref item="Extension Elements" subitem="highlight"
 /># Heading (see <xref target="ext.element.highlight"/>)</em>
 <x:ref>x_highlight</x:ref> =
@@ -3975,7 +4620,8 @@ attlist.xref &amp;=
   element x:source {
     attribute basename { ATEXT }?,
     attribute href { URI },
-    <x:ref>x_defines</x:ref>*
+    <x:ref>x_defines</x:ref>*,
+    <x:ref>x_has</x:ref>*
   }
 
 <em anchor="x_sup"><iref item="sup Extension Element"/><iref item="Extension Elements" subitem="sup"
