@@ -1,7 +1,7 @@
 <!--
     Parse RFC Editor Errata pages into XML
 
-    Copyright (c) 2017-2021, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2017-2022, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -79,8 +79,8 @@
           <xsl:if test="@reported!=$j/xp:string[@key='submit_date']">
             <xsl:comment>@reported does not match JSON: <xsl:value-of select="$j/xp:string[@key='submit_date']"/></xsl:comment>
           </xsl:if>
-          <xsl:if test="rawsection!=$j/xp:*[@key='section']">
-            <xsl:comment>rawsection does not match JSON: <xsl:value-of select="$j/xp:*[@key='section']"/></xsl:comment>
+          <xsl:if test="raw-section!=$j/xp:*[@key='section']">
+            <xsl:comment>raw-section does not match JSON: <xsl:value-of select="$j/xp:*[@key='section']"/></xsl:comment>
           </xsl:if>
         </xsl:if>
       </xsl:copy>
@@ -115,7 +115,7 @@
   <xsl:param name="s"/>
   <xsl:variable name="raw-reference">
     <xsl:variable name="t" select="normalize-space(translate($s,'&#13;&#10;&#9;','   '))"/>
-    <xsl:analyze-string select="$t" regex="&lt;p>([iI]n )?([Ss]ection|[Aa]ppendix)( [Aa]ppendix)? ((.*?))(, it )?(says|states):( )?&lt;/p> &lt;pre class=.rfctext.">
+    <xsl:analyze-string select="$t" regex="&lt;p>([iI]n )?([Ss]ection|[Aa]ppendix)( [Aa]ppendix)? ((.*?))(, it )?(says|states)?:( )?&lt;/p> &lt;pre class=.rfctext.">
       <xsl:matching-substring>
         <xsl:value-of select="normalize-space(regex-group(4))"/>
       </xsl:matching-substring>
