@@ -4037,7 +4037,32 @@
   <xsl:variable name="t" select="@to"/>
   <xsl:if test="//reference/@anchor=$t or count(//displayreference[@to=$t])!=1">
     <xsl:call-template name="error">
-      <xsl:with-param name="msg">displayreference <xsl:value-of select="$t"/> will create non-unique reference name.</xsl:with-param>
+      <xsl:with-param name="msg">displayreference '<xsl:value-of select="$t"/>' will create non-unique reference name.</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:variable name="extra">-_.</xsl:variable>
+  <xsl:variable name="allowed" select="concat($alnum,$extra)"/>
+  <xsl:variable name="allowedwithwarn" select="concat($alnum,$extra,'/')"/>
+  <xsl:variable name="terr" select="translate($t,$allowed,'')"/>
+  <xsl:variable name="terrwarn" select="translate($t,$allowedwithwarn,'')"/>
+  <xsl:variable name="tstart" select="translate(substring($t,1,1),$alnum,'')"/>
+  <xsl:if test="$terr!=''">
+    <xsl:choose>
+      <xsl:when test="$terrwarn=''">
+        <xsl:call-template name="warning">
+          <xsl:with-param name="msg">displayreference '<xsl:value-of select="$t"/>' contains illegal characters: '<xsl:value-of select="$terr"/>'.</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="error">
+          <xsl:with-param name="msg">displayreference '<xsl:value-of select="$t"/>' contains illegal characters: '<xsl:value-of select="$terr"/>'.</xsl:with-param>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
+  <xsl:if test="$tstart!=''">
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg">displayreference '<xsl:value-of select="$t"/>' starts with characters not allowed as start character: '<xsl:value-of select="$tstart"/>'</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
 </xsl:template>
@@ -12112,11 +12137,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1445 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1445 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1446 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1446 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/07/02 18:16:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/07/02 18:16:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2022/09/01 07:05:42 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/09/01 07:05:42 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
