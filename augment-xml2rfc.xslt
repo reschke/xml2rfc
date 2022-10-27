@@ -371,7 +371,7 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="line-folding"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="sourcecode" mode="line-folding">
+<xsl:template match="artwork|sourcecode" mode="line-folding">
   <xsl:variable name="preamble">&#10;NOTE: '\' line wrapping per RFC 8792&#10;&#10;</xsl:variable>
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="line-folding"/>
