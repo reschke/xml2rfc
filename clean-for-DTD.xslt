@@ -1360,6 +1360,9 @@
       <xsl:value-of select="@x:indent-with"/>
       <xsl:text>&lt;CODE BEGINS&gt;&#10;</xsl:text>
     </xsl:if>
+    <xsl:if test="@x:line-folding='\'">
+      <xsl:text>NOTE: '\' line wrapping per RFC 8792&#10;</xsl:text>
+    </xsl:if>
     <xsl:if test="starts-with(.,'&#10;')">
       <xsl:text>&#10;</xsl:text>
       <xsl:value-of select="@x:indent-with"/>
@@ -2425,6 +2428,7 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template match="artwork/@x:line-folding" mode="cleanup"/>
 <xsl:template match="sourcecode/@x:line-folding" mode="cleanup"/>
 
 <xsl:template match="sourcecode" mode="cleanup">
