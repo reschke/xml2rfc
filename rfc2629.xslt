@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629/7991 XML format to HTML
 
-    Copyright (c) 2006-2022, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2023, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1392,7 +1392,7 @@
   </xsl:call-template>
 </xsl:variable>
 
-<xsl:variable name="is-submitted-draft" select="number($draft-seq)=$draft-seq"/>
+<xsl:variable name="is-submitted-draft" select="$draft-seq!='' and translate($draft-seq,$digits,'')=''"/>
 
 <xsl:variable name="is-rfc" select="$src/rfc/@number"/>
 
@@ -5207,7 +5207,7 @@
       <xsl:if test="$xml2rfc-ext-insert-metadata='yes'">
         <xsl:choose>
           <xsl:when test="$is-rfc">getMeta("<xsl:value-of select="$rfcno"/>","rfc.meta");</xsl:when>
-          <xsl:when test="/rfc/@docName and $is-submitted-draft">getMeta("<xsl:value-of select="$draft-basename"/>","<xsl:value-of select="$draft-seq"/>","rfc.meta");</xsl:when>
+          <xsl:when test="$is-submitted-draft">getMeta("<xsl:value-of select="$draft-basename"/>","<xsl:value-of select="$draft-seq"/>","rfc.meta");</xsl:when>
           <xsl:otherwise/>
         </xsl:choose>
       </xsl:if>
@@ -12137,11 +12137,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1490 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1490 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1491 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1491 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2023/01/10 15:55:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/01/10 15:55:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2023/02/02 18:58:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/02/02 18:58:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
