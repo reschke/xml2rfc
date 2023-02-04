@@ -1,7 +1,7 @@
 <!--
     Experimental implementation of xml2rfc v3 preptool
 
-    Copyright (c) 2016-2021, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2016-2023, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@
                exclude-result-prefixes="f pi svg xlink xs"
 >
 
-<xsl:import href="rfc2629.xslt" />
+<xsl:import href="rfcxml.xslt" />
 
 <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" doctype-system=""/>
 
