@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629/7991 XML format to HTML
 
-    Copyright (c) 2006-2022, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2023, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1391,7 +1391,7 @@
   </xsl:call-template>
 </xsl:variable>
 
-<xsl:variable name="is-submitted-draft" select="number($draft-seq)=$draft-seq"/>
+<xsl:variable name="is-submitted-draft" select="$draft-seq!='' and translate($draft-seq,$digits,'')=''"/>
 
 <xsl:variable name="is-rfc" select="$src/rfc/@number"/>
 
@@ -3797,6 +3797,7 @@
             <xsl:call-template name="error">
               <xsl:with-param name="msg" select="concat('cannot compute anchor for ',$sec,' of ',$bib/@anchor)"/>
               <xsl:with-param name="inline" select="'no'"/>
+              <xsl:with-param name="node" select="$ref"/>
             </xsl:call-template>
           </xsl:otherwise>
         </xsl:choose>
@@ -3938,6 +3939,7 @@
       <xsl:if test="not($nodes)">
         <xsl:call-template name="error">
           <xsl:with-param name="msg">Anchor '<xsl:value-of select="$anch"/>' in <xsl:value-of select="$bib/@anchor"/> not found in source file '<xsl:value-of select="$bib/x:source/@href"/>'.</xsl:with-param>
+          <xsl:with-param name="node" select="$ref"/>
         </xsl:call-template>
       </xsl:if>
       <xsl:variable name="number">
@@ -5206,7 +5208,7 @@
       <xsl:if test="$xml2rfc-ext-insert-metadata='yes'">
         <xsl:choose>
           <xsl:when test="$is-rfc">getMeta("<xsl:value-of select="$rfcno"/>","rfc.meta");</xsl:when>
-          <xsl:when test="/rfc/@docName and $is-submitted-draft">getMeta("<xsl:value-of select="$draft-basename"/>","<xsl:value-of select="$draft-seq"/>","rfc.meta");</xsl:when>
+          <xsl:when test="$is-submitted-draft">getMeta("<xsl:value-of select="$draft-basename"/>","<xsl:value-of select="$draft-seq"/>","rfc.meta");</xsl:when>
           <xsl:otherwise/>
         </xsl:choose>
       </xsl:if>
@@ -5831,6 +5833,7 @@
           <xsl:call-template name="error">
             <xsl:with-param name="inline">no</xsl:with-param>
             <xsl:with-param name="msg">xref to abstract with format='counter' not allowed</xsl:with-param>
+            <xsl:with-param name="node" select="$from"/>
           </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
@@ -6236,6 +6239,7 @@
           <xsl:text>?</xsl:text>
           <xsl:call-template name="warning">
             <xsl:with-param name="msg" select="concat('No paragraph number for link target ',$from/@target)"/>
+            <xsl:with-param name="node" select="$from"/>
           </xsl:call-template>
         </xsl:when>
         <xsl:otherwise><xsl:value-of select="$pn"/></xsl:otherwise>
@@ -6281,6 +6285,7 @@
           <xsl:call-template name="error">
             <xsl:with-param name="inline">no</xsl:with-param>
             <xsl:with-param name="msg">xref to cref with format='counter' not allowed</xsl:with-param>
+            <xsl:with-param name="node" select="$from"/>
           </xsl:call-template>
           <xsl:value-of select="$name" />
         </xsl:when>
@@ -6484,6 +6489,7 @@
         <xsl:if test="not($nodes)">
           <xsl:call-template name="error">
             <xsl:with-param name="msg">Anchor '<xsl:value-of select="substring-after($from//@x:rel,'#')"/>' not found in <xsl:value-of select="$to/x:source/@href"/>.</xsl:with-param>
+            <xsl:with-param name="node" select="$from"/>
           </xsl:call-template>
         </xsl:if>
         <xsl:for-each select="$nodes">
@@ -12136,11 +12142,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1446 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1446 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1452 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1452 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2022/09/01 07:05:42 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2022/09/01 07:05:42 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2023/02/04 18:03:06 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/02/04 18:03:06 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
