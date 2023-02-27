@@ -47,6 +47,9 @@
 <!-- position to extract -->
 <xsl:param name="index" />
 
+<!-- Strip leading LF -->
+<xsl:param name="strip-leading-lf" />
+
 <xsl:template match="/" priority="9">
   
   <xsl:choose>
@@ -114,16 +117,26 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+  <xsl:variable name="out1">
+    <xsl:choose>
+      <xsl:when test="$strip-leading-lf='true' and starts-with($out0,'&#10;')">
+        <xsl:value-of select="substring($out0, 2)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$out0"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:variable name="out2">
     <xsl:choose>
       <xsl:when test="@x:line-folding='\'">
         <xsl:call-template name="unfold-content">
           <xsl:with-param name="seq" select="@x:line-folding"/>
-          <xsl:with-param name="text" select="$out0"/>
+          <xsl:with-param name="text" select="$out1"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="$out0"/>
+        <xsl:value-of select="$out1"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
