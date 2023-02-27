@@ -40,7 +40,12 @@
 
 <xsl:param name="name" />
 <xsl:param name="except-name" />
+
+<!-- type attribute to match -->
 <xsl:param name="type" />
+
+<!-- position to extract -->
+<xsl:param name="index" />
 
 <xsl:template match="/" priority="9">
   
@@ -66,15 +71,17 @@
       <xsl:choose>
         <xsl:when test="$artwork">
           <xsl:for-each select="$artwork">
-            <xsl:choose>
-              <xsl:when test="$except-name!='' and @name=$except-name">
-                <!-- do not emit this one -->
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="@x:extraction-note"/>
-                <xsl:apply-templates select="." mode="cleanup"/>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:if test="$index='' or position()=$index">
+              <xsl:choose>
+                <xsl:when test="$except-name!='' and @name=$except-name">
+                  <!-- do not emit this one -->
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="@x:extraction-note"/>
+                  <xsl:apply-templates select="." mode="cleanup"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:if>
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
