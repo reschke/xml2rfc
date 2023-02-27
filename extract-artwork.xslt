@@ -56,8 +56,7 @@
       <xsl:choose>
         <xsl:when test="$artwork">
           <xsl:for-each select="$artwork">
-            <xsl:value-of select="@x:extraction-note"/>
-            <xsl:apply-templates select="." mode="cleanup"/>
+            <xsl:call-template name="process-artwork"/>
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
@@ -77,8 +76,7 @@
                   <!-- do not emit this one -->
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:value-of select="@x:extraction-note"/>
-                  <xsl:apply-templates select="." mode="cleanup"/>
+                  <xsl:call-template name="process-artwork"/>
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:if>
@@ -93,9 +91,75 @@
       <xsl:message>Please specify either name or type parameter.</xsl:message>
     </xsl:otherwise>
   </xsl:choose>
-  
-
 </xsl:template>
 
+<xsl:template name="process-artwork">
+  <xsl:value-of select="@x:extraction-note"/>
+  <xsl:variable name="c0">
+    <xsl:apply-templates select="." mode="cleanup"/>
+  </xsl:variable>
+  <xsl:variable name="c" select="translate($c0,'&#13;','')"/>
+  <xsl:variable name="note-bs">NOTE: '\' line wrapping per RFC 8792&#10;&#10;</xsl:variable>
+  <xsl:variable name="note-bsbs">NOTE: '\\' line wrapping per RFC 8792&#10;&#10;</xsl:variable>
+  <xsl:variable name="out0">
+    <xsl:choose>
+      <xsl:when test="@x:line-folding='\' and starts-with($c,$note-bs)">
+        <xsl:value-of select="substring-after($c,$note-bs)"/>
+      </xsl:when>
+      <xsl:when test="@x:line-folding='\\' and starts-with($c,$note-bsbs)">
+        <xsl:value-of select="substring-after($c,$note-bsbs)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$c"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="out2">
+    <xsl:choose>
+      <xsl:when test="@x:line-folding='\'">
+        <xsl:call-template name="unfold-content">
+          <xsl:with-param name="seq" select="@x:line-folding"/>
+          <xsl:with-param name="text" select="$out0"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$out0"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:value-of select="$out2"/>
+</xsl:template>
+
+<xsl:template name="unfold-content">
+  <xsl:param name="seq"/>
+  <xsl:param name="text"/>
+  <xsl:variable name="line-end" select="concat($seq,'&#10;')"/>
+  <xsl:choose>
+    <xsl:when test="contains($text,$line-end)">
+      <xsl:value-of select="substring-before($text,$line-end)"/>
+      <xsl:call-template name="unfold-content">
+        <xsl:with-param name="seq" select="$seq"/>
+        <xsl:with-param name="text">
+          <xsl:call-template name="eat-leading-sp">
+            <xsl:with-param name="text" select="substring-after($text,$line-end)"/>
+          </xsl:call-template>
+        </xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="eat-leading-sp">
+  <xsl:param name="text"/>
+  <xsl:choose>
+    <xsl:when test="starts-with($text,' ')">
+      <xsl:call-template name="eat-leading-sp">
+        <xsl:with-param name="text" select="substring($text,2)"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 </xsl:transform>
