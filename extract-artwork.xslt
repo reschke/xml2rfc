@@ -1,7 +1,7 @@
 <!--
     Extract named artwork or sourcecode elements.
 
-    Copyright (c) 2006-2018, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2023, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:message>Artwork element named '<xsl:value-of select="$name"/>' not found.</xsl:message>
+          <xsl:message>Artwork or sourcecode element named '<xsl:value-of select="$name"/>' not found.</xsl:message>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
@@ -78,7 +78,7 @@
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:message>Artwork element typed '<xsl:value-of select="$type"/>' not found.</xsl:message>
+          <xsl:message>Artwork or sourcecode element typed '<xsl:value-of select="$type"/>' not found.</xsl:message>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
