@@ -1,5 +1,6 @@
 <!--
-    XSLT transformation from RFC2629/7991 XML format to HTML
+    XSLT transformation for the XML format defined in RFCs 2629, 7749 and 7991
+    to HTML
 
     Copyright (c) 2006-2023, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
@@ -1990,15 +1991,36 @@
       <xsl:call-template name="text-in-artwork">
         <xsl:with-param name="content" select="substring-before($c,'\&#10;')"/>
       </xsl:call-template>
-      <small title="line folding">\</small>
-      <xsl:text>&#10;</xsl:text>
+      <xsl:variable name="remainder" select="substring-after($c,'\&#10;')"/>
+      <xsl:variable name="ls">
+        <xsl:call-template name="leading-SPs">
+          <xsl:with-param name="content" select="$remainder"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <span class="folding" title="line folding">
+        <xsl:text>\&#10;</xsl:text>
+        <xsl:value-of select="$ls"/>
+      </span>
       <xsl:call-template name="text-in-artwork">
-        <xsl:with-param name="content" select="substring-after($c,'\&#10;')"/>
+        <xsl:with-param name="content" select="substring-after($remainder,$ls)"/>
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="$c"/>
     </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="leading-SPs">
+  <xsl:param name="content" select="."/>
+  <xsl:choose>
+    <xsl:when test="starts-with($content,' ')">
+      <xsl:text> </xsl:text>
+      <xsl:call-template name="leading-SPs">
+        <xsl:with-param name="content" select="substring($content, 2)"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise/>
   </xsl:choose>
 </xsl:template>
 
@@ -8396,7 +8418,11 @@ pre.drawing {
   border-width: 1px;
   background-color: var(--col-bg-pre1);
   padding: 2em;
-}<xsl:if test="//x:q">
+}<xsl:if test="//@x:line-folding">
+span.folding {
+  text-decoration: dashed underline overline;
+}
+</xsl:if><xsl:if test="//x:q">
 q {
   font-style: italic;
 }</xsl:if>
@@ -12145,11 +12171,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1502 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1502 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1503 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1503 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2023/02/07 09:49:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/02/07 09:49:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2023/03/02 05:36:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/03/02 05:36:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
