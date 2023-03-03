@@ -1,5 +1,6 @@
 <!--
-    XSLT transformation from RFC2629/7991 XML format to HTML
+    XSLT transformation for the XML format defined in RFCs 2629, 7749 and 7991
+    to HTML
 
     Copyright (c) 2006-2023, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
@@ -1975,6 +1976,8 @@
 <xsl:template name="text-in-artwork">
   <xsl:param name="content" select="."/>
   <xsl:variable name="c" select="translate($content,'&#13;','')"/>
+  
+  <xsl:variable name="folding" select="ancestor-or-self::*/@x:line-folding"/>
   <xsl:choose>
     <xsl:when test="contains($c,'&#9;')">
       <xsl:call-template name="text-in-artwork">
@@ -1985,19 +1988,58 @@
         <xsl:with-param name="content" select="substring-after($c,'&#9;')"/>
       </xsl:call-template>
     </xsl:when>
-    <xsl:when test="ancestor-or-self::*[@x:line-folding='\'] and contains($c,'\&#10;')">
+    <xsl:when test="($folding='\' or $folding='\\') and contains($c,'\&#10;')">
       <xsl:call-template name="text-in-artwork">
         <xsl:with-param name="content" select="substring-before($c,'\&#10;')"/>
       </xsl:call-template>
-      <small title="line folding">\</small>
-      <xsl:text>&#10;</xsl:text>
+      <xsl:variable name="remainder" select="substring-after($c,'\&#10;')"/>
+      <xsl:variable name="ls">
+        <xsl:call-template name="leading-SPs">
+          <xsl:with-param name="content" select="$remainder"/>
+          <xsl:with-param name="eat-trailing-slash" select="$folding='\\'"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:variable name="bad" select="$folding='\\' and not(substring($ls,string-length($ls))='\')"/>
+      <xsl:variable name="title">
+        <xsl:value-of select="concat('RFC 8792 ',$folding,' Line Wrapping')"/>
+        <xsl:if test="$bad"> (but trailing '\' missing)</xsl:if>
+      </xsl:variable>
+      <span class="folding" title="{$title}">
+        <xsl:if test="$bad"><xsl:attribute name="style">color: red;</xsl:attribute></xsl:if>
+        <xsl:text>\&#10;</xsl:text>
+        <xsl:value-of select="$ls"/>
+      </span>
       <xsl:call-template name="text-in-artwork">
-        <xsl:with-param name="content" select="substring-after($c,'\&#10;')"/>
+        <xsl:with-param name="content" select="substring-after($remainder,$ls)"/>
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="$c"/>
     </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="leading-SPs">
+  <xsl:param name="content" select="."/>
+  <xsl:param name="eat-trailing-slash"/>
+  <xsl:choose>
+    <xsl:when test="starts-with($content,' ')">
+      <xsl:text> </xsl:text>
+      <xsl:call-template name="leading-SPs">
+        <xsl:with-param name="content" select="substring($content, 2)"/>
+        <xsl:with-param name="eat-trailing-slash" select="$eat-trailing-slash"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="$eat-trailing-slash and starts-with($content,'\')">
+      <xsl:text>\</xsl:text>
+    </xsl:when>
+    <xsl:when test="$eat-trailing-slash and not(starts-with($content,'\'))">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg">RFC 8792 line folding mode '\\' but no trailing '\' found</xsl:with-param>
+        <xsl:with-param name="inline" select="'no'"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise/>
   </xsl:choose>
 </xsl:template>
 
@@ -8395,7 +8437,11 @@ pre.drawing {
   border-width: 1px;
   background-color: var(--col-bg-pre1);
   padding: 2em;
-}<xsl:if test="//x:q">
+}<xsl:if test="//@x:line-folding">
+span.folding {
+  text-decoration: dashed underline overline;
+}
+</xsl:if><xsl:if test="//x:q">
 q {
   font-style: italic;
 }</xsl:if>
@@ -12144,11 +12190,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1454 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1454 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1457 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1457 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2023/02/06 09:32:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/02/06 09:32:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2023/03/02 14:00:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/03/02 14:00:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
