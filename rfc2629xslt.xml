@@ -2894,7 +2894,7 @@ expand() {
   # remember whether we started with CRLF (assumes that we have dos2unix)
   CRLF=$(dos2unix -ic "$1" 2>/dev/null | tr -d ' ')
 
-  cat "$1" | awk '
+  cat "$1" | tr -d "\015" | awk '
 
   function filecontents(filename) {
     while (getline &lt; filename > 0) {
@@ -2949,7 +2949,7 @@ expand() {
 
   # end include (escape-for-XML mode)
   /^&lt;\?ENDESCAPEDINC .* \?>/ {
-    if ("" == includefile) {
+    if ("" == includeescapedfile) {
       printf ("unexpected ENDESCAPEDINC, did not see BEGINESCAPEDINC for %s\n",
         $2) >> "/dev/stderr"
     } else if ($2 != includeescapedfile) {
