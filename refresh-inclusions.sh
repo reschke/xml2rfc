@@ -76,7 +76,10 @@ expand() {
 
   # end include (verbatim mode)
   /^<\?ENDINC .* \?>/ {
-    if ($2 != includefile) {
+    if ("" == includefile) {
+      printf ("unexpected ENDINC, did not see BEGININC for %s\n",
+        $2) >> "/dev/stderr"
+    } else if ($2 != includefile) {
       printf ("unexpected ENDINC, got %s but expected %s\n", $2,
         includefile) >> "/dev/stderr"
     }
@@ -85,7 +88,10 @@ expand() {
 
   # end include (escape-for-XML mode)
   /^<\?ENDESCAPEDINC .* \?>/ {
-    if ($2 != includeescapedfile) {
+    if ("" == includefile) {
+      printf ("unexpected ENDESCAPEDINC, did not see BEGINESCAPEDINC for %s\n",
+        $2) >> "/dev/stderr"
+    } else if ($2 != includeescapedfile) {
       printf ("unexpected ENDESCAPEDINC, got %s but expected %s\n", $2,
         includeescapedfile) >> "/dev/stderr"
     }
