@@ -2861,13 +2861,13 @@ folder.
 <?BEGINESCAPEDINC refresh-inclusions.sh ?>
 #!/bin/sh
 # Refresh file inclusions based on XML processing instructions
-# 
-# Copyright (c) 2006-2016, Julian Reschke (julian.reschke@greenbytes.de)
+#
+# Copyright (c) 2006-2023, Julian Reschke (julian.reschke@greenbytes.de)
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
+#
 # * Redistributions of source code must retain the above copyright notice,
 #   this list of conditions and the following disclaimer.
 # * Redistributions in binary form must reproduce the above copyright notice,
@@ -2876,7 +2876,7 @@ folder.
 # * Neither the name of Julian Reschke nor the names of its contributors
 #   may be used to endorse or promote products derived from this software
 #   without specific prior written permission.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -2893,8 +2893,8 @@ expand() {
 
   # remember whether we started with CRLF (assumes that we have dos2unix)
   CRLF=$(dos2unix -ic "$1" 2>/dev/null | tr -d ' ')
-  
-  cat "$1" | awk ' 
+
+  cat "$1" | awk '
 
   function filecontents(filename) {
     while (getline &lt; filename > 0) {
@@ -2907,22 +2907,22 @@ expand() {
     includefile = "";
     includeescapedfile = "";
   }
-  
+
   # start include (verbatim mode)
   /&lt;\?BEGININC .* \?>$/ {
     print
-    keyword = "&lt;?BEGININC " 
+    keyword = "&lt;?BEGININC "
     extract = match($0, /&lt;\?BEGININC .* \?>$/)
     includefile = substr($0, RSTART + length(keyword),
                     RLENGTH - 3 - length(keyword))
     output = filecontents(includefile)
     printf("%s", output)
   }
-  
+
   # start include (escape-for-XML mode)
   /&lt;\?BEGINESCAPEDINC .* \?>$/ {
     print
-    keyword = "&lt;?BEGINESCAPEDINC " 
+    keyword = "&lt;?BEGINESCAPEDINC "
     extract = match($0, /&lt;\?BEGINESCAPEDINC .* \?>$/)
     includeescapedfile = substr($0, RSTART + length(keyword),
                            RLENGTH - 3 - length(keyword))
@@ -2943,7 +2943,7 @@ expand() {
     }
     includefile = "";
   }
-  
+
   # end include (escape-for-XML mode)
   /^&lt;\?ENDESCAPEDINC .* \?>/ {
     if ($2 != includeescapedfile) {
@@ -2959,7 +2959,7 @@ expand() {
       print
     }
   }
-  
+
   END {
     if (includefile != "") {
       printf ("missing ENDINC for %s\n",
@@ -2970,21 +2970,21 @@ expand() {
         includeescapedfile) >> "/dev/stderr"
     }
   }
-  
+
   ' > $$
-  
+
   # restore CRLF if needed
   if [ -n "$CRLF" ]; then
     FNN=$(echo "$1" | tr -d ' ')
     [ "$FNN" = "$CRLF" ] &amp;&amp; unix2dos -q $$
   fi
-  
+
   # check for changes
   cmp -s "$1" $$ || (
     cp -v "$1" "$1".ri.bak
     cp $$ "$1"
     echo "$1" updated )
-  
+
   rm -f $$
 }
 
