@@ -1466,7 +1466,7 @@
 <xsl:variable name="submissionType">
   <xsl:choose>
     <xsl:when test="/rfc/@submissionType='IETF' or not(/rfc/@submissionType) or /rfc/submissionType=''">IETF</xsl:when>
-    <xsl:when test="/rfc/@submissionType='IAB' or /rfc/@submissionType='IRTF' or /rfc/@submissionType='independent'">
+    <xsl:when test="/rfc/@submissionType='IAB' or /rfc/@submissionType='IRTF' or /rfc/@submissionType='independent' or /rfc/@submissionType='editorial'">
       <xsl:value-of select="/rfc/@submissionType"/>
     </xsl:when>
     <xsl:otherwise>
@@ -12190,11 +12190,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1457 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1457 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1458 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1458 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2023/03/02 14:00:20 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/03/02 14:00:20 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2023/03/08 10:58:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/03/08 10:58:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
