@@ -12191,11 +12191,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1511 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1511 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1512 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1512 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2023/04/20 10:22:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/04/20 10:22:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2023/05/01 07:40:54 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/05/01 07:40:54 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
