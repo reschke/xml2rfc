@@ -772,7 +772,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>XSLT parameter name</dt>
       <dd>xml2rfc-ext-rfc-reference-base-uri</dd>
       <dt>default</dt>
-      <dd>"https://www.rfc-editor.org/refs/bibxml/"</dd>
+      <dd>"https://bib.ietf.org/public/rfc/bibxml/"</dd>
     </dl>
     <t>
       Base URI for RFC referennces included using the "include" processing instruction.

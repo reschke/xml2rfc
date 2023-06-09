@@ -1035,8 +1035,8 @@
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
     <xsl:with-param name="attr" select="'rfc-reference-base-uri'"/>
-    <!-- previously 'https://xml2rfc.tools.ietf.org/public/rfc/bibxml/' -->
-    <xsl:with-param name="default">https://www.rfc-editor.org/refs/bibxml/</xsl:with-param>
+    <!-- previously 'https://xml2rfc.tools.ietf.org/public/rfc/bibxml/', then 'https://www.rfc-editor.org/refs/bibxml/' -->
+    <xsl:with-param name="default">https://bib.ietf.org/public/rfc/bibxml/</xsl:with-param>
   </xsl:call-template>
 </xsl:param>
 
@@ -12191,11 +12191,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1518 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1518 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1519 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1519 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2023/06/06 09:20:49 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/06/06 09:20:49 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2023/06/09 13:20:24 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/06/09 13:20:24 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
