@@ -11361,7 +11361,7 @@ dd, li, p {
 
   <!-- check ABNF syntax references -->
   <xsl:if test="//artwork[@type='abnf2616' or @type='abnf7230' or @type='abnf9110']|//sourcecode[@type='abnf2616' or type='abnf7320' or @type='abnf9110']">
-    <xsl:if test="not($all-refs//seriesInfo[@name='RFC' and (@value='2068' or @value='2616' or @value='7230' or @value='abnf9110')]) and not($all-refs//seriesInfo[@name='Internet-Draft' and (starts-with(@value, 'draft-ietf-httpbis-p1-messaging-') or starts-with(@value, 'draft-ietf-httpbis-semantics-'))])">
+    <xsl:if test="not($all-refs//seriesInfo[@name='RFC' and (@value='2068' or @value='2616' or @value='7230' or @value='9110')]) and not($all-refs//seriesInfo[@name='Internet-Draft' and (starts-with(@value, 'draft-ietf-httpbis-p1-messaging-') or starts-with(@value, 'draft-ietf-httpbis-semantics-'))])">
       <!-- check for draft-ietf-httpbis-p1-messaging- is for backwards compat -->
       <xsl:call-template name="warning">
         <xsl:with-param name="msg">document uses HTTP-style ABNF syntax, but doesn't reference RFC 2068, RFC 2616, RFC 7230, or RFC 9110.</xsl:with-param>
@@ -12191,11 +12191,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1530 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1530 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1531 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1531 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2023/08/28 06:06:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/08/28 06:06:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2023/08/28 06:49:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/08/28 06:49:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
