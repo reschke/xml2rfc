@@ -4434,7 +4434,9 @@
         <xsl:with-param name="deleted-anchor" select="$deleted"/>
       </xsl:call-template>
     </xsl:for-each>
-    <xsl:call-template name="reference-name"/>
+    <xsl:call-template name="reference-name">
+      <xsl:with-param name="anchor" select="@anchor"/>
+    </xsl:call-template>
   </dt>
 
   <xsl:call-template name="insert-reference-body"/>
@@ -10346,46 +10348,58 @@ dd, li, p {
 
 <xsl:template name="reference-name">
   <xsl:param name="node" select="."/>
+  <xsl:param name="anchor"/>
 
   <xsl:for-each select="$node">
     <xsl:text>[</xsl:text>
     <xsl:choose>
-      <xsl:when test="$xml2rfc-symrefs!='no' and ancestor::ed:del">
-        <xsl:variable name="unprefixed" select="substring-after(@anchor,'deleted-')"/>
-        <xsl:choose>
-          <xsl:when test="$unprefixed!=''">
-            <xsl:value-of select="$unprefixed"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:if test="count(//reference[@anchor=current()/@anchor])!=1">
-              <xsl:message>Deleted duplicate anchors should have the prefix "deleted-": <xsl:value-of select="@anchor"/></xsl:message>
-            </xsl:if>
-            <xsl:value-of select="@anchor"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:when test="$xml2rfc-symrefs!='no'">
-        <xsl:choose>
-          <xsl:when test="$src/rfc/back/displayreference[@target=current()/@anchor]">
-            <xsl:value-of select="$src/rfc/back/displayreference[@target=current()/@anchor]/@to"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="@anchor"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:when test="ancestor::ed:del">
-        <xsl:text>del</xsl:text>
+      <xsl:when test="$anchor!=''">
+        <a href="#{$anchor}" class="smpl">
+          <xsl:call-template name="reference-name-text"/>
+        </a>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:number level="any" count="reference[not(ancestor::ed:del)]"/>
+        <xsl:call-template name="reference-name-text"/>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>]</xsl:text>
   </xsl:for-each>
 </xsl:template>
 
-
+<xsl:template name="reference-name-text">
+  <xsl:choose>
+    <xsl:when test="$xml2rfc-symrefs!='no' and ancestor::ed:del">
+      <xsl:variable name="unprefixed" select="substring-after(@anchor,'deleted-')"/>
+      <xsl:choose>
+        <xsl:when test="$unprefixed!=''">
+          <xsl:value-of select="$unprefixed"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:if test="count(//reference[@anchor=current()/@anchor])!=1">
+            <xsl:message>Deleted duplicate anchors should have the prefix "deleted-": <xsl:value-of select="@anchor"/></xsl:message>
+          </xsl:if>
+          <xsl:value-of select="@anchor"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:when test="$xml2rfc-symrefs!='no'">
+      <xsl:choose>
+        <xsl:when test="$src/rfc/back/displayreference[@target=current()/@anchor]">
+          <xsl:value-of select="$src/rfc/back/displayreference[@target=current()/@anchor]/@to"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@anchor"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:when test="ancestor::ed:del">
+      <xsl:text>del</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:number level="any" count="reference[not(ancestor::ed:del)]"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 <xsl:template name="replace-substring">
   <xsl:param name="string" />
@@ -12193,11 +12207,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1535 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1535 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1536 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1536 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2023/09/03 15:47:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/09/03 15:47:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2023/09/03 18:16:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/09/03 18:16:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
