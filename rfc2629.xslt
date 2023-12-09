@@ -3030,6 +3030,16 @@
 
 <xsl:template match="iref">
   <xsl:variable name="anchor"><xsl:call-template name="compute-iref-anchor"/></xsl:variable>
+  <xsl:if test="@item!=normalize-space(@item)">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">iref "item" attribute contains non-normalized whitespace ("<xsl:value-of select="@item"/>")</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:if test="@subitem!=normalize-space(@subitem)">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">iref "subitem" attribute contains non-normalized whitespace ("<xsl:value-of select="@subitem"/>")</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
   <xsl:choose>
     <xsl:when test="parent::figure and ancestor::t">
       <span id="{$anchor}"/>
@@ -12210,11 +12220,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1551 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1551 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1552 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1552 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2023/12/07 14:10:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/12/07 14:10:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2023/12/09 16:19:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/12/09 16:19:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
