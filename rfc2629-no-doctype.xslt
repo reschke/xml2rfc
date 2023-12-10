@@ -1337,11 +1337,11 @@
 
 <xsl:key name="index-item"
   match="iref"
-    use="@item" />
+    use="normalize-space(@item)" />
 
 <xsl:key name="index-item-subitem"
   match="iref"
-    use="concat(@item,'..',@subitem)" />
+    use="concat(normalize-space(@item),'..',normalize-space(@subitem))" />
 
 <xsl:key name="index-xref-by-sec"
   match="xref[@x:sec]|relref[@section]"
@@ -3029,6 +3029,16 @@
 
 <xsl:template match="iref">
   <xsl:variable name="anchor"><xsl:call-template name="compute-iref-anchor"/></xsl:variable>
+  <xsl:if test="@item!=normalize-space(@item)">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">iref "item" attribute contains non-normalized whitespace ("<xsl:value-of select="@item"/>")</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:if test="@subitem!=normalize-space(@subitem)">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">iref "subitem" attribute contains non-normalized whitespace ("<xsl:value-of select="@subitem"/>")</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
   <xsl:choose>
     <xsl:when test="parent::figure and ancestor::t">
       <span id="{$anchor}"/>
@@ -4015,7 +4025,10 @@
   <xsl:variable name="bibtarget">
     <xsl:choose>
       <xsl:when test="starts-with($bib/@target,'http://www.rfc-editor.org/info/rfc') or starts-with($bib/@target,'https://www.rfc-editor.org/info/rfc') and $ref and ($ref/@x:sec or $ref/@x:rel or $ref/@section or $ref/@relative)">
-        <!--ignored, use ietf.org link instead -->
+        <!--RFC link: ignored, use auto generated link instead -->
+      </xsl:when>
+      <xsl:when test="starts-with($bib/@target,'http://www.rfc-editor.org/info/std') or starts-with($bib/@target,'https://www.rfc-editor.org/info/std') and $bib/seriesInfo[@name='RFC'] and $ref and ($ref/@x:sec or $ref/@x:rel or $ref/@section or $ref/@relative)">
+        <!--STD link that is to an actual RFC: ignored, use auto generated link instead -->
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$bib/@target"/>
@@ -9245,8 +9258,8 @@ dd, li, p {
     <div class="print2col">
       <ul class="ind">
         <xsl:for-each select="//iref | //reference[not(starts-with(@anchor,'deleted-'))]">
-          <xsl:sort select="translate(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),$lcase,$ucase)" />
-          <xsl:variable name="letter" select="translate(substring(concat(@item,/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase)"/>
+          <xsl:sort select="translate(concat(normalize-space(@item),/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),$lcase,$ucase)" />
+          <xsl:variable name="letter" select="translate(substring(concat(normalize-space(@item),/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor),1,1),$lcase,$ucase)"/>
     
           <xsl:variable name="showit" select="$xml2rfc-ext-include-references-in-index='yes' or self::iref"/>
           <xsl:if test="$showit and generate-id(.) = generate-id(key('index-first-letter',$letter)[1])">
@@ -9256,11 +9269,11 @@ dd, li, p {
               <xsl:choose>
                 <xsl:when test="translate($letter,concat($lcase,$ucase,'0123456789'),'')=''">
                   <a id="{$anchor-pref}index.{$letter}" href="#{$anchor-pref}index.{$letter}">
-                    <b><xsl:value-of select="$letter" /></b>
+                    <b><xsl:value-of select="$letter"/></b>
                   </a>
                 </xsl:when>
                 <xsl:otherwise>
-                  <b><xsl:value-of select="$letter" /></b>
+                  <b><xsl:value-of select="$letter"/></b>
                 </xsl:otherwise>
               </xsl:choose>
     
@@ -12206,11 +12219,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1464 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1464 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1467 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1467 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2023/09/03 18:16:34 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/09/03 18:16:34 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2023/12/10 11:48:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/12/10 11:48:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
