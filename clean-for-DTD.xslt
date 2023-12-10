@@ -1,7 +1,7 @@
 <!--
     Strip rfc2629.xslt extensions, generating XML input for "official" xml2rfc
 
-    Copyright (c) 2006-2022, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2023, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1044,6 +1044,16 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:template match="iref/@item|iref/@subitem" mode="cleanup">
+  <xsl:if test=".!=normalize-space(.)">
+    <xsl:call-template name="debug">
+      <xsl:with-param name="msg">Stripping non-normalized whitespace ("<xsl:value-of select="."/>") from iref attribute "<xsl:value-of select="local-name()"/>"</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:attribute name="{local-name()}">
+    <xsl:value-of select="normalize-space(.)"/>
+  </xsl:attribute>
+</xsl:template>
 
 <!-- issue tracking extensions -->
 
