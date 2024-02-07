@@ -7040,8 +7040,14 @@
         <ed:v>rtg</ed:v>
         <ed:v>security</ed:v>
         <ed:v>sec</ed:v>
-        <ed:v>transport</ed:v>
-        <ed:v>tsv</ed:v>
+        <xsl:if test="$pub-yearmonth &lt; 202406">
+          <ed:v>transport</ed:v>
+          <ed:v>tsv</ed:v>
+        </xsl:if>
+        <xsl:if test="$pub-yearmonth &gt; 202402">
+          <ed:v>web and internet transport</ed:v>
+          <ed:v>wit</ed:v>
+        </xsl:if>
       </xsl:variable>
       <xsl:variable name="allowed" select="exslt:node-set($rallowed)"/>
       <xsl:choose>
@@ -12220,11 +12226,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1467 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1467 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1468 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1468 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2023/12/10 11:48:18 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2023/12/10 11:48:18 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2024/02/07 17:33:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2024/02/07 17:33:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
