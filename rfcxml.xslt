@@ -2,7 +2,7 @@
     XSLT transformation for the XML format defined in RFCs 2629, 7749 and 7991
     to HTML
 
-    Copyright (c) 2006-2023, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2024, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1694,7 +1694,16 @@
       <xsl:text> </xsl:text>
     </xsl:if>
   </xsl:if>
-  <xsl:value-of select="$normalized"/>
+  <xsl:choose>
+    <xsl:when test="contains($normalized,'&#160;') or contains($normalized,'&#8209;')">
+      <xsl:call-template name="emit-words">
+        <xsl:with-param name="text" select="$normalized"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$normalized"/>
+    </xsl:otherwise>
+  </xsl:choose>
   <xsl:if test="$ends-with-ws and $normalized!=''">
     <xsl:variable name="t">
       <xsl:for-each select="following-sibling::node()">
@@ -1716,6 +1725,41 @@
   </xsl:if>
 </xsl:template>
 
+<!-- emit one word at a time -->
+<xsl:template name="emit-words">
+  <xsl:param name="text"/>
+  <xsl:choose>
+    <xsl:when test="contains($text,' ')">
+      <xsl:call-template name="emit-word">
+        <xsl:with-param name="word" select="substring-before($text,' ')"/>
+      </xsl:call-template>
+      <xsl:text> </xsl:text>
+      <xsl:call-template name="emit-words">
+        <xsl:with-param name="text" select="substring-after($text,' ')"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="emit-word">
+        <xsl:with-param name="word" select="$text"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- emit word, potentially wrapping into span/nobr and replacing 'special' characters -->
+<xsl:template name="emit-word">
+  <xsl:param name="word"/>
+  <xsl:choose>
+    <xsl:when test="contains($word,'&#160;') or contains($word,'&#8209;')">
+      <span class="nobr">
+        <xsl:value-of select="translate($word,'&#160;&#8209;',' -')"/>
+      </span>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$word"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 <xsl:template match="abstract">
   <xsl:call-template name="check-no-text-content"/>
@@ -8630,6 +8674,9 @@ ul p {
 .filename, h1, h2, h3, h4 {
   font-family: <xsl:value-of select="$xml2rfc-ext-ff-title"/>;
 }
+.nobr {
+  white-space: nowrap;
+}
 <xsl:if test="$has-index">ul.ind, ul.ind ul {
   list-style: none;
   margin-left: 1.5em;
@@ -12226,11 +12273,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1468 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1468 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1469 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1469 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2024/02/07 17:33:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2024/02/07 17:33:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2024/04/10 17:40:38 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2024/04/10 17:40:38 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
