@@ -90,8 +90,10 @@
   <navPoint id="S{$no}" playOrder="{$po}">
     <navLabel>
       <text>
-        <xsl:value-of select="$no"/>
-        <xsl:text> </xsl:text>
+        <xsl:if test="not(starts-with($no,$unnumbered))">
+          <xsl:value-of select="$no"/>
+          <xsl:text> </xsl:text>
+        </xsl:if>
         <xsl:call-template name="get-title-as-string"/>
       </text>
     </navLabel>
