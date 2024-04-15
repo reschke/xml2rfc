@@ -1,7 +1,7 @@
 <!--
-    XSLT transformation from RFC2629 XML format to NCX file format
+    XSLT transformation from RFCXML format to NCX file format
 
-    Copyright (c) 2009-2017, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2009-2024, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@
                version="1.0"
 >
 
-<xsl:import href="rfc2629.xslt"/>
+<xsl:import href="rfcxml.xslt"/>
 
 <xsl:output indent="yes" method="xml" version="1.0" encoding="UTF-8"/>
 <!--<xsl:output indent="yes" method="xml" version="1.0" doctype-public="" doctype-system="ncx-2005-1.dtd"/>-->
@@ -92,7 +92,7 @@
       <text>
         <xsl:value-of select="$no"/>
         <xsl:text> </xsl:text>
-        <xsl:value-of select="@title"/>
+        <xsl:call-template name="get-title-as-string"/>
       </text>
     </navLabel>
     <content src="{$basename}.xhtml#{$anchor-pref}section.{$no}"/>
