@@ -2,7 +2,7 @@
     Augment section links to RFCs and Internet Drafts, also cleanup 
     unneeded markup from kramdown2629
 
-    Copyright (c) 2017-2022, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2017-2024, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -365,6 +365,11 @@
 <!--fix broken lists with contact elements -->
 <xsl:template match="t[contact and count(*)=1 and parent::t]" mode="kramdown2629-fixup">
   <xsl:apply-templates select="node()|@*" mode="kramdown2629-fixup"/>
+</xsl:template>
+
+<!--fix broken list attributes -->
+<xsl:template match="list/@type" mode="kramdown2629-fixup">
+  <!-- see https://github.com/cabo/kramdown-rfc/issues/230 -->
 </xsl:template>
 
 <xsl:template match="*|@*|comment()|processing-instruction()" mode="line-folding">
