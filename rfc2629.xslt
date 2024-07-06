@@ -2697,7 +2697,11 @@
 
 <xsl:template match="eref[not(*|text())]">
   <xsl:call-template name="check-absolute-uri"/>
-  <xsl:variable name="in-angles" select="(not(/rfc/@version >= 3) and not(@brackets='none')) or @brackets='angle'"/>
+  <xsl:variable name="prec-text" select="preceding-sibling::node()[1]"/>
+  <xsl:variable name="prec-ends-with-bracket" select="substring($prec-text,string-length($prec-text))='&lt;'"/>
+  <xsl:variable name="foll-text" select="following-sibling::node()[1]"/>
+  <xsl:variable name="foll-starts-with-bracket" select="starts-with($foll-text,'&gt;')"/>
+  <xsl:variable name="in-angles" select="(not(/rfc/@version >= 3) and not(@brackets='none') and not($prec-ends-with-bracket) and not($foll-starts-with-bracket)) or @brackets='angle'"/>
   <xsl:if test="$in-angles"><xsl:text>&lt;</xsl:text></xsl:if>
   <a href="{@target}"><xsl:value-of select="@target"/></a>
   <xsl:if test="$in-angles"><xsl:text>&gt;</xsl:text></xsl:if>
@@ -12273,11 +12277,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1567 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1567 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1568 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1568 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2024/07/06 14:46:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2024/07/06 14:46:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2024/07/06 16:21:45 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2024/07/06 16:21:45 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
