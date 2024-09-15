@@ -1,7 +1,7 @@
 <!--
     Parse RFC Editor Errata pages into XML
 
-    Copyright (c) 2017-2022, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2017-2024, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,8 +49,8 @@
 <xsl:variable name="src" select="/"/>
 
 <xsl:template match="/">
-  <!--<xsl:copy-of select="$jdata"/>-->
   <errata for="{substring-before($doc,'.rawerrata')}">
+    <!-- <xsl:copy-of select="$jdata"/> -->
     <xsl:variable name="tmp">
       <xsl:variable name="src" select="unparsed-text($doc)"/>
       <xsl:if test="contains($src,'Errata ID: ')">
@@ -62,25 +62,25 @@
     </xsl:variable>
     <xsl:for-each select="$tmp/*">
       <xsl:sort select="number(@eid)"/>
-      <xsl:variable name="j" select="$jdata/xp:array/xp:map[xp:number[@key='errata_id']=current()/@eid]"/>
+      <xsl:variable name="j" select="$jdata/xp:array/xp:map[xp:*[@key='errata_id']=current()/@eid]"/>
       <xsl:copy>
         <xsl:copy-of select="@*"/>
         <xsl:copy-of select="*"/>
         <xsl:if test="$j">
-          <xsl:if test="@status!=$j/xp:string[@key='errata_status_code']">
-            <xsl:comment>@status does not match JSON: <xsl:value-of select="$j/xp:string[@key='errata_status_code']"/></xsl:comment>
+          <xsl:if test="@status!=$j/xp:*[@key='errata_status_code']">
+            <diagnostics>@status does not match JSON: '<xsl:value-of select="$j/xp:string[@key='errata_status_code']"/>' != '<xsl:value-of select="@status"/>'</diagnostics>
           </xsl:if>
-          <xsl:if test="@type!=$j/xp:string[@key='errata_type_code']">
-            <xsl:comment>@type does not match JSON: <xsl:value-of select="$j/xp:string[@key='errata_type_code']"/></xsl:comment>
+          <xsl:if test="@type!=$j/xp:*[@key='errata_type_code']">
+            <diagnostics>@type does not match JSON: '<xsl:value-of select="$j/xp:string[@key='errata_type_code']"/>' != '<xsl:value-of select="@type"/>'</diagnostics>
           </xsl:if>
-          <xsl:if test="@reported-by!=$j/xp:string[@key='submitter_name']">
-            <xsl:comment>@reported-by does not match JSON: <xsl:value-of select="$j/xp:string[@key='submitter_name']"/></xsl:comment>
+          <xsl:if test="@reported-by!=$j/xp:*[@key='submitter_name']">
+            <diagnostics>@reported-by does not match JSON: '<xsl:value-of select="$j/xp:string[@key='submitter_name']"/>' != '<xsl:value-of select="@reported-by"/>'</diagnostics>
           </xsl:if>
-          <xsl:if test="@reported!=$j/xp:string[@key='submit_date']">
-            <xsl:comment>@reported does not match JSON: <xsl:value-of select="$j/xp:string[@key='submit_date']"/></xsl:comment>
+          <xsl:if test="@reported!=$j/xp:*[@key='submit_date']">
+            <diagnostics>@reported does not match JSON: '<xsl:value-of select="$j/xp:string[@key='submit_date']"/>' != '<xsl:value-of select="@reported"/>'</diagnostics>
           </xsl:if>
           <xsl:if test="raw-section!=$j/xp:*[@key='section']">
-            <xsl:comment>raw-section does not match JSON: <xsl:value-of select="$j/xp:*[@key='section']"/></xsl:comment>
+            <diagnostics>raw-section does not match JSON: '<xsl:value-of select="$j/xp:*[@key='section']"/>' != '<xsl:value-of select="raw-section"/>'</diagnostics>
           </xsl:if>
         </xsl:if>
       </xsl:copy>
