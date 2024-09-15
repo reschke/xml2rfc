@@ -79,8 +79,18 @@
           <xsl:if test="@reported!=$j/xp:*[@key='submit_date']">
             <diagnostics>@reported does not match JSON: '<xsl:value-of select="$j/xp:string[@key='submit_date']"/>' != '<xsl:value-of select="@reported"/>'</diagnostics>
           </xsl:if>
-          <xsl:if test="raw-section!=$j/xp:*[@key='section']">
-            <diagnostics>raw-section does not match JSON: '<xsl:value-of select="$j/xp:*[@key='section']"/>' != '<xsl:value-of select="raw-section"/>'</diagnostics>
+          <xsl:variable name="json-section">
+            <xsl:choose>
+              <xsl:when test="starts-with($j/xp:*[@key='section'],'Appendix ')">
+                <xsl:value-of select="normalize-space(substring-after($j/xp:*[@key='section'],'Appendix '))"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="normalize-space($j/xp:*[@key='section'])"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+          <xsl:if test="raw-section!=$json-section">
+            <diagnostics>raw-section does not match JSON: '<xsl:value-of select="$json-section"/>' != '<xsl:value-of select="raw-section"/>'</diagnostics>
           </xsl:if>
         </xsl:if>
       </xsl:copy>
