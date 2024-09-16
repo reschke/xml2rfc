@@ -79,9 +79,8 @@
           <xsl:if test="@reported!=$j/xp:*[@key='submit_date']">
             <diagnostics>@reported does not match JSON: '<xsl:value-of select="$j/xp:string[@key='submit_date']"/>' != '<xsl:value-of select="@reported"/>'</diagnostics>
           </xsl:if>
-          <xsl:variable name="json-section" select="my:parseSection($j/xp:*[@key='section'])"/>
-          <xsl:if test="raw-section!=$json-section">
-            <diagnostics>raw-section does not match JSON: '<xsl:value-of select="$json-section"/>' != '<xsl:value-of select="raw-section"/>'</diagnostics>
+          <xsl:if test="raw-section!=$j/xp:*[@key='section']">
+            <diagnostics>raw-section does not match JSON: '<xsl:value-of select="$j/xp:*[@key='section']"/>' != '<xsl:value-of select="raw-section"/>'</diagnostics>
           </xsl:if>
         </xsl:if>
       </xsl:copy>
@@ -116,9 +115,9 @@
   <xsl:param name="s"/>
   <xsl:variable name="raw-reference">
     <xsl:variable name="t" select="normalize-space(translate($s,'&#13;&#10;&#9;','   '))"/>
-    <xsl:analyze-string select="$t" regex="&lt;p>((.*?))&lt;/p>\s*&lt;pre\s*class=.rfctext.">
+    <xsl:analyze-string select="$t" regex="&lt;p>([iI]n )?([Ss]ection|[Aa]ppendix)( [Aa]ppendix)? ((.*?))(, it )?(says|states)?:( )?&lt;/p> &lt;pre class=.rfctext.">
       <xsl:matching-substring>
-        <xsl:value-of select="my:parseSection(normalize-space(regex-group(1)))"/>
+        <xsl:value-of select="normalize-space(regex-group(4))"/>
       </xsl:matching-substring>
     </xsl:analyze-string>
   </xsl:variable>
@@ -229,15 +228,6 @@
     </xsl:if>
     <xsl:value-of select="$sec"/>
   </section>
-</xsl:function>
-
-<xsl:function name="my:parseSection">
-  <xsl:param name="raw"/>
-  <xsl:analyze-string select="normalize-space($raw)" regex="([iI]n\s*)?([Ss]ection|[Aa]ppendix)(\s*[Aa]ppendix)?\s*((.*?))(,\s*it\s*)?(says|states)?:">
-    <xsl:matching-substring>
-      <xsl:value-of select="normalize-space(regex-group(4))"/>
-    </xsl:matching-substring>
-  </xsl:analyze-string>
 </xsl:function>
 
 </xsl:transform>
