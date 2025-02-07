@@ -397,7 +397,7 @@ xsltproc --param xml2rfc-toc '"yes"' \
     </t>
   </section>
 
-  <section title="dark-mode - Switch for Enabling 'Dark Mode' Support" anchor="xml2rfc-ext-dark-mode">
+  <section title="dark-mode - Switch for Disabling 'Dark Mode' Support" anchor="xml2rfc-ext-dark-mode">
     <iref item="dark-mode PI pseudo-attribute"/><iref item="Processing Instruction pseudo attributes" subitem="dark-mode"/>
     <iref item="xml2rfc-ext-dark-mode parameter"/> <iref item="Parameters" subitem="xml2rfc-ext-dark-mode"/>
 
@@ -409,10 +409,10 @@ xsltproc --param xml2rfc-toc '"yes"' \
       <dt>XSLT parameter name</dt>
       <dd>xml2rfc-ext-dark-mode</dd>
       <dt>default</dt>
-      <dd>"no"</dd>
+      <dd>"auto"</dd>
     </dl>
     <t>
-      Set to 'auto' to enable "dark mode" CSS support.
+      Set to 'no' to disable "dark mode" CSS support.
     </t>
   </section>
 

@@ -2,7 +2,7 @@
     XSLT transformation for the XML format defined in RFCs 2629, 7749 and 7991
     to HTML
 
-    Copyright (c) 2006-2024, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2025, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -419,7 +419,7 @@
   <xsl:call-template name="parse-pis">
     <xsl:with-param name="nodes" select="/processing-instruction('rfc-ext')"/>
     <xsl:with-param name="attr" select="'dark-mode'"/>
-    <xsl:with-param name="default" select="'no'"/>
+    <xsl:with-param name="default" select="'auto'"/>
   </xsl:call-template>
 </xsl:param>
 
@@ -8308,7 +8308,7 @@ PR['registerLangHandler'](
   --col-bg: white;
   --col-bg-error: red;
   --col-bg-highlight: yellow;
-  --col-bg-highligh2: lime;
+  --col-bg-highlight2: lime;
   --col-bg-light: gray;
   --col-bg-pre: lightyellow;
   --col-bg-pre1: #f8f8f8;
@@ -9021,7 +9021,7 @@ dd, li, p {
     --col-bg: black;
     --col-bg-error: red;
     --col-bg-highlight: #9e9e20;
-    --col-bg-highligh2: lime;
+    --col-bg-highlight2: lime;
     --col-bg-light: gray;
     --col-bg-pre: #202000;
     --col-bg-pre1: #080808;
@@ -12277,11 +12277,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1569 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1569 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1570 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1570 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2024/08/22 11:41:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2024/08/22 11:41:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/02/07 08:45:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/02/07 08:45:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
