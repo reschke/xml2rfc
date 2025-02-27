@@ -5506,20 +5506,6 @@
 
 <xsl:template name="insertTitle">
   <xsl:choose>
-    <xsl:when test="@ed:old-title">
-      <del>
-        <xsl:if test="ancestor-or-self::*[@ed:entered-by] and @ed:datetime">
-          <xsl:attribute name="title"><xsl:value-of select="concat(@ed:datetime,', ',ancestor-or-self::*[@ed:entered-by][1]/@ed:entered-by)"/></xsl:attribute>
-        </xsl:if>
-        <xsl:value-of select="@ed:old-title"/>
-      </del>
-      <ins>
-        <xsl:if test="ancestor-or-self::*[@ed:entered-by] and @ed:datetime">
-          <xsl:attribute name="title"><xsl:value-of select="concat(@ed:datetime,', ',ancestor-or-self::*[@ed:entered-by][1]/@ed:entered-by)"/></xsl:attribute>
-        </xsl:if>
-        <xsl:value-of select="@title"/>
-      </ins>
-    </xsl:when>
     <xsl:when test="name">
       <xsl:if test="@title">
         <xsl:call-template name="warning">
@@ -10065,8 +10051,6 @@ dd, li, p {
   <xsl:param name="title" />
   <xsl:param name="name" />
   <xsl:param name="tocparam" />
-  <xsl:param name="oldtitle" />
-  <xsl:param name="waschanged" />
 
   <xsl:variable name="depth">
     <!-- count the dots -->
@@ -10110,10 +10094,6 @@ dd, li, p {
           </xsl:if>
           <a href="#{$target}">
             <xsl:choose>
-              <xsl:when test="$waschanged!=''">
-                <ins><xsl:value-of select="$title"/></ins>
-                <del><xsl:value-of select="$oldtitle"/></del>
-              </xsl:when>
               <xsl:when test="$name">
                 <xsl:call-template name="render-name-ref">
                   <xsl:with-param name="n" select="$name/node()"/>
@@ -10315,8 +10295,6 @@ dd, li, p {
         <xsl:with-param name="title" select="@title"/>
         <xsl:with-param name="name" select="name"/>
         <xsl:with-param name="tocparam" select="@toc"/>
-        <xsl:with-param name="oldtitle" select="@ed:old-title"/>
-        <xsl:with-param name="waschanged" select="@ed:resolves"/>
       </xsl:call-template>
 
       <ul>
@@ -10333,8 +10311,6 @@ dd, li, p {
         <xsl:with-param name="title" select="@title"/>
         <xsl:with-param name="name" select="name"/>
         <xsl:with-param name="tocparam" select="@toc"/>
-        <xsl:with-param name="oldtitle" select="@ed:old-title"/>
-        <xsl:with-param name="waschanged" select="@ed:resolves"/>
       </xsl:call-template>
 
       <!-- obtain nested content, just to check whether we need to recurse at all -->
@@ -11523,7 +11499,7 @@ dd, li, p {
     </xsl:variable>
     <xsl:choose>
       <!-- block level? -->
-      <xsl:when test="not(ancestor::t) and not(ancestor::title) and not(ancestor::figure) and not($change/@ed:old-title)">
+      <xsl:when test="not(ancestor::t) and not(ancestor::title) and not(ancestor::figure)">
         <div class="issuepointer {$css-noprint}">
           <xsl:if test="not($deleted-anchor)">
             <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
@@ -12277,11 +12253,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1573 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1573 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1574 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1574 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/02/23 23:12:19 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/02/23 23:12:19 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/02/27 18:47:24 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/02/27 18:47:24 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
