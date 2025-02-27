@@ -3512,9 +3512,6 @@
   <li>
     <xsl:call-template name="copy-anchor"/>
     <xsl:call-template name="insertInsDelClass"/>
-    <xsl:for-each select="../..">
-      <xsl:call-template name="insert-issue-pointer"/>
-    </xsl:for-each>
     <xsl:apply-templates />
   </li>
 </xsl:template>
@@ -3524,16 +3521,6 @@
     <dt>
       <xsl:call-template name="copy-anchor"/>
       <xsl:call-template name="insertInsDelClass"/>
-      <xsl:if test="count(preceding-sibling::t)=0">
-        <xsl:variable name="del-node" select="ancestor::ed:del"/>
-        <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
-        <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
-        <xsl:for-each select="../..">
-          <xsl:call-template name="insert-issue-pointer">
-            <xsl:with-param name="deleted-anchor" select="$deleted"/>
-          </xsl:call-template>
-        </xsl:for-each>
-      </xsl:if>
       <xsl:value-of select="@hangText" />
     </dt>
   </xsl:if>
@@ -3645,11 +3632,6 @@
       <xsl:variable name="del-node" select="ancestor::ed:del"/>
       <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
       <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
-      <xsl:for-each select="../..">
-        <xsl:call-template name="insert-issue-pointer">
-          <xsl:with-param name="deleted-anchor" select="$deleted"/>
-        </xsl:call-template>
-      </xsl:for-each>
       <xsl:value-of select="@hangText" />
     </dt>
   </xsl:if>
@@ -4490,11 +4472,6 @@
     <xsl:variable name="del-node" select="ancestor::ed:del"/>
     <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
     <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
-    <xsl:for-each select="../..">
-      <xsl:call-template name="insert-issue-pointer">
-        <xsl:with-param name="deleted-anchor" select="$deleted"/>
-      </xsl:call-template>
-    </xsl:for-each>
     <xsl:call-template name="reference-name">
       <xsl:with-param name="anchor" select="@anchor"/>
     </xsl:call-template>
@@ -4833,11 +4810,6 @@
     <xsl:variable name="del-node" select="ancestor::ed:del"/>
     <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
     <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
-    <xsl:for-each select="../..">
-      <xsl:call-template name="insert-issue-pointer">
-        <xsl:with-param name="deleted-anchor" select="$deleted"/>
-      </xsl:call-template>
-    </xsl:for-each>
     <xsl:call-template name="reference-name"/>
   </dt>
 
@@ -5620,11 +5592,6 @@
           </xsl:call-template>
         </a>
         <xsl:text>&#0160;</xsl:text>
-      </xsl:if>
-
-      <!-- issue tracking? -->
-      <xsl:if test="@ed:resolves">
-        <xsl:call-template name="insert-issue-pointer"/>
       </xsl:if>
 
       <xsl:call-template name="check-anchor"/>
@@ -11248,28 +11215,6 @@ dd, li, p {
     <xsl:apply-templates select="ed:item"/>
     <xsl:apply-templates select="ed:resolution"/>
 
-    <xsl:variable name="changes" select="//*[@ed:resolves=current()/@name or ed:resolves=current()/@name]" />
-    <xsl:if test="$changes">
-      <tr>
-        <td class="top" colspan="3">
-          Associated changes in this document:
-          <xsl:variable name="issue" select="@name"/>
-          <xsl:for-each select="$changes">
-            <a href="#{$anchor-pref}change.{$issue}.{position()}">
-              <xsl:variable name="label">
-                <xsl:call-template name="get-section-number"/>
-              </xsl:variable>
-              <xsl:choose>
-                <xsl:when test="$label!=''"><xsl:value-of select="$label"/></xsl:when>
-                <xsl:otherwise>&lt;<xsl:value-of select="concat('#',$anchor-pref,'change.',$issue,'.',position())"/>&gt;</xsl:otherwise>
-              </xsl:choose>
-            </a>
-            <xsl:if test="position()!=last()">, </xsl:if>
-          </xsl:for-each>
-          <xsl:text>.</xsl:text>
-        </td>
-      </tr>
-    </xsl:if>
   </table>
 
 </xsl:template>
@@ -11465,7 +11410,6 @@ dd, li, p {
 <xsl:template match="@ed:*" />
 
 <xsl:template match="ed:del">
-  <xsl:call-template name="insert-issue-pointer"/>
   <del>
     <xsl:copy-of select="@*[namespace-uri()='']"/>
     <xsl:if test="not(@title) and ancestor-or-self::*[@ed:entered-by] and @datetime">
@@ -11476,7 +11420,6 @@ dd, li, p {
 </xsl:template>
 
 <xsl:template match="ed:ins">
-  <xsl:call-template name="insert-issue-pointer"/>
   <ins>
     <xsl:copy-of select="@*[namespace-uri()='']"/>
     <xsl:if test="not(@title) and ancestor-or-self::*[@ed:entered-by] and @datetime">
@@ -11484,76 +11427,6 @@ dd, li, p {
     </xsl:if>
     <xsl:apply-templates />
   </ins>
-</xsl:template>
-
-<xsl:template name="insert-issue-pointer">
-  <xsl:param name="deleted-anchor"/>
-  <xsl:variable name="change" select="."/>
-  <xsl:for-each select="@ed:resolves|ed:resolves">
-    <xsl:variable name="resolves" select="."/>
-    <!-- need the right context node for proper numbering -->
-    <xsl:variable name="count"><xsl:for-each select=".."><xsl:number level="any" count="*[@ed:resolves=$resolves or ed:resolves=$resolves]" /></xsl:for-each></xsl:variable>
-    <xsl:variable name="total" select="count(//*[@ed:resolves=$resolves or ed:resolves=$resolves])" />
-    <xsl:variable name="id">
-      <xsl:value-of select="$anchor-pref"/>change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" />
-    </xsl:variable>
-    <xsl:choose>
-      <!-- block level? -->
-      <xsl:when test="not(ancestor::t) and not(ancestor::title) and not(ancestor::figure)">
-        <div class="issuepointer {$css-noprint}">
-          <xsl:if test="not($deleted-anchor)">
-            <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-          </xsl:if>
-          <xsl:if test="$count > 1">
-            <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-pref}change.{$resolves}.{$count - 1}">&#x2191;</a>
-          </xsl:if>
-          <a class="open-issue" href="#{$anchor-pref}issue.{$resolves}" title="resolves: {$resolves}">
-            <xsl:choose>
-              <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
-                <xsl:attribute name="class">closed-issue</xsl:attribute>
-              </xsl:when>
-              <xsl:when test="//ed:issue[@name=$resolves and @status='editor']">
-                <xsl:attribute name="class">editor-issue</xsl:attribute>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:attribute name="class">open-issue</xsl:attribute>
-              </xsl:otherwise>
-            </xsl:choose>
-            <xsl:text>&#160;I&#160;</xsl:text>
-          </a>
-          <xsl:if test="$count &lt; $total">
-            <a class="bg-issue" title="next change for {$resolves}" href="#{$anchor-pref}change.{$resolves}.{$count + 1}">&#x2193;</a>
-          </xsl:if>
-          <xsl:text>&#160;</xsl:text>
-        </div>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:if test="$count > 1">
-          <a class="bg-issue" title="previous change for {$resolves}" href="#{$anchor-pref}change.{$resolves}.{$count - 1}">&#x2191;</a>
-        </xsl:if>
-        <a title="resolves: {$resolves}" href="#{$anchor-pref}issue.{$resolves}">
-          <xsl:if test="not($deleted-anchor)">
-            <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-          </xsl:if>
-          <xsl:choose>
-            <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
-              <xsl:attribute name="class">closed-issue <xsl:value-of select="$css-noprint"/></xsl:attribute>
-            </xsl:when>
-            <xsl:when test="//ed:issue[@name=$resolves and @status='editor']">
-              <xsl:attribute name="class">editor-issue <xsl:value-of select="$css-noprint"/></xsl:attribute>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:attribute name="class">open-issue <xsl:value-of select="$css-noprint"/></xsl:attribute>
-            </xsl:otherwise>
-          </xsl:choose>
-          <xsl:text>&#160;I&#160;</xsl:text>
-        </a>
-        <xsl:if test="$count &lt; $total">
-          <a class="bg-issue" title="next change for {$resolves}" href="#{$anchor-pref}change.{$resolves}.{$count + 1}">&#x2193;</a>
-        </xsl:if>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:for-each>
 </xsl:template>
 
 <xsl:template match="ed:replace">
@@ -11573,7 +11446,6 @@ dd, li, p {
           <xsl:text>&#160;i&#160;</xsl:text>
         </a>
       </xsl:if>
-      <xsl:call-template name="insert-issue-pointer"/>
       <xsl:if test="ed:del">
         <del>
           <xsl:copy-of select="@*[namespace-uri()='']"/>
@@ -12253,11 +12125,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1574 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1574 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1575 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1575 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/02/27 18:47:24 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/02/27 18:47:24 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/02/27 22:26:08 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/02/27 22:26:08 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
