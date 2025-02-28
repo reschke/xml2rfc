@@ -1661,7 +1661,7 @@
 <xsl:variable name="has-index" select="(//iref or (//xref and $xml2rfc-ext-include-references-in-index='yes')) and $xml2rfc-ext-include-index!='no'" />
 
 <!-- does the document contain edits? -->
-<xsl:variable name="has-edits" select="//ed:ins | //ed:del" />
+<xsl:variable name="has-edits" select="//ed:ins" />
 
 <!-- does the document have a published-as-rfc link? -->
 <xsl:variable name="published-as-rfc" select="/*/x:link[@rel='Alternate' and starts-with(@title,'RFC')]"/>
@@ -1921,7 +1921,7 @@
   <xsl:variable name="textcontent">
     <xsl:call-template name="text-content-of-sourcecode-or-artwork"/>
   </xsl:variable>
-  <xsl:if test="not(ancestor::ed:del) and $xml2rfc-ext-parse-xml-in-artwork='yes' and function-available('myns:parseXml')" use-when="function-available('myns:parseXml')">
+  <xsl:if test="$xml2rfc-ext-parse-xml-in-artwork='yes' and function-available('myns:parseXml')" use-when="function-available('myns:parseXml')">
     <xsl:if test="contains($textcontent,'&lt;?xml')">
       <xsl:variable name="body" select="substring-after(substring-after($textcontent,'&lt;?xml'),'?>')" />
       <xsl:if test="$body!='' and myns:parseXml($body)!=''">
@@ -3613,7 +3613,6 @@
   <xsl:if test="@hangText!=''">
     <dt>
       <xsl:call-template name="copy-anchor"/>
-      <xsl:variable name="del-node" select="ancestor::ed:del"/>
       <xsl:value-of select="@hangText" />
     </dt>
   </xsl:if>
@@ -4412,12 +4411,12 @@
         <xsl:with-param name="msg">missing anchor attribute on reference, containing the text: <xsl:value-of select="normalize-space(.)"/></xsl:with-param>
       </xsl:call-template>
     </xsl:when>
-    <xsl:when test="not(ancestor::ed:del) and (ancestor::rfc and not(key('xref-item',$anchor)))">
+    <xsl:when test="(ancestor::rfc and not(key('xref-item',$anchor)))">
       <xsl:call-template name="warning">
         <xsl:with-param name="msg">unused reference '<xsl:value-of select="@anchor"/>'<xsl:call-template name="find-ref-in-artwork"/></xsl:with-param>
       </xsl:call-template>
     </xsl:when>
-    <xsl:when test="not(ancestor::ed:del) and (not(ancestor::rfc) and not($src//xref[@target=$anchor]))">
+    <xsl:when test="(not(ancestor::rfc) and not($src//xref[@target=$anchor]))">
       <xsl:call-template name="warning">
         <xsl:with-param name="msg">unused (included) reference '<xsl:value-of select="@anchor"/>'<xsl:call-template name="find-ref-in-artwork"/></xsl:with-param>
       </xsl:call-template>
@@ -4428,7 +4427,7 @@
   <!-- check normative/informative -->
   <xsl:variable name="t-r-is-normative" select="ancestor-or-self::*[@x:nrm][1]"/>
   <xsl:variable name="r-is-normative" select="$t-r-is-normative/@x:nrm='true'"/>
-  <xsl:if test="$r-is-normative and not(ancestor::ed:del)">
+  <xsl:if test="$r-is-normative">
     <xsl:variable name="tst">
       <xsl:for-each select="key('xref-item',$anchor)">
         <xsl:variable name="t-is-normative" select="ancestor-or-self::*[@x:nrm][1]"/>
@@ -4446,7 +4445,6 @@
   <xsl:call-template name="check-anchor"/>
 
   <dt id="{@anchor}">
-    <xsl:variable name="del-node" select="ancestor::ed:del"/>
     <xsl:call-template name="reference-name">
       <xsl:with-param name="anchor" select="@anchor"/>
     </xsl:call-template>
@@ -4764,12 +4762,12 @@
         <xsl:with-param name="msg">missing anchor on reference: <xsl:value-of select="."/></xsl:with-param>
       </xsl:call-template>
     </xsl:when>
-    <xsl:when test="not(ancestor::ed:del) and (ancestor::rfc and not(key('xref-item',$anchor)))">
+    <xsl:when test="(ancestor::rfc and not(key('xref-item',$anchor)))">
       <xsl:call-template name="warning">
         <xsl:with-param name="msg">unused reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
       </xsl:call-template>
     </xsl:when>
-    <xsl:when test="not(ancestor::ed:del) and (not(ancestor::rfc) and not($src//xref[@target=$anchor]))">
+    <xsl:when test="(not(ancestor::rfc) and not($src//xref[@target=$anchor]))">
       <xsl:call-template name="warning">
         <xsl:with-param name="msg">unused (included) reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
       </xsl:call-template>
@@ -4780,7 +4778,6 @@
   <xsl:call-template name="check-anchor"/>
 
   <dt id="{@anchor}">
-    <xsl:variable name="del-node" select="ancestor::ed:del"/>
     <xsl:call-template name="reference-name"/>
   </dt>
 
@@ -4902,9 +4899,6 @@
   <xsl:param name="nested"/>
   
   <xsl:variable name="name">
-    <xsl:if test="ancestor::ed:del">
-      <xsl:text>del-</xsl:text>
-    </xsl:if>
     <xsl:number level="any"/>
   </xsl:variable>
 
@@ -4971,7 +4965,7 @@
       </xsl:if>
  
       <xsl:variable name="included" select="exslt:node-set($includeDirectives)/myns:include[@in=generate-id(current())]/*[self::reference or self::referencegroup]"/>
-      <xsl:variable name="refs" select="reference|referencegroup|ed:del|ed:ins|$included"/>
+      <xsl:variable name="refs" select="reference|referencegroup|ed:ins|$included"/>
       <xsl:choose>
         <xsl:when test="references">
           <xsl:for-each select="references">
@@ -6729,7 +6723,7 @@
   <xsl:for-each select="$src">
 
     <xsl:variable name="node" select="key('anchor-item',$target)|exslt:node-set($includeDirectives)//*[self::reference or self::referencegroup][@anchor=$target]"/>
-    <xsl:if test="count($node)=0 and not($node/ancestor::ed:del)">
+    <xsl:if test="count($node)=0">
       <xsl:for-each select="$xref">
         <xsl:choose>
           <xsl:when test="not($xref/@target)">
@@ -10230,7 +10224,7 @@ dd, li, p {
   <xsl:call-template name="back-toc" />
 </xsl:template>
 
-<xsl:template match="ed:del|ed:ins" mode="toc">
+<xsl:template match="ed:ins" mode="toc">
   <xsl:apply-templates mode="toc" />
 </xsl:template>
 
@@ -10298,20 +10292,6 @@ dd, li, p {
 
 <xsl:template name="reference-name-text">
   <xsl:choose>
-    <xsl:when test="$xml2rfc-symrefs!='no' and ancestor::ed:del">
-      <xsl:variable name="unprefixed" select="substring-after(@anchor,'deleted-')"/>
-      <xsl:choose>
-        <xsl:when test="$unprefixed!=''">
-          <xsl:value-of select="$unprefixed"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:if test="count(//reference[@anchor=current()/@anchor])!=1">
-            <xsl:message>Deleted duplicate anchors should have the prefix "deleted-": <xsl:value-of select="@anchor"/></xsl:message>
-          </xsl:if>
-          <xsl:value-of select="@anchor"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:when>
     <xsl:when test="$xml2rfc-symrefs!='no'">
       <xsl:choose>
         <xsl:when test="$src/rfc/back/displayreference[@target=current()/@anchor]">
@@ -10322,11 +10302,8 @@ dd, li, p {
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
-    <xsl:when test="ancestor::ed:del">
-      <xsl:text>del</xsl:text>
-    </xsl:when>
     <xsl:otherwise>
-      <xsl:number level="any" count="reference[not(ancestor::ed:del)]"/>
+      <xsl:number level="any" count="reference"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -10555,7 +10532,7 @@ dd, li, p {
     </xsl:when>
 
     <!-- no numbering inside certain containers -->
-    <xsl:when test="ancestor::dl or ancestor::figure or ancestor::ol or ancestor::ul or ancestor::ed:del or ancestor::ed:ins"/>
+    <xsl:when test="ancestor::dl or ancestor::figure or ancestor::ol or ancestor::ul or ancestor::ed:ins"/>
   
     <xsl:when test="parent::blockquote or parent::x:blockquote">
       <!-- boilerplate -->
@@ -10932,8 +10909,6 @@ dd, li, p {
   <xsl:copy><xsl:apply-templates select="node()" mode="cleanup-edits" /></xsl:copy>
 </xsl:template>
 
-<xsl:template match="ed:del" mode="cleanup-edits"/>
-
 <xsl:template match="ed:ins" mode="cleanup-edits">
   <xsl:apply-templates mode="cleanup-edits"/>
 </xsl:template>
@@ -11149,7 +11124,7 @@ dd, li, p {
   </xsl:if>
 
   <!-- check IDs -->
-  <xsl:variable name="badTargets" select="//xref[not(ancestor::toc)][not(@target=//@anchor) and not(@target=//@pn) and not(@target=exslt:node-set($includeDirectives)//@anchor) and not(ancestor::ed:del)]" />
+  <xsl:variable name="badTargets" select="//xref[not(ancestor::toc)][not(@target=//@anchor) and not(@target=//@pn) and not(@target=exslt:node-set($includeDirectives)//@anchor)]" />
   <xsl:if test="$badTargets">
     <xsl:variable name="text">
       <xsl:text>The following target names do not exist: </xsl:text>
@@ -11174,15 +11149,6 @@ dd, li, p {
 
 <xsl:template match="@ed:*" />
 
-<xsl:template match="ed:del">
-  <del>
-    <xsl:copy-of select="@*[namespace-uri()='']"/>
-    <xsl:if test="not(@title) and ancestor-or-self::*[@ed:entered-by] and @datetime">
-      <xsl:attribute name="title"><xsl:value-of select="concat(@datetime,', ',ancestor-or-self::*[@ed:entered-by][1]/@ed:entered-by)"/></xsl:attribute>
-    </xsl:if>
-    <xsl:apply-templates />
-  </del>
-</xsl:template>
 
 <xsl:template match="ed:ins">
   <ins>
@@ -11196,10 +11162,6 @@ dd, li, p {
 
 <xsl:template name="sectionnumberAndEdits">
   <xsl:choose>
-    <xsl:when test="ancestor::ed:del">
-      <xsl:text>del-</xsl:text>
-      <xsl:number count="ed:del//section" level="any"/>
-    </xsl:when>
     <xsl:when test="@x:fixed-section-number and @x:fixed-section-number!=''">
       <xsl:value-of select="@x:fixed-section-number"/>
     </xsl:when>
@@ -11827,11 +11789,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1477 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1477 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1478 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1478 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/02/28 17:11:24 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/02/28 17:11:24 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/02/28 22:58:25 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/02/28 22:58:25 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -12250,9 +12212,6 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:template match="*" mode="get-text-content">
   <xsl:apply-templates mode="get-text-content"/>
-</xsl:template>
-
-<xsl:template match="ed:del" mode="get-text-content">
 </xsl:template>
 
 <!-- parsing of processing instructions -->
