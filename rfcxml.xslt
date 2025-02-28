@@ -8745,48 +8745,6 @@ ins {
 }
 div.issuepointer {
   float: left;
-}</xsl:if><xsl:if test="//ed:issue">
-table.openissue {
-  background-color: var(--col-bg-highlight);
-  border-width: thin;
-  border-style: solid;
-  border-color: var(--col-fg);
-}
-table.closedissue {
-  background-color: var(--col-bg);
-  border-width: thin;
-  border-style: solid;
-  border-color: var(--col-fg-light);
-  color: var(--col-fg-light);
-}
-thead th {
-  text-align: left;
-}
-.bg-issue {
-  border: solid;
-  border-width: 1px;
-  font-size: 66%;
-}
-.closed-issue {
-  border: solid;
-  border-width: thin;
-  background-color: var(--col-bg-highlight2);
-  font-size: smaller;
-  font-weight: bold;
-}
-.open-issue {
-  border: solid;
-  border-width: thin;
-  background-color: var(--col-bg-error);
-  font-size: smaller;
-  font-weight: bold;
-}
-.editor-issue {
-  border: solid;
-  border-width: thin;
-  background-color: var(--col-bg-highlight);
-  font-size: smaller;
-  font-weight: bold;
 }</xsl:if><xsl:if test="$xml2rfc-ext-refresh-from!=''">.refreshxmlerror {
   position: fixed;
   top: 1%;
@@ -10351,12 +10309,6 @@ dd, li, p {
       </li>
     </ul>
   </xsl:if>
-
-  <!-- experimental -->
-  <xsl:if test="//ed:issue">
-    <xsl:call-template name="insertIssuesList" />
-  </xsl:if>
-
 </xsl:template>
 
 <xsl:template name="reference-name">
@@ -11147,119 +11099,6 @@ dd, li, p {
   <xsl:apply-templates/>
 </xsl:template>
 
-<!-- experimental annotation support -->
-
-<xsl:template match="ed:issueref">
-  <xsl:choose>
-    <xsl:when test=".=//ed:issue/@name">
-      <a href="#{$anchor-pref}issue.{.}">
-        <xsl:apply-templates/>
-      </a>
-    </xsl:when>
-    <xsl:when test="@href">
-      <a href="{@href}" id="{$anchor-pref}issue.{.}">
-        <xsl:apply-templates/>
-      </a>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:call-template name="warning">
-        <xsl:with-param name="msg">Dangling ed:issueref: <xsl:value-of select="."/></xsl:with-param>
-      </xsl:call-template>
-      <xsl:apply-templates/>
-    </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
-
-<xsl:template match="ed:issue">
-  <xsl:variable name="class">
-    <xsl:choose>
-      <xsl:when test="@status='closed'">closedissue</xsl:when>
-      <xsl:otherwise>openissue</xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-
-  <table class="{$class}">
-    <tr>
-      <td colspan="3">
-        <a id="{$anchor-pref}issue.{@name}">
-          <xsl:choose>
-            <xsl:when test="@status='closed'">
-              <xsl:attribute name="class">closed-issue</xsl:attribute>
-            </xsl:when>
-            <xsl:when test="@status='editor'">
-              <xsl:attribute name="class">editor-issue</xsl:attribute>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:attribute name="class">open-issue</xsl:attribute>
-            </xsl:otherwise>
-          </xsl:choose>
-          <xsl:text>&#160;I&#160;</xsl:text>
-        </a>
-        <xsl:text>&#160;</xsl:text>
-        <xsl:choose>
-          <xsl:when test="@href">
-            <em><a href="{@href}"><xsl:value-of select="@name" /></a></em>
-          </xsl:when>
-          <xsl:when test="@alternate-href">
-            <em>[<a href="{@alternate-href}">alternate link</a>]</em>
-          </xsl:when>
-          <xsl:otherwise>
-            <em><xsl:value-of select="@name" /></em>
-          </xsl:otherwise>
-        </xsl:choose>
-        &#0160;
-        (type: <xsl:value-of select="@type"/>, status: <xsl:value-of select="@status"/>)
-      </td>
-    </tr>
-
-    <xsl:apply-templates select="ed:item"/>
-    <xsl:apply-templates select="ed:resolution"/>
-
-  </table>
-
-</xsl:template>
-
-<xsl:template match="ed:item">
-  <tr>
-    <td class="top">
-      <xsl:if test="@entered-by">
-        <a href="mailto:{@entered-by}?subject={/rfc/@docName},%20{../@name}">
-          <i><xsl:value-of select="@entered-by"/></i>
-        </a>
-      </xsl:if>
-    </td>
-    <td class="topnowrap">
-      <xsl:value-of select="@date"/>
-    </td>
-    <td class="top">
-      <xsl:apply-templates select="node()" mode="issuehtml"/>
-    </td>
-  </tr>
-</xsl:template>
-
-<xsl:template match="ed:resolution">
-  <tr>
-    <td class="top">
-      <xsl:if test="@entered-by">
-        <a href="mailto:{@entered-by}?subject={/rfc/@docName},%20{../@name}"><i><xsl:value-of select="@entered-by"/></i></a>
-      </xsl:if>
-    </td>
-    <td class="topnowrap">
-      <xsl:value-of select="@datetime"/>
-    </td>
-    <td class="top">
-      <em>Resolution:</em>
-      <xsl:apply-templates select="node()" mode="issuehtml"/>
-    </td>
-  </tr>
-</xsl:template>
-
-<xsl:template match="ed:annotation">
-  <em>
-    <xsl:apply-templates/>
-  </em>
-</xsl:template>
-
 <!-- special templates for handling XHTML in issues -->
 <xsl:template match="text()" mode="issuehtml">
   <xsl:value-of select="."/>
@@ -11286,44 +11125,10 @@ dd, li, p {
   </xsl:attribute>
 </xsl:template>
 
-<xsl:template match="ed:issueref" mode="issuehtml">
-  <xsl:apply-templates select="."/>
-</xsl:template>
-
 <xsl:template match="ed:eref" mode="issuehtml">
   <xsl:text>&lt;</xsl:text>
   <a href="{.}"><xsl:value-of select="."/></a>
   <xsl:text>&gt;</xsl:text>
-</xsl:template>
-
-<xsl:template name="insertIssuesList">
-
-  <h2 id="{$anchor-pref}issues-list" ><a href="#{$anchor-pref}issues-list">Issues list</a></h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Type</th>
-        <th>Status</th>
-        <th>Date</th>
-        <th>Raised By</th>
-      </tr>
-    </thead>
-    <tbody>
-      <xsl:for-each select="//ed:issue">
-        <xsl:sort select="@status" />
-        <xsl:sort select="@name" />
-        <tr>
-          <td><a href="#{$anchor-pref}issue.{@name}"><xsl:value-of select="@name" /></a></td>
-          <td><xsl:value-of select="@type" /></td>
-          <td><xsl:value-of select="@status" /></td>
-          <td><xsl:value-of select="ed:item[1]/@date" /></td>
-          <td><a href="mailto:{ed:item[1]/@entered-by}?subject={/rfc/@docName},%20{@name}"><xsl:value-of select="ed:item[1]/@entered-by" /></a></td>
-        </tr>
-      </xsl:for-each>
-    </tbody>
-  </table>
-
 </xsl:template>
 
 <xsl:variable name="all-refs" select="/rfc/back//references/reference|exslt:node-set($includeDirectives)//reference|exslt:node-set($sourcedReferences)//reference"/>
@@ -12125,11 +11930,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1474 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1474 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1475 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1475 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/02/27 22:26:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/02/27 22:26:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/02/28 06:24:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/02/28 06:24:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
