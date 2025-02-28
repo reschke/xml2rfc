@@ -2007,7 +2007,6 @@
         <xsl:attribute name="style"><xsl:value-of select="$prestyle"/></xsl:attribute>
       </xsl:if>
       <xsl:call-template name="add-artwork-class"/>
-      <xsl:call-template name="insertInsDelClass"/>
       <xsl:copy-of select="$display"/>
     </pre>
     <xsl:call-template name="insert-end-code"/>
@@ -3140,7 +3139,6 @@
 <xsl:template name="list-empty">
   <ul class="empty">
     <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </ul>
 </xsl:template>
@@ -3148,7 +3146,6 @@
 <xsl:template name="list-format">
   <dl>
     <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </dl>
 </xsl:template>
@@ -3166,7 +3163,6 @@
       <xsl:attribute name="class">compact</xsl:attribute>
     </xsl:if>
     <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </dl>
 </xsl:template>
@@ -3174,7 +3170,6 @@
 <xsl:template name="list-numbers">
   <ol>
     <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </ol>
 </xsl:template>
@@ -3198,7 +3193,6 @@
   </xsl:variable>
   <ol type="{$type}">
     <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </ol>
 </xsl:template>
@@ -3206,7 +3200,6 @@
 <xsl:template name="list-symbols">
   <ul>
     <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </ul>
 </xsl:template>
@@ -3404,7 +3397,6 @@
         <xsl:attribute name="start"><xsl:value-of select="$start"/></xsl:attribute>
       </xsl:if>
       <xsl:call-template name="copy-anchor"/>
-      <xsl:call-template name="insertInsDelClass"/>
       <xsl:copy-of select="@type"/>
       <xsl:apply-templates />
     </ol>
@@ -3414,7 +3406,6 @@
 <xsl:template match="ul">
   <xsl:call-template name="insert-errata"/>
   <div>
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:if test="not(ancestor::list)">
       <xsl:call-template name="attach-paragraph-number-as-id"/>
     </xsl:if>
@@ -3511,7 +3502,6 @@
 <xsl:template name="list-item-generic">
   <li>
     <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:apply-templates />
   </li>
 </xsl:template>
@@ -3520,7 +3510,6 @@
   <xsl:if test="@hangText!=''">
     <dt>
       <xsl:call-template name="copy-anchor"/>
-      <xsl:call-template name="insertInsDelClass"/>
       <xsl:value-of select="@hangText" />
     </dt>
   </xsl:if>
@@ -3532,7 +3521,6 @@
   <xsl:choose>
     <xsl:when test="$dd-content!=''">
       <dd>
-        <xsl:call-template name="insertInsDelClass"/>
         <!-- if hangIndent present, use 0.7 of the specified value (1em is the width of the "m" character -->
         <xsl:if test="../@hangIndent">
           <xsl:attribute name="style">margin-left: <xsl:value-of select="format-number(../@hangIndent * 0.7,'#.#')"/>em</xsl:attribute>
@@ -3628,7 +3616,6 @@
   <xsl:if test="@hangText!=''">
     <dt>
       <xsl:call-template name="copy-anchor"/>
-      <xsl:call-template name="insertInsDelClass"/>
       <xsl:variable name="del-node" select="ancestor::ed:del"/>
       <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
       <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
@@ -3636,7 +3623,6 @@
     </dt>
   </xsl:if>
   <dd>
-    <xsl:call-template name="insertInsDelClass"/>
     <!-- if hangIndent present, use 0.7 of the specified value (1em is the width of the "m" character -->
     <xsl:if test="../@hangIndent">
       <xsl:attribute name="style">margin-left: <xsl:value-of select="format-number(../@hangIndent * 0.7,'#.#')"/>em</xsl:attribute>
@@ -3746,7 +3732,6 @@
   <section class="{normalize-space($classes)}">
     <xsl:call-template name="copy-anchor"/>
     <h2 id="{$anchor-pref}note.{$num}" >
-      <xsl:call-template name="insertInsDelClass"/>
       <a href="#{$anchor-pref}note.{$num}">
         <xsl:call-template name="insertTitle" />
       </a>
@@ -3769,7 +3754,6 @@
 <xsl:template match="postamble">
   <xsl:if test="normalize-space(.) != ''">
     <p>
-      <xsl:call-template name="insertInsDelClass"/>
       <xsl:call-template name="editingMark" />
       <xsl:apply-templates />
     </p>
@@ -3780,7 +3764,6 @@
   <xsl:if test="normalize-space(.) != ''">
     <p>
       <xsl:call-template name="copy-anchor"/>
-      <xsl:call-template name="insertInsDelClass"/>
       <xsl:call-template name="editingMark" />
       <xsl:apply-templates />
     </p>
@@ -4468,7 +4451,6 @@
   <xsl:call-template name="check-anchor"/>
 
   <dt id="{@anchor}">
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:variable name="del-node" select="ancestor::ed:del"/>
     <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
     <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
@@ -4501,7 +4483,6 @@
   </xsl:variable>
 
   <dd>
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:if test="$in-reference-group">
       <xsl:call-template name="copy-anchor"/>
     </xsl:if>
@@ -4806,7 +4787,6 @@
   <xsl:call-template name="check-anchor"/>
 
   <dt id="{@anchor}">
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:variable name="del-node" select="ancestor::ed:del"/>
     <xsl:variable name="rep-node" select="ancestor::ed:replace"/>
     <xsl:variable name="deleted" select="$del-node and ($rep-node/ed:ins)"/>
@@ -5406,7 +5386,6 @@
               <xsl:value-of select="concat($anchor-pref,$stype,'.',$p)"/>
             </xsl:if>
           </xsl:variable>
-          <xsl:call-template name="insertInsDelClass"/>
           <xsl:call-template name="editingMark" />
           <xsl:apply-templates mode="t-content2" select="." />
           <xsl:if test="$xml2rfc-ext-paragraph-links='yes'">
@@ -5581,8 +5560,6 @@
         </xsl:when>
         <xsl:otherwise/>
       </xsl:choose>
-
-      <xsl:call-template name="insertInsDelClass" />
 
       <xsl:if test="$sectionNumber!='' and not(contains($sectionNumber,$unnumbered))">
         <a href="#{$anchor-pref}section.{$sectionNumber}">
@@ -9029,7 +9006,6 @@ dd, li, p {
         </xsl:choose>
       </xsl:variable>
       <a href="{$backlink}">
-        <xsl:call-template name="insertInsDelClass"/>
         <xsl:choose>
           <xsl:when test="@primary='true'"><b><xsl:value-of select="$n"/></b></xsl:when>
           <xsl:otherwise><xsl:value-of select="$n"/></xsl:otherwise>
@@ -9062,7 +9038,6 @@ dd, li, p {
   <xsl:choose>
     <xsl:when test="self::reference">
       <a href="#{@anchor}">
-        <xsl:call-template name="insertInsDelClass"/>
         <b><xsl:value-of select="$n"/></b>
       </a>
     </xsl:when>
@@ -9070,7 +9045,6 @@ dd, li, p {
       <xsl:variable name="target" select="@target"/>
       <xsl:variable name="backlink">#<xsl:value-of select="$anchor-pref"/>xref.<xsl:value-of select="$target"/>.<xsl:number level="any" count="xref[@target=$target]|relref[@target=$target]"/></xsl:variable>
       <a href="{$backlink}">
-        <xsl:call-template name="insertInsDelClass"/>
         <xsl:value-of select="$n"/>
       </a>
     </xsl:otherwise>
@@ -10811,7 +10785,6 @@ dd, li, p {
 
 <xsl:template match="x:blockquote|blockquote">
   <div>
-    <xsl:call-template name="insertInsDelClass"/>
     <xsl:call-template name="editingMark" />
     <xsl:call-template name="attach-paragraph-number-as-id"/>
     <blockquote>
@@ -11273,17 +11246,6 @@ dd, li, p {
   </xsl:choose>
 </xsl:template>
 
-<!-- convenience template for helping Mozilla (pre/ins inheritance problem) -->
-<xsl:template name="insertInsDelClass">
-  <xsl:if test="ancestor::ed:del">
-    <xsl:attribute name="class">del</xsl:attribute>
-  </xsl:if>
-  <xsl:if test="ancestor::ed:ins">
-    <xsl:attribute name="class">ins</xsl:attribute>
-  </xsl:if>
-</xsl:template>
-
-
 <xsl:template name="sectionnumberAndEdits">
   <xsl:choose>
     <xsl:when test="ancestor::ed:del">
@@ -11648,7 +11610,6 @@ dd, li, p {
             <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
               <td>
                 <xsl:call-template name="copy-anchor"/>
-                <xsl:call-template name="insertInsDelClass"/>
                 <xsl:variable name="pos" select="position()" />
                 <xsl:variable name="col" select="../ttcol[position() = $pos]" />
                 <xsl:choose>
@@ -11930,11 +11891,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1475 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1475 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1476 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1476 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/02/28 06:24:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/02/28 06:24:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/02/28 11:07:55 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/02/28 11:07:55 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
