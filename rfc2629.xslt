@@ -2687,7 +2687,14 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:template match="eref/@section|eref/@sectionFormat">
+  <xsl:call-template name="warning">
+    <xsl:with-param name="msg">eref: unexpected attribute '<xsl:value-of select="node-name(.)"/>', did you mean 'xref'?</xsl:with-param>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template match="eref[*|text()]">
+  <xsl:apply-templates select="@section|@sectionFormat"/>
   <xsl:call-template name="check-absolute-uri"/>
   <a href="{@target}">
     <xsl:apply-templates/>
@@ -2695,6 +2702,7 @@
 </xsl:template>
 
 <xsl:template match="eref[not(*|text())]">
+  <xsl:apply-templates select="@section|@sectionFormat"/>
   <xsl:call-template name="check-absolute-uri"/>
   <xsl:variable name="prec-text" select="preceding-sibling::node()[1]"/>
   <xsl:variable name="prec-ends-with-bracket" select="substring($prec-text,string-length($prec-text))='&lt;'"/>
@@ -11727,11 +11735,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1587 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1587 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1588 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1588 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/05/01 08:50:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/05/01 08:50:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/05/03 04:44:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/05/03 04:44:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -13015,6 +13023,7 @@ prev: <xsl:value-of select="$prev"/>
                      x:lt/t | li/t | dd/t" mode="validate" priority="9">
   <xsl:apply-templates select="@*|*" mode="validate"/>
 </xsl:template>
+
 <xsl:template match="t" mode="validate">
   <xsl:call-template name="validation-error"/>
   <xsl:apply-templates select="@*|*" mode="validate"/>
