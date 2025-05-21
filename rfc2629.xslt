@@ -6527,6 +6527,7 @@
           <xsl:value-of select="@title"/>
         </xsl:for-each>
       </xsl:when>
+      <xsl:when test="$from/@x:title"><xsl:value-of select="$from/@x:title"/></xsl:when>
       <xsl:otherwise />
     </xsl:choose>
   </xsl:variable>
@@ -11735,11 +11736,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1590 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1590 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1591 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1591 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/05/21 06:00:13 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/05/21 06:00:13 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/05/21 16:19:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/05/21 16:19:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
