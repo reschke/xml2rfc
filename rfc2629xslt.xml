@@ -2006,11 +2006,12 @@ Content-Length: &lt;x:length-of target="req"/>
 
 <section title="Extensions to &lt;xref&gt; element" anchor="ext-rfc2629.xref">
 <t>
-  Three extension attributes are allowed on the standard &lt;xref&gt; element:
+  Four extension attributes are allowed on the standard &lt;xref&gt; element:
   <list style="numbers">
     <t>x:sec can be specified to point to a specific section of the referenced document,</t>
     <t>x:rel may specify a relative reference to use when linking into the referenced document (if linking by section number is not available),</t>
-    <t>x:fmt defines the text format to be used.</t>
+    <t>x:fmt defines the text format to be used,</t>
+    <t>x:title provided a title for the link (to be used in the HTML title attribute).</t>
   </list>
 </t>
 <t>
@@ -3879,6 +3880,7 @@ attlist.xref &amp;=
                      "none" }?,
   attribute x:rel  { ATEXT }?,
   attribute x:sec  { ATEXT }?,
+  attribute x:title  { ATEXT }?,
   attribute relative  { ATEXT }?,
   attribute section  { ATEXT }?,
   attribute sectionFormat  { "bare" | "comma" | "of" | "parens" }?

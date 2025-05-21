@@ -2,7 +2,7 @@
     Augment section links to RFCs and Internet Drafts, also cleanup 
     unneeded markup from kramdown2629
 
-    Copyright (c) 2017-2024, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2017-2025, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -133,10 +133,10 @@
           <xsl:call-template name="get-section-number"/>
         </xsl:variable>
         <xsl:if test="translate($n,$lcase,$ucase)=translate($sec,$lcase,$ucase)">
+          <xsl:attribute name="x:title"><xsl:value-of select="normalize-space(concat(@title,name))"/></xsl:attribute>
           <xsl:if test="@anchor">
             <xsl:processing-instruction name="aug-anchor"><xsl:value-of select="@anchor"/></xsl:processing-instruction>
           </xsl:if>
-          <xsl:processing-instruction name="aug-title"><xsl:value-of select="normalize-space(concat(@title,name))"/></xsl:processing-instruction>
         </xsl:if>
       </xsl:for-each>
     </xsl:if>

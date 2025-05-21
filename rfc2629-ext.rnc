@@ -529,6 +529,7 @@ attlist.xref &=
                      "none" }?,
   attribute x:rel  { ATEXT }?,
   attribute x:sec  { ATEXT }?,
+  attribute x:title  { ATEXT }?,
   attribute relative  { ATEXT }?,
   attribute section  { ATEXT }?,
   attribute sectionFormat  { "bare" | "comma" | "of" | "parens" }?
