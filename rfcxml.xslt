@@ -11736,11 +11736,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1483 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1483 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1484 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1484 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/06/16 06:17:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/06/16 06:17:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/06/16 16:21:10 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/06/16 16:21:10 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -11821,7 +11821,8 @@ dd, li, p {
         <xsl:if test="following-sibling::section[not(@numbered) or @numbered!='false']">
           <xsl:call-template name="error">
             <xsl:with-param name="inline" select="'no'"/>
-            <xsl:with-param name="msg">Unnumbered section is followed by numbered sections</xsl:with-param>
+            <xsl:with-param name="msg">Unnumbered section is followed by numbered sections<xsl:if
+            test="following-sibling::section[@numbered]"> (invalid attribute value for numbered: '<xsl:value-of select="following-sibling::section[@numbered and @numbered!='true' and @numbered!='false']/@numbered"/>')</xsl:if></xsl:with-param>
           </xsl:call-template>
         </xsl:if>
         <xsl:if test="ancestor::middle and ../../back/references">
