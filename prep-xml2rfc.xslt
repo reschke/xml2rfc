@@ -1253,13 +1253,11 @@
       <references>
         <name>References</name>
         <xsl:copy-of select="."/>
-        <xsl:apply-templates select="following-sibling::references" mode="prep-references"/>
       </references>
     </xsl:when>
-    <xsl:when test="not(preceding-sibling::references) and count(../references)=1">
+    <xsl:otherwise>
       <xsl:copy-of select="."/>
-    </xsl:when>
-    <xsl:otherwise/>
+    </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
