@@ -1,7 +1,7 @@
 <!--
     Experimental implementation of xml2rfc v3 preptool
 
-    Copyright (c) 2016-2023, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2016-2025, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -1247,18 +1247,22 @@
   <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-references"/></xsl:copy>
 </xsl:template>
 
-<xsl:template match="references[parent::back]" mode="prep-references">
-  <xsl:choose>
-    <xsl:when test="not(preceding-sibling::references) and count(../references)!=1">
-      <references>
-        <name>References</name>
-        <xsl:copy-of select="."/>
-      </references>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:copy-of select="."/>
-    </xsl:otherwise>
-  </xsl:choose>
+<!-- move top level references sections into container element if there are multiple -->
+
+<xsl:template match="back[count(references)=1]" mode="prep-references" priority="9">
+  <xsl:copy><xsl:apply-templates select="node()|@*" mode="prep-references"/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="back[references]" mode="prep-references">
+  <back>
+    <xsl:copy-of select="@*"/>
+    <xsl:apply-templates select="displayreference" mode="prep-references"/>
+    <references>
+      <name>References</name>
+      <xsl:apply-templates select="references" mode="prep-references"/>
+    </references>
+    <xsl:apply-templates select="section" mode="prep-references"/>
+  </back>
 </xsl:template>
 
 <!-- removeinrfc step -->
