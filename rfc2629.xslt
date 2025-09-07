@@ -11301,8 +11301,11 @@ dd, li, p {
 <!-- table formatting -->
 
 <xsl:template match="table">
-  <div class="{$css-tt}">
-    <xsl:call-template name="copy-anchor"/>
+  <xsl:variable name="anch">
+    <xsl:call-template name="get-table-anchor"/>
+  </xsl:variable>
+
+  <div class="{$css-tt}" id="{$anch}">
     <xsl:apply-templates select="iref"/>
     <xsl:variable name="style">
       <xsl:text>v3 </xsl:text>
@@ -11315,6 +11318,7 @@ dd, li, p {
     </xsl:variable>
 
     <table class="{$style}">
+      <xsl:call-template name="copy-anchor"/>
       <xsl:variable name="n"><xsl:call-template name="get-table-number"/></xsl:variable>
       <caption>
         <xsl:text>Table </xsl:text>
@@ -11738,11 +11742,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1598 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1598 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1599 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1599 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/09/06 17:11:32 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/09/06 17:11:32 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/09/07 15:12:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/09/07 15:12:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
