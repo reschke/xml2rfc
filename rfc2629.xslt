@@ -2689,7 +2689,7 @@
 
 <xsl:template match="eref/@section|eref/@sectionFormat">
   <xsl:call-template name="warning">
-    <xsl:with-param name="msg">eref: unexpected attribute '<xsl:value-of select="node-name(.)"/>', did you mean 'xref'?</xsl:with-param>
+    <xsl:with-param name="msg">eref: unexpected attribute '<xsl:value-of select="local-name(.)"/>', did you mean 'xref'?</xsl:with-param>
   </xsl:call-template>
 </xsl:template>
 
@@ -11745,11 +11745,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1601 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1601 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1602 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1602 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/09/09 14:54:16 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/09/09 14:54:16 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/09/09 18:36:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/09/09 18:36:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
