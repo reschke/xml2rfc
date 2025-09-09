@@ -8698,7 +8698,7 @@ blockquote > * .bcp14 {
 .self:hover {
     text-decoration: none;
 }
-h1:hover > a.self, h2:hover > a.self, h3:hover > a.self, li:hover > a.self, p:hover > a.self {
+h1:hover > a.self, h2:hover > a.self, h3:hover > a.self, li:hover > a.self, p:hover > a.self, caption:hover > a.self {
     visibility: visible;
 }</xsl:if><xsl:if test="/rfc/x:feedback">.<xsl:value-of select="$css-feedback"/> {
   position: fixed;
@@ -11327,6 +11327,7 @@ dd, li, p {
           <xsl:text>: </xsl:text>
           <xsl:apply-templates select="name/node()"/>
         </xsl:if>
+        <a class='self' href='#{$anch}'>&#xb6;</a>
       </caption>
       <xsl:apply-templates select="*[not(self::iref)]"/>
     </table>
@@ -11434,15 +11435,17 @@ dd, li, p {
           <xsl:if test="@x:caption-side='top'">
             <xsl:attribute name="class">caption-top</xsl:attribute>
           </xsl:if>
-          <xsl:if test="not(starts-with($n,'u'))">
-            <xsl:text>Table </xsl:text>
-            <xsl:value-of select="$n"/>
-            <xsl:if test="@title!=''">: </xsl:if>
-          </xsl:if>
-          <xsl:if test="@title!=''">
-            <xsl:value-of select="@title" />
-          </xsl:if>
-        </caption>
+          <xsl:variable name="c">
+            <xsl:if test="not(starts-with($n,'u'))">
+              <xsl:text>Table </xsl:text>
+              <xsl:value-of select="$n"/>
+              <xsl:if test="@title!=''">: </xsl:if>
+            </xsl:if>
+            <xsl:if test="@title!=''">
+              <xsl:value-of select="@title"/>
+            </xsl:if>
+          </xsl:variable>
+          <xsl:if test="$c!=''"><xsl:value-of select="$c"/><a class='self' href='#{$anch}'>&#xb6;</a></xsl:if></caption>
       </xsl:if>
 
       <xsl:if test="ttcol!=''">
@@ -11742,11 +11745,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1599 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1599 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1600 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1600 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/09/07 15:12:02 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/09/07 15:12:02 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/09/09 09:14:02 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/09/09 09:14:02 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
