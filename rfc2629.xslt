@@ -2178,6 +2178,10 @@
       <xsl:when test="@align='right'"><xsl:text> </xsl:text><xsl:value-of select="$css-right"/></xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
+    <!-- hack to detect aasvg output -->
+    <xsl:if test="../artwork[@type='ascii-art'] and svg:svg[@class='diagram']">
+      <xsl:text> aasvg</xsl:text>
+    </xsl:if>
   </xsl:variable>
   <div class="{normalize-space($class)}">
     <xsl:choose>
@@ -8624,12 +8628,24 @@ ul.ind li li {
   margin-left: 0em;
 }</xsl:if><xsl:if test="//svg:svg">
 @namespace svg url(http://www.w3.org/2000/svg);
-svg|svg {
+svg {
+  background-color: white;
   margin-left: 3em;
 }
-svg {
-  background-color: white;<!-- until we are smart wrt line diagrams -->
-  margin-left: 3em;
+div.aasvg svg {
+  background-color: var(--col-bg);
+}
+div.aasvg svg [stroke="black"], div.aasvg svg[stroke^="#000"] {
+  stroke: var(--col-fg);
+}
+div.aasvg svg [stroke="white"], div.aasvg svg [stroke^="#fff"] {
+  stroke: var(--col-bg);
+}
+div.aasvg svg [fill="black"], div.aasvg svg [fill^="#000"], div.aasvg svg :not([fill]) {
+  fill: var(--col-fg);
+}
+div.aasvg svg [stroke="fill"], div.aasvg svg [fill^="#fff"] {
+  fill: var(--col-bg);;
 }</xsl:if>
 .avoidbreakinside {
   page-break-inside: avoid;
@@ -11746,11 +11762,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1606 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1606 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1607 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1607 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/09/24 08:45:25 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/09/24 08:45:25 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/09/25 14:35:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/09/25 14:35:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
