@@ -8235,23 +8235,24 @@ PR['registerLangHandler'](
 <style title="rfc2629.xslt">
 <xsl:value-of select="$xml2rfc-ext-webfonts"/>
 :root {
-  --col-bg: white;
-  --col-bg-error: red;
-  --col-bg-highlight: yellow;
-  --col-bg-highlight2: lime;
-  --col-bg-light: gray;
-  --col-bg-pre: lightyellow;
-  --col-bg-pre1: #f8f8f8;
-  --col-bg-pre2: #f0f0f0;
-  --col-bg-th: #e9e9e9;
-  --col-bg-tr: #f5f5f5;
-  --col-fg: black;
-  --col-fg-del: red;
-  --col-fg-error: red;
-  --col-fg-ins: green;
-  --col-fg-light: gray;
-  --col-fg-link: blue;
-  --col-fg-title: green;
+  color-scheme: light dark;
+  --col-bg: light-dark(white, black);
+  --col-bg-error: light-dark(red, red);
+  --col-bg-highlight: light-dark(yellow, brown);
+  --col-bg-highlight2: light-dark(lime, lime);
+  --col-bg-light: light-dark(gray, gray);
+  --col-bg-pre: light-dark(lightyellow, #202000);
+  --col-bg-pre1: light-dark(#f8f8f8, #080808);
+  --col-bg-pre2: light-dark(#f0f0f0, #101010);
+  --col-bg-th: light-dark(#e9e9e9, #303030);
+  --col-bg-tr: light-dark(#f5f5f5, #202020);
+  --col-fg: light-dark(black, white);
+  --col-fg-del: light-dark(red, red);
+  --col-fg-error: light-dark(red, red);
+  --col-fg-ins: light-dark(green, green);
+  --col-fg-light: light-dark(gray, gray);
+  --col-fg-link: light-dark(blue, lightblue);
+  --col-fg-title: light-dark(green, green);
 }
 a {
   color: var(--col-fg-link);
@@ -8885,26 +8886,6 @@ dd, li, p {
 }
 <xsl:if test="$xml2rfc-ext-dark-mode!='no'">
 @media (prefers-color-scheme: dark) {
-  :root {
-    --col-bg: black;
-    --col-bg-error: red;
-    --col-bg-highlight: brown;
-    --col-bg-highlight2: lime;
-    --col-bg-light: gray;
-    --col-bg-pre: #202000;
-    --col-bg-pre1: #080808;
-    --col-bg-pre2: #101010;
-    --col-bg-th: #303030;
-    --col-bg-tr: #202020;
-    --col-fg: white;
-    --col-fg-del: red;
-    --col-fg-error: red;
-    --col-fg-ins: green;
-    --col-fg-light: gray;
-    --col-fg-link: lightblue;
-    --col-fg-title: green;
-  }
-  
   pre.prettyprint .pln { color: #fff; }
   pre.prettyprint .str, pre.prettyprint .atv { color: #8f8; }
   pre.prettyprint .kwd, pre.prettyprint .tag { color: #88f; }
@@ -11762,11 +11743,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1609 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1609 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1610 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1610 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/09/26 06:14:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/09/26 06:14:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/09/30 08:22:09 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/09/30 08:22:09 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
