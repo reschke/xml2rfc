@@ -8727,9 +8727,7 @@ h1:hover > a.self, h2:hover > a.self, h3:hover > a.self, li:hover > a.self, p:ho
   border-radius: 5px;
   background: #006400;
   border: 1px solid silver;
-  -webkit-user-select: none;<!-- not std CSS yet--> 
-  -moz-user-select: none;
-  -ms-user-select: none;
+  user-select: none;
 }
 .<xsl:value-of select="$css-fbbutton"/> {
   margin-left: 1em;
@@ -8740,9 +8738,7 @@ h1:hover > a.self, h2:hover > a.self, h3:hover > a.self, li:hover > a.self, p:ho
   padding: 1px 4px;
   border: 1px solid silver;
   border-radius: 5px;
-  -webkit-user-select: none;<!-- not std CSS yet--> 
-  -moz-user-select: none;
-  -ms-user-select: none;
+  user-select: none;
 }</xsl:if><xsl:if test="$xml2rfc-ext-justification='always'">
 dd, li, p {
   text-align: justify;
@@ -8753,18 +8749,14 @@ dd, li, p {
   float: right;
   margin: 2em;
   padding: 1em;
-  -webkit-user-select: none;<!-- not std CSS yet--> 
-  -moz-user-select: none;
-  -ms-user-select: none;
+  user-select: none;
 }</xsl:if><xsl:if test="$errata-parsed">
 .<xsl:value-of select="$css-erratum"/> {
   border: 1px solid orangered;
   border-left: 0.75em solid orangered;
   float: right;
   padding: 0.5em;
-  -webkit-user-select: none;<!-- not std CSS yet--> 
-  -moz-user-select: none;
-  -ms-user-select: none;
+  user-select: none;
 }<xsl:if test="$parsedMaxwidth!=''">
 @media screen and (min-width: <xsl:value-of select="number($parsedMaxwidth + 350)"/>px) {
   .<xsl:value-of select="$css-erratum"/> {
@@ -11743,11 +11735,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1493 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1493 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1494 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1494 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/09/30 08:22:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/09/30 08:22:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/10/01 07:13:50 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/01 07:13:50 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
