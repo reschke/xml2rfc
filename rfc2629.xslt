@@ -8252,7 +8252,14 @@ PR['registerLangHandler'](
   --col-fg-ins: light-dark(green, green);
   --col-fg-light: light-dark(gray, gray);
   --col-fg-link: light-dark(blue, lightblue);
-  --col-fg-title: light-dark(green, green);
+  --col-fg-title: light-dark(green, green);<xsl:if test="$prettyprint-class='prettyprint' and contains($prettyprint-script,'prettify') and not(contains($prettyprint-script,'skin='))">
+  --col-pr-plain: light-dark(black, white);<!-- plain text -->
+  --col-pr-string: light-dark(#080, #8f8);<!-- string, attribute value -->
+  --col-pr-keyword: light-dark(#008, #88f);<!-- keyword -->
+  --col-pr-comment: light-dark(#800, #f88);<!-- comment -->
+  --col-pr-type: light-dark(#606, #f8f);<!-- type, attribute name, decimal, variable (?) -->
+  --col-pr-lit: light-dark(#066, #8ff);<!-- literal -->
+  --col-pr-pun: light-dark(#066, #ff8);<!-- punctuation, open bracket, close bracket --></xsl:if>
 }
 a {
   color: var(--col-fg-link);
@@ -8769,13 +8776,13 @@ dd, li, p {
   font-size: 115%;
   text-align: center;
 }</xsl:if><xsl:if test="$prettyprint-class='prettyprint' and contains($prettyprint-script,'prettify') and not(contains($prettyprint-script,'skin='))">
-  pre.prettyprint .pln { color: #000; }
-  pre.prettyprint .str, pre.prettyprint .atv { color: #080; }
-  pre.prettyprint .kwd, pre.prettyprint .tag { color: #008; }
-  pre.prettyprint .com { color: #800; }
-  pre.prettyprint .typ, pre.prettyprint .atn, pre.prettyprint .dec, pre.prettyprint .var { color: #606; }
-  pre.prettyprint .lit { color: #066; }
-  pre.prettyprint .pun, pre.prettyprint .opn, pre.prettyprint .clo { color: #660; }
+  pre.prettyprint .pln { color: var(--col-pr-plain); }<!-- plain text -->
+  pre.prettyprint .str, pre.prettyprint .atv { color: var(--col-pr-string); }<!-- string, attribute value -->
+  pre.prettyprint .kwd, pre.prettyprint .tag { color: var(--col-pr-keyword); }<!-- keyword -->
+  pre.prettyprint .com { color: var(--col-pr-comment); }<!-- comment -->
+  pre.prettyprint .typ, pre.prettyprint .atn, pre.prettyprint .dec, pre.prettyprint .var { color: var(--col-pr-type); }<!-- type, attribute name, decimal, variable (?) -->
+  pre.prettyprint .lit { color: var(--col-pr-lit); }<!-- literal -->
+  pre.prettyprint .pun, pre.prettyprint .opn, pre.prettyprint .clo { color: var(--col-pr-pun); }<!-- punctuation, open bracket, close bracket -->
 </xsl:if>
 
 @media screen {
@@ -8876,17 +8883,6 @@ dd, li, p {
       content: normal;
     }
 }
-<xsl:if test="$xml2rfc-ext-dark-mode!='no'">
-@media (prefers-color-scheme: dark) {
-  pre.prettyprint .pln { color: #fff; }
-  pre.prettyprint .str, pre.prettyprint .atv { color: #8f8; }
-  pre.prettyprint .kwd, pre.prettyprint .tag { color: #88f; }
-  pre.prettyprint .com { color: #f88; }
-  pre.prettyprint .typ, pre.prettyprint .atn, pre.prettyprint .dec, pre.prettyprint .var { color: #f8f; }
-  pre.prettyprint .lit { color: #8ff; }
-  pre.prettyprint .pun, pre.prettyprint .opn, pre.prettyprint .clo { color: #ff8; }
-}
-</xsl:if>
 </style>
 </xsl:template>
 
@@ -11735,11 +11731,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1613 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1613 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1614 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1614 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/10/01 11:14:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/01 11:14:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/10/01 17:17:12 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/01 17:17:12 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
