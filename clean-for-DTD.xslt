@@ -1,7 +1,7 @@
 <!--
     Strip rfc2629.xslt extensions, generating XML input for "official" xml2rfc
 
-    Copyright (c) 2006-2023, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2025, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -943,6 +943,7 @@
 </xsl:template>
 
 <xsl:template match="abstract/@anchor" mode="cleanup"/>
+<xsl:template match="author/@anchor" mode="cleanup"/>
 <xsl:template match="note/@anchor" mode="cleanup"/>
 
 <xsl:template match="xref[(@x:fmt or @x:sec or @x:rel) and (*|text())]|relref[*|text()]" mode="cleanup">
@@ -966,7 +967,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="xref[(text()|*) and (@target=//abstract/@anchor or @target=//note/@anchor or @target=//preamble/@anchor or @target=//spanx/@anchor or @target=//name//@anchor or @target=//references/@anchor or @target=//artwork/@anchor or @target=//sourcecode/@anchor or @target=//artset/@anchor or @target=//strong/@anchor)]" mode="cleanup">
+<xsl:template match="xref[(text()|*) and (@target=//abstract/@anchor or @target=//author/@anchor or @target=//note/@anchor or @target=//preamble/@anchor or @target=//spanx/@anchor or @target=//name//@anchor or @target=//references/@anchor or @target=//artwork/@anchor or @target=//sourcecode/@anchor or @target=//artset/@anchor or @target=//strong/@anchor)]" mode="cleanup">
   <!-- remove the link -->
   <xsl:apply-templates select="node()" mode="cleanup"/>
 </xsl:template>
@@ -976,7 +977,7 @@
   <xsl:apply-templates select="node()" mode="cleanup"/>
 </xsl:template>
 
-<xsl:template match="xref[not((text()|*)) and (@target=//abstract/@anchor or @target=//note/@anchor or @target=//preamble/@anchor or @target=//spanx/@anchor or @target=//references/@anchor or @target=//artwork/@anchor or @target=//sourcecode/@anchor or @target=//artset/@anchor or @target=//strong/@anchor)]" mode="cleanup">
+<xsl:template match="xref[not((text()|*)) and (@target=//abstract/@anchor or @target=//author/@anchor or @target=//note/@anchor or @target=//preamble/@anchor or @target=//spanx/@anchor or @target=//references/@anchor or @target=//artwork/@anchor or @target=//sourcecode/@anchor or @target=//artset/@anchor or @target=//strong/@anchor)]" mode="cleanup">
   <xsl:variable name="content">
     <xsl:apply-templates select="."/>
   </xsl:variable>
