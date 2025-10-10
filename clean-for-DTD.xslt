@@ -684,7 +684,6 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="author/@anchor" mode="cleanup"/>
 <xsl:template match="x:include-author" mode="cleanup">
   <t>
     <xsl:value-of select="/*/front/author[@anchor=current()/@target]"/>
