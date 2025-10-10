@@ -11672,13 +11672,33 @@ dd, li, p {
 <xsl:template name="get-author-summary">
   <xsl:choose>
     <xsl:when test="count(/rfc/front/author)=1">
-      <xsl:value-of select="/rfc/front/author[1]/@surname" />
+      <xsl:apply-templates select="/rfc/front/author[1]" mode="summary"/>
     </xsl:when>
     <xsl:when test="count(/rfc/front/author)=2">
-      <xsl:value-of select="concat(/rfc/front/author[1]/@surname,' &amp; ',/rfc/front/author[2]/@surname)" />
+      <xsl:apply-templates select="/rfc/front/author[1]" mode="summary"/>
+      <xsl:text> &amp; </xsl:text>
+      <xsl:apply-templates select="/rfc/front/author[2]" mode="summary"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="concat(/rfc/front/author[1]/@surname,', et al.')" />
+      <xsl:apply-templates select="/rfc/front/author[1]" mode="summary"/>
+      <xsl:text>, et al.</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="author" mode="summary">
+  <xsl:choose>
+    <!-- prefer surname for shortness -->
+    <xsl:when test="@surname"><xsl:value-of select="normalize-space(@surname)"/></xsl:when>
+    <!-- use fullname when available -->
+    <xsl:when test="@fullname"><xsl:value-of select="normalize-space(@fullname)"/></xsl:when>
+    <!-- org otherwise -->
+    <xsl:when test="organization"><xsl:value-of select="normalize-space(organization)"/></xsl:when>
+    <!-- complain -->
+    <xsl:otherwise>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">&lt;author&gt; missing both @surname and organization</xsl:with-param>
+      </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -11732,11 +11752,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1496 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1496 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1497 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1497 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/10/09 16:44:58 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/09 16:44:58 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/10/10 16:57:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/10 16:57:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
