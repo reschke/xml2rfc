@@ -50,7 +50,7 @@
                 exclude-result-prefixes="date ed exslt fo msxsl myns rdf saxon saxon-old svg x xi xhtml"
                 >
 
-<xsl:strip-space elements="abstract address artset aside author back boilerplate dl figure front list middle note ol postal reference references rfc section table tbody thead tr texttable ul svg:svg"/>
+<xsl:strip-space elements="abstract address artset aside author back boilerplate contact dl figure front list middle note ol postal reference references rfc section table tbody thead tr texttable ul svg:svg"/>
 
 <xsl:output method="html" encoding="utf-8" doctype-system="about:legacy-compat" indent="no"/>
 
@@ -3987,6 +3987,7 @@
           <xsl:value-of select="@title"/>
         </xsl:when>
         <xsl:when test="self::abstract">Abstract</xsl:when>
+        <xsl:when test="self::author or self::contact"><xsl:apply-templates select="." mode="display-long"/></xsl:when>
         <xsl:when test="self::references">References</xsl:when>
         <xsl:otherwise/>
       </xsl:choose>
@@ -5840,6 +5841,9 @@
       <xsl:value-of select="normalize-space($to/@title)"/>
     </xsl:when>
     <xsl:when test="$to/self::abstract">Abstract</xsl:when>
+    <xsl:when test="$to/self::author or $to/self::contact">
+      <xsl:for-each select="$to"><xsl:apply-templates select="." mode="display-long"/></xsl:for-each>
+    </xsl:when>
     <xsl:when test="$to/self::references">References</xsl:when>
     <xsl:otherwise/>
   </xsl:choose>
@@ -5867,10 +5871,9 @@
     </xsl:when>
     <xsl:when test="$from/@format='counter'">
       <xsl:choose>
-        <xsl:when test="$to/self::abstract">
+        <xsl:when test="$to/self::abstract or $to/self::author or $to/self::contact">
           <xsl:call-template name="error">
-            <xsl:with-param name="inline">no</xsl:with-param>
-            <xsl:with-param name="msg">xref to abstract with format='counter' not allowed</xsl:with-param>
+            <xsl:with-param name="msg">xref to <xsl:value-of select="name($to)"/> with format='counter' not allowed</xsl:with-param>
             <xsl:with-param name="node" select="$from"/>
           </xsl:call-template>
         </xsl:when>
@@ -5889,6 +5892,9 @@
     </xsl:when>
     <xsl:otherwise>
       <xsl:choose>
+        <xsl:when test="$to/self::author or $to/self::contact">
+          <xsl:for-each select="$to"><xsl:apply-templates select="." mode="display-long"/></xsl:for-each>
+        </xsl:when>
         <xsl:when test="starts-with($refnum,$unnumbered)">
           <xsl:value-of select="$refname"/>
           <xsl:text> "</xsl:text>
@@ -5981,7 +5987,7 @@
 
 <xsl:key name="iref-xanch" match="iref[@x:for-anchor]" use="@x:for-anchor"/>
 
-<!-- xref to section or appendix -->
+<!-- xref to section, appendix, etc -->
 <xsl:template name="xref-to-section">
   <xsl:param name="from"/>
   <xsl:param name="to"/>
@@ -6779,7 +6785,7 @@
       </xsl:when>
 
       <!-- Section links -->
-      <xsl:when test="$node/self::section or $node/self::appendix or $node/self::references or $node/self::abstract or $node/self::note">
+      <xsl:when test="$node/self::section or $node/self::appendix or $node/self::references or $node/self::abstract or $node/self::author or $node/self::contact or $node/self::note">
         <!-- index links to this xref -->
         <xsl:variable name="ireftargets" select="key('iref-xanch',$target) | key('iref-xanch','')[../@anchor=$target]"/>
         
@@ -11672,21 +11678,21 @@ dd, li, p {
 <xsl:template name="get-author-summary">
   <xsl:choose>
     <xsl:when test="count(/rfc/front/author)=1">
-      <xsl:apply-templates select="/rfc/front/author[1]" mode="summary"/>
+      <xsl:apply-templates select="/rfc/front/author[1]" mode="display-short"/>
     </xsl:when>
     <xsl:when test="count(/rfc/front/author)=2">
-      <xsl:apply-templates select="/rfc/front/author[1]" mode="summary"/>
+      <xsl:apply-templates select="/rfc/front/author[1]" mode="display-short"/>
       <xsl:text> &amp; </xsl:text>
-      <xsl:apply-templates select="/rfc/front/author[2]" mode="summary"/>
+      <xsl:apply-templates select="/rfc/front/author[2]" mode="display-short"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:apply-templates select="/rfc/front/author[1]" mode="summary"/>
+      <xsl:apply-templates select="/rfc/front/author[1]" mode="display-short"/>
       <xsl:text>, et al.</xsl:text>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="author" mode="summary">
+<xsl:template match="author" mode="display-short">
   <xsl:choose>
     <!-- prefer surname for shortness -->
     <xsl:when test="@surname"><xsl:value-of select="normalize-space(@surname)"/></xsl:when>
@@ -11697,7 +11703,24 @@ dd, li, p {
     <!-- complain -->
     <xsl:otherwise>
       <xsl:call-template name="warning">
-        <xsl:with-param name="msg">&lt;author&gt; missing both @surname and organization</xsl:with-param>
+        <xsl:with-param name="msg">&lt;<xsl:value-of select="name(.)"/>&gt; missing both @surname and organization</xsl:with-param>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="author|contact" mode="display-long">
+  <xsl:choose>
+    <!-- use fullname when available -->
+    <xsl:when test="@fullname"><xsl:value-of select="normalize-space(@fullname)"/></xsl:when>
+    <!-- fallback to surname -->
+    <xsl:when test="@surname"><xsl:value-of select="normalize-space(@surname)"/></xsl:when>
+    <!-- org otherwise -->
+    <xsl:when test="organization"><xsl:value-of select="normalize-space(organization)"/></xsl:when>
+    <!-- complain -->
+    <xsl:otherwise>
+      <xsl:call-template name="warning">
+        <xsl:with-param name="msg">&lt;<xsl:value-of select="name(.)"/>&gt; missing both @surname and organization</xsl:with-param>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -11752,11 +11775,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1497 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1497 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1498 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1498 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/10/10 16:57:20 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/10 16:57:20 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/10/11 14:27:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/11 14:27:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -11819,6 +11842,14 @@ dd, li, p {
   <xsl:choose>
     <xsl:when test="self::note">
       <xsl:number count="note"/>
+    </xsl:when>
+    <xsl:when test="self::author">
+      <xsl:value-of select="$unnumbered"/>
+      <xsl:number count="author" level="any"/>
+    </xsl:when>
+    <xsl:when test="self::contact">
+      <xsl:value-of select="$unnumbered"/>
+      <xsl:number count="contact" level="any"/>
     </xsl:when>
     <xsl:when test="@x:fixed-section-number and @x:fixed-section-number!=''">
       <xsl:value-of select="@x:fixed-section-number"/>
