@@ -2271,19 +2271,26 @@
 <xsl:template match="author|contact|x:contributor">
   <xsl:call-template name="check-no-text-content"/>
 
-  <address>
-    <xsl:call-template name="copy-anchor"/>
-    <xsl:call-template name="emit-author"/>
-
-    <xsl:if test="@asciiFullname!='' or organization/@ascii!='' or address/postal/*/@ascii">
-      <br/><br/>
-      <em>Additional contact information:</em>
-      <br/>
-      <xsl:call-template name="emit-author">
-        <xsl:with-param name="ascii" select="false()"/>
-      </xsl:call-template>
+  <div>
+    <xsl:if test="self::author">
+      <xsl:attribute name="id">
+        <xsl:call-template name="get-section-number"/>
+      </xsl:attribute>
     </xsl:if>
-  </address>
+    <address>
+      <xsl:call-template name="copy-anchor"/>
+      <xsl:call-template name="emit-author"/>
+  
+      <xsl:if test="@asciiFullname!='' or organization/@ascii!='' or address/postal/*/@ascii">
+        <br/><br/>
+        <em>Additional contact information:</em>
+        <br/>
+        <xsl:call-template name="emit-author">
+          <xsl:with-param name="ascii" select="false()"/>
+        </xsl:call-template>
+      </xsl:if>
+    </address>
+  </div>
 </xsl:template>
 
 <xsl:template name="emit-postal-line">
@@ -7212,6 +7219,16 @@
 
 <xsl:template name="collectRightHeaderColumn">
   <xsl:for-each select="author">
+    <xsl:variable name="link">
+      <xsl:choose>
+        <xsl:when test="@anchor">
+          <xsl:value-of select="@anchor"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="get-section-number"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>   
     <xsl:variable name="surname">
       <xsl:call-template name="get-author-surname"/>
     </xsl:variable>
@@ -7230,28 +7247,30 @@
     </xsl:variable>
     <xsl:if test="$surname!=''">
       <myns:item>
-        <xsl:value-of select="$truncated-initials"/>
-        <xsl:if test="$truncated-initials!=''">
-          <xsl:text> </xsl:text>
-        </xsl:if>
-        <xsl:value-of select="$surname" />
-        <xsl:if test="@asciiInitials!='' or @asciiSurname!=''">
-          <xsl:text> (</xsl:text>
-            <xsl:value-of select="@asciiInitials"/>
-            <xsl:if test="@asciiInitials!='' and @asciiSurname!=''"> </xsl:if>
-            <xsl:value-of select="@asciiSurname"/>
-          <xsl:text>)</xsl:text>
-        </xsl:if>
-        <xsl:if test="@role">
-          <xsl:choose>
-            <xsl:when test="@role='editor'">
-              <xsl:text>, Editor</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>, </xsl:text><xsl:value-of select="@role" />
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:if>
+        <a href="#{$link}">
+          <xsl:value-of select="$truncated-initials"/>
+          <xsl:if test="$truncated-initials!=''">
+            <xsl:text> </xsl:text>
+          </xsl:if>
+          <xsl:value-of select="$surname" />
+          <xsl:if test="@asciiInitials!='' or @asciiSurname!=''">
+            <xsl:text> (</xsl:text>
+              <xsl:value-of select="@asciiInitials"/>
+              <xsl:if test="@asciiInitials!='' and @asciiSurname!=''"> </xsl:if>
+              <xsl:value-of select="@asciiSurname"/>
+            <xsl:text>)</xsl:text>
+          </xsl:if>
+          <xsl:if test="@role">
+            <xsl:choose>
+              <xsl:when test="@role='editor'">
+                <xsl:text>, Editor</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>, </xsl:text><xsl:value-of select="@role" />
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:if>
+        </a>
       </myns:item>
     </xsl:if>
     <xsl:variable name="org">
@@ -7270,10 +7289,12 @@
     </xsl:variable>
     <xsl:if test="$org != $orgOfFollowing and $org != ''">
       <myns:item>
-        <xsl:value-of select="$org"/>
-        <xsl:if test="organization/@ascii">
-          <xsl:value-of select="concat(' (',organization/@ascii,')')"/>
-        </xsl:if>
+        <a href="#{$link}">
+          <xsl:value-of select="$org"/>
+          <xsl:if test="organization/@ascii">
+            <xsl:value-of select="concat(' (',organization/@ascii,')')"/>
+          </xsl:if>
+        </a>
       </myns:item>
     </xsl:if>
   </xsl:for-each>
@@ -11775,11 +11796,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1498 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1498 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1499 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1499 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/10/11 14:27:05 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/11 14:27:05 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/10/13 17:15:29 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/13 17:15:29 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -11844,7 +11865,7 @@ dd, li, p {
       <xsl:number count="note"/>
     </xsl:when>
     <xsl:when test="self::author">
-      <xsl:value-of select="$unnumbered"/>
+      <xsl:value-of select="concat($anchor-pref,'authors.')"/>
       <xsl:number count="author" level="any"/>
     </xsl:when>
     <xsl:when test="self::contact">
