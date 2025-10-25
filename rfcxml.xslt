@@ -11796,11 +11796,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1499 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1499 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1500 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1500 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/10/13 17:15:29 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/13 17:15:29 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/10/25 19:25:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/25 19:25:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -11880,12 +11880,6 @@ dd, li, p {
       <xsl:number count="section[@x:fixed-section-number='' or ancestor-or-self::*/@numbered='false']" level="any"/>
       <!-- checks -->
       <xsl:if test="@numbered='false'">
-        <xsl:if test="ancestor::section">
-          <xsl:call-template name="debug">
-            <xsl:with-param name="inline" select="'no'"/>
-            <xsl:with-param name="msg">Only top-level sections can be unnumbered</xsl:with-param>
-          </xsl:call-template>
-        </xsl:if>
         <xsl:if test="following-sibling::section[not(@numbered) or @numbered!='false']">
           <xsl:call-template name="error">
             <xsl:with-param name="inline" select="'no'"/>
