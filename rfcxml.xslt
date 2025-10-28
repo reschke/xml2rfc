@@ -11796,11 +11796,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1500 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1500 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1501 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1501 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/10/25 19:25:52 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/25 19:25:52 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/10/28 20:59:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/28 20:59:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -12646,8 +12646,20 @@ prev: <xsl:value-of select="$prev"/>
   </xsl:choose>
 </xsl:variable>
 
+<xsl:param name="xml2rfc-ext-pub-date"/>
+
+<xsl:variable name="pub-date">
+  <!-- only use when year is unknown -->
+  <xsl:if test="not(/rfc/front/date/@year and /rfc/front/date/@year!='')">
+    <xsl:value-of select="xml2rfc-ext-pub-date"/>
+  </xsl:if>
+</xsl:variable>
+
 <xsl:param name="xml2rfc-ext-pub-year">
   <xsl:choose>
+    <xsl:when test="$pub-date!=''">
+      <xsl:value-of select="substring($pub-date,1,4)"/>
+    </xsl:when>
     <xsl:when test="/rfc/front/date/@year and /rfc/front/date/@year!=''">
       <xsl:value-of select="/rfc/front/date/@year"/>
     </xsl:when>
@@ -12661,7 +12673,7 @@ prev: <xsl:value-of select="$prev"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
-        <xsl:with-param name="msg" select="'/rfc/front/date/@year missing (and XSLT processor cannot compute the system date)'"/>
+        <xsl:with-param name="msg" select="'/rfc/front/date/@year missing, no params where set, and XSLT processor cannot compute the system date'"/>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -12669,6 +12681,11 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:param name="xml2rfc-ext-pub-month">
   <xsl:choose>
+    <xsl:when test="$pub-date!=''">
+      <xsl:call-template name="get-month-as-name">
+        <xsl:with-param name="month" select="substring($pub-date,6,2)"/>
+      </xsl:call-template>
+    </xsl:when>
     <xsl:when test="/rfc/front/date/@month and /rfc/front/date/@month!=''">
       <xsl:variable name="m" select="/rfc/front/date/@month"/>
       <xsl:choose>
@@ -12694,7 +12711,7 @@ prev: <xsl:value-of select="$prev"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
-        <xsl:with-param name="msg" select="'/rfc/front/date/@month missing (and XSLT processor cannot compute the system date)'"/>
+        <xsl:with-param name="msg" select="'/rfc/front/date/@month missing, no params where set, and XSLT processor cannot compute the system date'"/>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -12708,6 +12725,9 @@ prev: <xsl:value-of select="$prev"/>
 
 <xsl:param name="xml2rfc-ext-pub-day">
   <xsl:choose>
+    <xsl:when test="$pub-date!=''">
+      <xsl:value-of select="substring($pub-date,9,2)"/>
+    </xsl:when>
     <xsl:when test="/rfc/front/date/@day and /rfc/front/date/@day!=''">
       <xsl:value-of select="/rfc/front/date/@day"/>
     </xsl:when>
