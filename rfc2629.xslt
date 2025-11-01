@@ -11796,11 +11796,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1627 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1627 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1628 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1628 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/10/29 07:06:57 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/10/29 07:06:57 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/11/01 11:33:49 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/11/01 11:33:49 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -12651,7 +12651,7 @@ prev: <xsl:value-of select="$prev"/>
 <xsl:variable name="pub-date">
   <!-- only use when year is unknown -->
   <xsl:if test="not(/rfc/front/date/@year and /rfc/front/date/@year!='')">
-    <xsl:value-of select="xml2rfc-ext-pub-date"/>
+    <xsl:value-of select="$xml2rfc-ext-pub-date"/>
   </xsl:if>
 </xsl:variable>
 
@@ -12683,7 +12683,7 @@ prev: <xsl:value-of select="$prev"/>
   <xsl:choose>
     <xsl:when test="$pub-date!=''">
       <xsl:call-template name="get-month-as-name">
-        <xsl:with-param name="month" select="substring($pub-date,6,2)"/>
+        <xsl:with-param name="month" select="number(substring($pub-date,6,2))"/>
       </xsl:call-template>
     </xsl:when>
     <xsl:when test="/rfc/front/date/@month and /rfc/front/date/@month!=''">
