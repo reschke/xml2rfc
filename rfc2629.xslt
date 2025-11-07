@@ -4722,54 +4722,78 @@
 <xsl:template name="insert-pub-date">
   <xsl:param name="front"/>
   
+  <xsl:variable name="on-front-page" select="not($front/ancestor::reference)"/>
+  <xsl:variable name="prose" select="normalize-space($front/date)"/>
+  <xsl:variable name="year" select="normalize-space($front/date/@year)"/>
+  <xsl:variable name="month" select="normalize-space($front/date/@month)"/>
+  <xsl:variable name="day" select="normalize-space($front/date/@day)"/>
+  <xsl:variable name="has-attrs" select="$year!='' or $month!='' or $day!=''"/>
+
   <xsl:if test="not($front/date) and not (/rfc/@version >= 3)">
     <xsl:call-template name="warning">
       <xsl:with-param name="msg">&lt;date&gt; missing in reference '<xsl:value-of select="@anchor"/>' (note that it can be empty)</xsl:with-param>
     </xsl:call-template>
   </xsl:if>
 
+  <xsl:if test="not($front/date) and $prose!=''">
+    <xsl:call-template name="warning">
+      <xsl:with-param name="msg">&lt;date&gt; on front page has both attributes and text content (which will be ignored): '<xsl:value-of select="$prose"/>'</xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+
+  <xsl:if test="$prose!='' or $has-attrs">
+    <xsl:text>, </xsl:text>
+  </xsl:if>
+
+  <xsl:if test="$prose!='' and not($on-front-page)">
+    <xsl:value-of select="$prose"/>
+    <xsl:if test="$has-attrs">
+      <xsl:text> (</xsl:text>
+    </xsl:if>
+  </xsl:if>
+
   <xsl:choose>
-    <xsl:when test="$front/date/@year != ''">
-      <xsl:if test="normalize-space($front/date)!=''">
+    <xsl:when test="$has-attrs">
+      <xsl:if test="$prose!=''">
         <xsl:call-template name="warning">
           <xsl:with-param name="msg">date element has both year attribute and text content: '<xsl:value-of select="$front/date"/>' in reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
         </xsl:call-template>
       </xsl:if>
-      <xsl:if test="string(number($front/date/@year)) = 'NaN'">
+      <xsl:if test="string(number($year)) = 'NaN'">
         <xsl:call-template name="warning">
-          <xsl:with-param name="msg">date/@year should be a number: '<xsl:value-of select="$front/date/@year"/>' in reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
+          <xsl:with-param name="msg">date/@year should be a number: '<xsl:value-of select="$year"/>' in reference '<xsl:value-of select="@anchor"/>'</xsl:with-param>
         </xsl:call-template>
       </xsl:if>
-      <xsl:text>, </xsl:text>
-      <xsl:if test="$front/date/@month!=''">
-        <xsl:if test="front/date/@day!='' and front/date/@x:include-day='true'">
-          <xsl:value-of select="front/date/@day"/>
+      <xsl:if test="$month!=''">
+        <xsl:if test="$day!='' and front/date/@x:include-day='true'">
+          <xsl:value-of select="$day"/>
           <xsl:text> </xsl:text>
         </xsl:if>
         <xsl:choose>
-          <xsl:when test="string(number($front/date/@month)) != 'NaN'">
+          <xsl:when test="string(number($month)) != 'NaN'">
             <xsl:call-template name="get-month-as-name">
-              <xsl:with-param name="month" select="number($front/date/@month)"/>
+              <xsl:with-param name="month" select="number($month)"/>
             </xsl:call-template>
             <xsl:text> </xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="$front/date/@month"/><xsl:text> </xsl:text>
+            <xsl:value-of select="$month"/><xsl:text> </xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
-      <xsl:value-of select="$front/date/@year" />
+      <xsl:value-of select="$year" />
     </xsl:when>
     <xsl:when test="document(x:source/@href)/rfc/front">
       <!-- is the date element maybe included and should be defaulted? -->
       <xsl:value-of select="concat(', ',$xml2rfc-ext-pub-month,' ',$xml2rfc-ext-pub-year)"/>
     </xsl:when>
-    <xsl:when test="normalize-space($front/date)!=''">
-      <xsl:text>, </xsl:text>
-      <xsl:value-of select="normalize-space($front/date)"/>
-    </xsl:when>
     <xsl:otherwise/>
   </xsl:choose>
+
+  <xsl:if test="$prose!='' and not($on-front-page) and $has-attrs">
+    <xsl:text>)</xsl:text>
+  </xsl:if>
+
 </xsl:template>
 
 <xsl:template match="referencegroup">
@@ -11801,11 +11825,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1636 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1636 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1637 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1637 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/11/07 17:32:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/11/07 17:32:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2025/11/07 22:10:40 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/11/07 22:10:40 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
