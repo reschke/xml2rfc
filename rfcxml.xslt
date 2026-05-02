@@ -1986,16 +1986,7 @@
     </xsl:choose>
   </xsl:variable>
   <xsl:element name="{$anch-container}">
-    <xsl:choose>
-      <xsl:when test="parent::artset">
-        <xsl:for-each select="..">
-          <xsl:call-template name="attach-paragraph-number-as-id"/>
-        </xsl:for-each>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="attach-paragraph-number-as-id"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="attach-paragraph-number-as-id"/>
     <xsl:if test="$divstyle!=''">
       <xsl:attribute name="style"><xsl:value-of select="$divstyle"/></xsl:attribute>
     </xsl:if>
@@ -2184,16 +2175,7 @@
     </xsl:if>
   </xsl:variable>
   <div class="{normalize-space($class)}">
-    <xsl:choose>
-      <xsl:when test="parent::artset">
-        <xsl:for-each select="..">
-          <xsl:call-template name="attach-paragraph-number-as-id"/>
-        </xsl:for-each>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="attach-paragraph-number-as-id"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="attach-paragraph-number-as-id"/>
     <xsl:choose>
       <xsl:when test="svg:svg">
         <xsl:choose>
@@ -3294,9 +3276,7 @@
     <xsl:if test="$newl='true'">nohang </xsl:if>
   </xsl:variable>
   <div>
-    <xsl:if test="not(ancestor::list)">
-      <xsl:call-template name="attach-paragraph-number-as-id"/>
-    </xsl:if>
+    <xsl:call-template name="attach-paragraph-number-as-id"/>
     <dl>
       <xsl:call-template name="copy-anchor"/>
       <xsl:if test="normalize-space($class)!=''">
@@ -3406,9 +3386,7 @@
   </xsl:variable>
 
   <div>
-    <xsl:if test="not(ancestor::list)">
-      <xsl:call-template name="attach-paragraph-number-as-id"/>
-    </xsl:if>
+    <xsl:call-template name="attach-paragraph-number-as-id"/>
     <ol>
       <xsl:if test="$start!=1">
         <xsl:attribute name="start"><xsl:value-of select="$start"/></xsl:attribute>
@@ -3423,9 +3401,7 @@
 <xsl:template match="ul">
   <xsl:call-template name="insert-errata"/>
   <div>
-    <xsl:if test="not(ancestor::list)">
-      <xsl:call-template name="attach-paragraph-number-as-id"/>
-    </xsl:if>
+    <xsl:call-template name="attach-paragraph-number-as-id"/>
     <xsl:choose>
       <xsl:when test="not(li) and @x:when-empty">
         <p>
@@ -5359,9 +5335,7 @@
   <xsl:call-template name="insert-errata"/>
 
   <div>
-    <xsl:if test="not(ancestor::list) and not(ancestor::table)">
-      <xsl:call-template name="attach-paragraph-number-as-id"/>
-    </xsl:if>
+    <xsl:call-template name="attach-paragraph-number-as-id"/>
     <xsl:if test="normalize-space($class)!=''">
       <xsl:attribute name="class"><xsl:value-of select="normalize-space($class)"/></xsl:attribute>
     </xsl:if>
@@ -10599,6 +10573,7 @@ dd, li, p {
   </xsl:choose>  
 </xsl:template>
 
+<!-- Compute paragraph number and attach it as 'id' attribute, when applicable -->
 <xsl:template name="attach-paragraph-number-as-id">
   <xsl:variable name="p">
     <xsl:call-template name="get-paragraph-number"/>
@@ -10611,7 +10586,7 @@ dd, li, p {
       <xsl:otherwise>section</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:if test="$p!='' and not(ancestor::list)">
+  <xsl:if test="$p!='' and not(ancestor::list) and not(ancestor::table)">
     <xsl:attribute name="id"><xsl:value-of select="concat($anchor-pref,$container,'.',$p)"/></xsl:attribute>
   </xsl:if>
 </xsl:template>
@@ -11825,11 +11800,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1505 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1505 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1506 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1506 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2025/11/07 22:10:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2025/11/07 22:10:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/02 06:05:51 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/02 06:05:51 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
