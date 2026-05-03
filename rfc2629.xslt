@@ -2276,11 +2276,11 @@
 </xsl:template>
 
 <xsl:template name="emit-postal-line">
-  <xsl:param name="prefix"/>
+  <xsl:param name="prefix" select="''"/>
   <xsl:param name="value"/>
   <xsl:param name="values"/>
   <xsl:param name="link"/>
-  <xsl:param name="annotation"/>
+  <xsl:param name="annotation" select="''"/>
 
   <xsl:if test="normalize-space($value)!='' or $values">
     <br/>
@@ -6354,13 +6354,13 @@
 </xsl:template>
 
 <xsl:template name="emit-link">
-  <xsl:param name="target"/>
-  <xsl:param name="id"/>
-  <xsl:param name="title"/>
-  <xsl:param name="citation-title"/>
+  <xsl:param name="target" select="''"/>
+  <xsl:param name="id" select="''"/>
+  <xsl:param name="title" select="''"/>
+  <xsl:param name="citation-title" select="''"/>
   <xsl:param name="index-item"/>
   <xsl:param name="index-subitem"/>
-  <xsl:param name="text"/>
+  <xsl:param name="text" select="''"/>
   <xsl:param name="child-nodes"/>
   
   <xsl:if test="$text!='' and $child-nodes">
@@ -11175,7 +11175,7 @@ dd, li, p {
 
 <xsl:template name="trace">
   <xsl:param name="msg"/>
-  <xsl:param name="msg2"/>
+  <xsl:param name="msg2" select="''"/>
   <xsl:param name="inline" select="'no'"/>
   <xsl:param name="lineno" select="true()"/>
   <xsl:param name="node" select="."/>
@@ -11191,7 +11191,7 @@ dd, li, p {
 
 <xsl:template name="debug">
   <xsl:param name="msg"/>
-  <xsl:param name="msg2"/>
+  <xsl:param name="msg2" select="''"/>
   <xsl:param name="inline" select="'no'"/>
   <xsl:param name="lineno" select="true()"/>
   <xsl:param name="node" select="."/>
@@ -11207,7 +11207,7 @@ dd, li, p {
 
 <xsl:template name="inline-warning">
   <xsl:param name="msg"/>
-  <xsl:param name="msg2"/>
+  <xsl:param name="msg2" select="''"/>
   <xsl:param name="lineno" select="true()"/>
   <xsl:param name="node" select="."/>
   <xsl:call-template name="emit-message">
@@ -11223,7 +11223,7 @@ dd, li, p {
 
 <xsl:template name="warning">
   <xsl:param name="msg"/>
-  <xsl:param name="msg2"/>
+  <xsl:param name="msg2" select="''"/>
   <xsl:param name="lineno" select="true()"/>
   <xsl:param name="node" select="."/>
   <xsl:call-template name="emit-message">
@@ -11239,7 +11239,7 @@ dd, li, p {
 
 <xsl:template name="info">
   <xsl:param name="msg"/>
-  <xsl:param name="msg2"/>
+  <xsl:param name="msg2" select="''"/>
   <xsl:param name="lineno" select="true()"/>
   <xsl:param name="node" select="."/>
   <xsl:call-template name="emit-message">
@@ -11255,8 +11255,8 @@ dd, li, p {
 
 <xsl:template name="error">
   <xsl:param name="msg"/>
-  <xsl:param name="msg2"/>
-  <xsl:param name="inline"/>
+  <xsl:param name="msg2" select="''"/>
+  <xsl:param name="inline" select="''"/>
   <xsl:param name="lineno" select="true()"/>
   <xsl:param name="node" select="."/>
   <xsl:call-template name="emit-message">
@@ -11287,7 +11287,7 @@ dd, li, p {
   <xsl:param name="level">DEBUG</xsl:param>
   <xsl:param name="dlevel">0</xsl:param>
   <xsl:param name="msg"/>
-  <xsl:param name="msg2"/>
+  <xsl:param name="msg2" select="''"/>
   <xsl:param name="inline"/>
   <xsl:param name="lineno" select="true()"/>
   <xsl:param name="node" select="."/>
@@ -11800,11 +11800,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1642 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1642 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1643 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1643 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/03 16:42:38 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/03 16:42:38 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/03 20:41:46 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/03 20:41:46 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -12232,9 +12232,9 @@ prev: <xsl:value-of select="$prev"/>
 <xsl:template name="parse-pis">
   <xsl:param name="nodes"/>
   <xsl:param name="attr"/>
-  <xsl:param name="sep"/>
-  <xsl:param name="ret"/>
-  <xsl:param name="default"/>
+  <xsl:param name="sep" select="''"/>
+  <xsl:param name="ret" select="''"/>
+  <xsl:param name="default" select="''"/>
   <xsl:param name="duplicate-warning" select="'yes'"/>
 
   <xsl:choose>
@@ -13038,7 +13038,7 @@ prev: <xsl:value-of select="$prev"/>
 <xsl:template match="@*" mode="validate"/>
 
 <xsl:template name="validation-error">
-  <xsl:param name="additionalDiagnostics"/>
+  <xsl:param name="additionalDiagnostics" select="''"/>
   <xsl:variable name="pname">
     <xsl:if test="namespace-uri(..)!=''">
       <xsl:value-of select="concat('{',namespace-uri(..),'}')"/>
