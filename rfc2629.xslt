@@ -9925,11 +9925,11 @@ dd, li, p {
 </xsl:template>
 
 <xsl:template name="insert-toc-line">
-  <xsl:param name="number" />
+  <xsl:param name="number" select="''" />
   <xsl:param name="target" />
   <xsl:param name="title" />
   <xsl:param name="name" select="''" />
-  <xsl:param name="tocparam" />
+  <xsl:param name="tocparam" select="''" />
 
   <xsl:variable name="depth">
     <!-- count the dots -->
@@ -11800,11 +11800,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1650 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1650 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1651 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1651 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/04 14:38:39 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/04 14:38:39 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/04 16:03:43 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/04 16:03:43 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
