@@ -9928,7 +9928,7 @@ dd, li, p {
   <xsl:param name="number" />
   <xsl:param name="target" />
   <xsl:param name="title" />
-  <xsl:param name="name" />
+  <xsl:param name="name" select="''" />
   <xsl:param name="tocparam" />
 
   <xsl:variable name="depth">
@@ -11800,11 +11800,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1512 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1512 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1513 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1513 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/04 11:56:15 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/04 11:56:15 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/04 13:59:07 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/04 13:59:07 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
