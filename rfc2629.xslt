@@ -2279,7 +2279,7 @@
   <xsl:param name="prefix" select="''"/>
   <xsl:param name="value"/>
   <xsl:param name="values"/>
-  <xsl:param name="link"/>
+  <xsl:param name="link" select="''"/>
   <xsl:param name="annotation" select="''"/>
 
   <xsl:if test="normalize-space($value)!='' or $values">
@@ -11800,11 +11800,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1643 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1643 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1644 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1644 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/03 20:41:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/03 20:41:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/04 04:02:55 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/04 04:02:55 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
@@ -12939,7 +12939,7 @@ prev: <xsl:value-of select="$prev"/>
 <xsl:template name="u-expanded">
   <xsl:param name="format"/>
   <xsl:param name="lit"/>
-  <xsl:param name="ascii"/>
+  <xsl:param name="ascii" select="''"/>
 
   <xsl:choose>
     <xsl:when test="starts-with($format,'{') and contains($format,'}')">
