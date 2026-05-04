@@ -2277,8 +2277,8 @@
 
 <xsl:template name="emit-postal-line">
   <xsl:param name="prefix" select="''"/>
-  <xsl:param name="value"/>
-  <xsl:param name="values"/>
+  <xsl:param name="value" select="''"/>
+  <xsl:param name="values" select="''"/>
   <xsl:param name="link" select="''"/>
   <xsl:param name="annotation" select="''"/>
 
@@ -6361,7 +6361,7 @@
   <xsl:param name="index-item"/>
   <xsl:param name="index-subitem"/>
   <xsl:param name="text" select="''"/>
-  <xsl:param name="child-nodes"/>
+  <xsl:param name="child-nodes" select="''"/>
   
   <xsl:if test="$text!='' and $child-nodes">
     <xsl:call-template name="warning">
@@ -11800,11 +11800,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1645 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1645 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1646 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1646 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/04 08:47:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/04 08:47:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/04 10:03:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/04 10:03:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
