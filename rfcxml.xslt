@@ -6358,8 +6358,8 @@
   <xsl:param name="id" select="''"/>
   <xsl:param name="title" select="''"/>
   <xsl:param name="citation-title" select="''"/>
-  <xsl:param name="index-item"/>
-  <xsl:param name="index-subitem"/>
+  <!-- currently unused <xsl:param name="index-item"/> -->
+  <!-- currently unused <xsl:param name="index-subitem"/> -->
   <xsl:param name="text" select="''"/>
   <xsl:param name="child-nodes" select="''"/>
   
@@ -6586,8 +6586,8 @@
               <xsl:value-of select="$id"/>
             </xsl:if>
           </xsl:with-param>
-          <xsl:with-param name="index-item" select="$from/@target"/>
-          <xsl:with-param name="index-subitem" select="$sec"/>
+          <!-- <xsl:with-param name="index-item" select="$from/@target"/> -->
+          <!-- <xsl:with-param name="index-subitem" select="$sec"/> -->
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="$sfmt='bare'">
@@ -6596,8 +6596,8 @@
           <xsl:with-param name="text" select="$sec"/>
           <xsl:with-param name="title" select="$title"/>
           <xsl:with-param name="id" select="$id"/>
-          <xsl:with-param name="index-item" select="$from/@target"/>
-          <xsl:with-param name="index-subitem" select="$sec"/>
+          <!-- <xsl:with-param name="index-item" select="$from/@target"/> -->
+          <!-- <xsl:with-param name="index-subitem" select="$sec"/> -->
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise />
@@ -6654,8 +6654,8 @@
         </xsl:choose>
       </xsl:with-param>
       <xsl:with-param name="id" select="$id"/>
-      <xsl:with-param name="index-item" select="$from/@target"/>
-      <xsl:with-param name="index-subitem" select="$sec"/>
+      <!-- <xsl:with-param name="index-item" select="$from/@target"/> -->
+      <!-- <xsl:with-param name="index-subitem" select="$sec"/> -->
       <xsl:with-param name="citation-title" select="normalize-space($front[1]/title)"/>
       <xsl:with-param name="child-nodes" select="$child-nodes"/>
     </xsl:call-template>
@@ -11800,11 +11800,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1520 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1520 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1521 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1521 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/05 12:07:53 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/05 12:07:53 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/05 12:42:01 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/05 12:42:01 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
