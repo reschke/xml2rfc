@@ -2100,7 +2100,7 @@
 
 <xsl:template name="check-artwork-width">
   <xsl:param name="content"/>
-  <xsl:param name="indent"/>
+  <xsl:param name="indent" select="''"/>
   <xsl:choose>
     <xsl:when test="$xml2rfc-ext-check-artwork-width='no'">
       <!-- skip check -->
@@ -11800,11 +11800,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1518 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1518 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1519 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1519 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/05 10:55:44 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/05 10:55:44 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/05 11:36:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/05 11:36:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
