@@ -3443,50 +3443,52 @@
 <xsl:template match="li">
   <li>
     <xsl:call-template name="copy-anchor"/>
-    <xsl:if test="(parent::ol or parent::ul) and ../@indent and number(../@indent)&gt;4">
-      <xsl:attribute name="style">padding-left: <xsl:value-of select="(../@indent div 2) - 2"/>em</xsl:attribute>
-    </xsl:if>
-    <xsl:choose>
-      <xsl:when test="artset|artwork|blockquote|dl|figure|ol|sourcecode|t|ul">
-        <xsl:choose>
-          <xsl:when test="bcp14|cref|em|eref|iref|relref|strong|sub|sup|tt|xref|text()[normalize-space(.)!='']">
-            <xsl:call-template name="error">
-              <xsl:with-param name="msg">unexpected content in &lt;li&gt;: can not mix block-level and phrase-level elements</xsl:with-param>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:apply-templates/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:when test="bcp14|cref|em|eref|iref|relref|strong|sub|sup|tt|xref|text()[normalize-space(.)!='']">
-        <xsl:choose>
-          <xsl:when test="artset|artwork|blockquote|dl|figure|ol|sourcecode|t|ul">
-            <xsl:call-template name="error">
-              <xsl:with-param name="msg">unexpected content in &lt;li&gt;: can not mix phrase-level and block-level elements</xsl:with-param>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:apply-templates/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="error">
-          <xsl:with-param name="msg">unexpected content in &lt;li&gt;</xsl:with-param>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:if test="not(following-sibling::li)">
-      <xsl:variable name="l">
-        <xsl:for-each select="..">
-          <xsl:call-template name="get-paragraph-number"/>
-        </xsl:for-each>
-      </xsl:variable>
-      <xsl:if test="xml2rfc-ext-paragraph-links='yes' and $l!=''">
-        <a class='self' href='#{$anchor-pref}section.{$l}'>&#xb6;</a>
+    <div>
+      <xsl:if test="(parent::ol or parent::ul) and ../@indent and number(../@indent)&gt;4">
+        <xsl:attribute name="style">padding-left: <xsl:value-of select="(../@indent div 2) - 2"/>em</xsl:attribute>
       </xsl:if>
-    </xsl:if>
+      <xsl:choose>
+        <xsl:when test="artset|artwork|blockquote|dl|figure|ol|sourcecode|t|ul">
+          <xsl:choose>
+            <xsl:when test="bcp14|cref|em|eref|iref|relref|strong|sub|sup|tt|xref|text()[normalize-space(.)!='']">
+              <xsl:call-template name="error">
+                <xsl:with-param name="msg">unexpected content in &lt;li&gt;: can not mix block-level and phrase-level elements</xsl:with-param>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:apply-templates/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:when test="bcp14|cref|em|eref|iref|relref|strong|sub|sup|tt|xref|text()[normalize-space(.)!='']">
+          <xsl:choose>
+            <xsl:when test="artset|artwork|blockquote|dl|figure|ol|sourcecode|t|ul">
+              <xsl:call-template name="error">
+                <xsl:with-param name="msg">unexpected content in &lt;li&gt;: can not mix phrase-level and block-level elements</xsl:with-param>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:apply-templates/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="error">
+            <xsl:with-param name="msg">unexpected content in &lt;li&gt;</xsl:with-param>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:if test="not(following-sibling::li)">
+        <xsl:variable name="l">
+          <xsl:for-each select="..">
+            <xsl:call-template name="get-paragraph-number"/>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:if test="xml2rfc-ext-paragraph-links='yes' and $l!=''">
+          <a class='self' href='#{$anchor-pref}section.{$l}'>&#xb6;</a>
+        </xsl:if>
+      </xsl:if>
+      </div>
   </li>
 </xsl:template>
 
@@ -11800,11 +11802,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1664 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1664 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1665 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1665 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/06 08:45:24 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/06 08:45:24 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/12 15:22:56 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/12 15:22:56 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
