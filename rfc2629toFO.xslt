@@ -1,7 +1,7 @@
 <!--
     XSLT transformation from RFC2629/7991 XML format to XSL-FO
       
-    Copyright (c) 2006-2022, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2026, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -690,7 +690,6 @@
   <fo:list-item-body start-indent="body-start()">
     <xsl:call-template name="copy-anchor"/>
     <fo:block>
-      <xsl:call-template name="attach-paragraph-number-as-id"/>
       <xsl:variable name="block-level-children" select="artwork|aside|dl|figure|ol|sourcecode|t|table|ul"/>
       <xsl:choose>
         <xsl:when test="$block-level-children">
