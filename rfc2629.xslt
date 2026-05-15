@@ -1968,9 +1968,9 @@
   </xsl:variable>
   <xsl:variable name="divstyle">
     <xsl:choose>
-      <xsl:when test="self::artwork and @align='right'">display:table; margin-left: auto; margin-right: 0em;</xsl:when>
-      <xsl:when test="self::artwork and @align='center'">display:table; margin-left: auto; margin-right: auto;</xsl:when>
-      <xsl:otherwise/>
+      <xsl:when test="self::artwork and @align='right'">display: flex; align-items: flex-end; justify-content: flex-end</xsl:when>
+      <xsl:when test="self::artwork and @align='center'">display:table; margin-left: auto; margin-right: auto</xsl:when>
+      <xsl:otherwise>display: flex; align-items: flex-end</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="prestyle">
@@ -1986,10 +1986,13 @@
     </xsl:choose>
   </xsl:variable>
   <xsl:element name="{$anch-container}">
+    <xsl:variable name="id"><xsl:call-template name="paragraph-number-as-id"/></xsl:variable>
+    <xsl:if test="$id!=''"><xsl:attribute name="id">c<xsl:value-of select="$id"/></xsl:attribute></xsl:if>
     <xsl:call-template name="attach-paragraph-number-as-id"/>
     <xsl:if test="$divstyle!=''">
       <xsl:attribute name="style"><xsl:value-of select="$divstyle"/></xsl:attribute>
     </xsl:if>
+    <span>
     <xsl:call-template name="insert-begin-code"/>
     <xsl:call-template name="insert-line-folding-hint"/>
     <pre>
@@ -2001,6 +2004,10 @@
       <xsl:copy-of select="$display"/>
     </pre>
     <xsl:call-template name="insert-end-code"/>
+    </span>
+    <xsl:if test="$xml2rfc-ext-paragraph-links='yes' and $id!=''">
+      <a class="self" style="margin-left: 1em; margin-bottom: 1em;" href="#{$id}">&#xb6;</a>
+    </xsl:if>
   </xsl:element>
   <xsl:call-template name="check-artwork-width">
     <xsl:with-param name="content"><xsl:apply-templates/></xsl:with-param>
@@ -8760,7 +8767,7 @@ blockquote > * .bcp14 {
 .self:hover {
     text-decoration: none;
 }
-h1:hover > a.self, h2:hover > a.self, h3:hover > a.self, li:hover > a.self, p:hover > a.self, caption:hover > a.self {
+h1:hover > a.self, h2:hover > a.self, h3:hover > a.self, li:hover > a.self, p:hover > a.self, caption:hover > a.self, div:hover > a.self {
     visibility: visible;
 }</xsl:if><xsl:if test="/rfc/x:feedback">.<xsl:value-of select="$css-feedback"/> {
   position: fixed;
@@ -10601,8 +10608,8 @@ dd, li, p {
   </xsl:choose>  
 </xsl:template>
 
-<!-- Compute paragraph number and attach it as 'id' attribute, when applicable -->
-<xsl:template name="attach-paragraph-number-as-id">
+<!-- Compute paragraph number -->
+<xsl:template name="paragraph-number-as-id">
   <xsl:variable name="p">
     <xsl:call-template name="get-paragraph-number"/>
   </xsl:variable>
@@ -10615,7 +10622,17 @@ dd, li, p {
     </xsl:choose>
   </xsl:variable>
   <xsl:if test="$p!='' and not(ancestor::list) and not(ancestor::table)">
-    <xsl:attribute name="id"><xsl:value-of select="concat($anchor-pref,$container,'.',$p)"/></xsl:attribute>
+    <xsl:value-of select="concat($anchor-pref,$container,'.',$p)"/>
+  </xsl:if>
+</xsl:template>
+
+<!-- Compute paragraph number and attach it as 'id' attribute, when applicable -->
+<xsl:template name="attach-paragraph-number-as-id">
+  <xsl:variable name="id">
+    <xsl:call-template name="paragraph-number-as-id"/>
+  </xsl:variable>
+  <xsl:if test="$id!='' and not(ancestor::list) and not(ancestor::table)">
+    <xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
   </xsl:if>
 </xsl:template>
 
@@ -11828,11 +11845,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1669 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1669 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1670 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1670 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/13 13:49:43 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/13 13:49:43 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/15 13:51:28 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/15 13:51:28 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
