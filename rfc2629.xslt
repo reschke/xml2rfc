@@ -1987,24 +1987,23 @@
   </xsl:variable>
   <xsl:element name="{$anch-container}">
     <xsl:variable name="id"><xsl:call-template name="paragraph-number-as-id"/></xsl:variable>
-    <xsl:if test="$id!=''"><xsl:attribute name="id">c<xsl:value-of select="$id"/></xsl:attribute></xsl:if>
     <xsl:call-template name="attach-paragraph-number-as-id"/>
     <xsl:if test="$divstyle!=''">
       <xsl:attribute name="style"><xsl:value-of select="$divstyle"/></xsl:attribute>
     </xsl:if>
-    <span>
-    <xsl:call-template name="insert-begin-code"/>
-    <xsl:call-template name="insert-line-folding-hint"/>
-    <pre>
-      <xsl:call-template name="copy-anchor"/>
-      <xsl:if test="$prestyle!=''">
-        <xsl:attribute name="style"><xsl:value-of select="$prestyle"/></xsl:attribute>
-      </xsl:if>
-      <xsl:call-template name="add-artwork-class"/>
-      <xsl:copy-of select="$display"/>
-    </pre>
-    <xsl:call-template name="insert-end-code"/>
-    </span>
+    <div>
+      <xsl:call-template name="insert-begin-code"/>
+      <xsl:call-template name="insert-line-folding-hint"/>
+      <pre>
+        <xsl:call-template name="copy-anchor"/>
+        <xsl:if test="$prestyle!=''">
+          <xsl:attribute name="style"><xsl:value-of select="$prestyle"/></xsl:attribute>
+        </xsl:if>
+        <xsl:call-template name="add-artwork-class"/>
+        <xsl:copy-of select="$display"/>
+      </pre>
+      <xsl:call-template name="insert-end-code"/>
+    </div>
     <xsl:if test="$xml2rfc-ext-paragraph-links='yes' and $id!=''">
       <a class="self" style="margin-left: 1em; margin-bottom: 1em;" href="#{$id}">&#xb6;</a>
     </xsl:if>
@@ -11845,11 +11844,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1672 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1672 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1673 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1673 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/16 09:37:24 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/16 09:37:24 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/18 09:18:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/18 09:18:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
