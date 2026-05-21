@@ -1992,7 +1992,7 @@
     <xsl:if test="$divstyle!=''">
       <xsl:attribute name="style"><xsl:value-of select="$divstyle"/></xsl:attribute>
     </xsl:if>
-    <div>
+    <xsl:element name="{$anch-container}">
       <xsl:call-template name="insert-begin-code"/>
       <xsl:call-template name="insert-line-folding-hint"/>
       <pre>
@@ -2004,7 +2004,7 @@
         <xsl:copy-of select="$display"/>
       </pre>
       <xsl:call-template name="insert-end-code"/>
-    </div>
+    </xsl:element>
     <xsl:if test="$xml2rfc-ext-paragraph-links='yes' and $id!=''">
       <a class="self" style="margin-left: 1em; margin-bottom: 1em;" href="#{$id}">&#xb6;</a>
       <a class="self" style="margin-left: 0.5em; margin-bottom: 1em;"
@@ -11869,11 +11869,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1535 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1535 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1536 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1536 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/20 16:30:33 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/20 16:30:33 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/21 08:41:18 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/21 08:41:18 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
