@@ -157,6 +157,7 @@
       <raw-section>
         <xsl:value-of select="$raw-reference"/>
       </raw-section>
+      <xsl:message>RS: <xsl:value-of select="$raw-reference"/></xsl:message>
       <xsl:choose>
         <xsl:when test="contains($raw-reference,'&amp;amp;')">
           <xsl:for-each select="tokenize($raw-reference,'&amp;amp;')">
@@ -188,6 +189,7 @@
 <xsl:template name="raw-sec-insert">
   <xsl:param name="s"/>
   <xsl:param name="eid"/>
+  <xsl:message>RSI: <xsl:value-of select="$s"/></xsl:message>
   <xsl:analyze-string select="normalize-space($s)" regex="(A. )?([a-zA-Z0-9\.]+)(( )(.*))*">
     <xsl:matching-substring>
       <xsl:call-template name="sec-insert">
