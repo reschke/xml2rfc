@@ -1764,7 +1764,7 @@
     <xsl:call-template name="copy-anchor"/>
     <h2 id="{$anchor-pref}abstract"><a href="#{$anchor-pref}abstract">Abstract</a></h2>
     <xsl:call-template name="insert-errata">
-      <xsl:with-param name="section" select="'abstract'"/>
+      <xsl:with-param name="section" select="'ABSTRACT'"/>
     </xsl:call-template>
     <xsl:apply-templates />
   </section>
@@ -2986,7 +2986,7 @@
   </xsl:choose>
 
   <xsl:call-template name="insert-errata">
-    <xsl:with-param name="section" select="'boilerplate'"/>
+    <xsl:with-param name="section" select="'BOILERPLATE'"/>
   </xsl:call-template>
 
   <xsl:if test="not($abstract-first)">
@@ -9956,7 +9956,7 @@ dd, li, p {
 
   <nav id="{$anchor-pref}toc">
     <xsl:call-template name="insert-errata">
-      <xsl:with-param name="section" select="'toc'"/>
+      <xsl:with-param name="section" select="'TOC'"/>
     </xsl:call-template>
 
     <h2 class="np"> <!-- this pagebreak occurs always -->
@@ -11879,11 +11879,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1538 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1538 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1539 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1539 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/21 16:18:46 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/21 16:18:46 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/23 09:27:06 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/23 09:27:06 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
