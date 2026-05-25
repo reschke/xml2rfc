@@ -5748,7 +5748,18 @@
           <a href="{$uri}" title="{$tooltip}">Erratum <xsl:value-of select="@eid"/></a>
           <xsl:choose>
             <xsl:when test="@status='Verified'"><xsl:text> </xsl:text><span title="verified">&#x2714;</span></xsl:when>
-            <xsl:when test="@status='Reported'"><xsl:text> </xsl:text><span title="reported">&#x2709;</span></xsl:when>
+            <xsl:when test="@status='Reported'">
+              <xsl:text> </xsl:text>
+              <span title="reported">
+                <xsl:text>&#x2709;</xsl:text>
+              </span>
+              <xsl:if test="@due-since">
+                <xsl:text> </xsl:text>
+                <span title="waiting for evaluation since {@reported}" class="glow">
+                  <xsl:text>&#x2691;</xsl:text>
+                </span>
+              </xsl:if>
+            </xsl:when>
             <xsl:when test="@status='Held for Document Update'"><xsl:text> </xsl:text><span title="held for update">&#x2700;</span></xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
@@ -8842,7 +8853,17 @@ dd, li, p {
   float: right;
   padding: 0.5em;
   user-select: none;
-}<xsl:if test="$parsedMaxwidth!=''">
+}
+@keyframes glow {
+  50% { transform: scale(1.5); }
+}
+
+.glow {
+  color: red;
+  animation: glow 2s infinite;
+  display: inline-block;
+}
+<xsl:if test="$parsedMaxwidth!=''">
 @media screen and (min-width: <xsl:value-of select="number($parsedMaxwidth + 350)"/>px) {
   .<xsl:value-of select="$css-erratum"/> {
     margin-right: -150px;
@@ -11879,11 +11900,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1683 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1683 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1684 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1684 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/25 14:55:08 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/25 14:55:08 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/25 17:31:39 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/25 17:31:39 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
