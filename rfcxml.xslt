@@ -8341,14 +8341,14 @@ PR['registerLangHandler'](
   --col-fg-ins: light-dark(green, green);
   --col-fg-light: light-dark(gray, gray);
   --col-fg-link: light-dark(blue, lightblue);
-  --col-fg-title: light-dark(green, green);<xsl:if test="$prettyprint-class='prettyprint' and contains($prettyprint-script,'prettify') and not(contains($prettyprint-script,'skin='))">
+  --col-fg-title: light-dark(green, green);
   --col-pr-plain: light-dark(black, white);<!-- plain text -->
   --col-pr-string: light-dark(#080, #8f8);<!-- string, attribute value -->
   --col-pr-keyword: light-dark(#008, #88f);<!-- keyword -->
   --col-pr-comment: light-dark(#800, #f88);<!-- comment -->
   --col-pr-type: light-dark(#606, #f8f);<!-- type, attribute name, decimal, variable (?) -->
   --col-pr-lit: light-dark(#066, #8ff);<!-- literal -->
-  --col-pr-pun: light-dark(#066, #ff8);<!-- punctuation, open bracket, close bracket --></xsl:if>
+  --col-pr-pun: light-dark(#066, #ff8);<!-- punctuation, open bracket, close bracket -->
 }
 a {
   color: var(--col-fg-link);
@@ -8493,7 +8493,8 @@ pre {
   background-color: var(--col-bg-pre);
   padding: .25em;
   page-break-inside: avoid;
-}<xsl:if test="//artwork[@x:is-code-component='yes']|//sourcecode[@markers='true' or @x:line-folding]"><!-- support "<CODE BEGINS>" and "<CODE ENDS>" markers-->
+}
+<!-- support "<CODE BEGINS>" and "<CODE ENDS>" markers-->
 pre.ccmarker {
   background-color: var(--col-bg);
   color: var(--col-fg-light);
@@ -8506,7 +8507,8 @@ pre.cct {
 }
 pre.ccb {
   margin-top: -1em;
-}</xsl:if>
+}
+
 pre.text2 {
   border-style: dotted;
   border-width: 1px;
@@ -8515,8 +8517,8 @@ pre.text2 {
 pre.inline {
   background-color: var(--col-bg);
   padding: 0em;
-  page-break-inside: auto;<xsl:if test="$prettyprint-script!=''">
-  border: none !important;</xsl:if>
+  page-break-inside: auto;
+  border: none !important;
 }
 pre.text {
   border-style: dotted;
@@ -11862,11 +11864,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1542 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1542 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1543 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1543 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/26 08:26:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/26 08:26:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/26 13:42:20 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/26 13:42:20 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
