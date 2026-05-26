@@ -8341,14 +8341,14 @@ PR['registerLangHandler'](
   --col-fg-ins: light-dark(green, green);
   --col-fg-light: light-dark(gray, gray);
   --col-fg-link: light-dark(blue, lightblue);
-  --col-fg-title: light-dark(green, green);<xsl:if test="$prettyprint-class='prettyprint' and contains($prettyprint-script,'prettify') and not(contains($prettyprint-script,'skin='))">
+  --col-fg-title: light-dark(green, green);
   --col-pr-plain: light-dark(black, white);<!-- plain text -->
   --col-pr-string: light-dark(#080, #8f8);<!-- string, attribute value -->
   --col-pr-keyword: light-dark(#008, #88f);<!-- keyword -->
   --col-pr-comment: light-dark(#800, #f88);<!-- comment -->
   --col-pr-type: light-dark(#606, #f8f);<!-- type, attribute name, decimal, variable (?) -->
   --col-pr-lit: light-dark(#066, #8ff);<!-- literal -->
-  --col-pr-pun: light-dark(#066, #ff8);<!-- punctuation, open bracket, close bracket --></xsl:if>
+  --col-pr-pun: light-dark(#066, #ff8);<!-- punctuation, open bracket, close bracket -->
 }
 a {
   color: var(--col-fg-link);
@@ -8493,7 +8493,8 @@ pre {
   background-color: var(--col-bg-pre);
   padding: .25em;
   page-break-inside: avoid;
-}<xsl:if test="//artwork[@x:is-code-component='yes']|//sourcecode[@markers='true' or @x:line-folding]"><!-- support "<CODE BEGINS>" and "<CODE ENDS>" markers-->
+}
+<!-- support "<CODE BEGINS>" and "<CODE ENDS>" markers-->
 pre.ccmarker {
   background-color: var(--col-bg);
   color: var(--col-fg-light);
@@ -8506,7 +8507,8 @@ pre.cct {
 }
 pre.ccb {
   margin-top: -1em;
-}</xsl:if>
+}
+
 pre.text2 {
   border-style: dotted;
   border-width: 1px;
@@ -8515,8 +8517,8 @@ pre.text2 {
 pre.inline {
   background-color: var(--col-bg);
   padding: 0em;
-  page-break-inside: auto;<xsl:if test="$prettyprint-script!=''">
-  border: none !important;</xsl:if>
+  page-break-inside: auto;
+  border: none !important;
 }
 pre.text {
   border-style: dotted;
@@ -8528,24 +8530,22 @@ pre.drawing {
   border-width: 1px;
   background-color: var(--col-bg-pre1);
   padding: 2em;
-}<xsl:if test="//@x:line-folding">
+}
 span.folding {
   text-decoration: dashed underline overline;
 }
-</xsl:if><xsl:if test="//x:q">
 q {
   font-style: italic;
-}</xsl:if>
-<xsl:if test="//x:sup|//sup">
+}
 sup {
   font-size: 60%;
-}</xsl:if><xsl:if test="//x:sub|//sub">
+}
 sub {
   font-size: 60%;
-}</xsl:if>
+}
 table {
   margin-left: 2em;
-}<xsl:if test="//texttable|//table">
+}
 div.<xsl:value-of select="$css-tt"/> {
   margin-left: 2em;
 } 
@@ -8646,7 +8646,6 @@ tr dl {
   margin-left: 1em;
 }
 </xsl:if>
-</xsl:if>
 table.<xsl:value-of select="$css-header"/> {
   border-spacing: 1px;
   width: 95%;
@@ -8702,7 +8701,7 @@ ul p {
 .nobr {
   white-space: nowrap;
 }
-<xsl:if test="$has-index">ul.ind, ul.ind ul {
+ul.ind, ul.ind ul {
   list-style: none;
   margin-left: 1.5em;
   padding-left: 0em;
@@ -8717,7 +8716,7 @@ ul.ind li li {
   font-weight: normal;
   line-height: 150%;
   margin-left: 0em;
-}</xsl:if><xsl:if test="//svg:svg">
+}
 @namespace svg url(http://www.w3.org/2000/svg);
 svg {
   background-color: white;
@@ -8737,26 +8736,27 @@ div.aasvg svg [fill="black"], div.aasvg svg [fill^="#000"], div.aasvg svg :not([
 }
 div.aasvg svg [stroke="fill"], div.aasvg svg [fill^="#fff"] {
   fill: var(--col-bg);;
-}</xsl:if>
+}
 .avoidbreakinside {
   page-break-inside: avoid;
 }
 .avoidbreakafter {
   page-break-after: avoid;
 }
-<xsl:if test="//t/@keepWithPrevious">.avoidbreakbefore {
+.avoidbreakbefore {
   page-break-before: avoid;
 }
-</xsl:if><xsl:if test="//*[@removeInRFC='true']">section.rfcEditorRemove > div:first-of-type {
+section.rfcEditorRemove > div:first-of-type {
   font-style: italic;
-}</xsl:if><xsl:if test="//x:bcp14|//bcp14">.bcp14 {
+}
+.bcp14 {
   font-style: normal;
   text-transform: lowercase;
   font-variant: small-caps;
-}</xsl:if><xsl:if test="//x:blockquote|//blockquote">
+}
 blockquote > * .bcp14 {
   font-style: italic;
-}</xsl:if>
+}
 .comment {
   background-color: var(--col-bg-highlight);
 }<xsl:if test="$xml2rfc-editing='yes'">
@@ -8795,7 +8795,7 @@ blockquote > * .bcp14 {
 .warning {
   font-size: 130%;
   background-color: var(--col-bg-highlight);
-}<xsl:if test="$xml2rfc-ext-paragraph-links='yes'">
+}
 .self {
     color: var(--col-fg-light);
     margin-left: .3em;
@@ -8808,7 +8808,7 @@ blockquote > * .bcp14 {
 }
 h1:hover > a.self, h2:hover > a.self, h3:hover > a.self, li:hover > a.self, p:hover > a.self, caption:hover > a.self, div:hover > a.self {
     visibility: visible;
-}</xsl:if><xsl:if test="/rfc/x:feedback">.<xsl:value-of select="$css-feedback"/> {
+}<xsl:if test="/rfc/x:feedback">.<xsl:value-of select="$css-feedback"/> {
   position: fixed;
   bottom: 1%;
   right: 1%;
@@ -8840,7 +8840,7 @@ dd, li, p {
   margin: 2em;
   padding: 1em;
   user-select: none;
-}</xsl:if><xsl:if test="$errata-parsed">
+}</xsl:if>
 .<xsl:value-of select="$css-erratum"/> {
   border: 1px solid orangered;
   border-left: 0.75em solid orangered;
@@ -8857,12 +8857,11 @@ dd, li, p {
   animation: glow 2s infinite;
   display: inline-block;
 }
-<xsl:if test="$parsedMaxwidth!=''">
 @media screen and (min-width: <xsl:value-of select="number($parsedMaxwidth + 350)"/>px) {
   .<xsl:value-of select="$css-erratum"/> {
     margin-right: -150px;
   }
-}</xsl:if></xsl:if><xsl:if test="$published-as-rfc">
+}<xsl:if test="$published-as-rfc">
 .<xsl:value-of select="$css-publishedasrfc"/> {
   background-color: var(--col-bg-highlight);
   color: var(--col-fg);
@@ -11862,11 +11861,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1687 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1687 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1688 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1688 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/26 11:56:06 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/26 11:56:06 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/26 19:02:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/26 19:02:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
