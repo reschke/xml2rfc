@@ -11115,38 +11115,6 @@ dd, li, p {
   <xsl:apply-templates/>
 </xsl:template>
 
-<!-- special templates for handling XHTML in issues -->
-<xsl:template match="text()" mode="issuehtml">
-  <xsl:value-of select="."/>
-</xsl:template>
-
-<xsl:template match="*|@*" mode="issuehtml">
-  <xsl:message terminate="yes">Unexpected node in issue HTML: <xsl:value-of select="name(.)"/></xsl:message>
-</xsl:template>
-
-<xsl:template match="xhtml:a|xhtml:b|xhtml:br|xhtml:cite|xhtml:del|xhtml:em|xhtml:i|xhtml:ins|xhtml:q|xhtml:pre|xhtml:tt" mode="issuehtml">
-  <xsl:element name="{local-name()}">
-    <xsl:apply-templates select="@*|node()" mode="issuehtml"/>
-  </xsl:element>
-</xsl:template>
-
-<xsl:template match="xhtml:p" mode="issuehtml">
-  <xsl:apply-templates select="node()" mode="issuehtml"/>
-  <br class="p"/>
-</xsl:template>
-
-<xsl:template match="xhtml:a/@href|xhtml:q/@cite" mode="issuehtml">
-  <xsl:attribute name="{local-name(.)}">
-    <xsl:value-of select="."/>
-  </xsl:attribute>
-</xsl:template>
-
-<xsl:template match="ed:eref" mode="issuehtml">
-  <xsl:text>&lt;</xsl:text>
-  <a href="{.}"><xsl:value-of select="."/></a>
-  <xsl:text>&gt;</xsl:text>
-</xsl:template>
-
 <xsl:variable name="all-refs" select="/rfc/back//references//reference|exslt:node-set($includeDirectives)//reference|exslt:node-set($sourcedReferences)//reference"/>
 
 <xsl:template name="insert-diagnostics">
@@ -11894,11 +11862,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1685 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1685 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1686 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1686 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/26 07:52:12 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/26 07:52:12 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/26 08:26:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/26 08:26:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
