@@ -5747,10 +5747,21 @@
           </xsl:variable>
           <a href="{$uri}" title="{$tooltip}">Erratum <xsl:value-of select="@eid"/></a>
           <xsl:choose>
-            <xsl:when test="@status='Verified'"><xsl:text> </xsl:text><span title="verified">&#x2714;</span></xsl:when>
+            <xsl:when test="@status='Verified'">
+              <xsl:text> </xsl:text>
+              <xsl:variable name="details">
+                <xsl:if test="@verifier_name!=''">
+                  <xsl:value-of select="concat(' by ',@verifier_name)"/>
+                </xsl:if>
+                <xsl:if test="@update_date!=''">
+                  <xsl:value-of select="concat(' (last changed: ',substring-before(@update_date,' '),')')"/>
+                </xsl:if>
+              </xsl:variable>
+              <span title="Verified{$details}">&#x2714;</span>
+            </xsl:when>
             <xsl:when test="@status='Reported'">
               <xsl:text> </xsl:text>
-              <span title="reported">
+              <span title="Reported">
                 <xsl:text>&#x2709;</xsl:text>
               </span>
               <xsl:if test="@due-since">
@@ -5760,7 +5771,18 @@
                 </span>
               </xsl:if>
             </xsl:when>
-            <xsl:when test="@status='Held for Document Update'"><xsl:text> </xsl:text><span title="held for update">&#x2700;</span></xsl:when>
+            <xsl:when test="@status='Held for Document Update'">
+              <xsl:text> </xsl:text>
+              <xsl:variable name="details">
+                <xsl:if test="@verifier_name!=''">
+                  <xsl:value-of select="concat(' (',@verifier_name)"/>
+                  <xsl:if test="@update_date!=''">
+                    <xsl:value-of select="concat(', last changed: ',substring-before(@update_date,' '))"/>
+                  </xsl:if>
+                  <xsl:text>)</xsl:text>
+                </xsl:if>
+              </xsl:variable>
+              <span title="Held for Document Update{$details}">&#x2700;</span></xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
         </div>
@@ -11861,11 +11883,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1544 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1544 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1545 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1545 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/26 19:03:09 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/26 19:03:09 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/27 16:16:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/27 16:16:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
