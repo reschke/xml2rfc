@@ -1986,7 +1986,6 @@
     </xsl:choose>
   </xsl:variable>
   <xsl:element name="{$anch-container}">
-    <xsl:variable name="id"><xsl:call-template name="paragraph-number-as-id"/></xsl:variable>
     <xsl:call-template name="attach-paragraph-number-as-id"/>
     <xsl:attribute name="data-clip"><xsl:value-of select="$display"/></xsl:attribute>
     <xsl:if test="$divstyle!=''">
@@ -2005,6 +2004,7 @@
       </pre>
       <xsl:call-template name="insert-end-code"/>
     </xsl:element>
+    <xsl:variable name="id"><xsl:call-template name="paragraph-number-as-id"/></xsl:variable>
     <xsl:if test="$xml2rfc-ext-paragraph-links='yes' and $id!=''">
       <a class="self" style="margin-left: 1em; margin-bottom: 1em;" href="#{$id}">&#xb6;</a>
       <a class="self" style="margin-left: 0.5em; margin-bottom: 1em;"
@@ -8389,14 +8389,14 @@ address {
   margin-top: 1em;
   margin-left: 2em;
   font-style: normal;
-}<xsl:if test="//x:blockquote|//blockquote">
+}
 blockquote {
   border-style: solid;
   border-color: var(--col-fg-light);
   border-width: 0 0 0 .25em;
   font-style: italic;
   padding-left: 0.5em;
-}</xsl:if>
+}
 body {<xsl:if test="$xml2rfc-background!=''">
   background: url(<xsl:value-of select="$xml2rfc-background" />) var(--col-bg) left top;</xsl:if>
   background-color: var(--col-bg);
@@ -8417,10 +8417,10 @@ samp, span.tt, code, pre {
 }
 cite {
   font-style: normal;
-}<xsl:if test="//x:note|//aside">
+}
 aside {
   margin-left: 2em;
-}</xsl:if>
+}
 dl {
   margin-left: 2em;
 }
@@ -11883,11 +11883,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1691 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1691 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1692 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1692 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/27 20:42:49 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/27 20:42:49 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/28 21:23:04 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/28 21:23:04 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
