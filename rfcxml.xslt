@@ -2236,14 +2236,17 @@
 </xsl:template>
 
 <!-- copy SVG content without inserted line no information -->
-<xsl:template match="node()|@*" mode="embed-svg">
-  <xsl:copy><xsl:apply-templates select="node()|@*" mode="embed-svg"/></xsl:copy>
+<xsl:template match="svg:*" mode="embed-svg">
+  <xsl:element name="{local-name()}" namespace="http://www.w3.org/2000/svg">
+    <xsl:apply-templates select="node()|@*" mode="embed-svg"/>
+  </xsl:element>
 </xsl:template>
-<xsl:template match="processing-instruction('rfc-ext')[contains(.,'line-no=')]" mode="embed-svg"/>
 
-<xsl:template match="/" mode="embed-svg">
-	<xsl:copy><xsl:apply-templates select="node()"  mode="embed-svg"/></xsl:copy>
+<xsl:template match="@* | comment()" mode="embed-svg">
+  <xsl:copy-of select="."/>
 </xsl:template>
+
+<xsl:template match="processing-instruction('rfc-ext')[contains(.,'line-no=')]" mode="embed-svg"/>
 
 <xsl:template match="contact[ancestor::t]">
   <xsl:if test="*">
@@ -11889,11 +11892,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1548 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1548 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1549 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1549 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/31 13:34:45 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/31 13:34:45 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/31 15:05:59 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/31 15:05:59 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
