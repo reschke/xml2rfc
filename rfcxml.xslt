@@ -2748,15 +2748,15 @@
   <xsl:element name="{$anch-container}">
     <xsl:attribute name="id"><xsl:value-of select="$anch"/></xsl:attribute>
     <xsl:apply-templates select="*[not(self::name)]"/>
+    <xsl:call-template name="figure-title"/>
   </xsl:element>
-  <xsl:call-template name="figure-title"/>
 </xsl:template>
 
 <xsl:template name="figure-title">
   <xsl:if test="(@title!='' or name) or (@anchor!='' and not(@suppress-title='true'))">
     <xsl:variable name="n"><xsl:call-template name="get-figure-number"/></xsl:variable>
     <xsl:variable name="anch"><xsl:call-template name="get-figure-anchor"/></xsl:variable>
-    <p class="figure">
+    <span class="figure">
       <xsl:if test="not(starts-with($n,'u'))">
         <a class="smpl" href="#{$anch}">
           <xsl:text>Figure </xsl:text>
@@ -2776,7 +2776,7 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
-    </p>
+    </span>
   </xsl:if>
 </xsl:template>
 
@@ -8804,8 +8804,8 @@ blockquote > * .bcp14 {
 }
 .figure {
   font-weight: bold;
-  text-align: center;
   font-size: 80%;
+  margin-left: 3em;
 }
 .filename {
   font-size: 112%;
@@ -11892,11 +11892,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1549 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1549 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1550 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1550 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/31 15:05:59 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/31 15:05:59 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/31 17:18:35 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/31 17:18:35 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
