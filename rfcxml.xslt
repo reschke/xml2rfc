@@ -2746,26 +2746,33 @@
     <xsl:attribute name="id"><xsl:value-of select="$anch"/></xsl:attribute>
     <xsl:apply-templates select="*[not(self::name)]"/>
   </xsl:element>
+  <xsl:call-template name="figure-title"/>
+</xsl:template>
+
+<xsl:template name="figure-title">
   <xsl:if test="(@title!='' or name) or (@anchor!='' and not(@suppress-title='true'))">
     <xsl:variable name="n"><xsl:call-template name="get-figure-number"/></xsl:variable>
+    <xsl:variable name="anch"><xsl:call-template name="get-figure-anchor"/></xsl:variable>
     <p class="figure">
       <xsl:if test="not(starts-with($n,'u'))">
         <a class="smpl" href="#{$anch}">
           <xsl:text>Figure </xsl:text>
           <xsl:value-of select="$n"/>
         </a>
-        <xsl:if test="@title!='' or name">: </xsl:if>
       </xsl:if>
-      <xsl:choose>
-        <xsl:when test="@anchor">
-          <a  class="smpl" href="#{@anchor}">
+      <xsl:if test="@title!='' or name">
+        <xsl:text>: </xsl:text>
+        <xsl:choose>
+          <xsl:when test="@anchor">
+            <a class="smpl" href="#{@anchor}">
+              <xsl:call-template name="insertTitle"/>
+            </a>
+          </xsl:when>
+          <xsl:otherwise>
             <xsl:call-template name="insertTitle"/>
-          </a>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:call-template name="insertTitle"/>
-        </xsl:otherwise>
-      </xsl:choose>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:if>
     </p>
   </xsl:if>
 </xsl:template>
@@ -11883,11 +11890,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1546 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1546 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1547 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1547 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/28 21:23:26 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/28 21:23:26 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/31 11:17:48 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/31 11:17:48 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
