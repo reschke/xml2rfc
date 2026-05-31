@@ -8746,7 +8746,6 @@ ul.ind li li {
   line-height: 150%;
   margin-left: 0em;
 }
-@namespace svg url(http://www.w3.org/2000/svg);
 svg {
   background-color: white;
   margin-left: 3em;
@@ -11890,11 +11889,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1695 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1695 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1696 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1696 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/31 11:17:47 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/31 11:17:47 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/05/31 13:33:58 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/31 13:33:58 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
