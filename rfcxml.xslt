@@ -8381,6 +8381,7 @@ PR['registerLangHandler'](
   --col-pr-type: light-dark(#606, #f8f);<!-- type, attribute name, decimal, variable (?) -->
   --col-pr-lit: light-dark(#066, #8ff);<!-- literal -->
   --col-pr-pun: light-dark(#066, #ff8);<!-- punctuation, open bracket, close bracket -->
+  --margin-artwork: 3em;
 }
 a {
   color: var(--col-fg-link);
@@ -8505,7 +8506,7 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
   color: var(--col-fg);
 }
 img {
-  margin-left: 3em;
+  margin-left: var(--margin-artwork);
 }
 ol {
   margin-left: 2em;
@@ -8521,7 +8522,7 @@ p {
 }
 pre {
   font-size: 90%;
-  margin-left: 3em;
+  margin-left: var(--margin-artwork);
   background-color: var(--col-bg-pre);
   padding: .25em;
   page-break-inside: avoid;
@@ -8751,7 +8752,7 @@ ul.ind li li {
 }
 svg {
   background-color: white;
-  margin-left: 3em;
+  margin-left: var(--margin-artwork);
 }
 div.aasvg svg {
   background-color: var(--col-bg);
@@ -8805,7 +8806,7 @@ blockquote > * .bcp14 {
 .figure {
   font-weight: bold;
   font-size: 80%;
-  margin-left: 3em;
+  margin-left: var(--margin-artwork);
 }
 .filename {
   font-size: 112%;
@@ -11892,11 +11893,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1550 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1550 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1551 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1551 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/05/31 17:18:35 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/05/31 17:18:35 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/06/01 06:16:24 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/01 06:16:24 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
