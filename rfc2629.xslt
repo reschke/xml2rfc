@@ -8460,10 +8460,10 @@ dd > span {
 ul.empty {<!-- spacing between two entries in definition lists -->
   list-style-type: none;
 }
-<xsl:if test="//ul[@bare='true']">ul.bare {
+ul.bare {
   margin-left: -2em;
 }
-</xsl:if>ul.empty li {
+ul.empty li {
   margin-top: .5em;
 }
 dl p {
@@ -8642,12 +8642,9 @@ caption {
   font-size: 80%;
   margin-top: .5em;
 }
-<xsl:if test="//@x:caption-side">
 caption.caption-top {
   caption-side: top;
 }
-</xsl:if>
-<xsl:if test="//table">
 table.v3 tr {
     vertical-align: top;
 }
@@ -8678,7 +8675,6 @@ tr ul {
 tr dl {
   margin-left: 1em;
 }
-</xsl:if>
 table.<xsl:value-of select="$css-header"/> {
   border-spacing: 1px;
   width: 95%;
@@ -8893,13 +8889,13 @@ dd, li, p {
   .<xsl:value-of select="$css-erratum"/> {
     margin-right: -150px;
   }
-}<xsl:if test="$published-as-rfc">
+}
 .<xsl:value-of select="$css-publishedasrfc"/> {
   background-color: var(--col-bg-highlight);
   color: var(--col-fg);
   font-size: 115%;
   text-align: center;
-}</xsl:if><xsl:if test="$prettyprint-class='prettyprint' and contains($prettyprint-script,'prettify') and not(contains($prettyprint-script,'skin='))">
+}<xsl:if test="$prettyprint-class='prettyprint' and contains($prettyprint-script,'prettify') and not(contains($prettyprint-script,'skin='))">
   pre.prettyprint .pln { color: var(--col-pr-plain); }<!-- plain text -->
   pre.prettyprint .str, pre.prettyprint .atv { color: var(--col-pr-string); }<!-- string, attribute value -->
   pre.prettyprint .kwd, pre.prettyprint .tag { color: var(--col-pr-keyword); }<!-- keyword -->
@@ -11893,11 +11889,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1700 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1700 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1701 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1701 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/06/01 11:19:17 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/01 11:19:17 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/06/02 06:05:44 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/02 06:05:44 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
