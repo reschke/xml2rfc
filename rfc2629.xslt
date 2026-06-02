@@ -2720,7 +2720,25 @@
   <xsl:if test="$in-angles"><xsl:text>&gt;</xsl:text></xsl:if>
 </xsl:template>
 
-<xsl:template match="figure">
+<xsl:template match="figure[ancestor::t]">
+  <span>
+    <xsl:call-template name="copy-anchor"/>
+    <span>
+      <xsl:call-template name="figure"/>
+    </span>
+  </span>
+</xsl:template>
+
+<xsl:template match="figure[not(ancestor::t)]">
+  <div>
+    <xsl:call-template name="copy-anchor"/>
+    <div>
+      <xsl:call-template name="figure"/>
+    </div>
+  </div>
+</xsl:template>
+
+<xsl:template name="figure">
   <xsl:call-template name="check-no-text-content"/>
   <!-- warn about the attributes that we do not support -->
   <xsl:for-each select="@*[local-name()!='title' and local-name()!='suppress-title' and local-name()!='anchor' and local-name()!='pn' and normalize-space(.)!='']">
@@ -2730,26 +2748,9 @@
       </xsl:call-template>
     </xsl:if>
   </xsl:for-each>
-  <xsl:variable name="anch-container">
-    <xsl:choose>
-      <xsl:when test="ancestor::t">span</xsl:when>
-      <xsl:otherwise>div</xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <xsl:if test="@anchor!=''">
-    <xsl:call-template name="check-anchor"/>
-    <xsl:element name="{$anch-container}">
-      <xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute>
-    </xsl:element>
-  </xsl:if>
-  <xsl:variable name="anch">
-    <xsl:call-template name="get-figure-anchor"/>
-  </xsl:variable>
-  <xsl:element name="{$anch-container}">
-    <xsl:attribute name="id"><xsl:value-of select="$anch"/></xsl:attribute>
-    <xsl:apply-templates select="*[not(self::name)]"/>
-    <xsl:call-template name="figure-title"/>
-  </xsl:element>
+  <xsl:attribute name="id"><xsl:call-template name="get-figure-anchor"/></xsl:attribute>
+  <xsl:apply-templates select="*[not(self::name)]"/>
+  <xsl:call-template name="figure-title"/>
 </xsl:template>
 
 <xsl:template name="figure-title">
@@ -11889,11 +11890,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1702 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1702 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1703 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1703 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/06/02 10:18:40 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/02 10:18:40 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/06/02 14:46:26 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/02 14:46:26 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
