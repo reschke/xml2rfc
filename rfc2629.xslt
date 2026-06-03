@@ -8788,10 +8788,10 @@ blockquote > * .bcp14 {
 }
 .comment {
   background-color: var(--col-bg-highlight);
-}<xsl:if test="$xml2rfc-editing='yes'">
+}
 .editingmark {
   background-color: var(--col-bg-highlight);
-}</xsl:if>
+}
 .<xsl:value-of select="$css-center"/> {
   text-align: center;
 }
@@ -11890,11 +11890,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1704 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1704 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1705 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1705 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/06/02 18:25:00 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/02 18:25:00 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/06/03 06:38:17 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/03 06:38:17 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
