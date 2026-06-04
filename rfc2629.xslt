@@ -10976,38 +10976,6 @@ dd, li, p {
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="x:parse-xml">
-  <xsl:apply-templates/>
-
-  <xsl:if test="function-available('exslt:node-set')">
-    <xsl:variable name="cleaned">
-      <xsl:apply-templates mode="cleanup-edits"/>
-    </xsl:variable>
-    <xsl:if test="$xml2rfc-ext-trace-parse-xml='yes'">
-      <xsl:call-template name="trace">
-        <xsl:with-param name="msg" select="concat('Parsing XML: ', $cleaned)"/>
-      </xsl:call-template>
-    </xsl:if>
-    <xsl:choose>
-      <xsl:when test="function-available('myns:parseXml')" use-when="function-available('myns:parseXml')">
-        <xsl:if test="myns:parseXml(concat($cleaned,''))!=''">
-          <xsl:call-template name="error">
-            <xsl:with-param name="msg" select="concat('Parse error in XML: ', myns:parseXml(concat($cleaned,'')))"/>
-          </xsl:call-template>
-        </xsl:if>
-      </xsl:when>
-      <xsl:when test="function-available('saxon:parse')" use-when="function-available('saxon:parse')">
-        <xsl:variable name="parsed" select="saxon:parse(concat($cleaned,''))"/>
-        <xsl:if test="$parsed='foo'">
-          <xsl:comment>should not get here</xsl:comment>
-        </xsl:if>
-      </xsl:when>
-      <xsl:when test="false()"></xsl:when>
-      <xsl:otherwise></xsl:otherwise>
-    </xsl:choose>
-  </xsl:if>
-</xsl:template>
-
 <!-- inlined RDF support -->
 <xsl:template match="rdf:Description">
   <!-- ignore -->
@@ -11890,11 +11858,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1706 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1706 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1707 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1707 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/06/03 15:12:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/03 15:12:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/06/04 08:38:52 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/04 08:38:52 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
