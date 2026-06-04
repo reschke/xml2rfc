@@ -1916,17 +1916,34 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="artwork|sourcecode">
+<xsl:template match="artwork[ancestor::t]|sourcecode[ancestor::t]">
+  <xsl:call-template name="artwork-or-sourcecode"/>
+</xsl:template>
+
+<xsl:template match="artwork[not(ancestor::t)]|sourcecode[not(ancestor::t)]">
+  <xsl:call-template name="artwork-or-sourcecode"/>
+</xsl:template>
+
+<xsl:template name="artwork-or-sourcecode">
   <xsl:call-template name="insert-errata"/>
+
   <xsl:variable name="textcontent">
     <xsl:call-template name="text-content-of-sourcecode-or-artwork"/>
   </xsl:variable>
+
   <xsl:call-template name="xml">
     <xsl:with-param name="textcontent" select="$textcontent"/>
   </xsl:call-template>
+
   <xsl:call-template name="tabs">
     <xsl:with-param name="textcontent" select="$textcontent"/>
   </xsl:call-template>
+
+  <xsl:call-template name="check-artwork-width">
+    <xsl:with-param name="content" select="$textcontent"/>
+    <xsl:with-param name="indent"><xsl:value-of select="string-length(@x:indent-with)"/></xsl:with-param>
+  </xsl:call-template>
+
   <xsl:variable name="display">
     <xsl:choose>
       <xsl:when test="$xml2rfc-ext-allow-markup-in-artwork='yes' and not(@src)">
@@ -1939,6 +1956,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+
   <xsl:variable name="divstyle">
     <xsl:choose>
       <xsl:when test="self::artwork and @align='right'">display: flex; align-items: flex-end; justify-content: flex-end</xsl:when>
@@ -1946,18 +1964,21 @@
       <xsl:otherwise>display: flex; align-items: flex-end</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+
   <xsl:variable name="prestyle">
     <xsl:choose>
       <xsl:when test="self::artwork and (@align='right' or @align='center')">margin-left: 0em;</xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
   </xsl:variable>
+
   <xsl:variable name="anch-container">
     <xsl:choose>
       <xsl:when test="ancestor::t">span</xsl:when>
       <xsl:otherwise>div</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+
   <xsl:element name="{$anch-container}">
     <xsl:call-template name="attach-paragraph-number-as-id"/>
     <xsl:attribute name="data-clip"><xsl:value-of select="$display"/></xsl:attribute>
@@ -1977,17 +1998,15 @@
       </pre>
       <xsl:call-template name="insert-end-code"/>
     </xsl:element>
+
     <xsl:variable name="id"><xsl:call-template name="paragraph-number-as-id"/></xsl:variable>
+
     <xsl:if test="$xml2rfc-ext-paragraph-links='yes' and $id!=''">
       <a class="self" style="margin-left: 1em; margin-bottom: 1em;" href="#{$id}">&#xb6;</a>
       <a class="self" style="margin-left: 0.5em; margin-bottom: 1em;"
          onclick="copyWithFeedback(this,'{$id}')">&#x29c9;</a>
     </xsl:if>
   </xsl:element>
-  <xsl:call-template name="check-artwork-width">
-    <xsl:with-param name="content"><xsl:apply-templates/></xsl:with-param>
-    <xsl:with-param name="indent"><xsl:value-of select="string-length(@x:indent-with)"/></xsl:with-param>
-  </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="xml">
@@ -11905,11 +11924,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1709 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1709 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1710 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1710 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/06/04 16:22:11 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/04 16:22:11 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/06/04 17:50:41 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/04 17:50:41 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
