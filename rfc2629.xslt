@@ -1921,39 +1921,12 @@
   <xsl:variable name="textcontent">
     <xsl:call-template name="text-content-of-sourcecode-or-artwork"/>
   </xsl:variable>
-  <xsl:if test="$xml2rfc-ext-parse-xml-in-artwork='yes' and function-available('myns:parseXml')" use-when="function-available('myns:parseXml')">
-    <xsl:if test="contains($textcontent,'&lt;?xml')">
-      <xsl:variable name="body" select="substring-after(substring-after($textcontent,'&lt;?xml'),'?>')" />
-      <xsl:if test="$body!='' and myns:parseXml($body)!=''">
-        <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
-        <tr><td>
-        XML PARSE ERROR; parsed the body below:
-        <pre>
-        <xsl:value-of select="$body"/>
-        </pre>
-        resulting in:
-        <pre>
-        <xsl:value-of select="myns:parseXml($body)" />
-        </pre>
-        </td></tr></table>
-      </xsl:if>
-    </xsl:if>
-    <xsl:if test="@ed:parse-xml-after">
-      <xsl:if test="myns:parseXml(string($textcontent))!=''">
-        <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
-        <tr><td>
-        XML PARSE ERROR:
-        <pre><xsl:value-of select="myns:parseXml(string($textcontent))" /></pre>
-        </td></tr></table>
-      </xsl:if>
-    </xsl:if>
-  </xsl:if>
-  <xsl:if test="contains($textcontent,'&#9;')">
-    <xsl:call-template name="error">
-      <xsl:with-param name="msg" select="'artwork or sourcecode contains HTAB character'"/>
-      <xsl:with-param name="inline" select="'no'"/>
-    </xsl:call-template>
-  </xsl:if>
+  <xsl:call-template name="xml">
+    <xsl:with-param name="textcontent" select="$textcontent"/>
+  </xsl:call-template>
+  <xsl:call-template name="tabs">
+    <xsl:with-param name="textcontent" select="$textcontent"/>
+  </xsl:call-template>
   <xsl:variable name="display">
     <xsl:choose>
       <xsl:when test="$xml2rfc-ext-allow-markup-in-artwork='yes' and not(@src)">
@@ -2015,6 +1988,47 @@
     <xsl:with-param name="content"><xsl:apply-templates/></xsl:with-param>
     <xsl:with-param name="indent"><xsl:value-of select="string-length(@x:indent-with)"/></xsl:with-param>
   </xsl:call-template>
+</xsl:template>
+
+<xsl:template name="xml">
+  <xsl:param name="textcontent"/>
+  <xsl:if test="$xml2rfc-ext-parse-xml-in-artwork='yes' and function-available('myns:parseXml')" use-when="function-available('myns:parseXml')">
+    <xsl:if test="contains($textcontent,'&lt;?xml')">
+      <xsl:variable name="body" select="substring-after(substring-after($textcontent,'&lt;?xml'),'?>')" />
+      <xsl:if test="$body!='' and myns:parseXml($body)!=''">
+        <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
+          <tr><td>
+            XML PARSE ERROR; parsed the body below:
+            <pre>
+              <xsl:value-of select="$body"/>
+            </pre>
+            resulting in:
+            <pre>
+              <xsl:value-of select="myns:parseXml($body)" />
+            </pre>
+          </td></tr></table>
+      </xsl:if>
+    </xsl:if>
+    <xsl:if test="@ed:parse-xml-after">
+      <xsl:if test="myns:parseXml(string($textcontent))!=''">
+        <table style="background-color: red; border-width: thin; border-style: solid; border-color: black;">
+          <tr><td>
+            XML PARSE ERROR:
+            <pre><xsl:value-of select="myns:parseXml(string($textcontent))" /></pre>
+          </td></tr></table>
+      </xsl:if>
+    </xsl:if>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="tabs">
+  <xsl:param name="textcontent"/>
+  <xsl:if test="contains($textcontent,'&#9;')">
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg" select="'artwork or sourcecode contains HTAB character'"/>
+      <xsl:with-param name="inline" select="'no'"/>
+    </xsl:call-template>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template name="text-in-artwork">
@@ -3515,9 +3529,7 @@
       </xsl:choose>
       <xsl:if test="not(following-sibling::li)">
         <xsl:variable name="l">
-          <xsl:for-each select="..">
-            <xsl:call-template name="get-paragraph-number"/>
-          </xsl:for-each>
+          <xsl:call-template name="get-paragraph-number-of-parent"/>
         </xsl:variable>
         <xsl:if test="xml2rfc-ext-paragraph-links='yes' and $l!=''">
           <a class='self' href='#{$anchor-pref}section.{$l}'>&#xb6;</a>
@@ -5399,9 +5411,7 @@
   <xsl:param name="anchor"/>
 
   <xsl:variable name="p">
-    <xsl:for-each select="..">
-      <xsl:call-template name="get-paragraph-number" />
-    </xsl:for-each>
+    <xsl:call-template name="get-paragraph-number-of-parent" />
   </xsl:variable>
 
   <xsl:if test="not(self::text() and normalize-space(.)='' and not(following-sibling::node()))">
@@ -10602,19 +10612,23 @@ dd, li, p {
   </xsl:choose>
 </xsl:template>
 
-<xsl:template name="get-paragraph-number">
+<xsl:template name="get-paragraph-number-of-parent">
+  <xsl:for-each select="..">
+    <xsl:call-template name="get-paragraph-number"/>
+  </xsl:for-each>
+</xsl:template>
+
+  <xsl:template name="get-paragraph-number">
   <xsl:param name="delim">.p.</xsl:param>
   <xsl:choose>
     <!-- inside artset -->
     <xsl:when test="parent::artset">
-      <xsl:for-each select="..">
-        <xsl:call-template name="get-paragraph-number"/>
-      </xsl:for-each>
+      <xsl:call-template name="get-paragraph-number-of-parent"/>
     </xsl:when>
 
     <xsl:when test="parent::dl">
       <xsl:variable name="p">
-        <xsl:for-each select=".."><xsl:call-template name="get-paragraph-number"/></xsl:for-each>
+        <xsl:call-template name="get-paragraph-number-of-parent"/>
       </xsl:variable>
       <xsl:if test="$p!=''">
         <xsl:value-of select="$p"/>
@@ -10625,7 +10639,7 @@ dd, li, p {
 
     <xsl:when test="parent::ol or parent::ul">
       <xsl:variable name="p">
-        <xsl:for-each select=".."><xsl:call-template name="get-paragraph-number"/></xsl:for-each>
+        <xsl:call-template name="get-paragraph-number-of-parent"/>
       </xsl:variable>
       <xsl:if test="$p!=''">
         <xsl:value-of select="$p"/>
@@ -11891,11 +11905,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1708 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1708 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1709 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1709 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/06/04 14:39:48 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/04 14:39:48 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/06/04 16:22:11 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/04 16:22:11 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
