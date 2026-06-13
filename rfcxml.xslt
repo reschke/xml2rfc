@@ -5795,7 +5795,8 @@
             <xsl:value-of select="1 + count($entry/preceding-sibling::section)"/>
           </xsl:if>
         </xsl:variable>
-        <div id="{$anchor-pref}erratum.{@eid}{$pf}">
+        <xsl:variable name="id" select="concat($anchor-pref,'erratum.',@eid,$pf)"/>
+        <div id="{$id}">
           <xsl:variable name="tooltip">
             <xsl:value-of select="@reported-by"/>
             <xsl:text>, </xsl:text>
@@ -5847,6 +5848,9 @@
               <span title="Held for Document Update{$details}">&#x2700;</span></xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
+          <xsl:if test="$xml2rfc-ext-paragraph-links='yes'">
+            <a class="self" style="margin-left: 1em; margin-bottom: 1em;" href="#{$id}">&#xb6;</a>
+          </xsl:if>
         </div>
       </xsl:for-each>
     </aside>
@@ -11946,11 +11950,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1559 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1559 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1560 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1560 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/06/07 15:44:23 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/07 15:44:23 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/06/13 21:12:37 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/13 21:12:37 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
