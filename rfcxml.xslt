@@ -8437,6 +8437,7 @@ PR['registerLangHandler'](
   --col-pr-type: light-dark(#606, #f8f);<!-- type, attribute name, decimal, variable (?) -->
   --col-pr-lit: light-dark(#066, #8ff);<!-- literal -->
   --col-pr-pun: light-dark(#066, #ff8);<!-- punctuation, open bracket, close bracket -->
+  --margin-body: 2em;
   --margin-artwork: 3em;
 }
 a {
@@ -8454,7 +8455,7 @@ a:active {
 }
 address {
   margin-top: 1em;
-  margin-left: 2em;
+  margin-left: var(--margin-body);
   font-style: normal;
 }
 blockquote {
@@ -8486,10 +8487,10 @@ cite {
   font-style: normal;
 }
 aside {
-  margin-left: 2em;
+  margin-left: var(--margin-body);
 }
 dl {
-  margin-left: 2em;
+  margin-left: var(--margin-body);
 }
 dl > dt {
   float: left;
@@ -8565,7 +8566,7 @@ img {
   margin-left: var(--margin-artwork);
 }
 ol {
-  margin-left: 2em;
+  margin-left: var(--margin-body);
 }
 li ol {
   margin-left: 0em;
@@ -8574,7 +8575,7 @@ ol p {
   margin-left: 0em;
 }
 p {
-  margin-left: 2em;
+  margin-left: var(--margin-body);
 }
 pre {
   font-size: 90%;
@@ -8618,7 +8619,7 @@ pre.drawing {
   border-style: solid;
   border-width: 1px;
   background-color: var(--col-bg-pre1);
-  padding: 2em;
+  padding: var(--margin-body);;
 }
 span.folding {
   text-decoration: dashed underline overline;
@@ -8633,10 +8634,10 @@ sub {
   font-size: 60%;
 }
 table {
-  margin-left: 2em;
+  margin-left: var(--margin-body);;
 }
 div.<xsl:value-of select="$css-tt"/> {
-  margin-left: 2em;
+  margin-left: var(--margin-body);
 } 
 table.<xsl:value-of select="$css-tt"/> {
   border-collapse: collapse;
@@ -8772,7 +8773,7 @@ li.excluded {
   font-size: 0%;
 }
 ul {
-  margin-left: 2em;
+  margin-left: var(--margin-body);
 }
 li ul {
   margin-left: 0em;
@@ -8921,7 +8922,7 @@ dd, li, p {
   border: 1px solid var(--col-fg);
   display: none;
   float: right;
-  margin: 2em;
+  margin: var(--margin-body);
   padding: 1em;
   user-select: none;
 }</xsl:if>
@@ -8935,7 +8936,6 @@ dd, li, p {
 @keyframes glow {
   50% { transform: scale(1.5); }
 }
-
 .glow {
   color: red;
   animation: glow 2s infinite;
@@ -8971,16 +8971,13 @@ dd, li, p {
   .<xsl:value-of select="$css-noprint"/> {
     display: none;
   }
-
   a {
     color: black;
     text-decoration: none;
   }
-
   table.<xsl:value-of select="$css-header"/> {
     width: 90%;
   }
-
   td.<xsl:value-of select="$css-header"/> {
     width: 50%;
     color: black;
@@ -8988,15 +8985,12 @@ dd, li, p {
     vertical-align: top;
     font-size: 110%;
   }
-
   ul.toc a:last-child::after {
     content: leader('.') target-counter(attr(href), page);
   }
-
   ul.ind li li a {<!-- links in the leaf nodes of the index should go to page numbers -->
     content: target-counter(attr(href), page);
   }
-
   .print2col {
     column-count: 2;
   }
@@ -11950,11 +11944,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1560 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1560 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1561 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1561 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/06/13 21:12:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/13 21:12:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/06/14 13:31:33 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/14 13:31:33 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
