@@ -54,6 +54,8 @@
 
 <xsl:output method="html" encoding="utf-8" doctype-system="about:legacy-compat" indent="yes"/>
 
+<xsl:variable name="src" select="/" />
+
 <!-- PIs outside the root element, or inside the root element but before <front> -->
 <xsl:variable name="global-std-pis" select="/processing-instruction('rfc') | /*/processing-instruction('rfc')[following-sibling::front]"/>
 
@@ -5097,7 +5099,7 @@
             <xsl:choose>
               <xsl:when test="$xml2rfc-sortrefs='yes' and $xml2rfc-symrefs!='no'">
                 <xsl:apply-templates select="$refs">
-                  <xsl:sort select="concat(/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor)"/>
+                  <xsl:sort select="concat($src/rfc/back/displayreference[@target=current()/@anchor]/@to,@anchor)"/>
                 </xsl:apply-templates>
               </xsl:when>
               <xsl:otherwise>
@@ -5955,9 +5957,6 @@
 <xsl:template match="br">
   <br/>
 </xsl:template>
-
-<!-- keep the root for the case when we process XSLT-inline markup -->
-<xsl:variable name="src" select="/" />
 
 <xsl:template name="render-section-ref-title">
   <xsl:param name="to" />
@@ -11944,11 +11943,11 @@ dd, li, p {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfcxml.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.1721 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1721 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.1722 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.1722 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2026/06/15 06:06:37 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/15 06:06:37 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2026/06/15 14:54:15 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2026/06/15 14:54:15 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:variable name="product" select="normalize-space(concat(system-property('xsl:product-name'),' ',system-property('xsl:product-version')))"/>
     <xsl:if test="$product!=''">
